@@ -197,6 +197,9 @@ CREATE INDEX idx_snap_raw_hash ON snapshots(source_id, raw_hash);
 CREATE TABLE extractions (
   id INTEGER PRIMARY KEY, normalized_hash TEXT NOT NULL, source_kind TEXT NOT NULL,
   data_json TEXT NOT NULL, extraction_confidence TEXT NOT NULL,
+  currency TEXT NOT NULL DEFAULT 'USD',      -- non-USD excluded from diffing (12.4)
+  grounded INTEGER NOT NULL DEFAULT 1,       -- all prices found in source text (12.6)
+  is_backfill INTEGER NOT NULL DEFAULT 0,    -- excluded from the recurring ceiling (15.2)
   model TEXT NOT NULL, prompt_version TEXT NOT NULL,
   input_tokens INTEGER, output_tokens INTEGER, cost_micros INTEGER,
   created_at TEXT NOT NULL,
@@ -208,7 +211,7 @@ CREATE TABLE changes (
   change_type TEXT NOT NULL, json_path TEXT NOT NULL,
   before_json TEXT, after_json TEXT,
   materiality INTEGER NOT NULL,
-  state TEXT NOT NULL DEFAULT 'candidate',   -- candidate | confirmed | retracted
+  state TEXT NOT NULL DEFAULT 'candidate',   -- candidate | confirmed | disputed | retracted
   observed_at TEXT NOT NULL,
   UNIQUE (source_id, from_snapshot_id, to_snapshot_id, json_path));
 
@@ -236,8 +239,13 @@ CREATE TABLE backfill_queue (
 
 CREATE TABLE runs (
   id INTEGER PRIMARY KEY, kind TEXT NOT NULL,
-  started_at TEXT NOT NULL, ended_at TEXT, ok INTEGER,
-  stats_json TEXT, error TEXT);
+  started_at TEXT NOT NULL, ended_at TEXT,
+  state TEXT NOT NULL DEFAULT 'running',     -- running | ok | failed | crashed
+  ok INTEGER, stats_json TEXT, error TEXT);
+CREATE INDEX idx_runs_kind_state ON runs(kind, state, started_at);
+
+CREATE TABLE schema_migrations (
+  version TEXT PRIMARY KEY, applied_at TEXT NOT NULL, checksum TEXT NOT NULL);
 ```
 
 ### 7.1 Why `extractions` is separate
@@ -264,6 +272,23 @@ This matters entirely at scale. At 50 competitors averaging 800 KB per page, sto
 snapshot would write roughly **14.6 GB/year** of near-identical HTML. With dedup, the same watch
 list costs about **240 MB/year** — a sixty-fold reduction from one conditional. The archive is
 the compounding asset, so it has to stay cheap to keep forever.
+
+### 7.3 Durability
+
+The archive is described throughout as the compounding asset and the primary differentiator. It
+therefore cannot live on exactly one disk with no copy.
+
+- **Nightly:** `VACUUM INTO` a dated snapshot, then push to off-box object storage (Backblaze B2
+  or equivalent) with `restic`. Retain 7 daily, 4 weekly, 12 monthly.
+- **Restore is tested, not assumed.** `bellwether ops verify-backup` downloads the most recent
+  archive, opens it, and asserts row counts within tolerance of live. Run monthly by cron; a
+  failure raises the same alarm as a dead collector.
+- **The derived layer is already redundant** — `dataset.json`, `dataset.csv`, and every JSON
+  export live in public git history, so even total loss of the box leaves the published dataset
+  and its full version history intact. Only raw HTML would be lost, and only back to the last
+  backup.
+
+Storage cost at 50 competitors is roughly 240 MB/year, so retention is effectively free.
 
 ## 8. Schemas
 
@@ -367,6 +392,7 @@ A pure function over two `PricingSnapshot` objects. No LLM.
 | `is_enterprise` or `is_free` flipped | 60 |
 | `included_seats` changed | 50 |
 | A `usage_rates` entry changed | 45 |
+| Tier renamed (identity preserved, 12.3) | 35 |
 | `headline_features` changed | 10 |
 | `notes` changed | 5 |
 
@@ -451,11 +477,72 @@ with history is a working timeline. Docker Compose runs one service; backfill do
 - Tail competitors added at M3.5 backfill at **12 months** rather than 18, cutting one-time cost
   by a third. The original six keep the full 18-month window.
 - Restartable any number of times; resumes from `state='pending'`
+- **Batch cost is estimated before submission, not after.** A Batches job of 3,600 extractions
+  cannot be budget-checked mid-flight, so `backfill` counts pending rows, multiplies by the
+  measured mean cost per extraction, and refuses to submit a job that would exceed `--budget`.
+  Actual usage is reconciled into `extractions` when results are retrieved, and a variance beyond
+  20% is logged as a warning to recalibrate the estimate.
 
 **`snapshots.observed_at` is the capture time, not the fetch time.** Getting this wrong puts
 eighteen months of history on today's date.
 
-### 12.2 Confirmation
+### 12.2 Detection semantics
+
+Under-specifying this is the single most likely source of silently wrong data, because three
+things interleave: failed fetches, deduplicated snapshots, and backfilled history arriving after
+live collection has already run.
+
+**Pairing rule.** `detect` walks each source's snapshots ordered by `observed_at`, considering
+**only rows with `ok=1` and a non-null `normalized_hash`**, and pairs each *distinct* consecutive
+`normalized_hash`. Failed fetches are skipped entirely — they are gaps in observation, never
+evidence of change. Repeated hashes collapse: five days of an unchanged page is one state, not
+five. A change row's `from`/`to` snapshot ids always name the **first** snapshot exhibiting each
+hash, so the recorded `observed_at` is the earliest moment the new state was seen.
+
+**Backfill invalidates prior detection, and this must be handled explicitly.** Live collection
+creates changes between adjacent live snapshots. Backfill then inserts snapshots whose
+`observed_at` falls *before* them, so pairs that were adjacent no longer are. Any change row
+spanning a newly-inserted snapshot is now wrong.
+
+Therefore: **`bellwether detect --rebuild <source>` deletes and re-derives every change row for
+the affected sources, and backfill invokes it automatically on completion.** Re-derivation is
+free because extractions are content-addressed and cached — no LLM call is repeated. Annotations
+in `analyses` are re-linked by `(source_id, json_path, observed_at)` where the change survives
+rebuild, and orphaned annotations are deleted.
+
+This makes detection a pure function of the snapshot set, which is the property that keeps the
+dataset trustworthy after any historical import.
+
+### 12.3 Tier identity across renames
+
+The timeline is the flagship view, and naive name-keyed tier matching breaks it. If Linear renames
+"Pro" to "Professional", name-keyed matching emits *tier removed* plus *tier added* — materiality
+200, two spurious entries, and a broken price series exactly where continuity matters most.
+
+Tiers are matched between two snapshots in this order:
+
+1. **Exact name match.**
+2. **Normalized name match** — case-folded, punctuation stripped, common suffixes ("Plan", "Tier")
+   removed.
+3. **Positional and price proximity** — same ordinal position in the tier list AND
+   `monthly_price_usd` within 15% or both null. Emits `tier_renamed` (materiality 35, below
+   threshold — a rename is not a pricing event) and **preserves series continuity**.
+4. Otherwise: genuinely added or removed.
+
+`tier_renamed` carries both names so the timeline can label the transition without breaking the line.
+
+### 12.4 Currency and geography
+
+Pricing pages commonly vary by geo-IP, and Wayback captures were taken from arbitrary locations.
+Without a rule, a EUR-served capture reads as a systemic price change across every tier.
+
+**Only `currency == 'USD'` extractions participate in diffing.** A snapshot extracting to any
+other currency is recorded, marked `currency_mismatch`, and excluded from change detection — it is
+a collection anomaly, not a pricing event. If a source produces three consecutive mismatches, it
+is marked degraded and raises the heartbeat, because that means the collector's apparent location
+has changed.
+
+### 12.5 Confirmation
 
 > A candidate change is not published until its new value is observed a second time.
 
@@ -469,9 +556,42 @@ marginal cost, and the one-day lag is invisible in a weekly digest.
 A change where either side reports `extraction_confidence: 'low'` never leaves `candidate`.
 Only `state='confirmed'` changes reach synthesis or the public change feed.
 
+**The consecutive-change gap.** Persistence alone produces a false negative when a price moves in
+two consecutive observations (A -> B -> C): B appears once, so a real change is suppressed. With
+monthly Wayback captures this is not rare. Such changes therefore land in **`disputed`** rather
+than being dropped, and are resolved by a single re-extraction of both snapshots. Agreement
+promotes to `confirmed`; disagreement retracts. Volume is a few per month, so the cost is cents
+and the entire false-negative class disappears.
+
+State machine: `candidate -> confirmed | disputed | retracted`, and `disputed -> confirmed | retracted`.
+
+### 12.6 Extraction grounding
+
+`extraction_confidence` is self-reported, and a model confident enough to hallucinate a price is
+confident enough to report `high`. It is a useful signal, not a validator.
+
+**Every numeric price in an extraction must be findable in the sliced input text.** After Zod
+validation and before the row is written, assert that each `monthly_price_usd`,
+`annual_price_usd`, and `usage_rates[].unit_price_usd` appears as a numeral in the source the
+model was given. A price the model produced but the page never contained is fabricated by
+construction — detectable deterministically, at zero cost, with no judgment involved.
+
+Failure retries once with the grounding violation named in the prompt, then marks the source
+degraded rather than writing an ungrounded row. This is the strongest single guarantee of data
+quality in the system, and it is pure code.
+
 ## 13. Analysis
 
-**One weekly call**, `claude-sonnet-5`, Monday 06:00 CT, structured output per `WeeklySynthesis`.
+**One synthesis call**, `claude-sonnet-5`, structured output per `WeeklySynthesis`.
+
+**Cadence is adaptive, not fixed weekly.** Six competitors change price roughly four times a year
+each — about one confirmed change every two weeks. A fixed weekly digest would therefore be empty
+most weeks, which is both a wasted call and a bad artifact: "this week, nothing happened" trains
+the reader to stop looking. Synthesis fires when **at least three confirmed changes are pending,
+or thirty days have elapsed since the last digest, whichever comes first**, evaluated Mondays at
+06:00 CT. At the M3.5 watch list of 50 companies the three-change trigger will fire roughly
+weekly on its own, so the same rule produces a monthly cadence early and a weekly one later
+without any change in code.
 
 Input: the week's confirmed material changes plus the prior four digests' bodies. Output: an
 annotation for every confirmed change, the digest body, and a ranked top five. The prompt asks
@@ -516,9 +636,95 @@ View 5 is the portfolio. A dashboard that publishes its own failure state and ru
 both the most persuasive detail for a technical reader and the strongest forcing function
 against silent decay.
 
-Visual design direction is deferred to implementation, where the `frontend-design` skill applies.
+### 14.3 UI design
 
-### 14.3 The dataset
+Not deferred. "Looks good" is a specification, and left to implementation it reverts to a
+template.
+
+**Direction — the ledger.** The subject is an archive of prices, not a marketing dashboard and
+not an analytics product. Its nearest real-world artifact is a ledger: a dated, append-only
+record where every line is evidence and the reader's question is always "what changed, when, and
+how do you know." Everything follows from that — tabular numerals throughout, rules that mark
+observation boundaries rather than decorate, and the before/after diff as the one repeated
+primitive. Deliberately avoided: cream-and-serif-with-terracotta, near-black-with-acid-accent,
+and broadsheet hairline pastiche. Those are defaults, not choices.
+
+**Signature — the change ribbon.** One horizontal, time-scaled band per competitor. Every
+observation is a tick; every confirmed change is a notch labelled `$16 → $18`; every gap in
+observation is a visible gap. It renders at three scales and carries three jobs at once — the
+timeline, the change feed, and source health:
+
+```
+Linear    ├─┬────────────┬──────────────┬──────────┤   ● live
+             $8→$10       $10→$14        $14→$16
+          2025-03      2025-09        2026-02      2026-08
+```
+
+- **Row scale** on the board: 18 months compressed into a table cell.
+- **Hero scale** on a competitor page: full width, crosshair, tooltips.
+- **Small multiple** on the index at 50 companies: sparkline density, no axes.
+
+One primitive at three scales is what makes fifty companies legible on a single screen.
+
+**Typography.**
+
+| Role | Face | Why |
+|---|---|---|
+| Display | Bricolage Grotesque (variable) | Editorial-technical with real character; not a default choice |
+| Body | Public Sans | Holds up at small sizes in dense tables; less defaulted than Inter |
+| Data | IBM Plex Mono, `font-variant-numeric: tabular-nums` | Prices must align in columns |
+
+Tabular numerals everywhere, including inline in body copy. In a price archive, digits that do
+not line up are a defect.
+
+**Color — three systems that never mix.**
+
+1. **Diverging pair — price direction.** The semantically correct use of a diverging scale:
+   increase and decrease around a neutral midpoint. This is the emotional core of the dataset and
+   earns the strongest color in the system.
+2. **Categorical, four hues — tier identity.** Free / Entry / Mid / Enterprise, assigned in fixed
+   ordinal order, never cycled.
+3. **Status, three — source health.** ok / degraded / failed. Reserved, never reused as a fourth
+   series, and always shipped with an icon and a label so state is never color-alone.
+
+**Color encodes tier, never competitor.** At fifty companies a categorical scale is impossible —
+the eighth hue is already a stretch and the ninth is a bug. Competitors are separated by small
+multiples and position, never by hue. This is a hard rule, and it is why the ribbon exists.
+
+The implementation **must run `scripts/validate_palette.js`** from the `dataviz` skill against
+both the light and dark surfaces before any color ships; adjacent-pair CVD separation is computed,
+not judged. Dark mode is a selected set of steps validated against the dark surface, not an
+inversion of the light one.
+
+**Charts.**
+
+- **Step-after interpolation, never smooth lines.** Prices are piecewise constant. A line sloping
+  from $16 to $18 between two monthly observations asserts a continuous change that did not
+  happen. This is a correctness rule, not a stylistic one, and it is the most common way a
+  pricing chart lies.
+- **Observation gaps render as gaps.** Where Wayback has no capture, the series breaks. Never
+  bridge missing data.
+- **One axis. Never dual-axis.** Two measures at different scales become two charts or an indexed
+  common base.
+- **Crosshair and tooltip** on every ribbon and chart; hit targets larger than the marks.
+- **Legend present at two or more series; direct labels at four or fewer.**
+- **A table view exists for every chart** — trivially satisfied, since the dataset page is one.
+
+**Copy.** Active voice, sentence case, named from the reader's side. Empty and failure states
+carry direction rather than mood:
+
+- Not "No data" but "No confirmed changes since 12 August. Last checked 3 hours ago."
+- Not "Error loading" but "Sentry's pricing page changed structure on 4 August. Collection is
+  paused until the parser is updated."
+
+Errors never apologise and are never vague about what happened. An empty state is an invitation
+to look at something else specific.
+
+**Quality floor**, met without announcing it: responsive to mobile, visible keyboard focus,
+`prefers-reduced-motion` respected, semantic `<table>` for tabular data, and every chart readable
+at 200% zoom.
+
+### 14.4 The dataset
 
 The differentiating artifact. A `/data` page providing:
 
@@ -531,6 +737,10 @@ The differentiating artifact. A `/data` page providing:
   qualification criterion and its pass rate, and known limitations, so the data is defensible.
 - **A stated boundary** — which companies are in scope and why, and which were screened out for
   client-side rendering. Naming the exclusions is what makes the inclusions credible.
+- **Stated resolution limits** — backfilled history is monthly, so a change is dated to within a
+  month, and two changes inside one month appear as one. Live observations are daily. Both are
+  labelled per row via `provenance`, so a reader can tell reconstructed history from observed
+  history. A dataset that overstates its own precision is worse than one with gaps.
 - **License: CC BY 4.0**, with a copy-paste citation block.
 
 Both files are regenerated by `bellwether export` and committed, so the dataset is versioned in
@@ -552,6 +762,18 @@ git and every historical state is retrievable.
    If yes, email. It asserts on the outcome rather than the mechanism, so it catches blocked
    collectors, dead cron, a full disk, and bugs not yet imagined.
 4. **Every run writes a `runs` row**, feeding `status.json` and the public health display.
+5. **Single-writer lock.** A step refuses to start if a `runs` row of the same kind is `running`
+   and started under 6 hours ago; older ones are marked crashed and cleared. Cron overlap on a
+   slow backfill would otherwise put two writers on one SQLite file.
+6. **Degraded is a state with a defined exit.** Canary failure sets `degraded_reason` and skips
+   extraction. The next successful fetch whose canary passes clears it automatically. After three
+   consecutive failures the heartbeat emails the source, the failing canary, and a replacement
+   proposed by `qualify` — so a redesign produces a one-line config fix rather than a mystery.
+7. **Export refuses to publish an empty or collapsed dataset.** Before committing, export asserts
+   the generated JSON parses, `board.json` contains at least as many competitors as the previous
+   published version, and no file shrank by more than 50%. A migration bug or an empty query must
+   never blank the public site — the published artifact is the deliverable, and overwriting it
+   with nothing is the one unrecoverable failure in the system.
 
 ## 16. Cost model
 
@@ -562,7 +784,9 @@ $3.00/$15.00, discounted to $2.00/$10.00 through 2026-08-31. Message Batches run
 |---|---|---|---|
 | Extract pricing (sliced, ~6k in) | Haiku 4.5 | ~$0.009 | Only on normalized-hash change |
 | Extract, backfill (batched) | Haiku 4.5 | ~$0.005 | One-time |
-| Weekly annotate + digest | Sonnet 5 | ~$0.05 | Weekly |
+| Annotate + digest | Sonnet 5 | ~$0.05 | Adaptive: 3 changes pending or 30 days (13) |
+| Disputed re-extraction | Haiku 4.5 | ~$0.018 | A few per month |
+| Grounding retry | Haiku 4.5 | ~$0.009 | Rare; bounded at one retry |
 
 **Cost scales with changes, not with competitors watched.** A page that never changes is free
 forever after its first extraction, so widening the watch list is close to free.
@@ -581,7 +805,16 @@ These are estimates. The About page shows the measured figure.
 ## 17. Testing
 
 - **Golden-file tests** for normalization and slicing — fixture HTML to expected output and hash.
-- **TDD on `diff` and `materiality`** — pure functions over plain objects, table-driven.
+- **TDD on `diff`, `materiality`, `tier identity` (12.3), and `detection pairing` (12.2)** — all
+  pure functions over plain objects, table-driven. Pairing in particular gets explicit cases for
+  failed fetches, repeated hashes, and out-of-order backfill insertion, because that is where
+  silently wrong data comes from.
+- **Grounding assertion tested against a known fabrication** — feed an extraction containing a
+  price absent from the source and assert it is rejected. This test protects the strongest data
+  quality guarantee in the system, so it must fail loudly if the check regresses.
+- **Rebuild idempotence** — run `detect`, insert backfill, run `detect --rebuild`, and assert the
+  change set equals what a from-scratch derivation produces. Detection is specified as a pure
+  function of the snapshot set; this is the test that holds it to that.
 - **Extraction eval set** — ten real pricing pages from the backfill corpus with hand-written
   expected tiers, run on demand, reporting per-field accuracy. This is what allows a claim about
   extraction quality rather than a vibe.
@@ -595,11 +828,11 @@ and still leave something real. Estimates assume focused hours.
 | # | Milestone | Est. | End state |
 |---|---|---|---|
 | **M1** | **Skeleton that ships** — repo, migrations, config, polite fetcher, `collect`, hash gate, `runs`, minimal `export`, Next.js board view, **deployed to Vercel** | ~4h | Public URL showing six competitors' raw pricing pages' fetch status and last-seen data |
-| **M2** | **Extraction and detection** — normalize, slice, token guard, `extract_pricing`, diff, materiality, confirmation | ~4h | Board shows real structured tiers; `changes` accumulates and confirms |
-| **M3** | **History** — `backfill_queue`, Wayback CDX and fetch, batched extraction, timeline view | ~3h | Eighteen months of real price history charted |
+| **M2** | **Extraction and detection** — normalize, slice, token guard, `extract_pricing`, grounding check, tier identity, diff, materiality, confirmation | ~5h | Board shows real structured tiers; `changes` accumulates and confirms |
+| **M3** | **History** — `backfill_queue`, Wayback CDX and fetch, batched extraction with pre-submission budget check, `detect --rebuild`, timeline view | ~4h | Eighteen months of real price history charted |
 | **M3.5** | **Qualify and expand** — `qualify` tool, screen the candidate pool, admit passers, backfill the tail at 12 months | ~2h | Watch list at 40-60 companies; the dataset has a defensible boundary |
 | **M4** | **Narrative and dataset** — `annotate_and_synthesize`, change feed, competitor pages, `/data` page with CSV/JSON and license | ~3h | The differentiating artifact exists and is citable |
-| **M5** | **Hardening** — cron, heartbeat, canaries, cost ceiling, eval set, README with diagram and measured cost | ~2h | Runs unattended; the repo reads as finished work |
+| **M5** | **Hardening** — cron, heartbeat, canaries, run lock, cost ceiling, export guards, backup and tested restore, eval set, README | ~3h | Runs unattended and survives disk loss; the repo reads as finished work |
 
 **Deploy at M1, not at the end.** The static export plus git transport is the piece most likely
 to surprise; finding that out in hour three is cheap and in hour fifteen is not.
@@ -617,7 +850,14 @@ Cron once M5 lands: `collect extract detect export` daily at 07:00 CT with ±30m
 | 4 | A site blocks the collector | `ok=0` never overwrites good data; canary assertion; degraded state shown publicly; 48h heartbeat |
 | 5 | Runaway LLM spend | Hard $5/month ceiling enforced before every call |
 | 6 | The dataset is thin enough to be uninteresting | M3.5 expands to 40-60 via automated qualification. Cost scales with changes not competitors (~$0.65/mo at 50); dedup (7.2) keeps disk at ~240 MB/yr; a stated boundary makes the set citable |
-| 7 | Bulk backfill trips the recurring cost ceiling | Backfill runs under a separate explicit `--budget`; recurring and one-time spend are tracked apart (15.2) |
+| 7 | Bulk backfill trips the recurring cost ceiling | Backfill runs under a separate explicit `--budget`; recurring and one-time spend tracked apart (15.2); batch cost estimated pre-submission (12.1) |
+| 8 | Homelab disk failure destroys the archive | Nightly `VACUUM INTO` + off-box `restic`; monthly tested restore; derived layer already redundant in public git (7.3) |
+| 9 | Backfill silently invalidates already-derived changes | Detection is a pure function of the snapshot set; `detect --rebuild` runs automatically after backfill, free because extractions are cached (12.2) |
+| 10 | A tier rename reads as remove-plus-add and breaks the timeline | Four-stage tier identity matching emits `tier_renamed` and preserves series continuity (12.3) |
+| 11 | Geo-served non-USD page reads as a systemic price change | Only USD extractions are diffed; three consecutive mismatches mark the source degraded (12.4) |
+| 12 | Model fabricates a price that was never on the page | Deterministic grounding assertion — every numeral in the output must exist in the input; retry once, then degrade (12.6) |
+| 13 | Export publishes an empty dataset and blanks the public site | Pre-commit assertions on parse, competitor count, and file-size regression (15.7) |
+| 14 | Cron overlap puts two writers on one SQLite file | Single-writer lock via `runs.state`; stale locks cleared after 6h (15.5) |
 
 ## 20. Deferred
 
