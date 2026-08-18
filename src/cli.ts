@@ -40,4 +40,20 @@ program
     db.close();
   });
 
+program
+  .command('collect')
+  .description('fetch every source that is past its cadence')
+  .option('--limit <n>', 'process at most n sources', v => Number(v))
+  .option('--dry-run', 'fetch but write nothing')
+  .action(async (options: { limit?: number; dryRun?: boolean }) => {
+    const { collect } = await import('./workflow/collect.js');
+    const db = openDb(dbPath());
+    const stats = await collect(db, { limit: options.limit, dryRun: options.dryRun });
+    console.log(
+      `Checked ${stats.attempted}: ${stats.stored} new, ${stats.unchanged} unchanged, ` +
+      `${stats.failed} failed, ${stats.degraded} degraded, ${stats.cleared} recovered.`
+    );
+    db.close();
+  });
+
 program.parseAsync(process.argv);
