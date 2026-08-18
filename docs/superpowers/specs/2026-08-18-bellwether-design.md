@@ -3,127 +3,165 @@
 - **Date:** 2026-08-18
 - **Status:** Approved, pending implementation plan
 - **Author:** Nicholas Comeaux
-- **Working directory:** `~/VsCode/Competitor Watcher/` (folder rename to `bellwether/` deferred — paths are load-bearing per `~/VsCode/ROUTER.md`)
+- **Working directory:** `~/VsCode/Competitor Watcher/` (rename to `bellwether/` deferred — paths are load-bearing per `~/VsCode/ROUTER.md`)
 
-## 1. Problem and goals
+## 1. Positioning
 
-Competitive intelligence tools (Klue, Crayon) cost thousands per seat and are built for
-enterprise CI teams. Bellwether watches a set of competitors' public pricing pages, detects
-*material* changes, explains them, and publishes a compounding historical archive — running on
-a homelab for well under a dollar a month.
+**Bellwether is the open archive of SaaS pricing, and the engine that maintains it.**
 
-Goals, in priority order:
+This is a positioning claim, not a feature claim, and it was chosen after surveying the market
+(section 2). Every comparable product is a closed subscription producing a private dashboard.
+None publishes its dataset. That is the empty slot, and occupying it serves all three goals at
+once: an open dataset gets linked and cited where a private dashboard gets screenshotted; the
+engine is the defensible part while the data is the distribution; and none of it costs extra,
+because the archive is being stored regardless.
 
-1. **Portfolio artifact.** A public URL a stranger can evaluate in sixty seconds, backed by a
-   readable repo. This wins when goals conflict.
-2. **Working system.** Genuinely runs unattended on the homelab and stays alive without nursing.
+Goals in priority order:
+
+1. **Portfolio artifact.** A public URL and dataset a stranger can evaluate in sixty seconds,
+   backed by a readable repo. This wins when goals conflict.
+2. **Working system.** Runs unattended on the homelab and stays alive without nursing.
 3. **Business seed.** The same engine, pointed at a private config, watches a real competitive
-   set. Multi-tenancy is explicitly out of scope for now.
+   set. Multi-tenancy remains out of scope.
 
-## 2. Non-goals
+## 2. Competitive landscape
 
-- Multi-tenant SaaS, signup, billing, or per-customer configuration
+Surveyed 2026-08-18. The space is crowded; the honest differentiation is narrow and specific.
+
+| Tier | Products | Price | What they do |
+|---|---|---|---|
+| Enterprise CI | Klue, Crayon, Kompyte | $15k–$100k/yr | Battlecards, sales enablement, human analysts |
+| General change monitors | Visualping (~2M users), changedetection.io (OSS) | $0–78/mo | Watch any page, alert on diff |
+| SaaS-pricing-specific | SaaS Price Pulse, Tierly, PageCrawl, Apify actors | ~$10–50/mo | Extract plans and prices, chart history |
+| Archive tooling | Apify Wayback actors | pay-per-run | CDX timeline plus regex price extraction |
+
+### 2.1 What is NOT differentiated
+
+Recording these explicitly so they are never claimed in the README or on the site.
+
+- **AI noise filtering.** changedetection.io ships plain-English intent rules and AI change
+  summaries, free and self-hosted. Visualping claims its AI suppresses 83% of detected changes.
+- **Structured pricing extraction.** This is the entire tier-3 category.
+- **Wayback backfill.** An existing Apify actor pulls the CDX timeline and extracts prices by regex.
+
+### 2.2 What is differentiated
+
+1. **You own the archive.** Every comparable product is a subscription; the history dies when
+   payment stops. Bellwether's archive is a SQLite file holding raw HTML. Because extraction is
+   content-addressed, the prompt can be improved and the full history reprocessed under a better
+   schema — impossible on a platform that owns the pipeline and rents you the output.
+2. **Schema-first, not diff-first.** Tier-2 tools produce a text diff and ask a model whether it
+   matters. Bellwether never produces a text diff; it produces a typed object and compares
+   objects. The output type is a queryable time series, not a stream of alerts.
+3. **The dataset is public.** No competitor publishes theirs. See section 14.3.
+
+For the portfolio goal, note that novelty matters less than engineering judgment — nobody
+evaluating the work will care that Visualping exists. The positioning matters for goal 3.
+
+## 3. Non-goals
+
+- Multi-tenant SaaS, signup, billing, per-customer configuration
 - Any authenticated, paywalled, or robots-disallowed source
 - Republishing scraped page content — only extracted facts and original analysis are published
 - Real-time or intraday detection; daily is the finest cadence
 - JavaScript-rendered pages (no headless browser in scope)
 
-## 3. Success criteria for weekend 1
+## 4. Definition of done
 
-Sunday night, all of the following are true:
+Each milestone in section 18 ends deployable. The project is complete when:
 
-1. A public Vercel URL shows six competitors' current pricing side by side.
-2. That site shows a timeline of real historical price changes, seeded from the Internet Archive.
-3. Material changes carry a written implication generated by Claude.
-4. The site displays its own per-source health and its own cumulative LLM cost.
-5. `docker compose up` on the Ubuntu box runs the whole pipeline on a schedule.
-6. The README carries an architecture diagram, the filter table, and a real cost figure.
+1. A public URL shows six competitors' current pricing side by side.
+2. A timeline shows real historical price changes seeded from the Internet Archive.
+3. Confirmed material changes carry a written implication generated by Claude.
+4. The dataset is downloadable as CSV and JSON under an explicit license.
+5. The site displays its own per-source health and its own cumulative LLM cost.
+6. `docker compose up` on the Ubuntu box runs the pipeline on a schedule unattended.
+7. The README carries an architecture diagram, the filter table, and a measured cost figure.
 
-## 4. Architecture
+## 5. Architecture
 
 Two halves in one repo, communicating through git.
 
 ```
-HOMELAB (Docker Compose, private)                    VERCEL (public, static)
-+---------------------------------------+            +----------------------+
-|  node-cron                            |            |  Next.js             |
-|   +- collect     (daily, jittered)    |            |  output: 'export'    |
-|   +- extract                          |            |                      |
-|   +- detect                           |            |  reads at build time |
-|   +- analyze                          |            |   web/public/data/   |
-|   +- synthesize  (Mon 06:00 CT)       |            |     board.json       |
-|   +- export      (writes JSON, pushes)|            |     timeline.json    |
-|                                       |  git push  |     changes.json     |
-|  backfill (separate container/clock)  |----------->|     status.json      |
-|                                       |  triggers  |                      |
-|  bellwether.db  <- raw HTML, private, |  rebuild   |                      |
-|                    never published    |            |                      |
-+---------------------------------------+            +----------------------+
+HOMELAB (Docker, private)                          VERCEL (public, static)
++-------------------------------------+            +----------------------+
+|  node-cron                          |            |  Next.js             |
+|   +- collect   (daily, jittered)    |            |  output: 'export'    |
+|   +- extract                        |            |                      |
+|   +- detect                         |            |  reads at build time |
+|   +- export    (writes JSON, pushes)|            |   web/public/data/   |
+|   +- synthesize (Mon 06:00 CT)      |  git push  |     board.json       |
+|                                     |----------->|     timeline.json    |
+|  backfill (one-shot CLI, queued)    |  triggers  |     changes.json     |
+|                                     |  rebuild   |     status.json      |
+|  bellwether.db <- raw HTML, private,|            |     dataset.json/.csv|
+|                   never published   |            |                      |
++-------------------------------------+            +----------------------+
 ```
 
 **The raw HTML archive never leaves the homelab.** Only extracted facts and original analysis
 cross the boundary. This keeps the public repo small, keeps the legal posture clean (publishing
-observations, not republishing pages), and means the committed JSON diff is itself a readable
-changelog of the market.
+observations, not republishing pages), and makes the committed JSON diff a readable changelog
+of the market.
 
-### 4.1 Layer discipline
+### 5.1 Layer discipline
 
-Adapted from the `soltreya-ops` Tools / Agents / Workflows pattern. The shape is reused; the
-code is not — Bellwether is standalone and must not depend on private business code.
+Adapted from the `soltreya-ops` Tools / Agents / Workflows pattern. The shape is reused; the code
+is not — Bellwether is standalone and must not depend on private business code.
 
 | Layer | Contents | LLM | Failure mode |
 |---|---|---|---|
-| **Tools** | fetch, normalize, hash, diff, materiality, token guard, export, wayback | Never | Typed error, loud |
-| **Agents** | `extract_pricing`, `synthesize_digest` — two, total | One schema-constrained call each | Zod rejection, retry, then degrade |
-| **Workflow** | The five pipeline steps | Never | Step skipped; next run retries |
+| **Tools** | fetch, normalize, slice, hash, diff, materiality, token guard, export, wayback | Never | Typed error, loud |
+| **Agents** | `extract_pricing`, `annotate_and_synthesize` — two, total | One schema-constrained call each | Zod rejection, retry, then degrade |
+| **Workflow** | The pipeline steps | Never | Step skipped; next run retries |
 
 **Governing principle: the LLM never decides control flow. It only fills in a schema.** Every
-branch, threshold, retry, and skip is deterministic code. Neither agent is an agentic loop;
-both are single-shot calls with a structured output format. Roughly 70% of the code lives in
-`tools/` and contains zero nondeterminism.
+branch, threshold, retry, and skip is deterministic code. Neither agent is an agentic loop; both
+are single-shot calls with a structured output format. Roughly 70% of the code lives in `tools/`
+and contains zero nondeterminism.
 
-### 4.2 The database is the queue
+### 5.2 The database is the queue
 
-Every pipeline step is independently invocable and idempotent. No step holds in-memory state
-from another; each queries SQLite for outstanding work.
+Every step is independently invocable and idempotent. No step holds in-memory state from
+another; each queries SQLite for outstanding work.
 
 ```
-bellwether collect     # any active source past its cadence -> fetch, write snapshot
-bellwether extract     # any snapshot lacking an extraction at current prompt_version
-bellwether detect      # any consecutive extraction pair lacking a change row
-bellwether analyze     # any confirmed change lacking an analysis
-bellwether synthesize  # weekly digest for the current period, if absent
-bellwether export      # rebuild all JSON from current DB state
+bellwether collect      # any active source past its cadence -> fetch, write snapshot
+bellwether extract      # any snapshot lacking an extraction at current prompt_version
+bellwether detect       # any consecutive extraction pair lacking a change row; run confirmation
+bellwether export       # rebuild all JSON and dataset files from current DB state
+bellwether synthesize   # weekly: annotate confirmed changes AND write the digest, one call
+bellwether backfill     # one-shot: enqueue Wayback captures, then drain the queue
 ```
 
-Cron runs these in sequence daily. A step that dies mid-run leaves a backlog the next run
-clears with no special handling. Every command supports `--limit N` and `--dry-run`.
+Daily cron runs `collect extract detect export`. Weekly cron adds `synthesize export`. A step
+that dies mid-run leaves a backlog the next run clears with no special handling. Every command
+supports `--limit N` and `--dry-run`.
 
-## 5. Repository layout
+## 6. Repository layout
 
 ```
 src/
-  tools/       fetch.ts  normalize.ts  hash.ts  diff.ts  materiality.ts
+  tools/       fetch.ts  normalize.ts  slice.ts  hash.ts  diff.ts  materiality.ts
                token_guard.ts  export.ts  wayback.ts
-  agents/      extract_pricing.ts  synthesize_digest.ts  _client.ts
-  workflow/    collect.ts  extract.ts  detect.ts  analyze.ts
-               synthesize.ts  export.ts
+  agents/      extract_pricing.ts  annotate_and_synthesize.ts  _client.ts
+  workflow/    collect.ts  extract.ts  detect.ts  export.ts  synthesize.ts  backfill.ts
   ops/         migrate.ts  health.ts  cost.ts
   config/      competitors.public.ts   (committed)
                competitors.private.ts  (gitignored)
-  schema/      pricing.ts  (Zod)  change.ts  analysis.ts
+  schema/      pricing.ts  change.ts  synthesis.ts
   cli.ts
 migrations/    001_init.sql  ...
 web/           Next.js App Router, output: 'export', Tailwind
-               public/data/*.json  (generated, committed)
-docker-compose.yml
+               public/data/*.json, dataset.csv  (generated, committed)
+docker-compose.yml   # ONE service
 ```
 
 Stack: Node 24 LTS, TypeScript, pnpm, `better-sqlite3`, Zod, Next.js App Router with Tailwind.
 One Zod schema serves three roles — the structured-output format sent to Claude, the runtime
 validator, and the dashboard's type.
 
-## 6. Data model
+## 7. Data model
 
 ```sql
 CREATE TABLE competitors (
@@ -132,14 +170,14 @@ CREATE TABLE competitors (
 
 CREATE TABLE sources (
   id INTEGER PRIMARY KEY, competitor_id INTEGER NOT NULL REFERENCES competitors(id),
-  kind TEXT NOT NULL,                 -- 'pricing' (weekend 1); 'jobs' | 'changelog' later
+  kind TEXT NOT NULL,                 -- 'pricing' now; 'jobs' | 'changelog' later
   url TEXT NOT NULL, canary_string TEXT NOT NULL,
   cadence_hours INTEGER NOT NULL DEFAULT 24,
   active INTEGER NOT NULL DEFAULT 1, degraded_reason TEXT);
 
 CREATE TABLE snapshots (
   id INTEGER PRIMARY KEY, source_id INTEGER NOT NULL REFERENCES sources(id),
-  observed_at TEXT NOT NULL,          -- CAPTURE time, not fetch time (see 11)
+  observed_at TEXT NOT NULL,          -- CAPTURE time, not fetch time (see 12)
   fetched_at TEXT NOT NULL,
   ok INTEGER NOT NULL, http_status INTEGER, error TEXT,
   raw_content TEXT, raw_hash TEXT, normalized_hash TEXT,
@@ -164,18 +202,19 @@ CREATE TABLE changes (
   observed_at TEXT NOT NULL,
   UNIQUE (source_id, from_snapshot_id, to_snapshot_id, json_path));
 
+-- Written by the weekly synthesize step, not by a separate analysis agent (see 14.1).
 CREATE TABLE analyses (
   id INTEGER PRIMARY KEY, change_id INTEGER NOT NULL REFERENCES changes(id),
   implication TEXT NOT NULL, so_what TEXT NOT NULL, confidence TEXT NOT NULL,
   model TEXT NOT NULL, prompt_version TEXT NOT NULL,
-  cost_micros INTEGER, created_at TEXT NOT NULL,
+  created_at TEXT NOT NULL,
   UNIQUE (change_id, prompt_version));
 
 CREATE TABLE digests (
   id INTEGER PRIMARY KEY, period_start TEXT NOT NULL, period_end TEXT NOT NULL,
   body_md TEXT NOT NULL, item_count INTEGER NOT NULL,
   model TEXT NOT NULL, prompt_version TEXT NOT NULL,
-  cost_micros INTEGER, created_at TEXT NOT NULL,
+  cost_micros INTEGER, created_at TEXT NOT NULL,   -- cost of the whole merged call
   UNIQUE (period_start, prompt_version));
 
 CREATE TABLE backfill_queue (
@@ -191,28 +230,26 @@ CREATE TABLE runs (
   stats_json TEXT, error TEXT);
 ```
 
-### 6.1 Why `extractions` is separate
+### 7.1 Why `extractions` is separate
 
 Keyed on `(normalized_hash, prompt_version)`, this table earns its place three ways:
 
 1. **Extraction happens once per unique page state, ever.** Backfill and live collection share
    the cache. Identical captures cost nothing after the first.
-2. **Reprocessing history under a better prompt is one command.** Bump `PROMPT_VERSION`, run
-   `bellwether extract --all`; old rows survive for comparison.
-3. **Cost is attributable per row.** Summing `cost_micros` across `extractions`, `analyses`,
-   and `digests` produces the figure shown on the public About page.
+2. **Reprocessing history under a better prompt is one command.** Bump `EXTRACT_PROMPT_VERSION`,
+   run `bellwether extract --all`; old rows survive for comparison. This is differentiator 2.2.1.
+3. **Cost is attributable per row.** Summing `cost_micros` across `extractions` and `digests`
+   produces the figure shown on the public About page.
 
-Nothing is ever discarded. Sub-threshold changes still get a `changes` row; they simply never
-reach an LLM.
+Nothing is discarded. Sub-threshold changes still get a `changes` row; they never reach an LLM.
 
-## 7. Schemas
+## 8. Schemas
 
 ```ts
-// Three independent version constants. Each is stored on the rows it produces, so any
-// generated artifact traces to the exact prompt behind it and can be reprocessed alone.
-export const EXTRACT_PROMPT_VERSION   = 'extract-pricing-v1';
-export const ANALYZE_PROMPT_VERSION   = 'analyze-change-v1';
-export const SYNTH_PROMPT_VERSION     = 'synthesize-digest-v1';
+// Two version constants. Each is stored on the rows it produces, so any generated artifact
+// traces to the exact prompt behind it and can be reprocessed independently.
+export const EXTRACT_PROMPT_VERSION = 'extract-pricing-v1';
+export const SYNTH_PROMPT_VERSION   = 'annotate-synthesize-v1';
 
 const Tier = z.object({
   name: z.string(),
@@ -234,50 +271,69 @@ export const PricingSnapshot = z.object({
   notes: z.string().nullable(),
   extraction_confidence: z.enum(['high', 'medium', 'low']),
 });
+
+// One weekly call returns BOTH the per-change annotations and the digest.
+export const WeeklySynthesis = z.object({
+  annotations: z.array(z.object({
+    change_id: z.number(),
+    implication: z.string(),
+    so_what: z.string(),
+    confidence: z.enum(['high', 'medium', 'low']),
+  })),
+  digest_md: z.string(),
+  top_five_change_ids: z.array(z.number()).max(5),
+});
 ```
 
 `usage_rates` exists because Supabase and Sentry price on consumption; without it the two most
 interesting competitors extract to almost nothing. `extraction_confidence` is the extractor
-self-reporting and gates change confirmation (see 12).
+self-reporting and gates change confirmation (section 12).
 
-## 8. The layered filter
+## 9. The layered filter
 
 | # | Gate | Mechanism | Cost | Removes |
 |---|---|---|---|---|
-| 1 | Raw hash | `raw_hash` matches previous snapshot -> stop | $0 | ~80% of runs |
-| 2 | Normalized hash | strip, re-hash, compare -> stop | $0 | most of the remainder |
+| 1 | Raw hash | matches previous snapshot -> stop | $0 | ~80% of runs |
+| 2 | Normalized hash | strip, slice, re-hash, compare -> stop | $0 | most of the remainder |
 | 3 | Extraction cache | `(normalized_hash, prompt_version)` exists -> reuse | $0 | repeat page states |
-| 4 | Structured extract | Haiku 4.5 + Zod, retry once on validation failure | ~$0.017 | — |
+| 4 | Structured extract | Haiku 4.5 + Zod, retry once on validation failure | ~$0.009 | — |
 | 5 | Object diff | deep-diff two `PricingSnapshot` objects | $0 | copy tweaks entirely |
 | 6 | Materiality | deterministic score vs. threshold | $0 | feature-list churn |
-| 7 | Confirmation | change must be observed twice (see 12) | $0 | extractor phantoms |
-| 8 | Analyze | Haiku 4.5, one call per confirmed change | ~$0.005 | — |
+| 7 | Confirmation | change must be observed twice (section 12) | $0 | extractor phantoms |
+| 8 | Annotate + digest | Sonnet 5, one merged call per week | ~$0.05 | — |
 
-### 8.1 Normalization
+**Collection frequency does not drive cost.** The hash gate means 365 daily fetches producing
+three real changes cost the same as three fetches. Daily collection is therefore kept: it is
+free, and it makes two-observation confirmation resolve in a day.
+
+### 9.1 Normalization and slicing
 
 Strip `<script>`, `<style>`, `<svg>`, HTML comments, all `data-*` attributes, `nonce`,
 `integrity`, any attribute value matching a UUID or `[a-f0-9]{16,}`, asset query strings, and
-elements matching known cookie-banner and chat-widget class patterns. Collapse whitespace,
+elements matching known cookie-banner and chat-widget class patterns.
+
+**Then always slice** — select the DOM subtree with the highest density of currency symbols and
+tier-like headings, and discard the rest. This is applied on every extraction, not only as an
+over-budget fallback, because it roughly halves per-extraction cost. Collapse whitespace,
 extract text, re-hash.
 
-Golden-file tested: fixture HTML in, expected normalized text and stable hash out.
+Golden-file tested: fixture HTML in, expected sliced text and stable hash out.
 
-### 8.2 Token guard
+### 9.2 Token guard
 
 Before every LLM call, in code:
 
 ```
-normalize -> count_tokens -> over budget?
-  -> region-slice to the densest currency block -> count_tokens
+normalize -> slice -> count_tokens -> over budget?
+  -> widen the slice once and retry the count
     -> still over? mark source degraded, skip, log. Never send an oversized request.
 ```
 
-Budget: **20,000 input tokens** (hard cap). Typical normalized pricing pages are expected to
-land near 12,000, which is the figure the cost model in section 16 uses; a page at the cap costs
-about $0.025 instead of $0.017. Uses the `count_tokens` endpoint, so the check is real rather
-than an estimate. Figma's raw page is 2.3 MB and is the reason this exists.
+Budget: **20,000 input tokens** (hard cap). Sliced pricing pages are expected near 6,000, which
+is the figure the cost model uses. Uses the `count_tokens` endpoint, so the check is real rather
+than estimated. Figma's raw page is 2.3 MB and is the reason this exists.
 
-## 9. Materiality
+## 10. Materiality
 
 A pure function over two `PricingSnapshot` objects. No LLM.
 
@@ -293,10 +349,10 @@ A pure function over two `PricingSnapshot` objects. No LLM.
 | `notes` changed | 5 |
 
 **Threshold: 40.** Feature-list churn scores 10 because it is copy churn the large majority of
-the time. It is still recorded and still visible under a "minor changes" toggle; if a month of
-real data proves the weighting wrong, it is one number to tune.
+the time. It is still recorded and visible under a "minor changes" toggle; if a month of real
+data proves the weighting wrong, it is one number to tune.
 
-## 10. Collection and politeness
+## 11. Collection and politeness
 
 Deliberately conservative, because the day this is a business is the day it matters.
 
@@ -304,13 +360,12 @@ Deliberately conservative, because the day this is a business is the day it matt
 - `robots.txt` fetched, cached 24h, and honored
 - Minimum 10s between requests to the same host; jittered start times
 - 3 retries with exponential backoff
-- **A failed fetch writes `ok=0` with no `raw_content` and never overwrites the last good
-  snapshot**
+- **A failed fetch writes `ok=0` with no `raw_content` and never overwrites the last good snapshot**
 - Redirect cap 5; body cap 5 MB; public pages only
 - Canary string asserted post-fetch; failure marks the source degraded and skips extraction
   rather than feeding garbage downstream
 
-### 10.1 Watch list
+### 11.1 Watch list
 
 Verified 2026-08-18 as server-rendered with prices and tier names present in raw HTML:
 
@@ -324,154 +379,181 @@ Verified 2026-08-18 as server-rendered with prices and tier names present in raw
 | Postman | `https://www.postman.com/pricing/` | 997 KB |
 
 Excluded after verification: **Vercel** (24 KB shell, pricing hydrated client-side) and
-**Jira/Atlassian** (fully client-rendered, no prices in HTML). Both would require a headless
-browser, which is out of scope.
+**Jira/Atlassian** (fully client-rendered, no prices in HTML). Both would need a headless browser.
 
-## 11. Backfill
+Expanding the watch list is a config-file edit plus a backfill re-run — no code change. Under the
+dataset positioning, growing past six is the cheapest way to increase the artifact's value.
 
-A separate tool on a separate container and clock, writing to `backfill_queue`. It claims one
-row at a time and **never blocks the main pipeline** — the rest of the system reads whatever has
-landed. Four of six competitors with history is a working timeline.
+## 12. Backfill and change confirmation
+
+### 12.1 Backfill
+
+A one-shot CLI command backed by `backfill_queue`, claiming one row at a time. It **never blocks
+the main pipeline** — the rest of the system reads whatever has landed. Four of six competitors
+with history is a working timeline. Docker Compose runs one service; backfill does not need its own.
 
 - Discovery: Wayback CDX API per URL, `collapse=timestamp:6` (one capture per month),
   `filter=statuscode:200`, 18-month window
 - Fetch: `https://web.archive.org/web/<ts>id_/<url>` — the `id_` suffix returns original bytes
   without the injected Archive toolbar
 - Rate limit: 1 request per 4s; Wayback is slow and will return 429
+- **Extraction of the backfill corpus runs through the Message Batches API at 50% cost.** It is
+  not latency-sensitive, so there is no reason to pay the synchronous rate.
 - Restartable any number of times; resumes from `state='pending'`
 
 **`snapshots.observed_at` is the capture time, not the fetch time.** Getting this wrong puts
 eighteen months of history on today's date.
 
-## 12. Change confirmation
+### 12.2 Confirmation
 
 > A candidate change is not published until its new value is observed a second time.
 
 - **Live path:** today's change is confirmed by tomorrow's collection.
-- **Backfill path:** a change between captures N and N+1 is confirmed if the value persists
-  into N+2.
+- **Backfill path:** a change between captures N and N+1 is confirmed if the value persists into N+2.
 
 One rule, one implementation, both paths. A real price change stays changed; an extraction
-hallucination almost never reproduces. This eliminates the phantom-change class of bugs for
-zero marginal cost, and the one-day lag is invisible in a weekly digest.
+hallucination almost never reproduces. This eliminates the phantom-change class of bugs at zero
+marginal cost, and the one-day lag is invisible in a weekly digest.
 
-Additionally: a change where either side reports `extraction_confidence: 'low'` never leaves
-`candidate`.
-
-Only `state='confirmed'` changes reach analysis or the public change feed.
+A change where either side reports `extraction_confidence: 'low'` never leaves `candidate`.
+Only `state='confirmed'` changes reach synthesis or the public change feed.
 
 ## 13. Analysis
 
-**Per change** — `claude-haiku-4-5`, one structured-output call. Input: competitor, change type,
-before/after tier objects. Output: `{implication, so_what, confidence}`. Small inputs, sub-cent.
+**One weekly call**, `claude-sonnet-5`, Monday 06:00 CT, structured output per `WeeklySynthesis`.
 
-**Weekly synthesis** — `claude-sonnet-5`, Monday 06:00 CT. Input: the week's confirmed material
-changes plus the prior four digests' bodies. The prompt asks explicitly for cross-time patterns,
-which is the only thing a single-change call cannot produce. **Hard cap of five items**; if more
-qualify, the model ranks and cuts.
+Input: the week's confirmed material changes plus the prior four digests' bodies. Output: an
+annotation for every confirmed change, the digest body, and a ranked top five. The prompt asks
+explicitly for cross-time patterns, which is the only thing a single-change call cannot produce.
+**Hard cap of five items** in the digest; the model ranks and cuts.
 
-`model` and `prompt_version` are stored on every generated row, so any analysis can be traced to
-the prompt that produced it and reprocessed later.
+This replaces a separate per-change analysis agent. Merging removes an agent, a pipeline step, a
+prompt version, and a table write path. The trade-off is that change-feed entries are unannotated
+until the Monday run — acceptable given the confirmation lag already present, and the feed shows
+the raw structured before/after in the meantime, which is legible on its own.
+
+`model` and `prompt_version` are stored on every generated row.
 
 ## 14. Delivery
 
 ### 14.1 Export
 
 `bellwether export` rebuilds `web/public/data/` from current DB state, commits, and pushes.
-Vercel rebuilds on push. Files: `board.json`, `timeline.json`, `changes.json`, `status.json`.
+Vercel rebuilds on push. Files: `board.json`, `timeline.json`, `changes.json`, `status.json`,
+`dataset.json`, `dataset.csv`.
 
-Mechanics: the repo is **public on GitHub** and connected to a Vercel project whose root is
-`web/`. The homelab container holds a **deploy key with write access** and pushes to `main`.
+Mechanics: the repo is **public on GitHub** and connected to a Vercel project rooted at `web/`.
+The homelab container holds a **deploy key with write access** and pushes to `main`.
 `competitors.private.ts`, `.env`, and `bellwether.db` are gitignored — the public repo never
 receives the raw archive or the private watch list. Export commits use a fixed message format
-(`data: <n> changes, <n> sources, <date>`) so `git log` reads as a market changelog.
-If a push conflicts, export aborts and retries next run; it never force-pushes.
+(`data: <n> changes, <n> sources, <date>`) so `git log` reads as a market changelog. If a push
+conflicts, export aborts and retries next run; it never force-pushes.
 
 ### 14.2 Dashboard views
 
 1. **Board** — all six competitors, current tiers side by side. Renders correctly with one
    snapshot and zero history, so it is never empty.
-2. **Timeline** — price over time per competitor with change markers. This is what backfill buys.
-3. **Change feed** — reverse-chronological confirmed material changes with analysis text,
+2. **Timeline** — price over time per competitor with change markers. What backfill buys.
+3. **Change feed** — reverse-chronological confirmed material changes with annotations,
    filterable by competitor; sub-threshold changes collapsed under a "minor" toggle.
-4. **How it works** — architecture diagram, the filter table with live hit rates, per-source
+4. **Competitor pages** — a stable URL per competitor (`/c/linear`) showing that company's full
+   pricing history. These are the citable, linkable units of the dataset.
+5. **How it works** — architecture diagram, the filter table with live hit rates, per-source
    health (last verified, canary status), and cumulative LLM spend pulled from the DB.
 
-View 4 is the portfolio. A dashboard that publishes its own failure state and its own running
-cost is both the most persuasive detail for a technical reader and the strongest forcing
-function against silent decay.
+View 5 is the portfolio. A dashboard that publishes its own failure state and running cost is
+both the most persuasive detail for a technical reader and the strongest forcing function
+against silent decay.
 
 Visual design direction is deferred to implementation, where the `frontend-design` skill applies.
 
+### 14.3 The dataset
+
+The differentiating artifact. A `/data` page providing:
+
+- **`dataset.csv`** — one row per (competitor, tier, observed_at) with price, billing unit,
+  seats, and flags. The flat form anyone can open in a spreadsheet.
+- **`dataset.json`** — the same data nested, plus the change log with annotations.
+- **A documented schema** — field names, types, null semantics (`monthly_price_usd: null` means
+  "contact sales", not "free").
+- **Stated methodology** — sources, cadence, extraction method, the confirmation rule, and known
+  limitations, so the data is defensible.
+- **License: CC BY 4.0**, with a copy-paste citation block.
+
+Both files are regenerated by `bellwether export` and committed, so the dataset is versioned in
+git and every historical state is retrievable.
+
 ## 15. Reliability rails
 
-1. **Kill switch.** `LLM_ENABLED=false` runs the whole pipeline with extraction and analysis
+1. **Kill switch.** `LLM_ENABLED=false` runs the whole pipeline with extraction and synthesis
    skipped, so collection, detection, export, and the site build are testable at zero cost.
    CI runs in this mode.
-2. **Hard cost ceiling.** Before any LLM call, sum `cost_micros` for the current month across
-   `extractions`, `analyses`, and `digests`. Over the cap — default **$10/month** — refuse, log,
-   and continue. Runaway spend is structurally impossible rather than a promise to watch.
+2. **Hard cost ceiling: $5/month.** Before any LLM call, sum `cost_micros` for the current month
+   across `extractions` and `digests`. Over the cap: refuse, log, continue. Roughly 20x the
+   realistic spend, and loose enough that a full history reprocess will not trip it. Runaway
+   spend is structurally impossible rather than a promise to watch.
 3. **Outcome-based heartbeat.** One query: any active source with no successful snapshot in 48h?
    If yes, email. It asserts on the outcome rather than the mechanism, so it catches blocked
    collectors, dead cron, a full disk, and bugs not yet imagined.
-4. **Every run writes a `runs` row**, which feeds `status.json` and the public health display.
+4. **Every run writes a `runs` row**, feeding `status.json` and the public health display.
 
 ## 16. Cost model
 
 Rates as of 2026-08-18: `claude-haiku-4-5` at $1.00/$5.00 per MTok; `claude-sonnet-5` at
-$3.00/$15.00, currently discounted to $2.00/$10.00 through 2026-08-31.
+$3.00/$15.00, discounted to $2.00/$10.00 through 2026-08-31. Message Batches runs at 50%.
 
 | Call | Model | Est. each | Frequency |
 |---|---|---|---|
-| Extract pricing | Haiku 4.5 | ~$0.017 | Only on normalized-hash change |
-| Analyze one change | Haiku 4.5 | ~$0.005 | Only confirmed and above threshold |
-| Weekly synthesis | Sonnet 5 | ~$0.05 | Weekly |
+| Extract pricing (sliced, ~6k in) | Haiku 4.5 | ~$0.009 | Only on normalized-hash change |
+| Extract, backfill (batched) | Haiku 4.5 | ~$0.005 | One-time |
+| Weekly annotate + digest | Sonnet 5 | ~$0.05 | Weekly |
 
-One-time backfill of 6 competitors x 18 monthly captures = 108 extractions: **~$2.00**
-(fewer in practice, since the extraction cache collapses byte-identical captures).
-Steady state: **~$0.30-0.50/month**, against a $10 ceiling.
+One-time backfill, 6 competitors x 18 monthly captures = 108 extractions via Batches: **~$0.55**
+(less in practice, since the extraction cache collapses byte-identical captures).
+Steady state: **~$0.15–0.25/month**, against a $5 ceiling.
 
 These are estimates. The About page shows the measured figure.
 
 ## 17. Testing
 
-- **Golden-file tests** for normalization — fixture HTML to expected output and stable hash.
+- **Golden-file tests** for normalization and slicing — fixture HTML to expected output and hash.
 - **TDD on `diff` and `materiality`** — pure functions over plain objects, table-driven.
-- **Extraction eval set** — ten real pricing pages drawn from the backfill corpus with
-  hand-written expected tiers, run on demand, reporting per-field accuracy. This is what allows
-  a claim about extraction quality rather than a vibe.
+- **Extraction eval set** — ten real pricing pages from the backfill corpus with hand-written
+  expected tiers, run on demand, reporting per-field accuracy. This is what allows a claim about
+  extraction quality rather than a vibe.
 - CI runs the full pipeline with `LLM_ENABLED=false` against fixtures.
 
-## 18. Schedule and cut line
+## 18. Milestones
 
-| Block | Work |
-|---|---|
-| Sat AM | Repo, Docker, migrations, config, polite fetcher, live collector, hash gate, `runs`. **Start backfill in background at the end of this block.** |
-| Sat PM | Normalization with golden tests; extraction with Zod, token guard, retry; run across backfill corpus |
-| Sat eve | Diff and materiality, TDD; populate `changes`; confirmation pass |
-| Sun AM | Per-change analysis, weekly synthesis, JSON export |
-| Sun PM | Next.js dashboard, four views, deploy to Vercel |
-| Sun eve | Cron, heartbeat, canaries, README with diagram and cost table |
+No fixed deadline. Each milestone ends in a deployable state, so work can stop at any boundary
+and still leave something real. Estimates assume focused hours.
 
-Cron: `collect` daily 07:00 CT with ±30m jitter; `synthesize` + `export` Monday 06:00 CT.
-Timezone `America/Chicago` throughout.
+| # | Milestone | Est. | End state |
+|---|---|---|---|
+| **M1** | **Skeleton that ships** — repo, migrations, config, polite fetcher, `collect`, hash gate, `runs`, minimal `export`, Next.js board view, **deployed to Vercel** | ~4h | Public URL showing six competitors' raw pricing pages' fetch status and last-seen data |
+| **M2** | **Extraction and detection** — normalize, slice, token guard, `extract_pricing`, diff, materiality, confirmation | ~4h | Board shows real structured tiers; `changes` accumulates and confirms |
+| **M3** | **History** — `backfill_queue`, Wayback CDX and fetch, batched extraction, timeline view | ~3h | Eighteen months of real price history charted |
+| **M4** | **Narrative and dataset** — `annotate_and_synthesize`, change feed, competitor pages, `/data` page with CSV/JSON and license | ~3h | The differentiating artifact exists and is citable |
+| **M5** | **Hardening** — cron, heartbeat, canaries, cost ceiling, eval set, README with diagram and measured cost | ~2h | Runs unattended; the repo reads as finished work |
 
-**Cut line, in order:** drop the timeline chart before the board; drop per-change analysis
-before synthesis; drop the change feed's filters before the feed itself.
+**Deploy at M1, not at the end.** The static export plus git transport is the piece most likely
+to surprise; finding that out in hour three is cheap and in hour fifteen is not.
+
+Cron once M5 lands: `collect extract detect export` daily at 07:00 CT with ±30m jitter;
+`synthesize export` Monday 06:00 CT. Timezone `America/Chicago` throughout.
 
 ## 19. Risks and mitigations
 
 | # | Risk | Mitigation |
 |---|---|---|
-| 1 | Wayback slow, rate-limited, or thin for some URLs | Separate container, `backfill_queue` state machine, nothing blocks on it, partial coverage acceptable |
-| 2 | Figma will not normalize under the token budget | Token guard with region-slicing fallback, then degrade and skip; never send an oversized request |
-| 3 | Extraction drift across old layouts creating phantom changes | Two-observation confirmation rule, plus low-confidence suppression |
+| 1 | Wayback slow, rate-limited, or thin for some URLs | `backfill_queue` state machine, one-shot and restartable, nothing blocks on it, partial coverage acceptable |
+| 2 | Figma will not fit the token budget | Always-slice plus token guard with one widen-retry, then degrade and skip; never send an oversized request |
+| 3 | Extraction drift creating phantom changes | Two-observation confirmation, plus low-confidence suppression |
 | 4 | A site blocks the collector | `ok=0` never overwrites good data; canary assertion; degraded state shown publicly; 48h heartbeat |
-| 5 | Runaway LLM spend | Hard monthly ceiling enforced before every call |
+| 5 | Runaway LLM spend | Hard $5/month ceiling enforced before every call |
+| 6 | The dataset is thin enough to be uninteresting | Expanding the watch list is a config edit; grow past six once M3 proves the pipeline |
 
 ## 20. Deferred
-
-Weekend 2 and beyond, explicitly out of scope now:
 
 - Weekly email digest (Resend)
 - Job-posting collector (ATS JSON) and changelog/feed collector
@@ -482,5 +564,5 @@ Weekend 2 and beyond, explicitly out of scope now:
 ## 21. Business bridge
 
 Once this exists, `soltreya-ops/workflows/competitor_analysis.md` has an engine behind it: the
-private config points the same pipeline at a real competitive set. That costs one config file
-and no new code, and it is the cheapest available test of whether this is a product.
+private config points the same pipeline at a real competitive set. That costs one config file and
+no new code, and it is the cheapest available test of whether this is a product.
