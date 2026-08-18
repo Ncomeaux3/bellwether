@@ -21,8 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <footer className="mt-20 border-t border-rule pt-6 text-sm text-ink-muted">
             <p>
-              Bellwether records public pricing pages. It publishes extracted facts and its own
-              analysis, never the pages themselves.
+              Bellwether records public pricing pages. The raw archive stays private; only
+              derived data is published, never the pages themselves.
             </p>
           </footer>
         </div>
