@@ -1,0 +1,12 @@
+node_modules/
+.next/
+out/
+dist/
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.local
+src/config/competitors.private.ts
+.remember/
+.DS_Store
