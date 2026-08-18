@@ -50,6 +50,21 @@ See `docs/superpowers/specs/2026-08-18-bellwether-design.md` section 22, or:
 `doctor` checks every prerequisite and tells you what to fix. Run it until it
 is green.
 
+`docker compose up -d` runs the full daily pipeline once on every start —
+`migrate`, `seed`, `collect`, `export` — then idles until the container is
+restarted. That is safe to repeat: `collect`'s cadence gate skips any source
+already fetched within its `cadence_hours` window, so a restart loop cannot
+re-fetch the watched sites (see `src/workflow/collect.ts`). Cron-driven daily
+runs are M5, not yet built — for now a restart is what re-runs the pipeline.
+
+## Publishing
+
+`bellwether export --publish` commits and pushes `web/public/data` so the
+board rebuilds. Run it **on the host**, not inside the container — the
+container has no git remote and no deploy key, so `--publish` there will
+always fail at the push step. `bellwether export` without `--publish` is safe
+to run anywhere; it only rewrites the local JSON files.
+
 ## Status
 
 M1 complete: the pipeline collects pricing pages on cadence, stores them, and

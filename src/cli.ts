@@ -87,6 +87,51 @@ program
   });
 
 program
+  .command('start')
+  .description('run the full daily pipeline once (migrate, seed, collect, export), then idle')
+  .action(async () => {
+    const { seedCompetitors } = await import('./config/seed.js');
+    const { COMPETITORS } = await import('./config/competitors.public.js');
+    const { collect } = await import('./workflow/collect.js');
+    const { exportData } = await import('./workflow/export.js');
+
+    const db = openDb(dbPath());
+
+    const applied = migrate(db, join(ROOT, 'migrations'));
+    console.log(applied.length ? `Applied: ${applied.join(', ')}` : 'Schema is current.');
+
+    const seedStats = seedCompetitors(db, COMPETITORS);
+    console.log(`Seeded ${seedStats.competitors} competitors and ${seedStats.sources} sources.`);
+
+    const collectStats = await collect(db, {});
+    console.log(
+      `Checked ${collectStats.attempted}: ${collectStats.stored} new, ${collectStats.unchanged} unchanged, ` +
+      `${collectStats.failed} failed, ${collectStats.degraded} degraded, ${collectStats.cleared} recovered.`
+    );
+
+    const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
+    const exportStats = exportData(db, outDir);
+    console.log(
+      `Wrote ${exportStats.files.join(', ')} to ${outDir} — ` +
+      `${exportStats.competitors} competitors, ${exportStats.healthySources}/${exportStats.totalSources} sources healthy.`
+    );
+
+    db.close();
+
+    // Cron (M5) is out of scope, so this is the container's whole startup
+    // sequence: run the daily pipeline once, then idle so the healthcheck
+    // (which looks for a recent `runs` row) has something to find. Safe on
+    // every container start/restart: collect()'s cadence gate skips any
+    // source already fetched within its cadence_hours window, so a restart
+    // loop re-runs migrate/seed (idempotent, no network) but re-fetches
+    // nothing — see src/workflow/collect.ts. Never publishes: `export
+    // --publish` needs a git remote and deploy key the container doesn't
+    // have (see README).
+    console.log('Pipeline complete; idling.');
+    await new Promise<never>(() => {});
+  });
+
+program
   .command('doctor')
   .description('check that everything needed to run is present and working')
   .action(async () => {
@@ -125,4 +170,11 @@ program
     process.exit(failures === 0 ? 0 : 1);
   });
 
-program.parseAsync(process.argv);
+program.parseAsync(process.argv).catch((err: unknown) => {
+  // ExportGuardError and RunLockedError carry messages written for a human
+  // to read (e.g. "Run `bellwether seed` first"). Without this, they'd
+  // surface as an unhandled-rejection stack trace — exactly what `doctor`
+  // exists to avoid everywhere else.
+  console.error(err instanceof Error ? err.message : String(err));
+  process.exit(1);
+});

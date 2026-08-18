@@ -6,7 +6,7 @@
   "packageManager": "pnpm@11.22.0",
   "engines": { "node": ">=24" },
   "scripts": {
-    "bw": "tsx src/cli.ts",
+    "bw": "tsx --env-file-if-exists=.env src/cli.ts",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit"
