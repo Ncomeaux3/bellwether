@@ -128,7 +128,13 @@ program
     // --publish` needs a git remote and deploy key the container doesn't
     // have (see README).
     console.log('Pipeline complete; idling.');
-    await new Promise<never>(() => {});
+    // A never-resolving promise does NOT hold Node open — the event loop empties
+    // and the process exits, which under `restart: unless-stopped` produces a
+    // silent restart loop. A live timer is what actually keeps the container up.
+    // (Cron replaces this in M5.)
+    await new Promise<never>(() => {
+      setInterval(() => {}, 60_000);
+    });
   });
 
 program
@@ -145,6 +151,15 @@ program
       db,
       env: process.env,
       gitPush: async () => {
+        // Publishing runs on the host, never in the container — the image carries
+        // no .git directory and no deploy key. Reporting "fail" there would be a
+        // permanent red the operator can never clear, so absence of a repo is
+        // reported as not-applicable instead.
+        try {
+          await run('git', ['rev-parse', '--is-inside-work-tree'], { cwd: ROOT });
+        } catch {
+          return { ok: true, skipped: true, detail: 'not a git repository — publishing runs on the host, not in the container' };
+        }
         try {
           await run('git', ['push', '--dry-run', 'origin', 'HEAD'], { cwd: ROOT });
           return { ok: true, detail: 'deploy key can push to origin' };
@@ -165,7 +180,7 @@ program
     console.log(
       failures === 0
         ? '\nAll checks passed. Run `docker compose up -d` to start collecting.'
-        : `\n${failures} check${failures === 1 ? '' : 's'} need attention before this will run unattended.`
+        : `\n${failures} check${failures === 1 ? ' needs' : 's need'} attention before this will run unattended.`
     );
     process.exit(failures === 0 ? 0 : 1);
   });

@@ -109,6 +109,20 @@ describe('runDoctor', () => {
     }
   });
 
+  it('reports git push as not-applicable when there is no repository', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      gitPush: async () => ({ ok: true, skipped: true, detail: 'not a git repository — publishing runs on the host, not in the container' }),
+    });
+
+    const check = find(results, 'git push');
+    // Inside the container there is no .git and no deploy key, so a failure here
+    // would be a permanent red the operator could never clear.
+    expect(check.status).toBe('pending');
+    expect(check.detail).toMatch(/not a git repository/i);
+  });
+
   it('reports git push failure with the command to diagnose it', async () => {
     migrate(db, join(process.cwd(), 'migrations'));
     const results = await runDoctor({

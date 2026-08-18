@@ -12,7 +12,7 @@ export interface DoctorDeps {
   db: DB;
   env: Record<string, string | undefined>;
   fetcher?: (url: string) => Promise<FetchResult>;
-  gitPush?: () => Promise<{ ok: boolean; detail: string }>;
+  gitPush?: () => Promise<{ ok: boolean; detail: string; skipped?: boolean }>;
 }
 
 const REQUIRED_ENV = ['BELLWETHER_DB', 'BELLWETHER_EXPORT_DIR'] as const;
@@ -71,7 +71,9 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
   if (deps.gitPush) {
     try {
       const push = await deps.gitPush();
-      results.push(push.ok
+      results.push(push.skipped
+        ? { name: 'git push', status: 'pending', detail: push.detail }
+        : push.ok
         ? { name: 'git push', status: 'ok', detail: push.detail }
         : {
             name: 'git push', status: 'fail', detail: push.detail,
