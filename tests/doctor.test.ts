@@ -64,6 +64,12 @@ describe('runDoctor', () => {
     expect(check.fix).toMatch(/bellwether migrate/);
   });
 
+  it('skips source checks entirely when the schema check fails', async () => {
+    const results = await runDoctor(baseDeps());
+    expect(find(results, 'schema').status).toBe('fail');
+    expect(results.some(r => r.name.startsWith('source:'))).toBe(false);
+  });
+
   it('passes the schema check once migrations are applied', async () => {
     migrate(db, join(process.cwd(), 'migrations'));
     const results = await runDoctor(baseDeps());

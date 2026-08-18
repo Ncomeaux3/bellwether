@@ -69,44 +69,61 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
 
   // 4. Git push
   if (deps.gitPush) {
-    const push = await deps.gitPush();
-    results.push(push.ok
-      ? { name: 'git push', status: 'ok', detail: push.detail }
-      : {
-          name: 'git push', status: 'fail', detail: push.detail,
-          fix: 'Check the deploy key: `git push --dry-run origin main`. ' +
-               'The key needs write access to the repo Vercel builds from.',
-        });
+    try {
+      const push = await deps.gitPush();
+      results.push(push.ok
+        ? { name: 'git push', status: 'ok', detail: push.detail }
+        : {
+            name: 'git push', status: 'fail', detail: push.detail,
+            fix: 'Check the deploy key: `git push --dry-run origin HEAD`. ' +
+                 'The key needs write access to the repo Vercel builds from.',
+          });
+    } catch (err) {
+      results.push({
+        name: 'git push', status: 'fail',
+        detail: err instanceof Error ? err.message : String(err),
+        fix: 'Check the deploy key: `git push --dry-run origin HEAD`. ' +
+             'The key needs write access to the repo Vercel builds from.',
+      });
+    }
   }
 
   // 5. Sources
   if (schemaOk) {
-    const sources = deps.db.prepare(`
-      SELECT c.slug, s.kind, s.url, s.canary_string
-      FROM sources s JOIN competitors c ON c.id = s.competitor_id
-      WHERE s.active = 1 ORDER BY c.slug
-    `).all() as { slug: string; kind: string; url: string; canary_string: string }[];
+    try {
+      const sources = deps.db.prepare(`
+        SELECT c.slug, s.kind, s.url, s.canary_string
+        FROM sources s JOIN competitors c ON c.id = s.competitor_id
+        WHERE s.active = 1 ORDER BY c.slug
+      `).all() as { slug: string; kind: string; url: string; canary_string: string }[];
 
-    for (const source of sources) {
-      const name = `source: ${source.slug}/${source.kind}`;
-      const result = await fetcher(source.url);
+      for (const source of sources) {
+        const name = `source: ${source.slug}/${source.kind}`;
+        const result = await fetcher(source.url);
 
-      if (!result.ok || result.body === null) {
-        results.push({
-          name, status: 'fail', detail: result.error ?? 'fetch failed',
-          fix: `Open ${source.url} in a browser. If it moved, update the url in src/config/competitors.public.ts.`,
-        });
-        continue;
+        if (!result.ok || result.body === null) {
+          results.push({
+            name, status: 'fail', detail: result.error ?? 'fetch failed',
+            fix: `Open ${source.url} in a browser. If it moved, update the url in src/config/competitors.public.ts.`,
+          });
+          continue;
+        }
+        if (!result.body.includes(source.canary_string)) {
+          results.push({
+            name, status: 'fail',
+            detail: `canary "${source.canary_string}" not found in the page`,
+            fix: `The page was probably redesigned. Pick a new canary from its current HTML and update src/config/competitors.public.ts.`,
+          });
+          continue;
+        }
+        results.push({ name, status: 'ok', detail: `reachable, canary present` });
       }
-      if (!result.body.includes(source.canary_string)) {
-        results.push({
-          name, status: 'fail',
-          detail: `canary "${source.canary_string}" not found in the page`,
-          fix: `The page was probably redesigned. Pick a new canary from its current HTML and update src/config/competitors.public.ts.`,
-        });
-        continue;
-      }
-      results.push({ name, status: 'ok', detail: `reachable, canary present` });
+    } catch (err) {
+      results.push({
+        name: 'sources', status: 'fail',
+        detail: err instanceof Error ? err.message : String(err),
+        fix: 'Run `bellwether migrate` and `bellwether seed`, then retry `bellwether doctor`.',
+      });
     }
   }
 
