@@ -14,7 +14,7 @@ export default function HomePage() {
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-ink-secondary">
           The open archive of developer-infrastructure pricing. Bellwether checks every watched
-          page daily and confirms every change against a second observation before publishing it.
+          page daily and reports whether the source is still readable.
         </p>
 
         <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-4 font-mono text-sm">
