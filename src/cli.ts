@@ -59,8 +59,9 @@ program
 program
   .command('export')
   .description('rebuild the published JSON from current database state')
-  .action(async () => {
-    const { exportData } = await import('./workflow/export.js');
+  .option('--publish', 'commit and push the result so Vercel rebuilds')
+  .action(async (options: { publish?: boolean }) => {
+    const { exportData, publish, buildCommitMessage } = await import('./workflow/export.js');
     const db = openDb(dbPath());
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
     const stats = exportData(db, outDir);
@@ -68,6 +69,20 @@ program
       `Wrote ${stats.files.join(', ')} to ${outDir} — ` +
       `${stats.competitors} competitors, ${stats.healthySources}/${stats.totalSources} sources healthy.`
     );
+
+    if (options.publish) {
+      const changes = db.prepare(
+        "SELECT COUNT(*) AS n FROM changes WHERE state = 'confirmed'"
+      ).get() as { n: number };
+      const message = buildCommitMessage({
+        changes: changes.n,
+        sources: stats.totalSources,
+        date: new Date().toISOString().slice(0, 10),
+      });
+      const result = await publish(ROOT, message);
+      console.log(result.pushed ? `Published: ${result.detail}` : result.detail);
+    }
+
     db.close();
   });
 

@@ -1,6 +1,10 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
 import type { DB } from '../ops/db.js';
+
+const run = promisify(execFile);
 
 export class ExportGuardError extends Error {
   constructor(message: string) {
@@ -164,4 +168,52 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
     healthySources: healthy,
     totalSources: rows.length,
   };
+}
+
+export interface CommitFacts { changes: number; sources: number; date: string }
+
+/** Spec 14.1: a fixed format so `git log` reads as a changelog of the market. */
+export function buildCommitMessage(facts: CommitFacts): string {
+  const changes = facts.changes === 0
+    ? 'no changes'
+    : `${facts.changes} change${facts.changes === 1 ? '' : 's'}`;
+  const sources = `${facts.sources} source${facts.sources === 1 ? '' : 's'}`;
+  return `data: ${changes}, ${sources}, ${facts.date}`;
+}
+
+export interface PublishDeps {
+  exec?: (file: string, args: string[], opts: { cwd: string }) => Promise<unknown>;
+}
+
+/**
+ * Spec 14.1: never force-pushes. A conflicting push aborts and retries next
+ * run, because a stale publish is recoverable and a clobbered one is not.
+ */
+export async function publish(
+  repoRoot: string,
+  message: string,
+  deps: PublishDeps = {}
+): Promise<{ pushed: boolean; detail: string }> {
+  const exec = deps.exec ?? ((f: string, a: string[], o: { cwd: string }) => run(f, a, o));
+
+  await exec('git', ['add', 'web/public/data'], { cwd: repoRoot });
+
+  try {
+    await exec('git', ['diff', '--cached', '--quiet'], { cwd: repoRoot });
+    return { pushed: false, detail: 'nothing to publish — the data is unchanged' };
+  } catch {
+    // A non-zero exit from --quiet means there are staged changes. Proceed.
+  }
+
+  await exec('git', ['commit', '-m', message], { cwd: repoRoot });
+
+  try {
+    await exec('git', ['push', 'origin', 'HEAD'], { cwd: repoRoot });
+    return { pushed: true, detail: message };
+  } catch (err) {
+    return {
+      pushed: false,
+      detail: `push rejected, will retry next run: ${err instanceof Error ? err.message.split('\n')[0] : String(err)}`,
+    };
+  }
 }
