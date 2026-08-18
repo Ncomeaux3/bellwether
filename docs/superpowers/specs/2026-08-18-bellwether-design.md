@@ -7,7 +7,14 @@
 
 ## 1. Positioning
 
-**Bellwether is the open archive of SaaS pricing, and the engine that maintains it.**
+**Bellwether is the open archive of developer-infrastructure pricing, and the engine that
+maintains it.**
+
+The boundary is deliberate. "Some SaaS companies I picked" is not a dataset anyone cites;
+"every developer-infrastructure and tooling company's pricing, monthly" is. Coherence makes a
+dataset linkable, and a stated boundary makes it defensible. Scope: hosting, databases, auth,
+email, observability, CI, API tooling, search, payments infrastructure, and adjacent developer
+services. Target 40-60 companies (section 11.1).
 
 This is a positioning claim, not a feature claim, and it was chosen after surveying the market
 (section 2). Every comparable product is a closed subscription producing a private dashboard.
@@ -132,6 +139,7 @@ bellwether detect       # any consecutive extraction pair lacking a change row; 
 bellwether export       # rebuild all JSON and dataset files from current DB state
 bellwether synthesize   # weekly: annotate confirmed changes AND write the digest, one call
 bellwether backfill     # one-shot: enqueue Wayback captures, then drain the queue
+bellwether qualify      # screen candidate URLs for server-rendered pricing (see 11.2)
 ```
 
 Daily cron runs `collect extract detect export`. Weekly cron adds `synthesize export`. A step
@@ -143,7 +151,7 @@ supports `--limit N` and `--dry-run`.
 ```
 src/
   tools/       fetch.ts  normalize.ts  slice.ts  hash.ts  diff.ts  materiality.ts
-               token_guard.ts  export.ts  wayback.ts
+               token_guard.ts  export.ts  wayback.ts  qualify.ts
   agents/      extract_pricing.ts  annotate_and_synthesize.ts  _client.ts
   workflow/    collect.ts  extract.ts  detect.ts  export.ts  synthesize.ts  backfill.ts
   ops/         migrate.ts  health.ts  cost.ts
@@ -180,9 +188,11 @@ CREATE TABLE snapshots (
   observed_at TEXT NOT NULL,          -- CAPTURE time, not fetch time (see 12)
   fetched_at TEXT NOT NULL,
   ok INTEGER NOT NULL, http_status INTEGER, error TEXT,
-  raw_content TEXT, raw_hash TEXT, normalized_hash TEXT,
+  raw_content TEXT,                   -- NULL when raw_hash already stored (see 7.2)
+  raw_hash TEXT, normalized_hash TEXT,
   provenance TEXT NOT NULL);          -- 'live' | 'wayback:20250314120000'
 CREATE INDEX idx_snap_source_time ON snapshots(source_id, observed_at);
+CREATE INDEX idx_snap_raw_hash ON snapshots(source_id, raw_hash);
 
 CREATE TABLE extractions (
   id INTEGER PRIMARY KEY, normalized_hash TEXT NOT NULL, source_kind TEXT NOT NULL,
@@ -242,6 +252,18 @@ Keyed on `(normalized_hash, prompt_version)`, this table earns its place three w
    produces the figure shown on the public About page.
 
 Nothing is discarded. Sub-threshold changes still get a `changes` row; they never reach an LLM.
+
+### 7.2 Content-addressed raw storage
+
+`raw_content` is written **only when `raw_hash` is new for that source.** When the hash repeats,
+the snapshot row is still written — it is the proof the source was checked that day — but
+`raw_content` is left NULL and the bytes are recovered by joining to the earliest snapshot
+sharing that `(source_id, raw_hash)`.
+
+This matters entirely at scale. At 50 competitors averaging 800 KB per page, storing every daily
+snapshot would write roughly **14.6 GB/year** of near-identical HTML. With dedup, the same watch
+list costs about **240 MB/year** — a sixty-fold reduction from one conditional. The archive is
+the compounding asset, so it has to stay cheap to keep forever.
 
 ## 8. Schemas
 
@@ -381,8 +403,31 @@ Verified 2026-08-18 as server-rendered with prices and tier names present in raw
 Excluded after verification: **Vercel** (24 KB shell, pricing hydrated client-side) and
 **Jira/Atlassian** (fully client-rendered, no prices in HTML). Both would need a headless browser.
 
-Expanding the watch list is a config-file edit plus a backfill re-run — no code change. Under the
-dataset positioning, growing past six is the cheapest way to increase the artifact's value.
+These six are the M1-M3 working set. The full target watch list is 40-60 developer-infrastructure
+companies, admitted by qualification (11.2) at M3.5.
+
+Candidate pool to screen — hosting (Netlify, Railway, Render, Fly.io, Heroku), databases (Neon,
+PlanetScale, Turso, Upstash, MongoDB Atlas, Redis Cloud, Convex, Xata), auth (Clerk, Auth0,
+WorkOS, Stytch), email (Resend, Postmark, SendGrid, Loops), observability (Datadog, New Relic,
+Honeycomb, Grafana Cloud, Better Stack, PostHog), CI and build (CircleCI, Buildkite, Depot,
+GitHub, GitLab), edge and CDN (Cloudflare, Fastly, Bunny), search (Algolia, Meilisearch,
+Typesense), vector stores (Pinecone, Weaviate, Qdrant), payments infrastructure (Stripe, Paddle,
+Lemon Squeezy), feature flags (LaunchDarkly, Statsig), secrets (Doppler, Infisical), and data
+tooling (Prisma, Hasura). Vercel is a known qualification failure and is a useful test case.
+
+### 11.2 Qualification
+
+`bellwether qualify <url...>` screens candidates without human judgment: fetch once, count
+currency symbols and tier-like headings present in the **raw** HTML, and emit a verdict plus a
+proposed `canary_string` drawn from the most stable-looking tier heading. Pass means the page is
+server-rendered and extractable; fail means it hydrates client-side and is out of scope.
+
+This exists because human qualification is the real cost of expansion — roughly two minutes per
+company, which is two hours at fifty and a wasted day at two hundred. Automating it converts that
+cost into code written once.
+
+The screening results are themselves publishable: "screened N companies; M publish
+server-rendered pricing" is a finding no competitor reports, and it belongs on the `/data` page.
 
 ## 12. Backfill and change confirmation
 
@@ -399,6 +444,12 @@ with history is a working timeline. Docker Compose runs one service; backfill do
 - Rate limit: 1 request per 4s; Wayback is slow and will return 429
 - **Extraction of the backfill corpus runs through the Message Batches API at 50% cost.** It is
   not latency-sensitive, so there is no reason to pay the synchronous rate.
+- **Backfill carries its own explicit one-time budget** (`bellwether backfill --budget 10.00`),
+  tracked separately from the recurring monthly ceiling. Backfilling 50-100 competitors costs
+  $4-8 in a single month and would otherwise trip a $5 recurring cap that is correct for steady
+  state. Bulk historical work is a deliberate, acknowledged expense; recurring spend stays capped.
+- Tail competitors added at M3.5 backfill at **12 months** rather than 18, cutting one-time cost
+  by a third. The original six keep the full 18-month window.
 - Restartable any number of times; resumes from `state='pending'`
 
 **`snapshots.observed_at` is the capture time, not the fetch time.** Getting this wrong puts
@@ -476,8 +527,10 @@ The differentiating artifact. A `/data` page providing:
 - **`dataset.json`** — the same data nested, plus the change log with annotations.
 - **A documented schema** — field names, types, null semantics (`monthly_price_usd: null` means
   "contact sales", not "free").
-- **Stated methodology** — sources, cadence, extraction method, the confirmation rule, and known
-  limitations, so the data is defensible.
+- **Stated methodology** — sources, cadence, extraction method, the confirmation rule, the
+  qualification criterion and its pass rate, and known limitations, so the data is defensible.
+- **A stated boundary** — which companies are in scope and why, and which were screened out for
+  client-side rendering. Naming the exclusions is what makes the inclusions credible.
 - **License: CC BY 4.0**, with a copy-paste citation block.
 
 Both files are regenerated by `bellwether export` and committed, so the dataset is versioned in
@@ -488,10 +541,13 @@ git and every historical state is retrievable.
 1. **Kill switch.** `LLM_ENABLED=false` runs the whole pipeline with extraction and synthesis
    skipped, so collection, detection, export, and the site build are testable at zero cost.
    CI runs in this mode.
-2. **Hard cost ceiling: $5/month.** Before any LLM call, sum `cost_micros` for the current month
-   across `extractions` and `digests`. Over the cap: refuse, log, continue. Roughly 20x the
-   realistic spend, and loose enough that a full history reprocess will not trip it. Runaway
-   spend is structurally impossible rather than a promise to watch.
+2. **Hard cost ceiling: $5/month on recurring spend.** Before any LLM call, sum `cost_micros`
+   for the current month across `extractions` and `digests`, excluding rows tagged as backfill.
+   Over the cap: refuse, log, continue. That is roughly 8x the projected steady-state spend at a
+   50-company watch list. Bulk backfill runs under its own explicit `--budget` flag (12.1) so a
+   one-time historical load can never silently consume the recurring allowance, and the recurring
+   allowance can never silently block a deliberate backfill. Runaway spend is structurally
+   impossible rather than a promise to watch.
 3. **Outcome-based heartbeat.** One query: any active source with no successful snapshot in 48h?
    If yes, email. It asserts on the outcome rather than the mechanism, so it catches blocked
    collectors, dead cron, a full disk, and bugs not yet imagined.
@@ -508,9 +564,17 @@ $3.00/$15.00, discounted to $2.00/$10.00 through 2026-08-31. Message Batches run
 | Extract, backfill (batched) | Haiku 4.5 | ~$0.005 | One-time |
 | Weekly annotate + digest | Sonnet 5 | ~$0.05 | Weekly |
 
-One-time backfill, 6 competitors x 18 monthly captures = 108 extractions via Batches: **~$0.55**
-(less in practice, since the extraction cache collapses byte-identical captures).
-Steady state: **~$0.15–0.25/month**, against a $5 ceiling.
+**Cost scales with changes, not with competitors watched.** A page that never changes is free
+forever after its first extraction, so widening the watch list is close to free.
+
+| Watch list | One-time backfill | Steady state |
+|---|---|---|
+| 6 (M1-M3) | ~$0.55 | ~$0.20/mo |
+| **50 (M3.5 target)** | **~$4.05** | **~$0.65/mo** |
+| 100 | ~$8.10 | ~$1.10/mo |
+
+Fifty companies runs at roughly 13% of the recurring ceiling. Money is not the constraint on
+dataset size; qualification effort and disk are, and both are addressed in 11.2 and 7.2.
 
 These are estimates. The About page shows the measured figure.
 
@@ -533,6 +597,7 @@ and still leave something real. Estimates assume focused hours.
 | **M1** | **Skeleton that ships** — repo, migrations, config, polite fetcher, `collect`, hash gate, `runs`, minimal `export`, Next.js board view, **deployed to Vercel** | ~4h | Public URL showing six competitors' raw pricing pages' fetch status and last-seen data |
 | **M2** | **Extraction and detection** — normalize, slice, token guard, `extract_pricing`, diff, materiality, confirmation | ~4h | Board shows real structured tiers; `changes` accumulates and confirms |
 | **M3** | **History** — `backfill_queue`, Wayback CDX and fetch, batched extraction, timeline view | ~3h | Eighteen months of real price history charted |
+| **M3.5** | **Qualify and expand** — `qualify` tool, screen the candidate pool, admit passers, backfill the tail at 12 months | ~2h | Watch list at 40-60 companies; the dataset has a defensible boundary |
 | **M4** | **Narrative and dataset** — `annotate_and_synthesize`, change feed, competitor pages, `/data` page with CSV/JSON and license | ~3h | The differentiating artifact exists and is citable |
 | **M5** | **Hardening** — cron, heartbeat, canaries, cost ceiling, eval set, README with diagram and measured cost | ~2h | Runs unattended; the repo reads as finished work |
 
@@ -551,7 +616,8 @@ Cron once M5 lands: `collect extract detect export` daily at 07:00 CT with ±30m
 | 3 | Extraction drift creating phantom changes | Two-observation confirmation, plus low-confidence suppression |
 | 4 | A site blocks the collector | `ok=0` never overwrites good data; canary assertion; degraded state shown publicly; 48h heartbeat |
 | 5 | Runaway LLM spend | Hard $5/month ceiling enforced before every call |
-| 6 | The dataset is thin enough to be uninteresting | Expanding the watch list is a config edit; grow past six once M3 proves the pipeline |
+| 6 | The dataset is thin enough to be uninteresting | M3.5 expands to 40-60 via automated qualification. Cost scales with changes not competitors (~$0.65/mo at 50); dedup (7.2) keeps disk at ~240 MB/yr; a stated boundary makes the set citable |
+| 7 | Bulk backfill trips the recurring cost ceiling | Backfill runs under a separate explicit `--budget`; recurring and one-time spend are tracked apart (15.2) |
 
 ## 20. Deferred
 
