@@ -9,6 +9,10 @@ services:
       BELLWETHER_EXPORT_DIR: /app/web/public/data
       TZ: America/Chicago
     volumes:
+      # Mounted read-only so tsx's --env-file-if-exists finds it. Compose already
+      # injects these vars via env_file; without the mount the CLI prints a
+      # misleading "\.env not found" on every command.
+      - ./.env:/app/.env:ro
       - ./data:/data
       - ./web/public/data:/app/web/public/data
     # No entrypoint override here on purpose: the Dockerfile's
