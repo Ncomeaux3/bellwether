@@ -9,7 +9,7 @@ beyond — see Status. It runs on a homelab for well under a dollar a month —
 against published entry pricing of roughly $15,000/year for enterprise
 competitive-intelligence platforms.
 
-**Intended address:** bellwether.cmxlogic.com (not deployed yet — see Status)
+**Live:** https://bellwether-nicholas-projects-cdfeb046.vercel.app
 
 ## How it works
 
