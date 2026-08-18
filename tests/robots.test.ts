@@ -37,6 +37,14 @@ describe('parseRobots', () => {
     const rules = parseRobots('# comment\nUser-agent: *\n\n  Disallow: /x  \n', 'Bellwether');
     expect(rules.disallow).toEqual(['/x']);
   });
+
+  it('applies a group\'s rules to every agent named by consecutive User-agent lines', () => {
+    const rules = parseRobots(
+      'User-agent: BadBot\nUser-agent: Bellwether\nDisallow: /shared\n',
+      'Bellwether'
+    );
+    expect(rules.disallow).toEqual(['/shared']);
+  });
 });
 
 describe('isPathAllowed', () => {
@@ -58,5 +66,19 @@ describe('isPathAllowed', () => {
   it('blocks everything under a bare Disallow: /', () => {
     const all = parseRobots('User-agent: *\nDisallow: /\n', 'Bellwether');
     expect(isPathAllowed(all, '/pricing')).toBe(false);
+  });
+
+  it('blocks a wildcard Disallow — a literal-only matcher would under-block here', () => {
+    const wildcard = parseRobots('User-agent: *\nDisallow: /*/pricing\n', 'Bellwether');
+    expect(isPathAllowed(wildcard, '/en/pricing')).toBe(false);
+    expect(isPathAllowed(wildcard, '/fr/pricing')).toBe(false);
+    expect(isPathAllowed(wildcard, '/pricing')).toBe(true);
+  });
+
+  it('anchors a $-terminated rule to the end of the path', () => {
+    const anchored = parseRobots('User-agent: *\nDisallow: /pricing.json$\n', 'Bellwether');
+    expect(isPathAllowed(anchored, '/pricing.json')).toBe(false);
+    expect(isPathAllowed(anchored, '/pricing.json.bak')).toBe(true);
+    expect(isPathAllowed(anchored, '/pricing.jsonx')).toBe(true);
   });
 });
