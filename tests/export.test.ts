@@ -1,4 +1,4 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -120,9 +120,44 @@ describe('exportData', () => {
   it('refuses to publish a file that shrank by more than half', async () => {
     await populate();
     exportData(db, out);
+    const boardBefore = readFileSync(join(out, 'board.json'), 'utf8');
     writeFileSync(join(out, 'status.json'), JSON.stringify({ padding: 'x'.repeat(20_000) }));
 
     expect(() => exportData(db, out)).toThrow(/shrank/i);
+
+    // Spec 15.7: a guard trip mid-loop must leave no `.tmp` litter behind, and
+    // any file staged before the trip (board.json here, written before the
+    // status.json shrink guard fires) must be cleaned up rather than renamed.
+    expect(existsSync(join(out, 'board.json.tmp'))).toBe(false);
+    expect(existsSync(join(out, 'status.json.tmp'))).toBe(false);
+    expect(readFileSync(join(out, 'board.json'), 'utf8')).toBe(boardBefore);
+  });
+
+  it('reports failing over degraded when the most recent snapshot failed on a source with a stale degraded_reason', () => {
+    const source = db.prepare(
+      "SELECT s.id FROM sources s JOIN competitors c ON c.id = s.competitor_id WHERE c.slug = 'acme'"
+    ).get() as { id: number };
+
+    // Build the tie state directly with SQL rather than driving collect()
+    // twice: an older ok=1 snapshot, a stale degraded_reason left on the
+    // source, then a newer ok=0 snapshot. stateOf's if-chain must resolve
+    // this combination to 'failing', not 'degraded' — every row of the
+    // public board renders this value.
+    db.prepare(
+      "INSERT INTO snapshots (source_id, observed_at, fetched_at, ok, http_status, error, raw_content, raw_hash, normalized_hash, provenance) " +
+      "VALUES (?, '2026-08-18T11:00:00.000Z', '2026-08-18T11:00:00.000Z', 1, 200, NULL, ?, 'older-hash', NULL, 'live')"
+    ).run(source.id, GOOD);
+    db.prepare('UPDATE sources SET degraded_reason = ? WHERE id = ?')
+      .run('canary string "Enterprise" missing — the page may have been redesigned', source.id);
+    db.prepare(
+      "INSERT INTO snapshots (source_id, observed_at, fetched_at, ok, http_status, error, raw_content, raw_hash, normalized_hash, provenance) " +
+      "VALUES (?, '2026-08-18T13:00:00.000Z', '2026-08-18T13:00:00.000Z', 0, 503, 'HTTP 503', NULL, NULL, NULL, 'live')"
+    ).run(source.id);
+
+    exportData(db, out);
+    const board = read('board.json');
+    const acme = board.competitors.find((c: any) => c.slug === 'acme');
+    expect(acme.sources[0].state).toBe('failing');
   });
 
   it('leaves the previous files untouched when a guard trips', async () => {
