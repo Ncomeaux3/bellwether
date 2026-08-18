@@ -71,4 +71,43 @@ program
     db.close();
   });
 
+program
+  .command('doctor')
+  .description('check that everything needed to run is present and working')
+  .action(async () => {
+    const { runDoctor } = await import('./ops/doctor.js');
+    const { execFile } = await import('node:child_process');
+    const { promisify } = await import('node:util');
+    const run = promisify(execFile);
+
+    const db = openDb(dbPath());
+    const results = await runDoctor({
+      db,
+      env: process.env,
+      gitPush: async () => {
+        try {
+          await run('git', ['push', '--dry-run', 'origin', 'HEAD'], { cwd: ROOT });
+          return { ok: true, detail: 'deploy key can push to origin' };
+        } catch (err) {
+          return { ok: false, detail: err instanceof Error ? err.message.split('\n')[0]! : String(err) };
+        }
+      },
+    });
+    db.close();
+
+    const mark = { ok: '  ok  ', fail: ' FAIL ', pending: '  --  ' } as const;
+    for (const r of results) {
+      console.log(`[${mark[r.status]}] ${r.name.padEnd(24)} ${r.detail}`);
+      if (r.fix) console.log(`${' '.repeat(11)}fix: ${r.fix}`);
+    }
+
+    const failures = results.filter(r => r.status === 'fail').length;
+    console.log(
+      failures === 0
+        ? '\nAll checks passed. Run `docker compose up -d` to start collecting.'
+        : `\n${failures} check${failures === 1 ? '' : 's'} need attention before this will run unattended.`
+    );
+    process.exit(failures === 0 ? 0 : 1);
+  });
+
 program.parseAsync(process.argv);
