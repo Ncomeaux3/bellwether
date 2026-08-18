@@ -12,3 +12,4 @@ src/config/competitors.private.ts
 .DS_Store
 .superpowers/
 web/next-env.d.ts
+.playwright-mcp/
