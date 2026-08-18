@@ -42,7 +42,7 @@ export function BoardTable({ competitors }: { competitors: BoardCompetitor[] }) 
                 <td className="py-4 pr-4">
                   <a
                     href={s.url}
-                    rel="noopener nofollow"
+                    rel="nofollow noreferrer"
                     className="font-mono text-sm text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink"
                   >
                     {s.kind}

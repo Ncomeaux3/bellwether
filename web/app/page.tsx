@@ -13,8 +13,8 @@ export default function HomePage() {
           Bellwether
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-ink-secondary">
-          The open archive of developer-infrastructure pricing. Every watched page is checked
-          daily; every change is confirmed by a second observation before it is published.
+          The open archive of developer-infrastructure pricing. Bellwether checks every watched
+          page daily and confirms every change against a second observation before publishing it.
         </p>
 
         <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-4 font-mono text-sm">

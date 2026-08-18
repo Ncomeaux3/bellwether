@@ -5,7 +5,7 @@ export function Stamp({ iso, empty = 'never' }: { iso: string | null; empty?: st
   const display = date.toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
 
   return (
-    <time dateTime={iso} className="font-mono text-sm text-ink-secondary">
+    <time dateTime={iso} className="font-mono text-sm text-ink-secondary whitespace-nowrap">
       {display}
     </time>
   );
