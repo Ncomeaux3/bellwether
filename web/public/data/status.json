@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-08-18T15:06:13.563Z",
+  "total_sources": 6,
+  "healthy_sources": 6,
+  "sources": [
+    {
+      "slug": "figma",
+      "kind": "pricing",
+      "state": "ok",
+      "last_ok_at": "2026-08-18T15:01:15.439Z",
+      "degraded_reason": null
+    },
+    {
+      "slug": "linear",
+      "kind": "pricing",
+      "state": "ok",
+      "last_ok_at": "2026-08-18T15:00:52.010Z",
+      "degraded_reason": null
+    },
+    {
+      "slug": "notion",
+      "kind": "pricing",
+      "state": "ok",
+      "last_ok_at": "2026-08-18T15:01:03.831Z",
+      "degraded_reason": null
+    },
+    {
+      "slug": "postman",
+      "kind": "pricing",
+      "state": "ok",
+      "last_ok_at": "2026-08-18T15:01:52.314Z",
+      "degraded_reason": null
+    },
+    {
+      "slug": "sentry",
+      "kind": "pricing",
+      "state": "ok",
+      "last_ok_at": "2026-08-18T15:01:40.594Z",
+      "degraded_reason": null
+    },
+    {
+      "slug": "supabase",
+      "kind": "pricing",
+      "state": "ok",
+      "last_ok_at": "2026-08-18T15:01:28.444Z",
+      "degraded_reason": null
+    }
+  ],
+  "last_run": {
+    "kind": "collect",
+    "started_at": "2026-08-18T15:01:57.337Z",
+    "ended_at": "2026-08-18T15:01:57.338Z",
+    "state": "ok"
+  },
+  "cost_micros_month": 0
+}

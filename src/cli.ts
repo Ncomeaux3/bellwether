@@ -56,4 +56,19 @@ program
     db.close();
   });
 
+program
+  .command('export')
+  .description('rebuild the published JSON from current database state')
+  .action(async () => {
+    const { exportData } = await import('./workflow/export.js');
+    const db = openDb(dbPath());
+    const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
+    const stats = exportData(db, outDir);
+    console.log(
+      `Wrote ${stats.files.join(', ')} to ${outDir} — ` +
+      `${stats.competitors} competitors, ${stats.healthySources}/${stats.totalSources} sources healthy.`
+    );
+    db.close();
+  });
+
 program.parseAsync(process.argv);
