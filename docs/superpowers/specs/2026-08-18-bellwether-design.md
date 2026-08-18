@@ -217,9 +217,22 @@ docker-compose.yml   # ONE service
 
 Stack: Node 24 LTS, TypeScript, pnpm, `better-sqlite3` (WAL mode — readers never block the
 single writer, so `export` can read while `collect` writes), Zod, Next.js App Router with
-Tailwind. The Docker Compose service defines a **healthcheck that queries `runs` freshness** —
-"has any step succeeded in 26 hours" — so Portainer shows real pipeline health, not merely that
-the container process exists.
+Tailwind. Tests: **Vitest**. The Docker Compose service defines a **healthcheck that queries
+`runs` freshness** — "has any step succeeded in 26 hours" — so Portainer shows real pipeline
+health, not merely that the container process exists.
+
+Frontend decisions, fixed:
+
+- **Domain: `bellwether.cmxlogic.com`.** Free, tied to your existing identity, and a stable
+  citation URL from day one. All 14.4 metadata, JSON-LD, and citation blocks use it. If the
+  project outgrows the subdomain, a dedicated domain with permanent redirects is a later,
+  reversible call.
+- **Charts: hand-rolled SVG in React.** The change ribbon is a custom primitive no library
+  ships; step-after interpolation and gap rendering are a few hundred lines of owned SVG. Zero
+  chart dependencies. Palette still passes the dataviz validator (14.3).
+- **Components: hand-rolled Tailwind.** The ledger direction is deliberately custom and the site
+  has roughly six interactive controls. No component library; keyboard focus and ARIA handled
+  directly, held to the 14.3 quality floor.
 One Zod schema serves three roles — the structured-output format sent to Claude, the runtime
 validator, and the dashboard's type.
 
@@ -668,6 +681,7 @@ the raw structured before/after in the meantime, which is legible on its own.
 Vercel rebuilds on push. Files: `board.json`, `timeline.json`, `changes.json`, `status.json`,
 `dataset.json`, `dataset.csv`.
 
+The site serves at **`bellwether.cmxlogic.com`** (CNAME to Vercel).
 Mechanics: the repo is **public on GitHub** and connected to a Vercel project rooted at `web/`.
 The homelab container holds a **deploy key with write access** and pushes to `main`.
 `competitors.private.ts`, `.env`, and `bellwether.db` are gitignored — the public repo never
