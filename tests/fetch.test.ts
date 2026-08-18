@@ -51,7 +51,7 @@ function fastDeps() {
   const limiter = new HostRateLimiter(0, 0, { sleep: async () => {} });
   return {
     limiter,
-    robots: new RobotsCache({ sleep: async () => {}, limiter }),
+    robots: new RobotsCache({ limiter }),
     sleep: async () => {},
   };
 }
@@ -207,7 +207,7 @@ describe('politeFetch politeness invariants', () => {
 
     const result = await politeFetch(`${base}/pricing`, {
       limiter: explodingLimiter,
-      robots: new RobotsCache({ sleep: async () => {} }),
+      robots: new RobotsCache(),
       sleep: async () => {},
     });
 

@@ -2,6 +2,7 @@ import { isIP } from 'node:net';
 import { USER_AGENT } from '../version.js';
 import { HostRateLimiter } from './ratelimit.js';
 import { isPathAllowed, parseRobots, type RobotsRules } from './robots.js';
+import { defaultSleep } from './sleep.js';
 
 export interface FetchResult {
   ok: boolean;
@@ -17,8 +18,6 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_RETRIES = 3;
 const MAX_REDIRECTS = 5;
 const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
-
-const defaultSleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
 /** Sentinel error class so the byte-cap check is control flow, not error-message parsing. */
 export class ByteCapExceededError extends Error {
@@ -110,7 +109,6 @@ export function isBlockedDestination(url: URL): boolean {
 export interface RobotsCacheDeps {
   fetchImpl?: typeof fetch;
   now?: () => number;
-  sleep?: (ms: number) => Promise<void>;
   limiter?: HostRateLimiter;
 }
 

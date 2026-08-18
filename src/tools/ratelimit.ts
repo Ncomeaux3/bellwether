@@ -1,10 +1,10 @@
+import { defaultSleep } from './sleep.js';
+
 export interface RateLimiterDeps {
   now?: () => number;
   sleep?: (ms: number) => Promise<void>;
   random?: () => number;
 }
-
-const defaultSleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
 
 /**
  * Spec 11: minimum 10s between requests to the same host, jittered.

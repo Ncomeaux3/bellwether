@@ -49,7 +49,7 @@ describe('runDoctor', () => {
     expect(check.fix).toMatch(/\.env\.example/);
   });
 
-  it('fails the environment check on an unfilled placeholder', async () => {
+  it('fails the environment check when a required variable is set but empty', async () => {
     const results = await runDoctor({
       ...baseDeps(),
       env: { BELLWETHER_DB: '', BELLWETHER_EXPORT_DIR: './web/public/data' },

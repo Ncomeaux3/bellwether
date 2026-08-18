@@ -134,27 +134,27 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
 
   const staged: { final: string; tmp: string }[] = [];
   try {
-  for (const [name, payload] of Object.entries(payloads)) {
-    const serialized = JSON.stringify(payload, null, 2);
-    const finalPath = join(outDir, name);
+    for (const [name, payload] of Object.entries(payloads)) {
+      const serialized = JSON.stringify(payload, null, 2);
+      const finalPath = join(outDir, name);
 
-    if (existsSync(finalPath)) {
-      const previousSize = readFileSync(finalPath, 'utf8').length;
-      if (previousSize > 0 && serialized.length < previousSize * 0.5) {
-        throw new ExportGuardError(
-          `Refusing to publish: ${name} shrank from ${previousSize} to ${serialized.length} bytes. ` +
-          `A file losing more than half its content usually means a query broke.`
-        );
+      if (existsSync(finalPath)) {
+        const previousSize = readFileSync(finalPath, 'utf8').length;
+        if (previousSize > 0 && serialized.length < previousSize * 0.5) {
+          throw new ExportGuardError(
+            `Refusing to publish: ${name} shrank from ${previousSize} to ${serialized.length} bytes. ` +
+            `A file losing more than half its content usually means a query broke.`
+          );
+        }
       }
+
+      const tmpPath = `${finalPath}.tmp`;
+      writeFileSync(tmpPath, serialized);
+      JSON.parse(readFileSync(tmpPath, 'utf8'));
+      staged.push({ final: finalPath, tmp: tmpPath });
     }
 
-    const tmpPath = `${finalPath}.tmp`;
-    writeFileSync(tmpPath, serialized);
-    JSON.parse(readFileSync(tmpPath, 'utf8'));
-    staged.push({ final: finalPath, tmp: tmpPath });
-  }
-
-  for (const { final, tmp } of staged) renameSync(tmp, final);
+    for (const { final, tmp } of staged) renameSync(tmp, final);
   } catch (err) {
     // A tripped guard must leave no trace. Remove anything already staged so a
     // later run never renames a half-written set.
