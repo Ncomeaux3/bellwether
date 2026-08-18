@@ -10,6 +10,13 @@
 **Bellwether is the open archive of developer-infrastructure pricing, and the engine that
 maintains it.**
 
+The pitch, in one line each:
+
+- **For the operator:** see every pricing change in your market, confirmed and explained, for
+  under a dollar a month — against $15,000+/year for enterprise CI.
+- **For the public:** the pricing history of developer infrastructure — free, citable, and
+  recorded daily.
+
 The boundary is deliberate. "Some SaaS companies I picked" is not a dataset anyone cites;
 "every developer-infrastructure and tooling company's pricing, monthly" is. Coherence makes a
 dataset linkable, and a stated boundary makes it defensible. Scope: hosting, databases, auth,
@@ -60,7 +67,19 @@ Recording these explicitly so they are never claimed in the README or on the sit
 2. **Schema-first, not diff-first.** Tier-2 tools produce a text diff and ask a model whether it
    matters. Bellwether never produces a text diff; it produces a typed object and compares
    objects. The output type is a queryable time series, not a stream of alerts.
-3. **The dataset is public.** No competitor publishes theirs. See section 14.3.
+3. **The dataset is public, and the moat is elapsed time.** No competitor publishes theirs —
+   but "nobody does this yet" is an empty slot, not a defense; anyone could copy the idea next
+   month. What cannot be copied is the record itself. Wayback gives every latecomer the same
+   monthly-resolution past; from the day Bellwether goes live it accumulates **daily-resolution,
+   confirmed, grounded observations that exist nowhere else**. A copycat starting later has a
+   permanent hole where this archive's coverage is, and every day widens the gap. Features don't
+   compound; archives do. The claim is not "I publish data" — it is "I started recording first."
+
+The time moat only matters if the dataset is found and cited, so it is paired with a
+**distribution layer** (14.4): per-competitor pages titled to own their search queries, an RSS
+feed of confirmed changes, `llms.txt` and clean JSON endpoints so AI assistants cite Bellwether
+when answering pricing questions, and a zero-effort citation block. All static files generated at
+export; the flywheel is search traffic -> citations -> age -> authority.
 
 For the portfolio goal, note that novelty matters less than engineering judgment — nobody
 evaluating the work will care that Visualping exists. The positioning matters for goal 3.
@@ -75,6 +94,8 @@ evaluating the work will care that Visualping exists. The positioning matters fo
 
 ## 4. Definition of done
 
+Setup — prerequisites, quickstart, and the `doctor` first-run check — is section 22.
+
 Each milestone in section 18 ends deployable. The project is complete when:
 
 1. A public URL shows six competitors' current pricing side by side.
@@ -84,6 +105,10 @@ Each milestone in section 18 ends deployable. The project is complete when:
 5. The site displays its own per-source health and its own cumulative LLM cost.
 6. `docker compose up` on the Ubuntu box runs the pipeline on a schedule unattended.
 7. The README carries an architecture diagram, the filter table, and a measured cost figure.
+8. A stranger with the six prerequisites can go from clone to green `doctor` in under an hour
+   using section 22 alone.
+9. The distribution layer is live: competitor pages carry search-titled metadata, the RSS feed
+   validates, `llms.txt` resolves.
 
 ## 5. Architecture
 
@@ -146,6 +171,31 @@ Daily cron runs `collect extract detect export`. Weekly cron adds `synthesize ex
 that dies mid-run leaves a backlog the next run clears with no special handling. Every command
 supports `--limit N` and `--dry-run`.
 
+### 5.3 Production stack coverage
+
+Audit of the full production stack, layer by layer. The strongest engineering claim here is not
+the layers implemented but the layers **deliberately eliminated** — a static architecture deletes
+whole categories of production risk instead of managing them.
+
+| Layer | How Bellwether handles it |
+|---|---|
+| Frontend | Next.js static export; UI spec in 14.3 |
+| APIs & backend logic | The pipeline (5.2); public "API" is stable static JSON endpoints (14.4) — versioned, cacheable, unbreakable |
+| Database & storage | SQLite WAL, content-addressed raw storage (7.2), migrations tracked (`schema_migrations`) |
+| Auth & permissions | **Eliminated.** The public site is static with zero auth surface; the homelab is reachable only via Tailscale; the sole credential in production is a single-repo deploy key |
+| Hosting & deployment | Vercel (public) + Docker Compose on the homelab (private) |
+| Cloud & compute | **Eliminated.** No cloud compute bill, no cold starts; Vercel serves bytes |
+| CI/CD & version control | Git is the transport *and* the deploy trigger; **GitHub Actions** runs tests + full pipeline with `LLM_ENABLED=false` on every PR; Vercel builds on push to `main` |
+| Security & data access | Secrets only in `.env` (gitignored, doctor-validated); raw archive never leaves the box; **no inbound ports on the homelab — outbound-only**; robots.txt honored |
+| Rate limiting | Outbound: 10s/host + jitter, Wayback 1/4s (11, 12.1). Inbound: **eliminated** — Vercel's CDN absorbs any load a static site can receive |
+| Caching & CDN | Vercel CDN for the site; internally, the three zero-cost cache gates (9) are the cost model |
+| Load balancing & scaling | **Eliminated** for serving (CDN scales alone). Pipeline scaling is the 50→100 competitor path (16), bounded by config not architecture |
+| Observability & logs | `runs` table → `status.json` → public health display; per-call cost ledger; compose healthcheck on runs freshness; Telegram alerts (15.3) |
+| Availability & recovery | Backup + tested restore (7.3); export guards (15.7); heartbeat (15.3). **The public site cannot go down when the homelab does — it goes stale**, and `status.json`'s last-updated timestamp makes staleness visible rather than silent |
+
+That last property is the availability story in one line: decoupling collection from serving
+means the failure mode of the entire homelab is "the data is a day old," not "the site is down."
+
 ## 6. Repository layout
 
 ```
@@ -165,7 +215,11 @@ web/           Next.js App Router, output: 'export', Tailwind
 docker-compose.yml   # ONE service
 ```
 
-Stack: Node 24 LTS, TypeScript, pnpm, `better-sqlite3`, Zod, Next.js App Router with Tailwind.
+Stack: Node 24 LTS, TypeScript, pnpm, `better-sqlite3` (WAL mode — readers never block the
+single writer, so `export` can read while `collect` writes), Zod, Next.js App Router with
+Tailwind. The Docker Compose service defines a **healthcheck that queries `runs` freshness** —
+"has any step succeeded in 26 hours" — so Portainer shows real pipeline health, not merely that
+the container process exists.
 One Zod schema serves three roles — the structured-output format sent to Claude, the runtime
 validator, and the dashboard's type.
 
@@ -278,8 +332,9 @@ the compounding asset, so it has to stay cheap to keep forever.
 The archive is described throughout as the compounding asset and the primary differentiator. It
 therefore cannot live on exactly one disk with no copy.
 
-- **Nightly:** `VACUUM INTO` a dated snapshot, then push to off-box object storage (Backblaze B2
-  or equivalent) with `restic`. Retain 7 daily, 4 weekly, 12 monthly.
+- **Nightly:** `VACUUM INTO` a dated snapshot, then push to **Backblaze B2** with `restic`
+  (native B2 support; bucket and app key in `.env`). Retain 7 daily, 4 weekly, 12 monthly. At
+  ~240 MB/year the storage bill rounds to zero.
 - **Restore is tested, not assumed.** `bellwether ops verify-backup` downloads the most recent
   archive, opens it, and asserts row counts within tolerance of live. Run monthly by cron; a
   failure raises the same alarm as a dead collector.
@@ -724,7 +779,27 @@ to look at something else specific.
 `prefers-reduced-motion` respected, semantic `<table>` for tabular data, and every chart readable
 at 200% zoom.
 
-### 14.4 The dataset
+### 14.4 Distribution
+
+The mechanics that make the dataset found and cited (the flywheel claimed in 2.2). All are
+static files generated by `export`; none adds a running service or a meaningful cost.
+
+- **Per-competitor pages own their queries.** `/c/linear` is titled "Linear pricing history —
+  every change since 2025" with matching meta description and JSON-LD `Dataset` markup. "<company>
+  pricing history" is a real query with no good answer today; fifty companies is fifty queries
+  where Bellwether is the best page on the internet.
+- **RSS/Atom feed** of confirmed changes at `/changes.xml` — the subscribe channel for readers
+  who will never bookmark a dashboard. Entry title is the change ("Linear Business $16 → $18"),
+  body is the annotation.
+- **`llms.txt` and stable JSON endpoints.** AI assistants answering "what does Neon cost?" cite
+  sources that are structured and fetchable. `/llms.txt` describes the dataset and points to
+  `/data/*.json`; every competitor page links its own JSON. Being the source AI answers cite is
+  the compounding channel.
+- **Citation block and badge.** A copy-paste citation (plain, BibTeX) on every competitor page
+  and `/data`, plus a small "pricing data: Bellwether" badge snippet. Citing must be effortless,
+  and every citation is a backlink.
+
+### 14.5 The dataset
 
 The differentiating artifact. A `/data` page providing:
 
@@ -759,8 +834,13 @@ git and every historical state is retrievable.
    allowance can never silently block a deliberate backfill. Runaway spend is structurally
    impossible rather than a promise to watch.
 3. **Outcome-based heartbeat.** One query: any active source with no successful snapshot in 48h?
-   If yes, email. It asserts on the outcome rather than the mechanism, so it catches blocked
-   collectors, dead cron, a full disk, and bugs not yet imagined.
+   If yes, alert. It asserts on the outcome rather than the mechanism, so it catches blocked
+   collectors, dead cron, a full disk, and bugs not yet imagined. **Channel: Telegram bot** — the
+   pattern already exists in `soltreya-ops` (`src/trigger/telegram-agent.ts`), setup is a bot
+   token and chat ID in `.env`, and delivery is one HTTP call with no mail infrastructure. The
+   same channel carries backup failures, degraded-source notices with proposed replacement
+   canaries, and the monthly restore-verification result. Silence means healthy; the heartbeat
+   also posts one weekly "all green" message so that a dead alerting channel is itself detectable.
 4. **Every run writes a `runs` row**, feeding `status.json` and the public health display.
 5. **Single-writer lock.** A step refuses to start if a `runs` row of the same kind is `running`
    and started under 6 hours ago; older ones are marked crashed and cleared. Cron overlap on a
@@ -831,8 +911,8 @@ and still leave something real. Estimates assume focused hours.
 | **M2** | **Extraction and detection** — normalize, slice, token guard, `extract_pricing`, grounding check, tier identity, diff, materiality, confirmation | ~5h | Board shows real structured tiers; `changes` accumulates and confirms |
 | **M3** | **History** — `backfill_queue`, Wayback CDX and fetch, batched extraction with pre-submission budget check, `detect --rebuild`, timeline view | ~4h | Eighteen months of real price history charted |
 | **M3.5** | **Qualify and expand** — `qualify` tool, screen the candidate pool, admit passers, backfill the tail at 12 months | ~2h | Watch list at 40-60 companies; the dataset has a defensible boundary |
-| **M4** | **Narrative and dataset** — `annotate_and_synthesize`, change feed, competitor pages, `/data` page with CSV/JSON and license | ~3h | The differentiating artifact exists and is citable |
-| **M5** | **Hardening** — cron, heartbeat, canaries, run lock, cost ceiling, export guards, backup and tested restore, eval set, README | ~3h | Runs unattended and survives disk loss; the repo reads as finished work |
+| **M4** | **Narrative, dataset, distribution** — `annotate_and_synthesize`, change feed, competitor pages with search-titled metadata and JSON-LD, `/data` page with CSV/JSON and license, RSS feed, `llms.txt`, citation block | ~4h | The differentiating artifact exists, is citable, and can be found |
+| **M5** | **Hardening** — cron, Telegram heartbeat, canaries, run lock, cost ceiling, export guards, B2 backup and tested restore, `doctor`, compose healthcheck, eval set, README | ~3h | Runs unattended, survives disk loss, and a stranger could set it up from section 22 |
 
 **Deploy at M1, not at the end.** The static export plus git transport is the piece most likely
 to surprise; finding that out in hour three is cheap and in hour fifteen is not.
@@ -861,7 +941,9 @@ Cron once M5 lands: `collect extract detect export` daily at 07:00 CT with ±30m
 
 ## 20. Deferred
 
-- Weekly email digest (Resend)
+- Email digest (Resend) — the Telegram channel carries the digest text in the meantime, so
+  "deferred" costs nothing: `synthesize` already posts the digest body to Telegram at zero
+  marginal effort
 - Job-posting collector (ATS JSON) and changelog/feed collector
 - Private Tailscale render target using `competitors.private.ts`
 - `bellwether reprocess --all` for prompt-version migrations
@@ -872,3 +954,45 @@ Cron once M5 lands: `collect extract detect export` daily at 07:00 CT with ±30m
 Once this exists, `soltreya-ops/workflows/competitor_analysis.md` has an engine behind it: the
 private config points the same pipeline at a real competitive set. That costs one config file and
 no new code, and it is the cheapest available test of whether this is a product.
+
+## 22. Setup
+
+The system must be settable-up by one person in under an hour, from this section alone.
+
+### 22.1 Prerequisites
+
+| Need | Source | Used for |
+|---|---|---|
+| Anthropic API key | console.anthropic.com | Extraction and synthesis |
+| GitHub repo (public) + deploy key with write access | github.com | Publishing derived data |
+| Vercel account, project rooted at `web/` | vercel.com (existing, per soltreya-web) | The public site |
+| Telegram bot token + chat ID | @BotFather (pattern exists in soltreya-ops) | Heartbeat alerts |
+| Backblaze B2 bucket + app key | backblaze.com | Off-site archive backup via restic |
+| Docker + Compose on the Ubuntu box | existing | Runtime |
+
+Every one of these lands in `.env`; `.env.example` documents each variable with the exact place
+to get it.
+
+### 22.2 Quickstart
+
+```
+git clone <repo> && cd bellwether
+cp .env.example .env        # fill in the six values above
+docker compose run app doctor
+docker compose up -d
+```
+
+### 22.3 `bellwether doctor`
+
+The first-run experience is: run `doctor` until it is green, then `up`. Doctor checks, in order:
+
+1. Every required `.env` variable present and non-placeholder
+2. DB path writable; WAL mode enabled; migrations current
+3. Anthropic key valid — verified with a `count_tokens` call, which costs nothing
+4. Git remote reachable and the deploy key can push (dry-run)
+5. Each configured source URL reachable and its canary string present
+6. Telegram bot can send (posts a test message)
+7. B2 bucket reachable and restic repo initialized
+
+Every failure prints **what to fix and where**, never a stack trace. Doctor is also the answer to
+"is it still healthy" at any later date, and CI runs checks 1–2 against fixtures.
