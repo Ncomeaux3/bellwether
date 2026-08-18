@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #f7f8fa;
+  --color-surface-raised: #ffffff;
+  --color-ink: #16202b;
+  --color-ink-secondary: #4a5a6a;
+  --color-ink-muted: #7c8a99;
+  --color-rule: #dce2e8;
+  --color-rule-strong: #b8c2cc;
+  --color-state-ok: #1f7a5c;
+  --color-state-degraded: #9a6b00;
+  --color-state-failing: #b03a2e;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Tailwind v4's @theme must be top level — it cannot nest inside @media.
+   Dark mode therefore overrides the emitted custom properties directly on
+   :root, which every generated utility already reads through var(). These are
+   selected steps against the dark surface, not an inversion of the light set
+   (spec 14.3). */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface: #10161c;
+    --color-surface-raised: #18202a;
+    --color-ink: #e8edf2;
+    --color-ink-secondary: #a3b1bf;
+    --color-ink-muted: #6e7f8f;
+    --color-rule: #263341;
+    --color-rule-strong: #3a4a5a;
+    --color-state-ok: #4fd1a5;
+    --color-state-degraded: #e0a33a;
+    --color-state-failing: #f07167;
+  }
+}
+
+html {
+  background: var(--color-surface);
+  color: var(--color-ink);
+}
+
+body {
+  font-family: var(--font-sans);
+  /* Spec 14.3: tabular numerals everywhere, including inline in body copy.
+     In a price archive, digits that do not line up are a defect. */
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
