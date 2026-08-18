@@ -11,3 +11,4 @@ src/config/competitors.private.ts
 .remember/
 .DS_Store
 .superpowers/
+web/next-env.d.ts
