@@ -1,0 +1,32 @@
+services:
+  bellwether:
+    build: .
+    container_name: bellwether
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      BELLWETHER_DB: /data/bellwether.db
+      BELLWETHER_EXPORT_DIR: /app/web/public/data
+      TZ: America/Chicago
+    volumes:
+      - ./data:/data
+      - ./web/public/data:/app/web/public/data
+    # No entrypoint override here on purpose: the Dockerfile's
+    # ENTRYPOINT ["pnpm","bw"] stays in force, so `docker compose run --rm
+    # bellwether doctor` runs exactly `pnpm bw doctor` — the command
+    # documented in README.md. `command` below only supplies the default
+    # argument used by `docker compose up`; `docker compose run` replaces it
+    # with whatever is passed on the CLI.
+    command: ["start"]
+    healthcheck:
+      # Spec 6: report real pipeline health, not merely that the process exists.
+      # Unhealthy until a step has succeeded in the last 26 hours.
+      # Both sides go through datetime(): we store ISO 8601 with a 'T' and a
+      # 'Z', SQLite's datetime() emits a space and no zone, and comparing the
+      # two as raw strings makes 'T' > ' ' decide same-day ties — see the
+      # identical guard (and the same comment) in src/workflow/collect.ts.
+      test: ["CMD", "node", "-e", "const D=require('better-sqlite3');const db=new D('/data/bellwether.db',{readonly:true});const r=db.prepare(\"SELECT COUNT(*) n FROM runs WHERE state='ok' AND datetime(ended_at) > datetime('now','-26 hours')\").get();process.exit(r.n>0?0:1)"]
+      interval: 5m
+      timeout: 10s
+      retries: 3
+      start_period: 1m
