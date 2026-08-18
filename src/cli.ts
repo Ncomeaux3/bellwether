@@ -28,4 +28,16 @@ program
     db.close();
   });
 
+program
+  .command('seed')
+  .description('load the public competitor config into the database')
+  .action(async () => {
+    const { seedCompetitors } = await import('./config/seed.js');
+    const { COMPETITORS } = await import('./config/competitors.public.js');
+    const db = openDb(dbPath());
+    const stats = seedCompetitors(db, COMPETITORS);
+    console.log(`Seeded ${stats.competitors} competitors and ${stats.sources} sources.`);
+    db.close();
+  });
+
 program.parseAsync(process.argv);
