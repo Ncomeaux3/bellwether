@@ -61,6 +61,23 @@ describe('sendTelegram', () => {
     expect(result).toEqual({ sent: false, detail: 'ECONNREFUSED' });
   });
 
+  // Fix round 1, finding 2: the token-scrubbing used to be accidental — it
+  // relied on fetch's real error messages never happening to embed the
+  // request URL. This pins the defensive redact() call directly: an error
+  // shape that DOES embed the token (e.g. a URL-parse failure) must still
+  // come back scrubbed.
+  it('redacts the token from an error message that embeds the request URL', async () => {
+    const token = ENV.TELEGRAM_BOT_TOKEN as string;
+    const fetchImpl = vi.fn<typeof fetch>(async () => {
+      throw new Error(`Failed to parse URL from https://api.telegram.org/bot${token}/sendMessage`);
+    });
+    const result = await sendTelegram('hi', { env: ENV, fetchImpl });
+
+    expect(result.sent).toBe(false);
+    expect(result.detail).toContain('<token>');
+    expect(result.detail).not.toContain(token);
+  });
+
   it('never throws on an HTTP error response and reports the status, not the token', async () => {
     const fetchImpl = vi.fn<typeof fetch>(async () => new Response('Unauthorized', { status: 401 }));
     const result = await sendTelegram('hi', { env: ENV, fetchImpl });

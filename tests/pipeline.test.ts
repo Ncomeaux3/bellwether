@@ -11,6 +11,7 @@ import type { ExtractStats } from '../src/workflow/extract.js';
 import type { DetectStats } from '../src/workflow/detect.js';
 import type { SynthStats } from '../src/workflow/synthesize.js';
 import type { ExportStats } from '../src/workflow/export.js';
+import type { HeartbeatStats } from '../src/ops/heartbeat.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
 let dir: string;
@@ -92,7 +93,8 @@ describe('runPipeline', () => {
     const deps = greenDeps();
     const order: string[] = [];
     deps.exportFn = vi.fn(() => { order.push('export'); return EXPORT_STATS; });
-    const heartbeat = vi.fn(async () => { order.push('heartbeat'); });
+    const quiet: HeartbeatStats = { alerts: [], allGreenSent: false, sent: false };
+    const heartbeat = vi.fn(async (): Promise<HeartbeatStats> => { order.push('heartbeat'); return quiet; });
 
     const result = await runPipeline(db, {}, { ...deps, heartbeat });
 
@@ -111,13 +113,70 @@ describe('runPipeline', () => {
 
   it('records a failed heartbeat without throwing', async () => {
     const deps = greenDeps();
-    const heartbeat = vi.fn(async () => { throw new Error('ping failed'); });
+    const heartbeat = vi.fn(async (): Promise<HeartbeatStats> => { throw new Error('ping failed'); });
 
     const result = await runPipeline(db, {}, { ...deps, heartbeat });
 
     const step = result.steps.find(s => s.name === 'heartbeat')!;
     expect(step.ok).toBe(false);
     expect(step.summary).toBe('ping failed');
+  });
+
+  // Fix round 1, finding 1: the heartbeat step used to hardcode
+  // summary: 'sent' regardless of what runHeartbeat actually did — a run
+  // where Telegram was unconfigured, or a healthy Tuesday where nothing
+  // fired, printed "sent" in the step table and cron.log, which is exactly
+  // the dead-channel invisibility the heartbeat exists to prevent. These
+  // three pin the summary against every shape runHeartbeat can return.
+  // Falsifiability check performed by hand: hardcoding `summary: 'sent'` in
+  // pipeline.ts again fails all four of these (none of the four honest
+  // summaries below is literally the string 'sent') — confirming they
+  // genuinely exercise the fix rather than passing vacuously.
+  it('summarizes an unsent alert heartbeat honestly, not as "sent"', async () => {
+    const deps = greenDeps();
+    const stats: HeartbeatStats = { alerts: ['stale: https://acme.test/pricing'], allGreenSent: false, sent: false };
+    const heartbeat = vi.fn(async (): Promise<HeartbeatStats> => stats);
+
+    const result = await runPipeline(db, {}, { ...deps, heartbeat });
+
+    const step = result.steps.find(s => s.name === 'heartbeat')!;
+    expect(step.ok).toBe(true);
+    expect(step.summary).toBe('1 alert(s) NOT SENT — telegram unconfigured or failed');
+  });
+
+  it('summarizes a sent alert heartbeat as sent, with the alert count', async () => {
+    const deps = greenDeps();
+    const stats: HeartbeatStats = {
+      alerts: ['stale: a', 'degraded: b'], allGreenSent: false, sent: true,
+    };
+    const heartbeat = vi.fn(async (): Promise<HeartbeatStats> => stats);
+
+    const result = await runPipeline(db, {}, { ...deps, heartbeat });
+
+    const step = result.steps.find(s => s.name === 'heartbeat')!;
+    expect(step.summary).toBe('2 alert(s) sent');
+  });
+
+  it('summarizes a quiet, non-Monday heartbeat as quiet rather than "sent"', async () => {
+    const deps = greenDeps();
+    const stats: HeartbeatStats = { alerts: [], allGreenSent: false, sent: false };
+    const heartbeat = vi.fn(async (): Promise<HeartbeatStats> => stats);
+
+    const result = await runPipeline(db, {}, { ...deps, heartbeat });
+
+    const step = result.steps.find(s => s.name === 'heartbeat')!;
+    expect(step.summary).toBe('quiet (no alerts, not Monday)');
+  });
+
+  it('summarizes a Monday all-green heartbeat distinctly from a plain "sent"', async () => {
+    const deps = greenDeps();
+    const stats: HeartbeatStats = { alerts: [], allGreenSent: true, sent: true };
+    const heartbeat = vi.fn(async (): Promise<HeartbeatStats> => stats);
+
+    const result = await runPipeline(db, {}, { ...deps, heartbeat });
+
+    const step = result.steps.find(s => s.name === 'heartbeat')!;
+    expect(step.summary).toBe('all green sent');
   });
 });
 

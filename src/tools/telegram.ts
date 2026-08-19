@@ -21,6 +21,13 @@ export async function sendTelegram(text: string, deps: TelegramDeps = {}): Promi
   const doFetch = deps.fetchImpl ?? fetch;
   const body = text.length > TELEGRAM_TEXT_LIMIT ? text.slice(0, TELEGRAM_TEXT_LIMIT) : text;
 
+  // Defense in depth: err.message today never happens to embed the URL (and
+  // therefore the token) for the errors Node's fetch throws, but that's an
+  // artifact of fetch's error shape, not a guarantee — a network layer that
+  // wraps "failed to parse URL <url>" would leak it straight into detail.
+  // Scrub unconditionally rather than relying on that not happening.
+  const redact = (detail: string): string => detail.split(token).join('<token>');
+
   try {
     const res = await doFetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
@@ -33,6 +40,6 @@ export async function sendTelegram(text: string, deps: TelegramDeps = {}): Promi
     return { sent: true, detail: 'sent' };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    return { sent: false, detail: message.split('\n')[0]! };
+    return { sent: false, detail: redact(message.split('\n')[0]!) };
   }
 }

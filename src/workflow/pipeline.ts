@@ -5,6 +5,7 @@ import { extract as extractDefault } from './extract.js';
 import { detect as detectDefault } from './detect.js';
 import { synthesize as synthesizeDefault } from './synthesize.js';
 import { exportData as exportDefault } from './export.js';
+import type { HeartbeatStats } from '../ops/heartbeat.js';
 
 export type PipelineOptions = Record<string, never>;
 
@@ -14,7 +15,7 @@ export interface PipelineStats { steps: PipelineStep[] }
 export interface PipelineDeps {
   now?: () => Date;
   env?: NodeJS.ProcessEnv;
-  heartbeat?: (db: DB) => Promise<unknown>;
+  heartbeat?: (db: DB) => Promise<HeartbeatStats>;
   collectFn?: typeof collectDefault;
   extractFn?: typeof extractDefault;
   detectFn?: typeof detectDefault;
@@ -111,8 +112,13 @@ export async function runPipeline(
 
   if (deps.heartbeat) {
     try {
-      await deps.heartbeat(db);
-      steps.push({ name: 'heartbeat', ok: true, summary: 'sent' });
+      const s = await deps.heartbeat(db);
+      const summary = s.alerts.length > 0
+        ? `${s.alerts.length} alert(s) ${s.sent ? 'sent' : 'NOT SENT — telegram unconfigured or failed'}`
+        : s.allGreenSent
+          ? 'all green sent'
+          : 'quiet (no alerts, not Monday)';
+      steps.push({ name: 'heartbeat', ok: true, summary });
     } catch (err) {
       steps.push({ name: 'heartbeat', ok: false, summary: firstLineOf(err) });
     }
