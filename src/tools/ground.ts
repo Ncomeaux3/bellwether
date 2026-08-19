@@ -27,22 +27,42 @@ function appearsIn(value: number, text: string): boolean {
   });
 }
 
+// "Free" is itself an assertion that the price is zero — "freelance"/
+// "freedom" don't count. Only ever consulted for value === 0 on a tier
+// already marked is_free, so a fabricated zero would still need two
+// independent lies (a false price AND a false is_free) to slip through —
+// see consistencyViolations below for the other half of that gate.
+//
+// A plain \bfree\b is not enough: normalizeAndSlice's `.text` concatenates
+// sibling block elements with no separating whitespace, so "<h4>Free</h4>
+// <p>Free limited...</p>" under a "Starter" heading normalizes to
+// "StarterFreeFree limited...", with no ordinary word boundary before or
+// after either "Free". A lowercase-letter-into-uppercase-letter transition
+// is itself a boundary in that squished text (the same signal a reader uses
+// to split a run-together label), so it counts alongside the ordinary
+// non-letter boundary. "Freelance"/"Freedom" still fail: nothing after
+// "Free" transitions case, so neither branch fires.
+const BOUNDARY_BEFORE = String.raw`(?:(?<![a-zA-Z])|(?<=[a-z])(?=[A-Z]))`;
+const BOUNDARY_AFTER = String.raw`(?:(?![a-zA-Z])|(?<=[a-z])(?=[A-Z]))`;
+const FREE_WORD = new RegExp(`${BOUNDARY_BEFORE}[fF][rR][eE][eE]${BOUNDARY_AFTER}`);
+
 /** Empty array means grounded. Each entry names one fabricated value. */
 export function groundingViolations(data: PricingSnapshotData, sourceText: string): string[] {
   const violations: string[] = [];
-  const check = (value: number | null, where: string) => {
+  const check = (value: number | null, where: string, freeTier: boolean) => {
     if (value === null) return;                    // "contact sales": nothing to ground
+    if (value === 0 && freeTier && FREE_WORD.test(sourceText)) return;
     if (!appearsIn(value, sourceText)) {
       violations.push(`${where} = ${value} does not appear in the page text`);
     }
   };
 
   for (const t of data.tiers) {
-    check(t.monthly_price_usd, `tiers.${t.name}.monthly_price_usd`);
-    check(t.annual_price_usd, `tiers.${t.name}.annual_price_usd`);
+    check(t.monthly_price_usd, `tiers.${t.name}.monthly_price_usd`, t.is_free);
+    check(t.annual_price_usd, `tiers.${t.name}.annual_price_usd`, t.is_free);
   }
   for (const r of data.usage_rates) {
-    check(r.unit_price_usd, `usage_rates.${r.metric}.unit_price_usd`);
+    check(r.unit_price_usd, `usage_rates.${r.metric}.unit_price_usd`, false);
   }
   return violations;
 }

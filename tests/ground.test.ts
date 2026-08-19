@@ -94,6 +94,56 @@ describe('groundingViolations', () => {
       expect(v).toHaveLength(1);
     });
   });
+
+  describe('word-only "Free" tiers', () => {
+    it('grounds a free tier priced at 0 against a page that only says "Free", no digit', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true }] }),
+        'Starter\nFree\nFree limited access to Figma products',
+      );
+      expect(v).toEqual([]);
+    });
+
+    it('still rejects a free tier priced at 0 when the page says neither "free" nor "0"', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true }] }),
+        'Starter\nNo cost to start',
+      );
+      expect(v).toHaveLength(1);
+    });
+
+    it('still rejects when is_free is false — the free-indicator only covers tiers marked free', () => {
+      const v = groundingViolations(snap({ tiers: [tier(0)] }), 'Starter\nFree');
+      expect(v).toHaveLength(1);
+    });
+
+    it('does not treat "freelance" as a free indicator', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true }] }),
+        'Built for freelance designers',
+      );
+      expect(v).toHaveLength(1);
+    });
+
+    it('finds "Free" glued to neighboring text with no separating space — the real Figma shape', () => {
+      // normalizeAndSlice concatenates sibling elements with no whitespace:
+      // <h4>Free</h4><p>Free limited access...</p> under a "Starter" heading
+      // becomes exactly this run-together string.
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Starter' }] }),
+        'StarterFreeFree limited access to Figma productsSelect plan',
+      );
+      expect(v).toEqual([]);
+    });
+
+    it('still rejects "MoreFreedom" glued the same way — no case transition after "Free"', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true }] }),
+        'GetMoreFreedomToday',
+      );
+      expect(v).toHaveLength(1);
+    });
+  });
 });
 
 describe('consistencyViolations', () => {

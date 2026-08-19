@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T02:11:51.709Z",
+  "generated_at": "2026-08-19T02:18:39.039Z",
   "competitors": [
     {
       "slug": "figma",
@@ -9,12 +9,79 @@
         {
           "kind": "pricing",
           "url": "https://www.figma.com/pricing/",
-          "state": "degraded",
+          "state": "ok",
           "last_checked_at": "2026-08-18T15:01:15.439Z",
           "last_ok_at": "2026-08-18T15:01:15.439Z",
           "distinct_states": 1,
-          "degraded_reason": "extraction ungrounded: tiers.Starter.monthly_price_usd = 0 does not appear in the page text; tiers.Starter.annual_price_usd = 0 does not appear in the page text; usage_rates.AI credits.unit_price_usd = 0 does not appear in the page text",
-          "current_pricing": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Starter",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Free limited access to Figma products",
+                  "Unlimited drafts",
+                  "UI kits and templates",
+                  "150 AI credits/day, up to 500 AI credits/mo"
+                ]
+              },
+              {
+                "name": "Professional",
+                "monthly_price_usd": 16,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited files and folders",
+                  "Team-wide design libraries",
+                  "Advanced Dev Mode inspection and MCP Server",
+                  "Full seat $16/mo + 3,000 AI credits/mo"
+                ]
+              },
+              {
+                "name": "Organization",
+                "monthly_price_usd": 55,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited teams",
+                  "Shared libraries and fonts",
+                  "Centralized admin tools",
+                  "Full seat $55/mo + 3,500 AI credits/mo"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": 90,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom team workspaces",
+                  "Design system theming and APIs",
+                  "SCIM seat management",
+                  "Full seat $90/mo + 4,250 AI credits/mo"
+                ]
+              }
+            ],
+            "usage_rates": [],
+            "notes": "Professional, Organization, and Enterprise tiers are billed annually. AI credits are included with each seat tier. Dev seats and Collab seats have lower monthly prices than Full seats.",
+            "extraction_confidence": "high"
+          }
         }
       ]
     },
