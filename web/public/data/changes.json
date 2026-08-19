@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T15:05:10.627Z",
+  "generated_at": "2026-08-19T16:53:10.697Z",
   "threshold": 40,
   "changes": [
     {
@@ -114,6 +114,26 @@
       "after": 1,
       "materiality": 50,
       "observed_at": "2026-04-02T03:21:26.000Z"
+    },
+    {
+      "competitor": "Linear",
+      "slug": "linear",
+      "change_type": "price_changed",
+      "json_path": "tiers.Business.monthly_price_usd",
+      "before": 14,
+      "after": 16,
+      "materiality": 94,
+      "observed_at": "2025-11-12T01:16:11.000Z"
+    },
+    {
+      "competitor": "Linear",
+      "slug": "linear",
+      "change_type": "price_changed",
+      "json_path": "tiers.Basic.monthly_price_usd",
+      "before": 8,
+      "after": 10,
+      "materiality": 100,
+      "observed_at": "2025-11-12T01:16:11.000Z"
     },
     {
       "competitor": "Notion",

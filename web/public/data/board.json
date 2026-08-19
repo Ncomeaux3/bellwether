@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T15:05:10.627Z",
+  "generated_at": "2026-08-19T16:53:10.697Z",
   "competitors": [
     {
       "slug": "figma",
@@ -118,19 +118,20 @@
                   "Unlimited members",
                   "2 teams",
                   "250 issues",
-                  "Agent platform"
+                  "Agent platform",
+                  "Linear Agent"
                 ]
               },
               {
                 "name": "Basic",
                 "monthly_price_usd": 10,
-                "annual_price_usd": null,
+                "annual_price_usd": 10,
                 "billing_unit": "per_seat",
                 "included_seats": null,
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "All Free features +",
+                  "All Free features",
                   "5 teams",
                   "Unlimited issues",
                   "Unlimited file uploads",
@@ -140,13 +141,13 @@
               {
                 "name": "Business",
                 "monthly_price_usd": 16,
-                "annual_price_usd": null,
+                "annual_price_usd": 16,
                 "billing_unit": "per_seat",
                 "included_seats": null,
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "All Basic features +",
+                  "All Basic features",
                   "Unlimited teams",
                   "Private teams and guests",
                   "Triage Intelligence",
@@ -165,7 +166,7 @@
                 "is_free": false,
                 "is_enterprise": true,
                 "headline_features": [
-                  "All Business features +",
+                  "All Business features",
                   "Invoice/PO billing",
                   "SAML and SCIM",
                   "Granular admin controls",
@@ -177,7 +178,7 @@
               }
             ],
             "usage_rates": [],
-            "notes": "Basic and Business tiers support annual billing. Enterprise tier requires annual billing only and custom pricing.",
+            "notes": "Basic and Business tiers show '$X per user/month' with 'Billed yearly' notation, indicating annual commitment with monthly per-seat rates.",
             "extraction_confidence": "high"
           }
         }
