@@ -3,6 +3,7 @@ import { acquireRun, finishRun } from '../ops/runs.js';
 import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
 import { diffPricing } from '../tools/diff.js';
 import { MATERIALITY_THRESHOLD, scoreMateriality } from '../tools/materiality.js';
+import { confirmChanges } from './confirm.js';
 
 export interface DetectOptions { rebuild?: boolean; sourceId?: number }
 
@@ -113,7 +114,10 @@ export function detect(db: DB, opts: DetectOptions = {}, deps: DetectDeps = {}):
       }
     })();
 
-    // Confirmation (spec 12.5) is wired in by Task 7; until then these stay 0.
+    const confirmation = confirmChanges(db, { sourceId: opts.sourceId });
+    stats.confirmed = confirmation.confirmed;
+    stats.disputed = confirmation.disputed;
+    stats.retracted = confirmation.retracted;
 
     finishRun(db, runId, true, stats);
     return stats;
