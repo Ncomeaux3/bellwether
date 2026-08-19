@@ -109,8 +109,13 @@ export async function extract(
 
       if (!llmEnabled(env)) { stats.skipped += 1; continue; }
 
+      // Spec 15.2: is_backfill rows are excluded from monthlySpendMicros, so
+      // gating them on that same figure would be one-sided — a live archive
+      // sitting near its recurring cap would refuse the whole historical
+      // corpus. Bulk history is bounded by `backfill --budget` instead
+      // (spec 12.1), which reaches this loop as opts.limit.
       try {
-        assertWithinBudget(db, { now, env });
+        if (!historical) assertWithinBudget(db, { now, env });
       } catch (err) {
         if (!(err instanceof BudgetExceededError)) throw err;
         console.warn(err.message);

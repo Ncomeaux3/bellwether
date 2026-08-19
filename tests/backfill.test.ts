@@ -5,7 +5,10 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
-import { discoverCaptures, drainQueue, MAX_CAPTURE_ATTEMPTS } from '../src/workflow/backfill.js';
+import {
+  discoverCaptures, drainQueue, MAX_CAPTURE_ATTEMPTS,
+  estimateBackfill, runBackfill, FALLBACK_COST_MICROS_PER_EXTRACTION,
+} from '../src/workflow/backfill.js';
 import { collect } from '../src/workflow/collect.js';
 import type { FetchResult } from '../src/tools/fetch.js';
 import type { CompetitorConfig } from '../src/config/types.js';
@@ -273,5 +276,135 @@ describe('drainQueue', () => {
     expect(stats.claimed).toBe(1);
     expect(seen).toHaveLength(1);
     expect(seen[0]).toContain('20250116002909');
+  });
+});
+
+describe('estimateBackfill', () => {
+  function enqueuePending(n: number): void {
+    const stmt = db.prepare(`
+      INSERT INTO backfill_queue (source_id, wayback_ts, target_url, state, attempts, updated_at)
+      VALUES (1, ?, 'https://web.archive.org/x', 'pending', 0, '2026-08-19T00:00:00.000Z')
+    `);
+    // Arithmetic, not string surgery: every stamp is a distinct 14 digits, so
+    // the UNIQUE (source_id, wayback_ts) constraint never trips mid-test.
+    for (let i = 0; i < n; i += 1) stmt.run(String(20250101000000 + i));
+  }
+
+  it('uses the measured mean cost once extractions exist', () => {
+    db.prepare(`
+      INSERT INTO extractions
+        (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+         is_backfill, model, prompt_version, input_tokens, output_tokens, cost_micros, created_at)
+      VALUES ('h1','pricing','{}','high','USD',1,0,'m','v',1,1,8000,'2026-08-01T00:00:00.000Z')
+    `).run();
+    enqueuePending(10);
+
+    const est = estimateBackfill(db, 10);
+    expect(est.meanCostMicros).toBe(8000);
+    expect(est.pending).toBe(10);
+    expect(est.estimateMicros).toBe(80_000);
+    expect(est.withinBudget).toBe(true);
+    expect(est.maxCalls).toBe(1250);
+  });
+
+  it('falls back to the measured constant on an empty extractions table', () => {
+    enqueuePending(4);
+    const est = estimateBackfill(db, 10);
+    expect(est.meanCostMicros).toBe(FALLBACK_COST_MICROS_PER_EXTRACTION);
+    expect(est.estimateMicros).toBe(4 * FALLBACK_COST_MICROS_PER_EXTRACTION);
+  });
+
+  it('reports over-budget rather than silently truncating', () => {
+    enqueuePending(200);
+    const est = estimateBackfill(db, 0.5);
+    expect(est.withinBudget).toBe(false);
+    expect(est.maxCalls).toBe(50);
+  });
+
+  it('counts only pending rows — a drained queue estimates zero', () => {
+    enqueuePending(5);
+    db.prepare("UPDATE backfill_queue SET state = 'fetched'").run();
+    expect(estimateBackfill(db, 10).pending).toBe(0);
+  });
+});
+
+describe('runBackfill', () => {
+  const PAGE = '<html><h2>Pro</h2><p>$20/mo</p><h2>Enterprise</h2></html>';
+
+  function router(cdx: string, page: string) {
+    return async (url: string): Promise<FetchResult> =>
+      url.includes('/cdx/search/') ? ok(cdx) : ok(page);
+  }
+
+  it('discovers, drains, and leaves capture-dated snapshots behind', async () => {
+    const stats = await runBackfill(db, { llmEnabled: false }, {
+      fetcher: router(cdxBody('20250116002909', '20250209133622'), PAGE),
+      now: NOW,
+    });
+
+    expect(stats.discover.enqueued).toBe(2);
+    expect(stats.drain.claimed).toBe(2);
+
+    const snaps = db.prepare('SELECT observed_at, provenance FROM snapshots ORDER BY observed_at')
+      .all() as { observed_at: string; provenance: string }[];
+    expect(snaps.map(s => s.observed_at)).toEqual([
+      '2025-01-16T00:29:09.000Z', '2025-02-09T13:36:22.000Z',
+    ]);
+    expect(snaps.every(s => s.provenance.startsWith('wayback:'))).toBe(true);
+  });
+
+  it('refuses to spend past the budget and drains nothing', async () => {
+    const stats = await runBackfill(db, { budgetUsd: 0, llmEnabled: false }, {
+      fetcher: router(cdxBody('20250116002909'), PAGE),
+      now: NOW,
+    });
+
+    expect(stats.estimate.withinBudget).toBe(false);
+    expect(stats.drain.claimed).toBe(0);
+    expect((db.prepare('SELECT COUNT(*) n FROM snapshots').get() as { n: number }).n).toBe(0);
+    // Discovery still ran, so raising the budget and re-running costs no extra CDX calls.
+    expect((db.prepare('SELECT COUNT(*) n FROM backfill_queue').get() as { n: number }).n).toBe(1);
+  });
+
+  it('--discover-only enqueues and stops', async () => {
+    const stats = await runBackfill(db, { discoverOnly: true }, {
+      fetcher: router(cdxBody('20250116002909'), PAGE),
+      now: NOW,
+    });
+
+    expect(stats.discover.enqueued).toBe(1);
+    expect(stats.drain.claimed).toBe(0);
+    expect((db.prepare('SELECT COUNT(*) n FROM snapshots').get() as { n: number }).n).toBe(0);
+  });
+
+  it('rebuilds detection so pre-existing changes are re-derived across the new history (spec 12.2)', async () => {
+    db.prepare(`
+      INSERT INTO changes
+        (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+         before_json, after_json, materiality, state, observed_at)
+      VALUES (1, 1, 2, 'price_change', 'tiers.Pro.monthly_price_usd', '10', '20', 80,
+              'confirmed', '2026-08-01T00:00:00.000Z')
+    `).run();
+
+    await runBackfill(db, { llmEnabled: false }, {
+      fetcher: router(cdxBody('20250116002909'), PAGE),
+      now: NOW,
+    });
+
+    // The stale row named snapshots that no longer pair; rebuild must clear it
+    // rather than leave a change spanning newly-inserted history.
+    expect((db.prepare('SELECT COUNT(*) n FROM changes').get() as { n: number }).n).toBe(0);
+  });
+
+  it('records one backfill run and marks it ok', async () => {
+    await runBackfill(db, { llmEnabled: false }, {
+      fetcher: router(cdxBody('20250116002909'), PAGE),
+      now: NOW,
+    });
+
+    const run = db.prepare("SELECT state, ok FROM runs WHERE kind = 'backfill'").get() as
+      { state: string; ok: number };
+    expect(run.state).toBe('ok');
+    expect(run.ok).toBe(1);
   });
 });

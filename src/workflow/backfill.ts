@@ -4,6 +4,9 @@ import { HostRateLimiter } from '../tools/ratelimit.js';
 import { captureUrl, cdxQueryUrl, parseCdxResponse, waybackTimestampToIso } from '../tools/wayback.js';
 import { sha256 } from '../tools/hash.js';
 import { PRICE_PATTERN } from './collect.js';
+import { acquireRun, finishRun } from '../ops/runs.js';
+import { detect } from './detect.js';
+import { extract } from './extract.js';
 
 /** Spec 12.1: Wayback is slow and answers 429 under load. One request per 4s. */
 export const WAYBACK_MIN_INTERVAL_MS = 4_000;
@@ -229,4 +232,141 @@ export async function drainQueue(
   }
 
   return stats;
+}
+
+/**
+ * Measured 2026-08-18: six live pricing pages cost $0.0579 to extract, i.e.
+ * $0.00965 each. Rounded up, and used only until the extractions table has
+ * real numbers of its own.
+ */
+export const FALLBACK_COST_MICROS_PER_EXTRACTION = 10_000;
+export const DEFAULT_BACKFILL_BUDGET_USD = 10;
+
+export interface BackfillEstimate {
+  pending: number;
+  meanCostMicros: number;
+  estimateMicros: number;
+  budgetMicros: number;
+  withinBudget: boolean;
+  maxCalls: number;
+}
+
+/**
+ * Spec 12.1: the corpus is costed before any of it is submitted.
+ *
+ * Deliberately a worst case — it assumes every queued capture is a distinct
+ * page state, when content-addressed dedup (spec 7.1) means many share a hash
+ * and cost nothing. `maxCalls` turns the dollar figure into a hard ceiling that
+ * `extract`'s existing --limit enforces, so no new spend-guard code exists.
+ */
+export function estimateBackfill(db: DB, budgetUsd: number): BackfillEstimate {
+  const pending = (db.prepare(
+    "SELECT COUNT(*) AS n FROM backfill_queue WHERE state = 'pending' AND attempts < ?",
+  ).get(MAX_CAPTURE_ATTEMPTS) as { n: number }).n;
+
+  const measured = (db.prepare(
+    'SELECT AVG(cost_micros) AS mean FROM extractions WHERE cost_micros IS NOT NULL',
+  ).get() as { mean: number | null }).mean;
+
+  const meanCostMicros = measured && measured > 0
+    ? Math.round(measured)
+    : FALLBACK_COST_MICROS_PER_EXTRACTION;
+
+  const budgetMicros = Math.round(budgetUsd * 1e6);
+  const estimateMicros = pending * meanCostMicros;
+
+  return {
+    pending,
+    meanCostMicros,
+    estimateMicros,
+    budgetMicros,
+    withinBudget: estimateMicros <= budgetMicros,
+    maxCalls: Math.floor(budgetMicros / meanCostMicros),
+  };
+}
+
+export interface RunBackfillOptions {
+  months?: number;
+  sourceId?: number;
+  budgetUsd?: number;
+  limit?: number;
+  discoverOnly?: boolean;
+  /** Test seam: false skips extraction entirely so no key or network is needed. */
+  llmEnabled?: boolean;
+}
+
+export interface BackfillStats {
+  discover: DiscoverStats;
+  drain: DrainStats;
+  estimate: BackfillEstimate;
+  extracted: number;
+  changes: number;
+  confirmed: number;
+}
+
+/**
+ * The whole one-shot: discover, cost, drain, extract, rebuild detection.
+ *
+ * Holds a single `backfill` run lock. extract and detect take their own locks
+ * under different kinds, so they nest without contending. Spec 12.2 requires
+ * the rebuild: backfill inserts snapshots whose observed_at falls before
+ * existing live ones, so pairs that used to be adjacent no longer are and every
+ * change row spanning newly-inserted history is now wrong. Re-deriving is free
+ * because extractions are content-addressed.
+ */
+export async function runBackfill(
+  db: DB,
+  opts: RunBackfillOptions = {},
+  deps: BackfillDeps = {},
+): Promise<BackfillStats> {
+  const now = deps.now ?? (() => new Date());
+  const fetcher = deps.fetcher ?? waybackFetcher();
+  const budgetUsd = opts.budgetUsd ?? DEFAULT_BACKFILL_BUDGET_USD;
+
+  const runId = acquireRun(db, 'backfill', { now });
+  let stats: BackfillStats = {
+    discover: { sources: 0, found: 0, enqueued: 0, duplicate: 0, failed: 0 },
+    drain: { claimed: 0, stored: 0, deduped: 0, skipped: 0, failed: 0 },
+    estimate: {
+      pending: 0, meanCostMicros: 0, estimateMicros: 0,
+      budgetMicros: 0, withinBudget: true, maxCalls: 0,
+    },
+    extracted: 0, changes: 0, confirmed: 0,
+  };
+
+  try {
+    stats.discover = await discoverCaptures(
+      db, { months: opts.months, sourceId: opts.sourceId }, { fetcher, now },
+    );
+    stats.estimate = estimateBackfill(db, budgetUsd);
+
+    if (opts.discoverOnly) {
+      finishRun(db, runId, true, stats);
+      return stats;
+    }
+
+    // Refuse rather than half-spend. Discovery has already run, so raising the
+    // budget and re-running costs nothing extra at the CDX layer.
+    if (!stats.estimate.withinBudget) {
+      finishRun(db, runId, true, stats);
+      return stats;
+    }
+
+    stats.drain = await drainQueue(db, { limit: opts.limit }, { fetcher, now });
+
+    if (opts.llmEnabled !== false) {
+      const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now });
+      stats.extracted = extracted.extracted;
+    }
+
+    const detected = detect(db, { rebuild: true, sourceId: opts.sourceId }, { now });
+    stats.changes = detected.created;
+    stats.confirmed = detected.confirmed;
+
+    finishRun(db, runId, true, stats);
+    return stats;
+  } catch (err) {
+    finishRun(db, runId, false, stats, err instanceof Error ? err.message : String(err));
+    throw err;
+  }
 }

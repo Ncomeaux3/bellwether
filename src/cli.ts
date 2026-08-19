@@ -90,6 +90,69 @@ program
   });
 
 program
+  .command('backfill')
+  .description('seed the archive with historical captures from the Internet Archive')
+  .option('--months <n>', 'how far back to look (default 18)', v => Number(v))
+  .option('--budget <usd>', 'one-time spend ceiling for this backfill (default 10.00)', v => Number(v))
+  .option('--limit <n>', 'fetch at most n captures this run', v => Number(v))
+  .option('--source <id>', 'restrict to one source', v => Number(v))
+  .option('--discover-only', 'enqueue captures but fetch none')
+  .action(async (options: {
+    months?: number; budget?: number; limit?: number; source?: number; discoverOnly?: boolean;
+  }) => {
+    const { runBackfill } = await import('./workflow/backfill.js');
+    const db = openDb(dbPath());
+
+    const s = await runBackfill(db, {
+      months: options.months,
+      budgetUsd: options.budget,
+      limit: options.limit,
+      sourceId: options.source,
+      discoverOnly: options.discoverOnly,
+    });
+
+    const usd = (micros: number) => `$${(micros / 1e6).toFixed(2)}`;
+
+    console.log(
+      `Discovery: ${s.discover.sources} sources, ${s.discover.found} captures found, ` +
+      `${s.discover.enqueued} new, ${s.discover.duplicate} already queued, ${s.discover.failed} failed.`,
+    );
+    console.log(
+      `Estimate: ${s.estimate.pending} pending x ${usd(s.estimate.meanCostMicros)} = ` +
+      `${usd(s.estimate.estimateMicros)} against a ${usd(s.estimate.budgetMicros)} budget.`,
+    );
+
+    if (!s.estimate.withinBudget) {
+      console.log(
+        `\nRefusing to start: the queue would cost more than the budget allows.\n` +
+        `The captures are already queued, so nothing is lost — re-run with\n` +
+        `  bellwether backfill --budget ${(s.estimate.estimateMicros / 1e6).toFixed(2)}\n` +
+        `or work through it in slices with --limit ${Math.max(1, s.estimate.maxCalls)}.\n` +
+        `The estimate is a worst case: identical captures share an extraction and cost nothing.`,
+      );
+      db.close();
+      return;
+    }
+
+    if (options.discoverOnly) {
+      console.log('\nDiscovery only — nothing fetched. Re-run without --discover-only to continue.');
+      db.close();
+      return;
+    }
+
+    console.log(
+      `Fetched ${s.drain.claimed}: ${s.drain.stored} new page states, ${s.drain.deduped} identical, ` +
+      `${s.drain.skipped} skipped, ${s.drain.failed} failed.`,
+    );
+    console.log(
+      `Extracted ${s.extracted}. Rebuilt detection: ${s.changes} changes, ${s.confirmed} confirmed.`,
+    );
+    console.log('\nRun `bellwether export` to publish the new history.');
+
+    db.close();
+  });
+
+program
   .command('export')
   .description('rebuild the published JSON from current database state')
   .option('--publish', 'commit and push the result so Vercel rebuilds')

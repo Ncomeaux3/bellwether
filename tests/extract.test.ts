@@ -251,4 +251,21 @@ describe('historical snapshots (spec 12.1)', () => {
     expect(row.is_backfill).toBe(0);
     expect(monthlySpendMicros(db, new Date('2026-08-18T12:00:00.000Z'))).toBeGreaterThan(0);
   });
+
+  it('extracts a historical snapshot even when the recurring cap is exhausted (spec 15.2)', async () => {
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, input_tokens, output_tokens, cost_micros, created_at)
+      VALUES ('spent', 'pricing', '{}', 'high', 'USD', 1, 0, 'm', 'v-old', 1, 1, 9000000,
+              '2026-08-05T00:00:00.000Z')`).run();
+
+    addSnapshot(HTML, 1, '2025-01-16T00:00:00.000Z', 'wayback:20250116000000');
+
+    const stats = await extract(
+      db, {}, deps(okResult(20), { LLM_ENABLED: 'true', BELLWETHER_MONTHLY_BUDGET_USD: '5' }),
+    );
+
+    expect(stats.extracted).toBe(1);
+    expect(stats.skipped).toBe(0);
+  });
 });
