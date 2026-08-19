@@ -46,7 +46,11 @@ export function shouldSynthesize(
   if (pending === 0) return { fire: false, reason: 'nothing pending — an empty digest is worse than none', pending };
   if (opts.force) return { fire: true, reason: `forced with ${pending} pending`, pending };
 
-  if (now.getUTCDay() !== 1) return { fire: false, reason: 'not Monday (spec 13 cadence gate)', pending };
+  // Spec 13 says the trigger is evaluated Mondays in CT, and the container
+  // runs at 07:00 CT — a UTC weekday check would call a late-Sunday-CT run
+  // "Monday" and an early-Monday-CT run "Sunday".
+  const weekdayCT = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'America/Chicago' }).format(now);
+  if (weekdayCT !== 'Mon') return { fire: false, reason: 'not Monday in CT (spec 13 cadence gate)', pending };
 
   if (pending >= SYNTH_MIN_CHANGES) return { fire: true, reason: `${pending} pending >= ${SYNTH_MIN_CHANGES}`, pending };
 

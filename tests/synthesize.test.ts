@@ -383,3 +383,18 @@ describe('synthesize (workflow)', () => {
     expect(runs.every(r => r.state === 'ok')).toBe(true);
   });
 });
+
+describe('the Monday gate is Central Time, not UTC (spec 13)', () => {
+  it('holds at Monday 03:00 UTC, which is still Sunday evening in CT', () => {
+    for (let i = 0; i < 5; i += 1) insertChange(`2026-08-0${i + 1}T00:00:00.000Z`);
+    const verdict = shouldSynthesize(db, new Date('2026-08-17T03:00:00.000Z'), {});
+    expect(verdict.fire).toBe(false);
+    expect(verdict.reason).toContain('not Monday');
+  });
+
+  it('fires at Tuesday 04:00 UTC, which is still Monday evening in CT', () => {
+    for (let i = 0; i < 5; i += 1) insertChange(`2026-08-0${i + 1}T00:00:00.000Z`);
+    const verdict = shouldSynthesize(db, new Date('2026-08-18T04:00:00.000Z'), {});
+    expect(verdict.fire).toBe(true);
+  });
+});

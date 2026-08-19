@@ -29,11 +29,11 @@ const PROVENANCE: { value: string; note: string }[] = [
   { value: 'mixed', note: 'The run spans both — a live fetch confirmed a state first seen in a Wayback capture, or vice versa.' },
 ];
 
-const CITATION_PLAIN = 'Bellwether. Developer-infrastructure pricing archive [dataset]. https://bellwether.cmxlogic.com/data/';
+const CITATION_PLAIN = 'Bellwether. Developer-infrastructure pricing archive [dataset]. https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/';
 const CITATION_BIBTEX = `@misc{bellwether,
   title  = {Bellwether: developer-infrastructure pricing archive},
   author = {{Bellwether}},
-  url    = {https://bellwether.cmxlogic.com/data/},
+  url    = {https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/},
   note   = {CC BY 4.0}
 }`;
 

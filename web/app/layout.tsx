@@ -7,7 +7,7 @@ const publicSans = Public_Sans({ subsets: ['latin'], variable: '--font-public-sa
 const plexMono = IBM_Plex_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-plex-mono', display: 'swap' });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bellwether.cmxlogic.com'),
+  metadataBase: new URL('https://bellwether-nicholas-projects-cdfeb046.vercel.app'),
   title: 'Bellwether — the open archive of developer-infrastructure pricing',
   description:
     'Every pricing change across developer infrastructure, recorded daily, confirmed before publishing, and free to cite.',

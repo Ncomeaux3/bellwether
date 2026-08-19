@@ -468,7 +468,10 @@ export async function publish(
 ): Promise<{ pushed: boolean; detail: string }> {
   const exec = deps.exec ?? ((f: string, a: string[], o: { cwd: string }) => run(f, a, o));
 
-  await exec('git', ['add', 'web/public/data'], { cwd: repoRoot });
+  // web/public, not web/public/data: changes.xml and llms.txt live at the
+  // site root (spec 14.4 URLs), and staging only the data dir left them
+  // generated-but-never-published — every page linked an RSS feed that 404'd.
+  await exec('git', ['add', 'web/public'], { cwd: repoRoot });
 
   try {
     await exec('git', ['diff', '--cached', '--quiet'], { cwd: repoRoot });
