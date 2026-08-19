@@ -7,6 +7,7 @@ import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
 import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
 import { monthlySpendMicros } from '../agents/_client.js';
 import { observationsFor } from './detect.js';
+import { describeChange } from './dataset.js';
 
 const run = promisify(execFile);
 
@@ -195,46 +196,6 @@ function classifyTiers(series: { tier: string; segments: TimelinePoint[][] }[]):
   });
 
   return classes;
-}
-
-/**
- * SQL NULL and the JSON string "null" are different things here: diff.ts
- * always writes JSON.stringify(v ?? null), so an absent value is the
- * four-character string 'null', never a SQL-NULL column. Both must read as
- * "none" — a contact-sales tier is not the word "null".
- */
-const value = (raw: string | null): string => {
-  if (raw === null) return 'none';
-  try {
-    const parsed: unknown = JSON.parse(raw);
-    return parsed === null ? 'none' : String(parsed);
-  } catch {
-    return 'none';
-  }
-};
-
-/** Short, literal marker text. No adjectives — the number is the story. */
-function describeChange(row: {
-  json_path: string; change_type: string; before_json: string | null; after_json: string | null;
-}): string {
-  const parts = row.json_path.split('.');
-  const field = parts[parts.length - 1] ?? '';
-  const tier = row.json_path.startsWith('tiers.')
-    ? (parts.slice(1, -1).join('.') || parts.slice(1).join('.'))
-    : row.json_path;
-
-  // diff.ts writes 'price_changed' (past tense) at both .monthly_price_usd
-  // and .annual_price_usd with identical materiality — the field name must
-  // stay in the label or an annual move reads as a monthly one.
-  if (row.change_type === 'price_changed') {
-    // The chart's axis is already dollars, so "usd" is noise in a marker
-    // label: "Pro annual price 96 to 120", not "Pro annual price usd 96 to 120".
-    const label = field === 'monthly_price_usd'
-      ? ''
-      : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
-    return `${tier} ${label}${value(row.before_json)} to ${value(row.after_json)}`;
-  }
-  return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
 }
 
 /**

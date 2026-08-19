@@ -22,6 +22,7 @@ export interface Observation {
   normalizedHash: string;
   confidence: string;
   data: PricingSnapshotData;
+  provenance: string;
 }
 
 /**
@@ -42,7 +43,7 @@ export interface Observation {
  */
 export function observationsFor(db: DB, sourceId: number): Observation[] {
   const rows = db.prepare(`
-    SELECT s.id, s.observed_at, s.normalized_hash,
+    SELECT s.id, s.observed_at, s.normalized_hash, s.provenance,
            e.data_json, e.extraction_confidence, e.currency
     FROM snapshots s
     JOIN extractions e ON e.normalized_hash = s.normalized_hash
@@ -50,7 +51,7 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
       AND e.currency = 'USD' AND e.prompt_version = ?
     ORDER BY s.observed_at, s.id
   `).all(sourceId, EXTRACT_PROMPT_VERSION) as {
-    id: number; observed_at: string; normalized_hash: string;
+    id: number; observed_at: string; normalized_hash: string; provenance: string;
     data_json: string; extraction_confidence: string;
   }[];
 
@@ -68,6 +69,7 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
       normalizedHash: row.normalized_hash,
       confidence: row.extraction_confidence,
       data: parsed.data,
+      provenance: row.provenance,
     });
   }
   return observations;
