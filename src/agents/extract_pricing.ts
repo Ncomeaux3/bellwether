@@ -3,12 +3,23 @@ import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js'
 import { groundingViolations } from '../tools/ground.js';
 import { EXTRACT_MODEL, costMicros, guardTokens, type TokenCounter } from './_client.js';
 
-const SYSTEM = `You extract pricing facts from a SaaS pricing page.
+export const SYSTEM = `You extract pricing facts from a SaaS pricing page.
 
 Rules:
 - Report only what the page states. Never infer, never estimate, never fill a gap.
 - monthly_price_usd is null when the tier says "contact sales" or shows no price.
   null is NOT zero. Use 0 only when the page states the tier costs nothing.
+- Pages often show both monthly and annual prices for the same tier — a
+  "Pay monthly / Pay annually" toggle, two columns, or "$19/mo billed
+  annually". When both are present, record the monthly figure in
+  monthly_price_usd and the annual figure in annual_price_usd. Never leave
+  both null because two prices were present — a visible number always
+  beats null.
+- Use null only when the tier genuinely shows no price at all: "Contact
+  sales", "Talk to us", "Custom pricing".
+- A per-seat price like "$19/user/month" is still the monthly price: put
+  19 in monthly_price_usd and record the per-seat framing in billing_unit,
+  not by leaving the price null.
 - currency is the ISO code the page prices in ("USD", "EUR", ...). Do not convert.
 - usage_rates is for consumption pricing (per GB, per event, per seat-hour).
 - headline_features: at most 8, verbatim from the page.

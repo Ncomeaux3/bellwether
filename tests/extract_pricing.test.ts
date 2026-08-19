@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractPricing } from '../src/agents/extract_pricing.js';
+import { extractPricing, SYSTEM } from '../src/agents/extract_pricing.js';
 import { TOKEN_BUDGET } from '../src/agents/_client.js';
 import type { PricingSnapshotData } from '../src/schema/pricing.js';
 
@@ -101,5 +101,12 @@ describe('extractPricing', () => {
     const client = fakeClient([{ parsed_output: data() }]);
     await extractPricing(SOURCE, { client });
     expect(client.prompts[0]).toContain(SOURCE);
+  });
+
+  it('tells the model how to handle a monthly/annual toggle', () => {
+    expect(SYSTEM).toContain('monthly_price_usd');
+    expect(SYSTEM).toContain('annual_price_usd');
+    expect(SYSTEM).toMatch(/annual/i);
+    expect(SYSTEM).toMatch(/Never leave\s+both null/);
   });
 });
