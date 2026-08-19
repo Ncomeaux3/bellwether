@@ -27,7 +27,7 @@ interface DueSource {
 }
 
 /** A page with no currency-and-digit anywhere is not a pricing page any more. */
-const PRICE_PATTERN = /[$€£]\s?\d/;
+export const PRICE_PATTERN = /[$€£]\s?\d/;
 
 function healthProblem(body: string, canary: string): string | null {
   if (!body.includes(canary)) {

@@ -1,7 +1,9 @@
 import type { DB } from '../ops/db.js';
 import { politeFetch, RobotsCache, type FetchResult } from '../tools/fetch.js';
 import { HostRateLimiter } from '../tools/ratelimit.js';
-import { captureUrl, cdxQueryUrl, parseCdxResponse } from '../tools/wayback.js';
+import { captureUrl, cdxQueryUrl, parseCdxResponse, waybackTimestampToIso } from '../tools/wayback.js';
+import { sha256 } from '../tools/hash.js';
+import { PRICE_PATTERN } from './collect.js';
 
 /** Spec 12.1: Wayback is slow and answers 429 under load. One request per 4s. */
 export const WAYBACK_MIN_INTERVAL_MS = 4_000;
@@ -96,6 +98,126 @@ export async function discoverCaptures(
       if (info.changes > 0) stats.enqueued += 1;
       else stats.duplicate += 1;
     }
+  }
+
+  return stats;
+}
+
+/**
+ * politeFetch already retries 3x with backoff inside one call, so this is the
+ * across-run allowance: how many separate `bellwether backfill` invocations may
+ * keep trying a capture the Archive will not serve.
+ */
+export const MAX_CAPTURE_ATTEMPTS = 3;
+
+export interface DrainOptions { limit?: number }
+
+export interface DrainStats {
+  claimed: number; stored: number; deduped: number; skipped: number; failed: number;
+}
+
+interface QueueRow { id: number; source_id: number; wayback_ts: string; target_url: string; attempts: number }
+
+/**
+ * Spec 12.1. Fetches queued captures one at a time and writes them as snapshots
+ * dated to the capture, then leaves normalize/extract/detect to the existing
+ * pipeline. Restartable: the work list is re-read from `backfill_queue` on
+ * every invocation, so an interrupted run resumes exactly where it stopped.
+ *
+ * Deliberately does NOT touch `sources.degraded_reason` on any path (ruling
+ * R3) — nothing an 18-month-old capture does is a health signal about the
+ * source today.
+ */
+export async function drainQueue(
+  db: DB,
+  opts: DrainOptions = {},
+  deps: BackfillDeps = {},
+): Promise<DrainStats> {
+  const now = deps.now ?? (() => new Date());
+  const fetcher = deps.fetcher ?? waybackFetcher();
+  const stats: DrainStats = { claimed: 0, stored: 0, deduped: 0, skipped: 0, failed: 0 };
+
+  // The whole work list is read up front rather than re-querying for "the next
+  // pending row" each iteration: a failed row stays `pending` so a later run can
+  // retry it, and re-querying would hand back the row we just failed, forever.
+  const queue = db.prepare(`
+    SELECT id, source_id, wayback_ts, target_url, attempts
+    FROM backfill_queue
+    WHERE state = 'pending' AND attempts < ?
+    ORDER BY wayback_ts, id
+    ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
+  `).all(MAX_CAPTURE_ATTEMPTS) as QueueRow[];
+
+  const setState = db.prepare(
+    'UPDATE backfill_queue SET state = ?, attempts = ?, last_error = ?, updated_at = ? WHERE id = ?',
+  );
+  const insertSnapshot = db.prepare(`
+    INSERT INTO snapshots
+      (source_id, observed_at, fetched_at, ok, http_status, error,
+       raw_content, raw_hash, normalized_hash, provenance)
+    VALUES (@sourceId, @observedAt, @fetchedAt, 1, 200, NULL,
+            @rawContent, @rawHash, NULL, @provenance)
+  `);
+  const findHash = db.prepare(
+    'SELECT id FROM snapshots WHERE source_id = ? AND raw_hash = ? LIMIT 1',
+  );
+
+  for (const row of queue) {
+    stats.claimed += 1;
+    const stampedAt = now().toISOString();
+
+    const observedAt = waybackTimestampToIso(row.wayback_ts);
+    if (observedAt === null) {
+      // Spec 12.1's one unrecoverable mistake is dating history to today. A
+      // stamp we cannot parse is dropped outright rather than guessed at.
+      stats.skipped += 1;
+      setState.run('skipped', row.attempts, `unparseable wayback timestamp "${row.wayback_ts}"`, stampedAt, row.id);
+      continue;
+    }
+
+    const result = await fetcher(row.target_url);
+
+    if (!result.ok || result.body === null) {
+      stats.failed += 1;
+      const attempts = row.attempts + 1;
+      // Ruling R6: an Archive outage is evidence about the Archive, not about
+      // the source. It never becomes an ok=0 snapshot.
+      setState.run(
+        attempts >= MAX_CAPTURE_ATTEMPTS ? 'failed' : 'pending',
+        attempts, result.error ?? `HTTP ${result.httpStatus}`, stampedAt, row.id,
+      );
+      continue;
+    }
+
+    // Ruling R7: the Archive serves soft-404s, consent walls, and "cannot be
+    // crawled" placeholders as HTTP 200. Extracting one yields an empty tier
+    // list, which diff reads as every tier removed — a maximum-materiality
+    // phantom. Admission gate, same test collect uses on live pages.
+    if (!PRICE_PATTERN.test(result.body)) {
+      stats.skipped += 1;
+      setState.run('skipped', row.attempts, 'no price-like text in the capture', stampedAt, row.id);
+      continue;
+    }
+
+    const rawHash = sha256(result.body);
+    const seen = findHash.get(row.source_id, rawHash) as { id: number } | undefined;
+    if (seen) stats.deduped += 1;
+    else stats.stored += 1;
+
+    insertSnapshot.run({
+      sourceId: row.source_id,
+      // Spec 12.1: the capture time, or eighteen months of history lands on
+      // today's date. fetched_at matches it deliberately (ruling R5) so
+      // collect's cadence gate and export's freshness queries stay correct
+      // without either of them learning about provenance.
+      observedAt,
+      fetchedAt: observedAt,
+      rawContent: seen ? null : result.body,
+      rawHash,
+      provenance: `wayback:${row.wayback_ts}`,
+    });
+
+    setState.run('fetched', row.attempts, null, stampedAt, row.id);
   }
 
   return stats;
