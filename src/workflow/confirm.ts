@@ -13,16 +13,56 @@ interface ChangeRow {
 
 interface RawObservation { normalizedHash: string; confidence: string; data: PricingSnapshotData }
 
-/** Read one JSON path out of a stored PricingSnapshot, mirroring diff.ts's path grammar. */
+/**
+ * Distinct from a genuinely-null field. A path that doesn't resolve (a
+ * removed usage rate, a tier name diffPricing's naive dot-join mangled) must
+ * never be silently read as `null` — that inverts confirm/retract logic for
+ * every change type whose after_json or before_json is legitimately null
+ * (usage_rate_added/removed). See task-7-report.md, code-review findings 1-2.
+ */
+const NOT_FOUND = Symbol('valueAt/not-found');
+
+/**
+ * Read one JSON path out of a stored PricingSnapshot, mirroring diff.ts's
+ * path grammar (diff.ts is not changed — this parses its existing format).
+ *
+ * Tier names are joined into the path with no escaping, so a name containing
+ * '.' (e.g. "Team 2.0") splits into multiple parts. Parsed positionally:
+ * `tiers.<name>` (2 parts) is the whole tier (tier_added/removed/renamed);
+ * `tiers.<name...>.<field>` (3+ parts) has the field as the LAST part and
+ * the name as everything between, rejoined with '.'.
+ */
 function valueAt(data: unknown, path: string): unknown {
   const parts = path.split('.');
-  if (parts[0] !== 'tiers') {
-    return parts[0] === 'notes' ? (data as { notes?: unknown }).notes : undefined;
+  const container = parts[0];
+
+  if (container === 'notes') {
+    return parts.length === 1 ? (data as { notes?: unknown }).notes : NOT_FOUND;
   }
-  const tiers = (data as { tiers?: Array<Record<string, unknown>> }).tiers ?? [];
-  const tier = tiers.find(t => t.name === parts[1]);
-  if (!tier) return undefined;
-  return parts.length >= 3 ? tier[parts[2]!] : tier;
+
+  if (container === 'usage_rates') {
+    if (parts.length !== 2) return NOT_FOUND;
+    const metric = parts[1]!;
+    const rate = ((data as { usage_rates?: Array<{ metric: string; unit_price_usd: number }> })
+      .usage_rates ?? []).find(r => r.metric === metric);
+    return rate ? rate.unit_price_usd : NOT_FOUND;
+  }
+
+  if (container === 'tiers') {
+    if (parts.length < 2) return NOT_FOUND;
+    const hasField = parts.length > 2;
+    const name = hasField ? parts.slice(1, -1).join('.') : parts[1]!;
+    const field = hasField ? parts[parts.length - 1]! : undefined;
+
+    const tiers = (data as { tiers?: Array<Record<string, unknown>> }).tiers ?? [];
+    const tier = tiers.find(t => t.name === name);
+    if (!tier) return NOT_FOUND;
+    if (!hasField) return tier;
+    if (field === 'flags') return { is_free: tier.is_free, is_enterprise: tier.is_enterprise };
+    return field! in tier ? tier[field!] : NOT_FOUND;
+  }
+
+  return NOT_FOUND;
 }
 
 /**
@@ -108,8 +148,10 @@ export function confirmChanges(db: DB, opts: { sourceId?: number } = {}): Confir
         // Either side low-confidence never leaves candidate (spec 12.5).
         if (current.confidence === 'low' || next.confidence === 'low') continue;
 
+        const actual = valueAt(next.data, change.json_path);
+        if (actual === NOT_FOUND) continue;   // path doesn't resolve — can't judge, stay put
+
         const claimed = change.after_json === null ? null : JSON.parse(change.after_json);
-        const actual = valueAt(next.data, change.json_path) ?? null;
 
         if (JSON.stringify(actual) === JSON.stringify(claimed)) {
           setState.run('confirmed', change.id);
