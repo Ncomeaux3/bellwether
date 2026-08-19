@@ -27,42 +27,59 @@ function appearsIn(value: number, text: string): boolean {
   });
 }
 
-// "Free" is itself an assertion that the price is zero — "freelance"/
-// "freedom" don't count. Only ever consulted for value === 0 on a tier
-// already marked is_free, so a fabricated zero would still need two
-// independent lies (a false price AND a false is_free) to slip through —
-// see consistencyViolations below for the other half of that gate.
+// Case-fold a literal string into a pattern without the `i` flag, by turning
+// each letter into a [xX] class. Needed because the "free"-ending lookahead
+// below must stay case-sensitive (see FREE_AFTER) while the tier name still
+// has to match regardless of case — a single regex can't mix the two under
+// one `i` flag.
+function caseInsensitiveLiteral(s: string): string {
+  return s.replace(/[a-zA-Z]/g, c => `[${c.toLowerCase()}${c.toUpperCase()}]`);
+}
+
+// "Free" is itself an assertion that the price is zero — but only when it is
+// describing *this* tier. The word appears page-wide in ordinary marketing
+// copy ("Risk-free guarantee", "Hassle-free setup") that has nothing to do
+// with any tier's price, so the signal that actually disambiguates is the
+// tier's own name sitting immediately before it: Figma's Starter tier reads
+// "StarterFree limited access...", where "risk-free"/"hassle-free" phrases
+// elsewhere on the page never have a tier name immediately in front of them.
 //
-// A plain \bfree\b is not enough: normalizeAndSlice's `.text` concatenates
-// sibling block elements with no separating whitespace, so "<h4>Free</h4>
-// <p>Free limited...</p>" under a "Starter" heading normalizes to
-// "StarterFreeFree limited...", with no ordinary word boundary before or
-// after either "Free". A lowercase-letter-into-uppercase-letter transition
-// is itself a boundary in that squished text (the same signal a reader uses
-// to split a run-together label), so it counts alongside the ordinary
-// non-letter boundary. "Freelance"/"Freedom" still fail: nothing after
-// "Free" transitions case, so neither branch fires.
-const BOUNDARY_BEFORE = String.raw`(?:(?<![a-zA-Z])|(?<=[a-z])(?=[A-Z]))`;
-const BOUNDARY_AFTER = String.raw`(?:(?![a-zA-Z])|(?<=[a-z])(?=[A-Z]))`;
-const FREE_WORD = new RegExp(`${BOUNDARY_BEFORE}[fF][rR][eE][eE]${BOUNDARY_AFTER}`);
+// "Immediately before" tolerates up to a handful of whitespace/punctuation
+// characters between the name and "free" (normalizeAndSlice concatenates
+// sibling elements with no separator at all — "StarterFree" — but a page can
+// just as easily write "Pro — Free forever"), not arbitrary distance.
+//
+// The word itself still can't be a continuation of a longer word: nothing
+// after "free" may be a lowercase letter, so "Freelance"/"Freedom" fail right
+// after a matching tier name exactly as they would anywhere else. Matching is
+// case-sensitive by construction (no `i` flag) so that check holds; the tier
+// name and "free" are case-folded manually instead.
+const FREE_AFTER = '(?![a-z])';
+const FREE_SEPARATOR = String.raw`[\s\p{P}]{0,6}`;
+
+function tierNamePrecedesFree(tierName: string, text: string): boolean {
+  const name = caseInsensitiveLiteral(escapeRegExp(tierName));
+  const re = new RegExp(`(?<![a-zA-Z])${name}${FREE_SEPARATOR}[fF][rR][eE][eE]${FREE_AFTER}`, 'u');
+  return re.test(text);
+}
 
 /** Empty array means grounded. Each entry names one fabricated value. */
 export function groundingViolations(data: PricingSnapshotData, sourceText: string): string[] {
   const violations: string[] = [];
-  const check = (value: number | null, where: string, freeTier: boolean) => {
+  const check = (value: number | null, where: string, tier: { name: string; is_free: boolean } | null) => {
     if (value === null) return;                    // "contact sales": nothing to ground
-    if (value === 0 && freeTier && FREE_WORD.test(sourceText)) return;
+    if (value === 0 && tier?.is_free && tierNamePrecedesFree(tier.name, sourceText)) return;
     if (!appearsIn(value, sourceText)) {
       violations.push(`${where} = ${value} does not appear in the page text`);
     }
   };
 
   for (const t of data.tiers) {
-    check(t.monthly_price_usd, `tiers.${t.name}.monthly_price_usd`, t.is_free);
-    check(t.annual_price_usd, `tiers.${t.name}.annual_price_usd`, t.is_free);
+    check(t.monthly_price_usd, `tiers.${t.name}.monthly_price_usd`, t);
+    check(t.annual_price_usd, `tiers.${t.name}.annual_price_usd`, t);
   }
   for (const r of data.usage_rates) {
-    check(r.unit_price_usd, `usage_rates.${r.metric}.unit_price_usd`, false);
+    check(r.unit_price_usd, `usage_rates.${r.metric}.unit_price_usd`, null);  // never for usage_rates
   }
   return violations;
 }

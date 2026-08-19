@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T02:18:39.039Z",
+  "generated_at": "2026-08-19T02:26:56.684Z",
   "competitors": [
     {
       "slug": "figma",
@@ -20,13 +20,12 @@
               {
                 "name": "Starter",
                 "monthly_price_usd": 0,
-                "annual_price_usd": null,
+                "annual_price_usd": 0,
                 "billing_unit": "flat",
                 "included_seats": null,
                 "is_free": true,
                 "is_enterprise": false,
                 "headline_features": [
-                  "Free limited access to Figma products",
                   "Unlimited drafts",
                   "UI kits and templates",
                   "150 AI credits/day, up to 500 AI credits/mo"
@@ -44,7 +43,9 @@
                   "Unlimited files and folders",
                   "Team-wide design libraries",
                   "Advanced Dev Mode inspection and MCP Server",
-                  "Full seat $16/mo + 3,000 AI credits/mo"
+                  "Full seat $16/mo + 3,000 AI credits/mo",
+                  "Dev seat $12/mo + 500 AI credits/mo",
+                  "Collab seat $3/mo + 500 AI credits/mo"
                 ]
               },
               {
@@ -59,7 +60,9 @@
                   "Unlimited teams",
                   "Shared libraries and fonts",
                   "Centralized admin tools",
-                  "Full seat $55/mo + 3,500 AI credits/mo"
+                  "Full seat $55/mo + 3,500 AI credits/mo",
+                  "Dev seat $25/mo + 500 AI credits/mo",
+                  "Collab seat $5/mo + 500 AI credits/mo"
                 ]
               },
               {
@@ -74,13 +77,15 @@
                   "Custom team workspaces",
                   "Design system theming and APIs",
                   "SCIM seat management",
-                  "Full seat $90/mo + 4,250 AI credits/mo"
+                  "Full seat $90/mo + 4,250 AI credits/mo",
+                  "Dev seat $35/mo + 500 AI credits/mo",
+                  "Collab seat $5/mo + 500 AI credits/mo"
                 ]
               }
             ],
             "usage_rates": [],
-            "notes": "Professional, Organization, and Enterprise tiers are billed annually. AI credits are included with each seat tier. Dev seats and Collab seats have lower monthly prices than Full seats.",
-            "extraction_confidence": "high"
+            "notes": "Professional and Organization tiers are billed annually. Enterprise requires contacting sales. Multiple seat types available (Full, Dev, Collab) with different pricing per tier.",
+            "extraction_confidence": "medium"
           }
         }
       ]

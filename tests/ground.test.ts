@@ -95,53 +95,67 @@ describe('groundingViolations', () => {
     });
   });
 
-  describe('word-only "Free" tiers', () => {
-    it('grounds a free tier priced at 0 against a page that only says "Free", no digit', () => {
+  describe('word-only "Free" tiers, anchored to the tier\'s own name', () => {
+    it("grounds Figma's real shape: the tier name glued directly to \"Free\", no separator", () => {
       const v = groundingViolations(
-        snap({ tiers: [{ ...tier(0), is_free: true }] }),
-        'Starter\nFree\nFree limited access to Figma products',
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Starter' }] }),
+        'StarterFree limited access to Figma products',
+      );
+      expect(v).toEqual([]);
+    });
+
+    it('rejects a free-sounding phrase elsewhere on the page not anchored to this tier\'s name', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Pro' }] }),
+        'HassleFreeSetup included with every plan',
+      );
+      expect(v).toHaveLength(1);
+    });
+
+    it('tolerates an ordinary separator between the tier name and "Free"', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Pro' }] }),
+        'Pro — Free forever',
       );
       expect(v).toEqual([]);
     });
 
     it('still rejects a free tier priced at 0 when the page says neither "free" nor "0"', () => {
       const v = groundingViolations(
-        snap({ tiers: [{ ...tier(0), is_free: true }] }),
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Starter' }] }),
         'Starter\nNo cost to start',
       );
       expect(v).toHaveLength(1);
     });
 
-    it('still rejects when is_free is false — the free-indicator only covers tiers marked free', () => {
-      const v = groundingViolations(snap({ tiers: [tier(0)] }), 'Starter\nFree');
+    it('still rejects when is_free is false, even with the name glued to "Free"', () => {
+      const v = groundingViolations(snap({ tiers: [{ ...tier(0), name: 'Starter' }] }), 'StarterFree');
       expect(v).toHaveLength(1);
     });
 
-    it('does not treat "freelance" as a free indicator', () => {
+    it('does not treat "freelance" as a free indicator, even right after the tier name', () => {
       const v = groundingViolations(
-        snap({ tiers: [{ ...tier(0), is_free: true }] }),
-        'Built for freelance designers',
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Pro' }] }),
+        'Pro Freelance services',
       );
       expect(v).toHaveLength(1);
     });
 
-    it('finds "Free" glued to neighboring text with no separating space — the real Figma shape', () => {
-      // normalizeAndSlice concatenates sibling elements with no whitespace:
-      // <h4>Free</h4><p>Free limited access...</p> under a "Starter" heading
-      // becomes exactly this run-together string.
+    it('does not treat "freedom" as a free indicator', () => {
       const v = groundingViolations(
-        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Starter' }] }),
-        'StarterFreeFree limited access to Figma productsSelect plan',
-      );
-      expect(v).toEqual([]);
-    });
-
-    it('still rejects "MoreFreedom" glued the same way — no case transition after "Free"', () => {
-      const v = groundingViolations(
-        snap({ tiers: [{ ...tier(0), is_free: true }] }),
-        'GetMoreFreedomToday',
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Pro' }] }),
+        'Pro Freedom to grow',
       );
       expect(v).toHaveLength(1);
+    });
+
+    it('still rejects a fabricated non-zero price on a free tier — the free-indicator only ever applies to 0', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(99), is_free: true, name: 'Starter' }] }),
+        'StarterFree',
+      );
+      expect(v).toHaveLength(1);
+      expect(v[0]).toContain('99');
     });
   });
 });
