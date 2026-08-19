@@ -229,6 +229,7 @@ program
     const { seedCompetitors } = await import('./config/seed.js');
     const { COMPETITORS } = await import('./config/competitors.public.js');
     const { runPipeline } = await import('./workflow/pipeline.js');
+    const { runHeartbeat } = await import('./ops/heartbeat.js');
 
     const db = openDb(dbPath());
 
@@ -238,7 +239,7 @@ program
     const seedStats = seedCompetitors(db, COMPETITORS);
     console.log(`Seeded ${seedStats.competitors} competitors and ${seedStats.sources} sources.`);
 
-    const pipelineStats = await runPipeline(db);
+    const pipelineStats = await runPipeline(db, {}, { heartbeat: (d) => runHeartbeat(d) });
     printStepTable(pipelineStats.steps);
 
     db.close();
@@ -267,9 +268,10 @@ program
   .description('run the daily sequence once and exit (for cron)')
   .action(async () => {
     const { runPipeline } = await import('./workflow/pipeline.js');
+    const { runHeartbeat } = await import('./ops/heartbeat.js');
     const db = openDb(dbPath());
 
-    const pipelineStats = await runPipeline(db);
+    const pipelineStats = await runPipeline(db, {}, { heartbeat: (d) => runHeartbeat(d) });
     printStepTable(pipelineStats.steps);
 
     db.close();
@@ -322,6 +324,33 @@ program
         : `\n${failures} check${failures === 1 ? ' needs' : 's need'} attention before this will run unattended.`
     );
     process.exit(failures === 0 ? 0 : 1);
+  });
+
+// Nested so Task 4's `ops backup` / `ops verify-backup` land next to this
+// without a second top-level namespace.
+const ops = program.command('ops').description('operational commands (alerts, backup)');
+
+ops
+  .command('heartbeat')
+  .description('run the outcome-based health check once and send any Telegram alert')
+  .action(async () => {
+    const { runHeartbeat } = await import('./ops/heartbeat.js');
+    const db = openDb(dbPath());
+
+    const stats = await runHeartbeat(db);
+    if (stats.alerts.length > 0) {
+      console.log(`${stats.alerts.length} problem(s):`);
+      for (const alert of stats.alerts) console.log(`  - ${alert}`);
+    } else {
+      console.log('No problems found.');
+    }
+    console.log(
+      stats.sent
+        ? `Telegram: sent${stats.allGreenSent ? ' (all-green)' : ''}.`
+        : 'Telegram: not sent (unconfigured, not Monday in CT, or the API call failed).'
+    );
+
+    db.close();
   });
 
 program.parseAsync(process.argv).catch((err: unknown) => {

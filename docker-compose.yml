@@ -13,6 +13,10 @@ services:
       # needs somewhere to land.
       BELLWETHER_EXPORT_DIR: /data/export
       TZ: America/Chicago
+      # TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID (M5 heartbeat) need no entry
+      # here: env_file above already injects every key in .env, same as
+      # ANTHROPIC_API_KEY and the B2_*/RESTIC_* backup vars. This block only
+      # exists for values that override or don't live in .env at all.
     volumes:
       # Mounted read-only so tsx's --env-file-if-exists finds it. Compose already
       # injects these vars via env_file; without the mount the CLI prints a
