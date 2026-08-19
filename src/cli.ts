@@ -372,6 +372,78 @@ ops
     db.close();
   });
 
+ops
+  .command('backup')
+  .description('VACUUM INTO a dated snapshot and prune local copies beyond 7')
+  .option('--dir <path>', 'snapshot directory (default: alongside the database)')
+  .action(async (options: { dir?: string }) => {
+    const { backupSnapshot } = await import('./ops/backup.js');
+    const { acquireRun, finishRun } = await import('./ops/runs.js');
+    const { sendTelegram } = await import('./tools/telegram.js');
+
+    const dbFile = dbPath();
+    const dir = options.dir ? resolve(options.dir) : join(dirname(dbFile), 'backup');
+    const db = openDb(dbFile);
+    const runId = acquireRun(db, 'backup');
+
+    try {
+      const result = backupSnapshot(db, dir);
+      finishRun(db, runId, true, result);
+      console.log(
+        `Backed up to ${result.path} (${result.bytes} bytes)` +
+        (result.pruned.length ? `; pruned ${result.pruned.join(', ')}` : '') + '.'
+      );
+      db.close();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      finishRun(db, runId, false, {}, message);
+      db.close();
+      await sendTelegram(`Bellwether: backup failed — ${message}`);
+      throw err;
+    }
+  });
+
+ops
+  .command('verify-backup')
+  .description('open the newest local snapshot and compare row counts against the live archive')
+  .option('--file <path>', 'snapshot file (default: newest bellwether-*.db in the backup dir)')
+  .action(async (options: { file?: string }) => {
+    const { verifyBackup } = await import('./ops/backup.js');
+    const { sendTelegram } = await import('./tools/telegram.js');
+    const { existsSync, readdirSync } = await import('node:fs');
+
+    const livePath = dbPath();
+    const dir = join(dirname(livePath), 'backup');
+
+    // No `runs` row here (see docs/superpowers/plans/2026-08-19-bellwether-m5.md
+    // Task 4): the heartbeat watchdog only queries kinds `export` and `backup`,
+    // and adding a third kind means also editing that query. verify-backup
+    // alerts directly and exits nonzero; cron log output surfaces the rest.
+    try {
+      const file = options.file
+        ? resolve(options.file)
+        : (() => {
+            const newest = existsSync(dir)
+              ? readdirSync(dir).filter(f => /^bellwether-\d{8}\.db$/.test(f)).sort().at(-1)
+              : undefined;
+            if (!newest) throw new Error(`no bellwether-*.db snapshot found in ${dir}`);
+            return join(dir, newest);
+          })();
+
+      const result = verifyBackup(livePath, file);
+      for (const [table, c] of Object.entries(result.counts)) {
+        console.log(`${table.padEnd(12)} live=${c.live} snapshot=${c.snapshot}`);
+      }
+      if (!result.ok) throw new Error(result.detail);
+      console.log('verify-backup: OK');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`verify-backup: FAILED — ${message}`);
+      await sendTelegram(`Bellwether: verify-backup failed — ${message}`);
+      process.exit(1);
+    }
+  });
+
 program.parseAsync(process.argv).catch((err: unknown) => {
   // ExportGuardError and RunLockedError carry messages written for a human
   // to read (e.g. "Run `bellwether seed` first"). Without this, they'd

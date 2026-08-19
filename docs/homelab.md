@@ -181,3 +181,83 @@ Note the `;`, not `&&`, between the two commands. A partially-failed pipeline
 guards — `ops/publish.sh` has its own freshness precondition (it refuses to
 run if `/data/export/board.json` is missing or older than 26 hours), so it
 never publishes stale data even when it runs unconditionally.
+
+## Backup and restore
+
+The archive is the project's compounding asset and, until this, lives on
+exactly one disk. M5 adds a nightly `VACUUM INTO` snapshot (container) pushed
+to Backblaze B2 with `restic` (host), plus a monthly restore check — because
+a backup you have never restored is a hope, not a backup.
+
+### 1. Install restic
+
+    sudo apt install restic
+
+### 2. Create a Backblaze B2 bucket and application key
+
+Sign up at backblaze.com, create a bucket (private, any name), then
+**Account → Application Keys → Add a New Application Key**, scoped to that
+bucket. Note the key ID and application key — B2 shows the application key
+only once.
+
+### 3. Add the four keys to `.env` on the box
+
+    RESTIC_REPOSITORY=b2:your-bucket-name:bellwether
+    RESTIC_PASSWORD=<a long random passphrase — losing it loses the backups>
+    B2_ACCOUNT_ID=<the application key ID>
+    B2_ACCOUNT_KEY=<the application key>
+
+`ops/backup.sh` sources `.env` itself and no-ops with an explicit message if
+`RESTIC_REPOSITORY` is unset, so a box without these keys still runs
+`bw ops backup` (the local snapshot) without error — only the B2 push skips.
+
+### 4. Initialize the restic repository (once)
+
+    cd ~/bellwether
+    set -a; . ./.env; set +a
+    restic init
+
+### 5. Install the crontab
+
+Add these lines **after** the existing pipeline/publish line:
+
+    30 7 * * *  cd ~/bellwether && docker compose exec -T bellwether pnpm bw ops backup >> cron.log 2>&1; ./ops/backup.sh ~/bellwether >> cron.log 2>&1
+    0  8 1 * *  cd ~/bellwether && docker compose exec -T bellwether pnpm bw ops verify-backup >> cron.log 2>&1
+
+The first line runs 30 minutes after the daily pipeline/publish, so the
+snapshot reflects that day's collection: `bw ops backup` writes
+`data/backup/bellwether-YYYYMMDD.db` inside the container (bind-mounted to
+the box's real disk) and prunes local copies beyond the newest 7; then
+`ops/backup.sh` pushes that directory to B2 and prunes the remote repository
+to 7 daily / 4 weekly / 12 monthly. The `;` (not `&&`) matches
+`ops/publish.sh`'s convention — a failed local backup shouldn't also skip
+attempting the push of whatever's already there.
+
+The second line runs monthly, on the 1st: `bw ops verify-backup` opens the
+newest local snapshot readonly, compares `snapshots`/`extractions`/`changes`
+row counts against the live archive, and exits nonzero (with a Telegram
+alert) if a table is out of tolerance. It does not write a `runs` row — the
+heartbeat watchdog only tracks `export` and `backup`, so a failed verify
+alerts directly rather than teaching the watchdog a third kind for one
+monthly check.
+
+### Restoring from B2
+
+Rehearse this before you need it for real — restore to a scratch directory,
+never straight over the live archive:
+
+    mkdir -p /tmp/bellwether-restore
+    cd ~/bellwether
+    set -a; . ./.env; set +a
+    restic restore latest --target /tmp/bellwether-restore
+
+That drops the snapshot back out under
+`/tmp/bellwether-restore/data/backup/bellwether-YYYYMMDD.db`. Verify it
+against the live archive the same way the monthly cron does:
+
+    docker compose exec -T bellwether pnpm bw ops verify-backup --file /tmp/bellwether-restore/data/backup/bellwether-YYYYMMDD.db
+
+(Or, if verifying outside the container, copy the file into `./data/backup/`
+first — `--file` is read from inside the container's `/data` mount.) A clean
+`verify-backup: OK` is the actual proof the backup works, not the restic
+command exiting zero.
