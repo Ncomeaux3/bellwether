@@ -349,3 +349,28 @@ describe('buildLlmsTxt', () => {
       .toBe(buildLlmsTxt('https://bellwether.test', competitors));
   });
 });
+
+describe('the web changeLabel stays pinned to describeChange', () => {
+  // web/ cannot import from src/, so the board's change-list labels are an
+  // intentional reimplementation of describeChange's grammar. Nothing else
+  // guards against drift — the web package has no test runner — so this pins
+  // the two on the branches real data does not currently exercise.
+  it('agrees on the dotted-name, annual-field, and null-value branches', async () => {
+    const { changeLabel } = await import('../web/lib/data.js');
+
+    const cases = [
+      { change_type: 'price_changed', json_path: 'tiers.Team 2.0.monthly_price_usd', before_json: '8', after_json: '10' },
+      { change_type: 'price_changed', json_path: 'tiers.Pro.annual_price_usd', before_json: '96', after_json: '120' },
+      { change_type: 'price_changed', json_path: 'tiers.Ent.monthly_price_usd', before_json: null, after_json: '299' },
+      { change_type: 'tier_removed', json_path: 'tiers.Basic', before_json: '{"name":"Basic"}', after_json: null },
+    ];
+    for (const c of cases) {
+      const web = changeLabel({
+        change_type: c.change_type, json_path: c.json_path,
+        before: c.before_json === null ? null : JSON.parse(c.before_json),
+        after: c.after_json === null ? null : JSON.parse(c.after_json),
+      });
+      expect(web, `${c.change_type} ${c.json_path}`).toBe(describeChange(c));
+    }
+  });
+});

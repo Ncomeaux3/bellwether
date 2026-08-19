@@ -126,7 +126,7 @@ export default function HomePage() {
                   <span className="text-ink-secondary">{c.competitor}</span> · {changeLabel(c)}
                 </p>
                 {c.annotation && (
-                  <p className="mt-1 text-sm text-ink-secondary">{c.annotation.implication}</p>
+                  <p className="mt-1 text-sm italic text-ink-secondary">{c.annotation.implication}</p>
                 )}
               </li>
             ))}
