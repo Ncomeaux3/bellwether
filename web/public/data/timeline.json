@@ -1,0 +1,1142 @@
+{
+  "generated_at": "2026-08-19T15:05:10.627Z",
+  "observation_count": 62,
+  "competitors": [
+    {
+      "slug": "figma",
+      "name": "Figma",
+      "first_observed_at": "2026-08-18T15:01:15.439Z",
+      "last_observed_at": "2026-08-18T15:01:15.439Z",
+      "series": [
+        {
+          "tier": "Enterprise",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:01:15.439Z",
+                "price": 90
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Organization",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:01:15.439Z",
+                "price": 55
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Professional",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:01:15.439Z",
+                "price": 16
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Starter",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:01:15.439Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "linear",
+      "name": "Linear",
+      "first_observed_at": "2026-08-18T15:00:52.010Z",
+      "last_observed_at": "2026-08-18T15:00:52.010Z",
+      "series": [
+        {
+          "tier": "Basic",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:00:52.010Z",
+                "price": 10
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Business",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:00:52.010Z",
+                "price": 16
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-18T15:00:52.010Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "notion",
+      "name": "Notion",
+      "first_observed_at": "2025-02-19T07:54:17.000Z",
+      "last_observed_at": "2026-08-18T15:01:03.831Z",
+      "series": [
+        {
+          "tier": "Business",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T07:54:17.000Z",
+                "price": 15
+              },
+              {
+                "observed_at": "2025-03-02T21:53:58.000Z",
+                "price": 15
+              },
+              {
+                "observed_at": "2025-04-01T09:55:48.000Z",
+                "price": 15
+              },
+              {
+                "observed_at": "2025-05-04T06:15:55.000Z",
+                "price": 15
+              },
+              {
+                "observed_at": "2025-06-03T01:07:05.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2025-07-01T13:46:53.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2025-09-01T07:52:45.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2025-10-01T12:53:30.000Z",
+                "price": 20
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-03-03T01:27:45.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-04-01T18:53:03.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-05-09T13:56:51.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-06-01T05:29:02.000Z",
+                "price": 20
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-18T15:01:03.831Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T07:54:17.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-03-02T21:53:58.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-04-01T09:55:48.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-05-04T06:15:55.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-06-03T01:07:05.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-07-01T13:46:53.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-09-01T07:52:45.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-10-01T12:53:30.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-03-03T01:27:45.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-01T18:53:03.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-09T13:56:51.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-01T05:29:02.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-18T15:01:03.831Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Notion AI",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T07:54:17.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-03-02T21:53:58.000Z",
+                "price": 10
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-05-04T06:15:55.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-06-03T01:07:05.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-07-01T13:46:53.000Z",
+                "price": 10
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Plus",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T07:54:17.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-03-02T21:53:58.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-04-01T09:55:48.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-05-04T06:15:55.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-06-03T01:07:05.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-07-01T13:46:53.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-09-01T07:52:45.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2025-10-01T12:53:30.000Z",
+                "price": 10
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-03-03T01:27:45.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-04-01T18:53:03.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-05-09T13:56:51.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-06-01T05:29:02.000Z",
+                "price": 10
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-18T15:01:03.831Z",
+                "price": 10
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": [
+        {
+          "observed_at": "2025-05-04T06:15:55.000Z",
+          "label": "Notion AI tier added"
+        },
+        {
+          "observed_at": "2025-06-03T01:07:05.000Z",
+          "label": "Business 15 to 20"
+        },
+        {
+          "observed_at": "2025-09-01T07:52:45.000Z",
+          "label": "Free billing unit changed"
+        },
+        {
+          "observed_at": "2025-09-01T07:52:45.000Z",
+          "label": "Notion AI tier removed"
+        }
+      ]
+    },
+    {
+      "slug": "postman",
+      "name": "Postman",
+      "first_observed_at": "2025-02-23T11:47:21.000Z",
+      "last_observed_at": "2026-08-18T15:01:52.314Z",
+      "series": [
+        {
+          "tier": "Basic",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-23T11:47:21.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2025-03-10T17:16:03.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2025-04-08T18:15:48.000Z",
+                "price": 19
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-07-01T07:56:07.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2025-08-16T02:16:20.000Z",
+                "price": 19
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-11-01T23:00:26.000Z",
+                "price": 19
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Enterprise",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-23T11:47:21.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2025-03-10T17:16:03.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2025-04-08T18:15:48.000Z",
+                "price": 49
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-07-01T07:56:07.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2025-08-16T02:16:20.000Z",
+                "price": 49
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-11-01T23:00:26.000Z",
+                "price": 49
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-04-02T03:21:26.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2026-05-12T17:36:15.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2026-06-07T00:02:17.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2026-07-01T09:22:49.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2026-08-01T03:56:31.000Z",
+                "price": 49
+              },
+              {
+                "observed_at": "2026-08-18T15:01:52.314Z",
+                "price": 49
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-23T11:47:21.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-03-10T17:16:03.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-04-08T18:15:48.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-07-01T07:56:07.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-08-16T02:16:20.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-11-01T23:00:26.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-04-02T03:21:26.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-12T17:36:15.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-07T00:02:17.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-01T09:22:49.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-01T03:56:31.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-18T15:01:52.314Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Professional",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-23T11:47:21.000Z",
+                "price": 39
+              },
+              {
+                "observed_at": "2025-03-10T17:16:03.000Z",
+                "price": 39
+              },
+              {
+                "observed_at": "2025-04-08T18:15:48.000Z",
+                "price": 39
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-07-01T07:56:07.000Z",
+                "price": 39
+              },
+              {
+                "observed_at": "2025-08-16T02:16:20.000Z",
+                "price": 39
+              }
+            ],
+            [
+              {
+                "observed_at": "2025-11-01T23:00:26.000Z",
+                "price": 39
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Solo",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-04-02T03:21:26.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-05-12T17:36:15.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-06-07T00:02:17.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-07-01T09:22:49.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-08-01T03:56:31.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-08-18T15:01:52.314Z",
+                "price": 9
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Team",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-04-02T03:21:26.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-05-12T17:36:15.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-06-07T00:02:17.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-07-01T09:22:49.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-08-01T03:56:31.000Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-08-18T15:01:52.314Z",
+                "price": 19
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        }
+      ],
+      "markers": [
+        {
+          "observed_at": "2025-08-16T02:16:20.000Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-04-02T03:21:26.000Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-04-02T03:21:26.000Z",
+          "label": "Basic tier removed"
+        },
+        {
+          "observed_at": "2026-04-02T03:21:26.000Z",
+          "label": "Professional tier removed"
+        },
+        {
+          "observed_at": "2026-04-02T03:21:26.000Z",
+          "label": "Solo tier added"
+        },
+        {
+          "observed_at": "2026-04-02T03:21:26.000Z",
+          "label": "Team tier added"
+        }
+      ]
+    },
+    {
+      "slug": "sentry",
+      "name": "Sentry",
+      "first_observed_at": "2025-02-19T05:34:02.000Z",
+      "last_observed_at": "2026-08-11T15:50:53.000Z",
+      "series": [
+        {
+          "tier": "business",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T05:34:02.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-03-04T06:39:29.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-04-02T08:37:29.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-05-06T08:00:31.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-06-11T01:34:59.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-07-15T23:34:39.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-08-07T00:34:28.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-09-03T22:10:42.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-10-04T12:23:30.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-11-04T23:27:41.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2025-12-07T09:43:07.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-01-06T01:15:52.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-02-15T01:08:18.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-03-07T06:11:32.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-04-09T08:16:32.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-05-01T10:12:52.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-06-09T03:09:59.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-08-11T15:50:53.000Z",
+                "price": 80
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "developer",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T05:34:02.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-03-04T06:39:29.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-04-02T08:37:29.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-05-06T08:00:31.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-06-11T01:34:59.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-07-15T23:34:39.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-08-07T00:34:28.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-09-03T22:10:42.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-10-04T12:23:30.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-11-04T23:27:41.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-12-07T09:43:07.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-01-06T01:15:52.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-02-15T01:08:18.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-03-07T06:11:32.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-09T08:16:32.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-01T10:12:52.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-09T03:09:59.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-11T15:50:53.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "team",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T05:34:02.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-03-04T06:39:29.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-04-02T08:37:29.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-05-06T08:00:31.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-06-11T01:34:59.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-07-15T23:34:39.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-08-07T00:34:28.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-09-03T22:10:42.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-10-04T12:23:30.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-11-04T23:27:41.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2025-12-07T09:43:07.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-01-06T01:15:52.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-02-15T01:08:18.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-03-07T06:11:32.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-04-09T08:16:32.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-05-01T10:12:52.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-06-09T03:09:59.000Z",
+                "price": 26
+              },
+              {
+                "observed_at": "2026-08-11T15:50:53.000Z",
+                "price": 26
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "supabase",
+      "name": "Supabase",
+      "first_observed_at": "2025-02-19T03:41:25.000Z",
+      "last_observed_at": "2026-08-18T15:01:28.444Z",
+      "series": [
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T03:41:25.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-03-01T21:12:34.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-04-02T10:02:48.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-05-03T06:11:17.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-06-11T16:46:21.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-07-05T18:55:29.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-08-01T05:10:15.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-09-11T22:52:30.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-11-05T16:33:22.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-12-02T14:57:10.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-01-02T02:42:21.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-02-01T11:14:33.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-05-07T00:28:17.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-02T07:33:02.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-09T18:31:36.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-02T04:26:09.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-18T15:01:28.444Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T03:41:25.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-03-01T21:12:34.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-04-02T10:02:48.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-05-03T06:11:17.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-06-11T16:46:21.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-07-05T18:55:29.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-08-01T05:10:15.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-09-11T22:52:30.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-11-05T16:33:22.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2025-12-02T14:57:10.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-01-02T02:42:21.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-02-01T11:14:33.000Z",
+                "price": 25
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-05-07T00:28:17.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-06-02T07:33:02.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-07-09T18:31:36.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-02T04:26:09.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-18T15:01:28.444Z",
+                "price": 25
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Team",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-02-19T03:41:25.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-03-01T21:12:34.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-04-02T10:02:48.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-05-03T06:11:17.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-06-11T16:46:21.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-07-05T18:55:29.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-08-01T05:10:15.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-09-11T22:52:30.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-11-05T16:33:22.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2025-12-02T14:57:10.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-01-02T02:42:21.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-02-01T11:14:33.000Z",
+                "price": 599
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-05-07T00:28:17.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-06-02T07:33:02.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-07-09T18:31:36.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-08-02T04:26:09.000Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-08-18T15:01:28.444Z",
+                "price": 599
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    }
+  ]
+}

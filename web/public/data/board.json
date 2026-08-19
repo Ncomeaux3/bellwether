@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T02:42:37.363Z",
+  "generated_at": "2026-08-19T15:05:10.627Z",
   "competitors": [
     {
       "slug": "figma",
@@ -12,7 +12,7 @@
           "state": "ok",
           "last_checked_at": "2026-08-18T15:01:15.439Z",
           "last_ok_at": "2026-08-18T15:01:15.439Z",
-          "distinct_states": 1,
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -101,7 +101,7 @@
           "state": "ok",
           "last_checked_at": "2026-08-18T15:00:52.010Z",
           "last_ok_at": "2026-08-18T15:00:52.010Z",
-          "distinct_states": 1,
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -194,7 +194,7 @@
           "state": "ok",
           "last_checked_at": "2026-08-18T15:01:03.831Z",
           "last_ok_at": "2026-08-18T15:01:03.831Z",
-          "distinct_states": 1,
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -303,7 +303,7 @@
           "state": "ok",
           "last_checked_at": "2026-08-18T15:01:52.314Z",
           "last_ok_at": "2026-08-18T15:01:52.314Z",
-          "distinct_states": 1,
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -416,7 +416,7 @@
           "state": "ok",
           "last_checked_at": "2026-08-18T15:01:40.594Z",
           "last_ok_at": "2026-08-18T15:01:40.594Z",
-          "distinct_states": 1,
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -548,7 +548,7 @@
           "state": "ok",
           "last_checked_at": "2026-08-18T15:01:28.444Z",
           "last_ok_at": "2026-08-18T15:01:28.444Z",
-          "distinct_states": 1,
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
