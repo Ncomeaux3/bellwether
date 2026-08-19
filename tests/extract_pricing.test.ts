@@ -89,6 +89,26 @@ describe('extractPricing', () => {
     expect(r.detail).toContain('99');
   });
 
+  it('retries a self-contradictory is_free/price pair and names it in the retry prompt', async () => {
+    const contradictory = data({ tiers: [{ ...data().tiers[0]!, is_free: true, monthly_price_usd: null }] });
+    const fixed = data({ tiers: [{ ...data().tiers[0]!, is_free: true, monthly_price_usd: 0 }] });
+    const client = fakeClient([{ parsed_output: contradictory }, { parsed_output: fixed }]);
+    const r = await extractPricing('Free $0/mo.', { client });
+    expect(r.ok).toBe(true);
+    expect(client.prompts).toHaveLength(2);
+    expect(client.prompts[1]).toContain('is_free');
+  });
+
+  it('refuses to return self-contradictory data when the retry is also contradictory', async () => {
+    const contradictory = data({ tiers: [{ ...data().tiers[0]!, is_free: true, monthly_price_usd: null }] });
+    const client = fakeClient([{ parsed_output: contradictory }, { parsed_output: contradictory }]);
+    const r = await extractPricing('Free $0/mo.', { client });
+    expect(r.ok).toBe(false);
+    if (r.ok) return;
+    expect(r.reason).toBe('ungrounded');
+    expect(r.detail).toContain('is_free');
+  });
+
   it('rejects output that fails Zod validation', async () => {
     const client = fakeClient([{ parsed_output: { currency: 'USD' } }, { parsed_output: { currency: 'USD' } }]);
     const r = await extractPricing(SOURCE, { client });

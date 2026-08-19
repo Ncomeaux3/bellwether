@@ -1,6 +1,6 @@
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
-import { groundingViolations } from '../tools/ground.js';
+import { consistencyViolations, groundingViolations } from '../tools/ground.js';
 import { EXTRACT_MODEL, costMicros, guardTokens, type TokenCounter } from './_client.js';
 
 export const SYSTEM = `You extract pricing facts from a SaaS pricing page.
@@ -74,13 +74,13 @@ export async function extractPricing(text: string, deps: ExtractDeps): Promise<E
       continue;
     }
 
-    const violations = groundingViolations(parsed.data, text);
+    const violations = [...groundingViolations(parsed.data, text), ...consistencyViolations(parsed.data)];
     if (violations.length > 0) {
       lastReason = 'ungrounded';
       lastDetail = violations.join('; ');
       correction =
-        `Your previous answer invented values not present in the page: ${lastDetail}. ` +
-        `Use only numbers that literally appear in the text below.\n\n`;
+        `Your previous answer invented values not present in the page, or contradicted itself: ${lastDetail}. ` +
+        `Use only numbers that literally appear in the text below, and keep is_free consistent with monthly_price_usd.\n\n`;
       continue;
     }
 

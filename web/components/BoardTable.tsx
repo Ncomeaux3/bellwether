@@ -55,9 +55,11 @@ export function BoardTable({ competitors }: { competitors: BoardCompetitor[] }) 
                       {s.current_pricing.tiers.map(t => (
                         <li key={t.name} className="font-mono text-sm text-ink">
                           <span className="text-ink-secondary">{t.name}</span>{' '}
-                          {t.monthly_price_usd === null
-                            ? <span className="text-ink-muted">contact sales</span>
-                            : <span>${t.monthly_price_usd}</span>}
+                          {t.is_free
+                            ? <span>Free</span>
+                            : t.monthly_price_usd === null
+                              ? <span className="text-ink-muted">contact sales</span>
+                              : <span>${t.monthly_price_usd}</span>}
                         </li>
                       ))}
                     </ul>

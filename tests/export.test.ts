@@ -214,12 +214,16 @@ describe('exportData — pricing', () => {
        before_json, after_json, materiality, state, observed_at)
       VALUES
       (1, 1, 1, 'price_changed', 'tiers.Pro.monthly_price_usd', '20', '24', 100, 'confirmed', '2026-08-18T12:00:00.000Z'),
-      (1, 1, 1, 'notes_changed', 'notes', '"a"', '"b"', 5, 'candidate', '2026-08-18T12:00:00.000Z')`).run();
+      (1, 1, 1, 'notes_changed', 'notes', '"a"', '"b"', 5, 'candidate', '2026-08-18T12:00:00.000Z'),
+      (1, 1, 1, 'flag_changed', 'tiers.Pro.is_free', '0', '1', 100, 'candidate', '2026-08-18T12:00:00.000Z')`).run();
 
     const stats = exportData(db, out);
     expect(stats.files).toContain('changes.json');
 
     const feed = read('changes.json');
+    // Isolates the state filter: this row is material (100) but not confirmed,
+    // so a query that dropped `state = 'confirmed'` would still leak it in.
+    expect(feed.changes.some((c: any) => c.json_path === 'tiers.Pro.is_free')).toBe(false);
     expect(feed.changes).toHaveLength(1);
     expect(feed.changes[0].change_type).toBe('price_changed');
     expect(feed.changes[0].competitor).toBe('Acme');
@@ -227,7 +231,15 @@ describe('exportData — pricing', () => {
 
   it('counts confirmed changes for the commit message', () => {
     addExtraction('h1', 20);
-    const stats = exportData(db, out);
-    expect(stats.confirmedChanges).toBe(0);
+    expect(exportData(db, out).confirmedChanges).toBe(0);
+
+    db.prepare(`INSERT INTO changes
+      (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+       before_json, after_json, materiality, state, observed_at)
+      VALUES
+      (1, 1, 1, 'price_changed', 'tiers.Pro.monthly_price_usd', '20', '24', 100, 'confirmed', '2026-08-18T12:00:00.000Z'),
+      (1, 1, 1, 'flag_changed', 'tiers.Pro.is_enterprise', '0', '1', 60, 'confirmed', '2026-08-18T12:00:00.000Z')`).run();
+
+    expect(exportData(db, out).confirmedChanges).toBe(2);
   });
 });

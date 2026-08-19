@@ -46,3 +46,22 @@ export function groundingViolations(data: PricingSnapshotData, sourceText: strin
   }
   return violations;
 }
+
+/**
+ * Spec: the schema comment on `monthly_price_usd` is explicit that null means
+ * "contact sales" — NOT free, and NOT zero. A model can satisfy Zod and
+ * grounding while still asserting `is_free: true` alongside a null or nonzero
+ * price, which is a self-contradiction no text-presence check catches.
+ * Empty array means consistent.
+ */
+export function consistencyViolations(data: PricingSnapshotData): string[] {
+  const violations: string[] = [];
+  for (const t of data.tiers) {
+    if (t.is_free && t.monthly_price_usd !== 0) {
+      violations.push(
+        `tiers.${t.name}.is_free = true but monthly_price_usd = ${t.monthly_price_usd} (free tiers must price at 0)`
+      );
+    }
+  }
+  return violations;
+}

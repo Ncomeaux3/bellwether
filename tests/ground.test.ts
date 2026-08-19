@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { groundingViolations } from '../src/tools/ground.js';
+import { consistencyViolations, groundingViolations } from '../src/tools/ground.js';
 import type { PricingSnapshotData } from '../src/schema/pricing.js';
 
 function snap(over: Partial<PricingSnapshotData> = {}): PricingSnapshotData {
@@ -93,5 +93,26 @@ describe('groundingViolations', () => {
       const v = groundingViolations(snap({ tiers: [tier(0)] }), 'Copyright 2026. Was $120/mo.');
       expect(v).toHaveLength(1);
     });
+  });
+});
+
+describe('consistencyViolations', () => {
+  it('rejects is_free = true paired with a null price', () => {
+    const v = consistencyViolations(snap({ tiers: [{ ...tier(null), is_free: true }] }));
+    expect(v).toHaveLength(1);
+    expect(v[0]).toContain('is_free');
+  });
+
+  it('rejects is_free = true paired with a nonzero price', () => {
+    const v = consistencyViolations(snap({ tiers: [{ ...tier(20), is_free: true }] }));
+    expect(v).toHaveLength(1);
+  });
+
+  it('accepts is_free = true paired with monthly_price_usd = 0', () => {
+    expect(consistencyViolations(snap({ tiers: [{ ...tier(0), is_free: true }] }))).toEqual([]);
+  });
+
+  it('accepts is_free = false regardless of price', () => {
+    expect(consistencyViolations(snap({ tiers: [tier(null), tier(20)] }))).toEqual([]);
   });
 });

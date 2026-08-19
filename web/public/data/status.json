@@ -1,14 +1,14 @@
 {
-  "generated_at": "2026-08-19T02:01:10.016Z",
+  "generated_at": "2026-08-19T02:11:51.709Z",
   "total_sources": 6,
-  "healthy_sources": 6,
+  "healthy_sources": 5,
   "sources": [
     {
       "slug": "figma",
       "kind": "pricing",
-      "state": "ok",
+      "state": "degraded",
       "last_ok_at": "2026-08-18T15:01:15.439Z",
-      "degraded_reason": null
+      "degraded_reason": "extraction ungrounded: tiers.Starter.monthly_price_usd = 0 does not appear in the page text; tiers.Starter.annual_price_usd = 0 does not appear in the page text; usage_rates.AI credits.unit_price_usd = 0 does not appear in the page text"
     },
     {
       "slug": "linear",
@@ -48,8 +48,8 @@
   ],
   "last_run": {
     "kind": "detect",
-    "started_at": "2026-08-19T02:01:09.233Z",
-    "ended_at": "2026-08-19T02:01:09.237Z",
+    "started_at": "2026-08-19T02:11:50.944Z",
+    "ended_at": "2026-08-19T02:11:50.958Z",
     "state": "ok"
   },
   "cost_micros_month": 0
