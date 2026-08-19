@@ -2298,4 +2298,11 @@ Not a task — the controller runs this after Task 6 is reviewed and merged, bec
   `analyses` until the M4 weekly synthesis step — but the first rebuild after M4 ships will either
   fail on the foreign key or silently orphan every annotation. Fix it in the same milestone that
   first writes to that table, not before.
+- **Capture-time fidelity under redirect.** `politeFetch` follows redirects and `FetchResult`
+  carries no final URL, so if the Archive 302s `/web/<ts>id_/<url>` to a neighbouring capture —
+  possible when a capture is excluded between discovery and drain — the body is stored under the
+  *requested* stamp rather than the served one. Surfaced by the Task 4 review. Fixing it means
+  adding a final-URL field to `FetchResult`, which touches live collection too, so it is out of
+  M3's scope. The error is bounded by how far apart neighbouring captures are, which is inside
+  the monthly resolution the timeline already states. Fix when `FetchResult` is next revised.
 - **`bellwether qualify`** and the watch-list expansion to 50 competitors (M3.5).
