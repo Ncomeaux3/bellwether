@@ -140,6 +140,12 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
       .filter(s => s.segments.length > 0)
       .sort((a, b) => a.tier.localeCompare(b.tier));
 
+    // The chart only ever plots this range. A marker outside it draws off
+    // the axis (an SVG x1 in the negative thousands, clipped but pointless).
+    const plottedTimes = series.flatMap(s => s.segments.flat()).map(p => Date.parse(p.observed_at));
+    const tMin = plottedTimes.length > 0 ? Math.min(...plottedTimes) : null;
+    const tMax = plottedTimes.length > 0 ? Math.max(...plottedTimes) : null;
+
     competitors.push({
       slug: source.slug,
       name: source.name,
@@ -148,6 +154,11 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
       series,
       markers: markerRows
         .filter(m => m.source_id === source.source_id)
+        .filter(m => {
+          if (tMin === null || tMax === null) return false;
+          const at = Date.parse(m.observed_at);
+          return at >= tMin && at <= tMax;
+        })
         .map(m => ({ observed_at: m.observed_at, label: describeChange(m) })),
     });
   }
@@ -155,16 +166,39 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
   return { generated_at: generatedAt, observation_count: observationCount, competitors };
 }
 
+/**
+ * SQL NULL and the JSON string "null" are different things here: diff.ts
+ * always writes JSON.stringify(v ?? null), so an absent value is the
+ * four-character string 'null', never a SQL-NULL column. Both must read as
+ * "none" — a contact-sales tier is not the word "null".
+ */
+const value = (raw: string | null): string => {
+  if (raw === null) return 'none';
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return parsed === null ? 'none' : String(parsed);
+  } catch {
+    return 'none';
+  }
+};
+
 /** Short, literal marker text. No adjectives — the number is the story. */
 function describeChange(row: {
   json_path: string; change_type: string; before_json: string | null; after_json: string | null;
 }): string {
+  const parts = row.json_path.split('.');
+  const field = parts[parts.length - 1] ?? '';
   const tier = row.json_path.startsWith('tiers.')
-    ? row.json_path.split('.').slice(1, -1).join('.') || row.json_path.slice(6)
+    ? (parts.slice(1, -1).join('.') || parts.slice(1).join('.'))
     : row.json_path;
-  const before = row.before_json === null ? 'none' : String(JSON.parse(row.before_json));
-  const after = row.after_json === null ? 'none' : String(JSON.parse(row.after_json));
-  if (row.change_type === 'price_change') return `${tier} ${before} to ${after}`;
+
+  // diff.ts writes 'price_changed' (past tense) at both .monthly_price_usd
+  // and .annual_price_usd with identical materiality — the field name must
+  // stay in the label or an annual move reads as a monthly one.
+  if (row.change_type === 'price_changed') {
+    const label = field === 'monthly_price_usd' ? '' : `${field.replace(/_/g, ' ')} `;
+    return `${tier} ${label}${value(row.before_json)} to ${value(row.after_json)}`;
+  }
   return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
 }
 

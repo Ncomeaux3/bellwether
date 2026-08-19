@@ -133,15 +133,72 @@ describe('buildTimeline', () => {
         (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
          before_json, after_json, materiality, state, observed_at)
       VALUES
-        (1, 1, 2, 'price_change', 'tiers.Pro.monthly_price_usd', '8', '10', 80, 'confirmed', '2025-02-16T00:00:00.000Z'),
+        (1, 1, 2, 'price_changed', 'tiers.Pro.monthly_price_usd', '8', '10', 80, 'confirmed', '2025-02-16T00:00:00.000Z'),
         (1, 1, 2, 'tier_renamed',  'tiers.Pro',                  '"P"', '"Pro"', 35, 'confirmed', '2025-02-16T00:00:00.000Z'),
-        (1, 1, 2, 'price_change', 'tiers.Team.monthly_price_usd', '1', '2', 80, 'candidate', '2025-02-16T00:00:00.000Z')
+        (1, 1, 2, 'price_changed', 'tiers.Team.monthly_price_usd', '1', '2', 80, 'candidate', '2025-02-16T00:00:00.000Z')
     `).run();
 
     const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
     expect(markers).toHaveLength(1);
     expect(markers[0]!.observed_at).toBe('2025-02-16T00:00:00.000Z');
-    expect(markers[0]!.label).toContain('Pro');
+    // diff.ts writes the real change_type, 'price_changed' (past tense) — a
+    // stale 'price_change' fixture would make this fall through to the
+    // generic label and never catch the field disappearing.
+    expect(markers[0]!.label).toBe('Pro 8 to 10');
+  });
+
+  it('names a non-monthly field so an annual move is not mistaken for a monthly one', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Pro', price: 8 }]);
+    observe('2025-02-16T00:00:00.000Z', [{ name: 'Pro', price: 8 }], 'h2');
+
+    db.prepare(`
+      INSERT INTO changes
+        (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+         before_json, after_json, materiality, state, observed_at)
+      VALUES
+        (1, 1, 2, 'price_changed', 'tiers.Pro.annual_price_usd', '96', '120', 80, 'confirmed', '2025-02-16T00:00:00.000Z')
+    `).run();
+
+    const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
+    expect(markers).toHaveLength(1);
+    expect(markers[0]!.label).toBe('Pro annual price usd 96 to 120');
+  });
+
+  it('extracts a tier name containing a dot from the json_path unmangled', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Team 2.0', price: 50 }]);
+    observe('2025-02-16T00:00:00.000Z', [{ name: 'Team 2.0', price: 60 }], 'h2');
+
+    db.prepare(`
+      INSERT INTO changes
+        (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+         before_json, after_json, materiality, state, observed_at)
+      VALUES
+        (1, 1, 2, 'price_changed', 'tiers.Team 2.0.monthly_price_usd', '50', '60', 80, 'confirmed', '2025-02-16T00:00:00.000Z')
+    `).run();
+
+    const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
+    expect(markers).toHaveLength(1);
+    expect(markers[0]!.label).toBe('Team 2.0 50 to 60');
+  });
+
+  it('never emits a "null" origin for a contact-sales tier moving to a real price', () => {
+    // Enterprise's own null-to-price move never becomes a plotted point (a
+    // contact-sales price is never a point), so Pro carries the plotted
+    // range that puts the marker's timestamp inside it.
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Enterprise', price: null }, { name: 'Pro', price: 8 }]);
+    observe('2025-02-16T00:00:00.000Z', [{ name: 'Enterprise', price: 299 }, { name: 'Pro', price: 8 }], 'h2');
+
+    db.prepare(`
+      INSERT INTO changes
+        (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+         before_json, after_json, materiality, state, observed_at)
+      VALUES
+        (1, 1, 2, 'price_changed', 'tiers.Enterprise.monthly_price_usd', 'null', '299', 80, 'confirmed', '2025-02-16T00:00:00.000Z')
+    `).run();
+
+    const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
+    expect(markers).toHaveLength(1);
+    expect(markers[0]!.label).toBe('Enterprise none to 299');
   });
 
   it('emits a competitor with no usable history rather than dropping it', () => {

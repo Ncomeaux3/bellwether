@@ -32,10 +32,19 @@ export function Timeline({ competitor }: { competitor: TimelineCompetitor }) {
   const pMin = Math.min(...prices);
   const pMax = Math.max(...prices);
 
+  // Log scale: a linear y-axis puts $0/$25/$599 within a few px of each
+  // other at the bottom of the plot — a 40% move on the cheap tiers would be
+  // invisible. log10(1 + price) handles the $0 free tier (log10(1) = 0)
+  // without a special case. Disclosed in the caption below — a log scale
+  // that isn't labeled misleads.
+  const scale = (price: number) => Math.log10(1 + price);
+  const sMin = scale(pMin);
+  const sMax = scale(pMax);
+
   const x = (iso: string) =>
     PAD_X + (tMax === tMin ? 0 : (Date.parse(iso) - tMin) / (tMax - tMin)) * (WIDTH - PAD_X * 2);
   const y = (price: number) =>
-    HEIGHT - PAD_Y - (pMax === pMin ? 0.5 : (price - pMin) / (pMax - pMin)) * (HEIGHT - PAD_Y * 2);
+    HEIGHT - PAD_Y - (sMax === sMin ? 0.5 : (scale(price) - sMin) / (sMax - sMin)) * (HEIGHT - PAD_Y * 2);
 
   return (
     <figure className="m-0">
@@ -97,7 +106,7 @@ export function Timeline({ competitor }: { competitor: TimelineCompetitor }) {
         </span>
         <span>
           {month(competitor.first_observed_at!)} to {month(competitor.last_observed_at!)}
-          {' · '}{money(pMin)}-{money(pMax)}
+          {' · '}{money(pMin)}-{money(pMax)} · log scale
         </span>
       </figcaption>
     </figure>
