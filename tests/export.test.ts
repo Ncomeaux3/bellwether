@@ -173,24 +173,30 @@ describe('exportData', () => {
 });
 
 describe('exportData — pricing', () => {
-  function addExtraction(hash: string, price: number) {
+  function addExtraction(
+    hash: string, price: number,
+    opts: { currency?: string; promptVersion?: string; observedAt?: string } = {},
+  ) {
+    const observedAt = opts.observedAt ?? '2026-08-18T12:00:00.000Z';
+    const currency = opts.currency ?? 'USD';
+    const promptVersion = opts.promptVersion ?? 'extract-pricing-v1';
     db.prepare(`INSERT INTO snapshots
       (source_id, observed_at, fetched_at, ok, http_status, raw_content, raw_hash, normalized_hash, provenance)
-      VALUES (1, '2026-08-18T12:00:00.000Z', '2026-08-18T12:00:00.000Z', 1, 200, 'x', ?, ?, 'live')`)
-      .run(`r-${hash}`, hash);
+      VALUES (1, ?, ?, 1, 200, 'x', ?, ?, 'live')`)
+      .run(observedAt, observedAt, `r-${hash}`, hash);
     db.prepare(`INSERT INTO extractions
       (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
        is_backfill, model, prompt_version, cost_micros, created_at)
-      VALUES (?, 'pricing', ?, 'high', 'USD', 1, 0, 'm', 'extract-pricing-v1', 9000, '2026-08-18T12:00:00.000Z')`)
+      VALUES (?, 'pricing', ?, 'high', ?, 1, 0, 'm', ?, 9000, ?)`)
       .run(hash, JSON.stringify({
-        currency: 'USD',
+        currency,
         tiers: [{
           name: 'Pro', monthly_price_usd: price, annual_price_usd: null,
           billing_unit: 'per_seat', included_seats: null,
           is_free: false, is_enterprise: false, headline_features: [],
         }],
         usage_rates: [], notes: null, extraction_confidence: 'high',
-      }));
+      }), currency, promptVersion, observedAt);
   }
 
   it('puts the latest tiers on the board', () => {
@@ -205,6 +211,53 @@ describe('exportData — pricing', () => {
     exportData(db, out);
     const source = read('board.json').competitors.find((c: any) => c.slug === 'acme').sources[0];
     expect(source.current_pricing).toBeNull();
+  });
+
+  it('never publishes a non-USD extraction as if it were dollars', () => {
+    // A geo-served EUR page for one night: this is the newest extraction, but
+    // it is not in dollars, so the board must not print "$16" as fact.
+    addExtraction('h1', 16, { currency: 'EUR' });
+    exportData(db, out);
+    const source = read('board.json').competitors.find((c: any) => c.slug === 'acme').sources[0];
+    expect(source.current_pricing).toBeNull();
+  });
+
+  it('falls back to the newest USD extraction when a more recent one is non-USD', () => {
+    addExtraction('h1', 20, { observedAt: '2026-08-18T12:00:00.000Z' });                       // USD, older
+    addExtraction('h2', 16, { currency: 'EUR', observedAt: '2026-08-19T12:00:00.000Z' });       // EUR, newer
+    exportData(db, out);
+    const source = read('board.json').competitors.find((c: any) => c.slug === 'acme').sources[0];
+    expect(source.current_pricing.tiers[0].monthly_price_usd).toBe(20);
+  });
+
+  it('selects the extraction under the current prompt_version, ignoring an older-version row for the same hash', () => {
+    addExtraction('h1', 999, { promptVersion: 'extract-pricing-v0' });
+    // Same hash, current version, inserted second — a join with no
+    // prompt_version predicate would fan out and could pick either.
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES ('h1', 'pricing', ?, 'high', 'USD', 1, 0, 'm', 'extract-pricing-v1', 9000, '2026-08-18T12:00:00.000Z')`)
+      .run(JSON.stringify({
+        currency: 'USD',
+        tiers: [{
+          name: 'Pro', monthly_price_usd: 20, annual_price_usd: null,
+          billing_unit: 'per_seat', included_seats: null,
+          is_free: false, is_enterprise: false, headline_features: [],
+        }],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      }));
+    exportData(db, out);
+    const source = read('board.json').competitors.find((c: any) => c.slug === 'acme').sources[0];
+    expect(source.current_pricing.tiers[0].monthly_price_usd).toBe(20);
+  });
+
+  it('publishes a non-zero cost_micros_month once LLM spend has actually happened', () => {
+    addExtraction('h1', 20);   // cost_micros 9000, created_at inside August 2026
+    exportData(db, out, { now: () => new Date('2026-08-18T12:00:00.000Z') });
+    const published = read('status.json');
+    expect(published.cost_micros_month).toBeGreaterThan(0);
+    expect(published.cost_micros_month).toBe(9000);
   });
 
   it('writes changes.json carrying only confirmed material changes', () => {

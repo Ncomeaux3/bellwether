@@ -45,12 +45,15 @@ export async function extract(
 
   try {
     // Snapshots that carry content and have not been extracted at this prompt version.
+    // --limit caps LLM calls actually made below, not this candidate set — the
+    // oldest snapshots are exactly the ones most likely already cached, so
+    // limiting the query here would make `--limit 1` do no new work at all
+    // once the archive has grown past the first run.
     const pending = db.prepare(`
       SELECT s.id, s.source_id, s.raw_content, s.raw_hash, s.normalized_hash
       FROM snapshots s
       WHERE s.ok = 1 AND s.raw_content IS NOT NULL
       ORDER BY s.observed_at, s.id
-      ${opts.limit !== undefined ? 'LIMIT ' + Number(opts.limit) : ''}
     `).all() as PendingRow[];
 
     const setHash = db.prepare('UPDATE snapshots SET normalized_hash = ? WHERE id = ?');
@@ -72,6 +75,7 @@ export async function extract(
     const runExtractor = deps.extractor
       ?? ((text: string) => extractPricing(text, { client: anthropic() as never }));
 
+    let llmCalls = 0;
     for (const row of pending) {
       stats.considered += 1;
       if (row.raw_content === null) continue;
@@ -108,11 +112,13 @@ export async function extract(
 
       if (opts.dryRun) { stats.skipped += 1; continue; }
 
+      llmCalls += 1;
       const result = await runExtractor(text);
 
       if (!result.ok) {
         stats.degraded += 1;
         degrade.run(`extraction ${result.reason}: ${result.detail}`.slice(0, 300), row.source_id);
+        if (opts.limit !== undefined && llmCalls >= opts.limit) break;
         continue;
       }
 
@@ -131,6 +137,10 @@ export async function extract(
       stats.extracted += 1;
       // Spec 12.4: stored, but excluded from diffing by detect.
       if (result.data.currency !== 'USD') stats.mismatched += 1;
+
+      // --limit caps LLM calls made (spec 5.2), not candidates scanned — see
+      // the comment on the `pending` query above.
+      if (opts.limit !== undefined && llmCalls >= opts.limit) break;
     }
 
     finishRun(db, runId, true, stats);

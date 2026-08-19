@@ -1,7 +1,7 @@
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
 import { consistencyViolations, groundingViolations } from '../tools/ground.js';
-import { EXTRACT_MODEL, costMicros, guardTokens, type TokenCounter } from './_client.js';
+import { EXTRACT_MODEL, TOKEN_BUDGET, costMicros, guardTokens, type TokenCounter } from './_client.js';
 
 export const SYSTEM = `You extract pricing facts from a SaaS pricing page.
 
@@ -50,7 +50,7 @@ export async function extractPricing(text: string, deps: ExtractDeps): Promise<E
 
   const budget = await guardTokens(deps.client, text);
   if (!budget.ok) {
-    return { ok: false, reason: 'oversized', detail: `${budget.tokens} tokens exceeds the ${20_000} budget` };
+    return { ok: false, reason: 'oversized', detail: `${budget.tokens} tokens exceeds the ${TOKEN_BUDGET} budget` };
   }
 
   let lastDetail = 'no attempt made';

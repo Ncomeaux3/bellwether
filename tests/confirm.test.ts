@@ -236,4 +236,76 @@ describe('confirmation', () => {
     expect(s.length).toBe(1);
     expect(s[0]!.state).toBe('confirmed');
   });
+
+  it('confirms a usage_rate metric whose name contains a dot', () => {
+    observeFull(18, 'a', { tiers: [defaultTier()], usage_rates: [] });
+    observeFull(19, 'b', {
+      tiers: [defaultTier()],
+      usage_rates: [{ metric: 'v2.0 calls', unit_price_usd: 0.01 }],
+    });
+    observeFull(20, 'c', {
+      tiers: [defaultTier()],
+      usage_rates: [{ metric: 'v2.0 calls', unit_price_usd: 0.01 }],
+    });
+    detect(db, {});
+    const s = statesOf('usage_rate_added');
+    expect(s.length).toBe(1);
+    expect(s[0]!.state).toBe('confirmed');
+  });
+
+  it('resolves the next observation under the current prompt_version, not an older-version row for the same snapshot', () => {
+    observe(18, 'a', 20); observe(19, 'b', 24);
+    detect(db, {});
+    expect(states()[0]!.state).toBe('candidate');
+
+    // Insert the OLD-version extraction for the next snapshot's hash FIRST,
+    // carrying a value that does NOT match the claimed 24 — before the
+    // current-version extraction that carries the real page state.
+    const at = '2026-08-20T12:00:00.000Z';
+    db.prepare(`INSERT INTO snapshots
+      (source_id, observed_at, fetched_at, ok, http_status, raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, ?, ?, 1, 200, 'x', 'r-c', 'c', 'live')`).run(at, at);
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES ('c', 'pricing', ?, 'high', 'USD', 1, 0, 'm', 'extract-pricing-v0', 9000, ?)`)
+      .run(JSON.stringify({
+        currency: 'USD',
+        tiers: [defaultTier({ monthly_price_usd: 999 })],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      }), at);
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES ('c', 'pricing', ?, 'high', 'USD', 1, 0, 'm', 'extract-pricing-v1', 9000, ?)`)
+      .run(JSON.stringify({
+        currency: 'USD',
+        tiers: [defaultTier({ monthly_price_usd: 24 })],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      }), at);
+
+    detect(db, {});
+    expect(states()[0]!.state).toBe('confirmed');
+  });
+
+  it('skips a malformed stored extraction when looking for the next observation, rather than guessing at it', () => {
+    observe(18, 'a', 20); observe(19, 'b', 24);
+    detect(db, {});
+    expect(states()[0]!.state).toBe('candidate');
+
+    // A malformed row sits between 'b' and the next valid observation.
+    const at = '2026-08-20T12:00:00.000Z';
+    db.prepare(`INSERT INTO snapshots
+      (source_id, observed_at, fetched_at, ok, http_status, raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, ?, ?, 1, 200, 'x', 'r-bad', 'bad', 'live')`).run(at, at);
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES ('bad', 'pricing', '{"garbage":true}', 'high', 'USD', 1, 0, 'm', 'extract-pricing-v1', 9000, ?)`)
+      .run(at);
+
+    observe(21, 'c', 24);   // valid, matches the claimed value — should still confirm
+    expect(() => detect(db, {})).not.toThrow();
+    expect(states()[0]!.state).toBe('confirmed');
+  });
 });

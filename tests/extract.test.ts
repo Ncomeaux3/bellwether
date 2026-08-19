@@ -144,6 +144,25 @@ describe('extract', () => {
     expect(stats.extracted).toBe(1);
   });
 
+  it('applies --limit to LLM calls made, not to the oldest candidates — a grown, mostly-cached archive still makes progress', async () => {
+    addSnapshot('<body><main>$10</main></body>', 1, '2026-08-18T12:00:00.000Z');
+    addSnapshot('<body><main>$20</main></body>', 1, '2026-08-19T12:00:00.000Z');
+    // First run caches both — they're now the oldest snapshots in the archive.
+    await extract(db, {}, deps(okResult(20)));
+
+    addSnapshot('<body><main>$30</main></body>', 1, '2026-08-20T12:00:00.000Z');   // new, uncached
+    let calls = 0;
+    const stats = await extract(db, { limit: 1 }, {
+      ...deps(okResult(30)),
+      extractor: async () => { calls += 1; return okResult(30); },
+    });
+
+    // A limit applied to the candidate query (sorted oldest-first) would
+    // return only the already-cached snapshots and never reach this one.
+    expect(calls).toBe(1);
+    expect(stats.extracted).toBe(1);
+  });
+
   it('leaves a completed run row', async () => {
     addSnapshot(HTML);
     await extract(db, {}, deps(okResult(20)));

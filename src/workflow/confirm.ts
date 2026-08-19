@@ -1,5 +1,5 @@
 import type { DB } from '../ops/db.js';
-import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
+import { EXTRACT_PROMPT_VERSION, PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
 import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
 import { observationsFor } from './detect.js';
 
@@ -61,8 +61,8 @@ function valueAt(data: unknown, path: string): unknown {
   }
 
   if (container === 'usage_rates') {
-    if (parts.length !== 2) return NOT_FOUND;
-    const metric = parts[1]!;
+    if (parts.length < 2) return NOT_FOUND;
+    const metric = parts.slice(1).join('.');
     const rate = ((data as { usage_rates?: Array<{ metric: string; unit_price_usd: number }> })
       .usage_rates ?? []).find(r => r.metric === metric);
     return rate ? rate.unit_price_usd : null;   // metric genuinely absent — a real value
@@ -105,10 +105,10 @@ function nextRawObservation(
     FROM snapshots s
     JOIN extractions e ON e.normalized_hash = s.normalized_hash
     WHERE s.source_id = ? AND s.ok = 1 AND s.normalized_hash IS NOT NULL
-      AND e.currency = 'USD'
+      AND e.currency = 'USD' AND e.prompt_version = ?
       AND (s.observed_at > ? OR (s.observed_at = ? AND s.id > ?))
     ORDER BY s.observed_at, s.id
-  `).all(sourceId, afterObservedAt, afterObservedAt, afterId) as {
+  `).all(sourceId, EXTRACT_PROMPT_VERSION, afterObservedAt, afterObservedAt, afterId) as {
     id: number; normalized_hash: string; data_json: string; extraction_confidence: string;
   }[];
 

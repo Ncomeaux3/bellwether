@@ -63,12 +63,32 @@ function tierNamePrecedesFree(tierName: string, text: string): boolean {
   return re.test(text);
 }
 
+// A tier literally named "Free" doesn't need the word "free" to appear again
+// after it — the name itself already is the assertion. Four of the six live
+// competitors (Linear, Notion, Postman, Supabase) name their zero-cost tier
+// exactly "Free", where tierNamePrecedesFree would need the page to read
+// "Free Free". Same word-boundary rules as tierNamePrecedesFree so
+// "HassleFreeSetup"/"Freelance"-style compounds still don't count.
+function tierNameIsWordFree(tierName: string): boolean {
+  return tierName.trim().toLowerCase() === 'free';
+}
+
+function freeWordAppears(text: string): boolean {
+  const re = /(?<![a-zA-Z])[fF][rR][eE][eE](?![a-z])/;
+  return re.test(text);
+}
+
 /** Empty array means grounded. Each entry names one fabricated value. */
 export function groundingViolations(data: PricingSnapshotData, sourceText: string): string[] {
   const violations: string[] = [];
   const check = (value: number | null, where: string, tier: { name: string; is_free: boolean } | null) => {
     if (value === null) return;                    // "contact sales": nothing to ground
-    if (value === 0 && tier?.is_free && tierNamePrecedesFree(tier.name, sourceText)) return;
+    if (value === 0 && tier?.is_free) {
+      const grounded = tierNameIsWordFree(tier.name)
+        ? freeWordAppears(sourceText)
+        : tierNamePrecedesFree(tier.name, sourceText);
+      if (grounded) return;
+    }
     if (!appearsIn(value, sourceText)) {
       violations.push(`${where} = ${value} does not appear in the page text`);
     }
@@ -97,6 +117,11 @@ export function consistencyViolations(data: PricingSnapshotData): string[] {
     if (t.is_free && t.monthly_price_usd !== 0) {
       violations.push(
         `tiers.${t.name}.is_free = true but monthly_price_usd = ${t.monthly_price_usd} (free tiers must price at 0)`
+      );
+    }
+    if (t.is_free && t.annual_price_usd !== null && t.annual_price_usd !== 0) {
+      violations.push(
+        `tiers.${t.name}.is_free = true but annual_price_usd = ${t.annual_price_usd} (free tiers must price at 0)`
       );
     }
   }

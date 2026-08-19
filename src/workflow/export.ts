@@ -4,6 +4,8 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { DB } from '../ops/db.js';
 import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
+import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
+import { monthlySpendMicros } from '../agents/_client.js';
 
 const run = promisify(execFile);
 
@@ -69,12 +71,13 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       (SELECT e.data_json FROM snapshots sn
          JOIN extractions e ON e.normalized_hash = sn.normalized_hash
         WHERE sn.source_id = s.id AND sn.ok = 1
+          AND e.currency = 'USD' AND e.prompt_version = @promptVersion
         ORDER BY sn.observed_at DESC, sn.id DESC LIMIT 1) AS current_pricing_json
     FROM sources s
     JOIN competitors c ON c.id = s.competitor_id
     WHERE s.active = 1 AND c.active = 1
     ORDER BY c.name, s.kind
-  `).all() as SourceRow[];
+  `).all({ promptVersion: EXTRACT_PROMPT_VERSION }) as SourceRow[];
 
   const bySlug = new Map<string, { slug: string; name: string; homepage: string; sources: unknown[] }>();
   let healthy = 0;
@@ -116,8 +119,7 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       last_ok_at: r.last_ok_at, degraded_reason: r.degraded_reason,
     })),
     last_run: lastRun ?? null,
-    // M2 replaces this with a real sum over extractions and digests (spec 7.1).
-    cost_micros_month: 0,
+    cost_micros_month: monthlySpendMicros(db, now),
   };
 
   const confirmed = db.prepare(`

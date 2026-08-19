@@ -157,6 +157,22 @@ describe('groundingViolations', () => {
       expect(v).toHaveLength(1);
       expect(v[0]).toContain('99');
     });
+
+    it('grounds a tier literally named "Free" on a page that never writes "$0" — the name alone is the assertion', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Free' }] }),
+        'Free\nGreat for solo projects. No credit card required.',
+      );
+      expect(v).toEqual([]);
+    });
+
+    it('still rejects a "Free"-named tier when only a compound like "HassleFreeSetup" appears, never the standalone word', () => {
+      const v = groundingViolations(
+        snap({ tiers: [{ ...tier(0), is_free: true, name: 'Free' }] }),
+        'HassleFreeSetup included with every plan',
+      );
+      expect(v).toHaveLength(1);
+    });
   });
 });
 
@@ -178,5 +194,15 @@ describe('consistencyViolations', () => {
 
   it('accepts is_free = false regardless of price', () => {
     expect(consistencyViolations(snap({ tiers: [tier(null), tier(20)] }))).toEqual([]);
+  });
+
+  it('rejects is_free = true paired with a non-zero annual_price_usd', () => {
+    const v = consistencyViolations(snap({ tiers: [{ ...tier(0, 120), is_free: true }] }));
+    expect(v).toHaveLength(1);
+    expect(v[0]).toContain('annual_price_usd');
+  });
+
+  it('accepts is_free = true paired with annual_price_usd = null (annual simply not stated)', () => {
+    expect(consistencyViolations(snap({ tiers: [{ ...tier(0, null), is_free: true }] }))).toEqual([]);
   });
 });

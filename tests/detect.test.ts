@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
-import { detect } from '../src/workflow/detect.js';
+import { detect, observationsFor } from '../src/workflow/detect.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
 let dir: string; let db: DB;
@@ -89,6 +89,42 @@ describe('detect', () => {
   it('excludes non-USD extractions from diffing', () => {
     observe(18, 'a', 20); observe(19, 'b', 24, { currency: 'EUR' });
     expect(detect(db, {}).created).toBe(0);
+  });
+
+  it('reads only the extraction under EXTRACT_PROMPT_VERSION, not an older-version row sharing the hash', () => {
+    observe(18, 'a', 20);   // writes under 'extract-pricing-v1' (current), price 20
+    // Same hash, an older prompt version, with a different price. A join on
+    // normalized_hash alone would fan out to both rows for this one snapshot.
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES ('a', 'pricing', ?, 'high', 'USD', 1, 0, 'm', 'extract-pricing-v0', 9000, '2026-08-18T12:00:00.000Z')`)
+      .run(JSON.stringify({
+        currency: 'USD',
+        tiers: [{
+          name: 'Pro', monthly_price_usd: 999, annual_price_usd: null,
+          billing_unit: 'per_seat', included_seats: null,
+          is_free: false, is_enterprise: false, headline_features: [],
+        }],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      }));
+
+    const obs = observationsFor(db, 1);
+    expect(obs).toHaveLength(1);
+    expect(obs[0]!.data.tiers[0]!.monthly_price_usd).toBe(20);
+  });
+
+  it('skips a malformed stored extraction rather than guessing at it', () => {
+    observe(18, 'a', 20);
+    // Corrupt the stored extraction so it fails Zod validation.
+    db.prepare("UPDATE extractions SET data_json = '{\"garbage\":true}' WHERE normalized_hash = 'a'").run();
+    observe(19, 'b', 24);
+
+    let stats: ReturnType<typeof detect> | undefined;
+    expect(() => { stats = detect(db, {}); }).not.toThrow();
+    // 'a' is unusable and skipped, so only 'b' remains — no pair, no change.
+    expect(stats!.created).toBe(0);
+    expect(changes()).toHaveLength(0);
   });
 
   it('is idempotent — running twice creates no duplicates', () => {

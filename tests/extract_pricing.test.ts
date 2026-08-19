@@ -51,6 +51,7 @@ describe('extractPricing', () => {
     expect(r.ok).toBe(false);
     if (r.ok) return;
     expect(r.reason).toBe('oversized');
+    expect(r.detail).toContain(String(TOKEN_BUDGET));   // message tracks the real budget, not a stale hardcode
     expect(client.prompts).toHaveLength(0);   // never called parse
   });
 

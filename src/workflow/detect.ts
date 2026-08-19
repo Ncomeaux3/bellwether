@@ -1,6 +1,6 @@
 import type { DB } from '../ops/db.js';
 import { acquireRun, finishRun } from '../ops/runs.js';
-import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
+import { EXTRACT_PROMPT_VERSION, PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
 import { diffPricing } from '../tools/diff.js';
 import { MATERIALITY_THRESHOLD, scoreMateriality } from '../tools/materiality.js';
 import { confirmChanges } from './confirm.js';
@@ -29,7 +29,9 @@ export interface Observation {
  * and the state is dated to the FIRST snapshot exhibiting it.
  *
  * Only USD extractions participate (spec 12.4) — a geo-served EUR page is a
- * collection anomaly, not a pricing event.
+ * collection anomaly, not a pricing event. Only the current EXTRACT_PROMPT_VERSION
+ * participates too — bumping the version leaves the old row in place (spec
+ * 7.1), and joining on normalized_hash alone would fan out to both.
  */
 export function observationsFor(db: DB, sourceId: number): Observation[] {
   const rows = db.prepare(`
@@ -38,9 +40,9 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
     FROM snapshots s
     JOIN extractions e ON e.normalized_hash = s.normalized_hash
     WHERE s.source_id = ? AND s.ok = 1 AND s.normalized_hash IS NOT NULL
-      AND e.currency = 'USD'
+      AND e.currency = 'USD' AND e.prompt_version = ?
     ORDER BY s.observed_at, s.id
-  `).all(sourceId) as {
+  `).all(sourceId, EXTRACT_PROMPT_VERSION) as {
     id: number; observed_at: string; normalized_hash: string;
     data_json: string; extraction_confidence: string;
   }[];
