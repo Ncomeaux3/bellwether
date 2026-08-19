@@ -1,5 +1,7 @@
 # Bellwether
 
+![CI](https://github.com/Ncomeaux3/bellwether/actions/workflows/ci.yml/badge.svg)
+
 The open archive of developer-infrastructure pricing.
 
 Bellwether checks a set of public pricing pages daily, stores a deduplicated

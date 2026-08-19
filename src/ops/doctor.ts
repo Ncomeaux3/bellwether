@@ -13,6 +13,7 @@ export interface DoctorDeps {
   env: Record<string, string | undefined>;
   fetcher?: (url: string) => Promise<FetchResult>;
   gitPush?: () => Promise<{ ok: boolean; detail: string; skipped?: boolean }>;
+  publishScript?: () => Promise<{ ok: boolean; detail: string; skipped?: boolean }>;
 }
 
 const REQUIRED_ENV = ['BELLWETHER_DB', 'BELLWETHER_EXPORT_DIR'] as const;
@@ -129,9 +130,96 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
     }
   }
 
-  // 6 & 7 — M5
-  results.push({ name: 'telegram alerts', status: 'pending', detail: 'not checked yet; alerts arrive in M5' });
-  results.push({ name: 'backup target', status: 'pending', detail: 'not checked yet; B2 backup arrives in M5' });
+  // 6. Telegram alerts — both set is the only way a message can actually
+  // send; neither set is a valid (if unalerted) choice; exactly one set is
+  // a real misconfiguration worth failing on, since it can never work.
+  {
+    const tokenSet = !!deps.env.TELEGRAM_BOT_TOKEN?.trim();
+    const chatIdSet = !!deps.env.TELEGRAM_CHAT_ID?.trim();
+    results.push(
+      tokenSet && chatIdSet
+        ? { name: 'telegram alerts', status: 'ok', detail: 'TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are both set' }
+        : !tokenSet && !chatIdSet
+          ? { name: 'telegram alerts', status: 'pending', detail: 'not configured — alerts are optional; see docs/homelab.md' }
+          : {
+              name: 'telegram alerts', status: 'fail',
+              detail: `only ${tokenSet ? 'TELEGRAM_BOT_TOKEN' : 'TELEGRAM_CHAT_ID'} is set`,
+              fix: 'Set both TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env, or clear both to leave alerts off.',
+            }
+    );
+  }
+
+  // 7. Backup target — RESTIC_REPOSITORY unset means the operator hasn't
+  // opted into B2 backup at all (a valid, common choice), so that alone is
+  // pending, not a failure. Once a repository is named, a missing password
+  // is a real misconfiguration: `restic init`/backup will simply fail.
+  {
+    const repo = deps.env.RESTIC_REPOSITORY?.trim();
+    const password = deps.env.RESTIC_PASSWORD?.trim();
+    results.push(
+      !repo
+        ? { name: 'backup target', status: 'pending', detail: 'RESTIC_REPOSITORY is unset — B2 backup is optional; see docs/homelab.md' }
+        : password
+          ? { name: 'backup target', status: 'ok', detail: 'RESTIC_REPOSITORY and RESTIC_PASSWORD are both set' }
+          : {
+              name: 'backup target', status: 'fail',
+              detail: 'RESTIC_REPOSITORY is set but RESTIC_PASSWORD is not',
+              fix: 'Set RESTIC_PASSWORD in .env — see docs/homelab.md for the quoting warning.',
+            }
+    );
+  }
+
+  // 8. Publish script
+  if (deps.publishScript) {
+    try {
+      const check = await deps.publishScript();
+      results.push(check.skipped
+        ? { name: 'publish script', status: 'pending', detail: check.detail }
+        : check.ok
+        ? { name: 'publish script', status: 'ok', detail: check.detail }
+        : {
+            name: 'publish script', status: 'fail', detail: check.detail,
+            fix: 'From the repo root: `chmod +x ops/publish.sh`.',
+          });
+    } catch (err) {
+      results.push({
+        name: 'publish script', status: 'fail',
+        detail: err instanceof Error ? err.message : String(err),
+        fix: 'From the repo root: `chmod +x ops/publish.sh`.',
+      });
+    }
+  }
+
+  // 9. Site export dir — meaningful only in container mode, where
+  // docker-compose sets BELLWETHER_EXPORT_DIR under the /data bind mount.
+  // A SET BELLWETHER_EXPORT_DIR is not proof of container mode: both
+  // .env.example and the real Mac .env set it to a relative
+  // ./web/public/data path for local exports — a legitimate, unrelated use
+  // of the same variable. Asserting the pairing off-container is exactly
+  // the old gitPush mistake (see its comment above): a permanent red the
+  // operator can never clear, and here, following its own fix line would
+  // move changes.xml/llms.txt into web/public/data and break the live site.
+  const exportDir = deps.env.BELLWETHER_EXPORT_DIR;
+  const inContainer = !!exportDir && exportDir.trim().startsWith('/data');
+  if (!inContainer) {
+    results.push({
+      name: 'site export dir', status: 'pending',
+      detail: exportDir
+        ? `BELLWETHER_EXPORT_DIR (${exportDir}) is not a container path — not applicable outside docker-compose`
+        : 'BELLWETHER_EXPORT_DIR is unset — not running in container mode',
+    });
+  } else {
+    const siteDir = deps.env.BELLWETHER_SITE_EXPORT_DIR;
+    results.push(siteDir === exportDir
+      ? { name: 'site export dir', status: 'ok', detail: `BELLWETHER_SITE_EXPORT_DIR matches BELLWETHER_EXPORT_DIR (${exportDir})` }
+      : {
+          name: 'site export dir', status: 'fail',
+          detail: siteDir
+            ? `BELLWETHER_SITE_EXPORT_DIR (${siteDir}) does not match BELLWETHER_EXPORT_DIR (${exportDir})`
+            : 'BELLWETHER_SITE_EXPORT_DIR is unset',
+          fix: 'Set BELLWETHER_SITE_EXPORT_DIR to the same value as BELLWETHER_EXPORT_DIR in docker-compose.yml, so all nine export artifacts land in one directory.',
+        });
+  }
 
   return results;
 }

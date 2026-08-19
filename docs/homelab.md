@@ -129,6 +129,154 @@ happens per container start. To collect on demand:
 
 ## Publishing from the homelab
 
-Not yet. `export --publish` commits and pushes the derived JSON, which needs a
-git remote and a deploy key that the container does not have. For now, publishing
-runs from the Mac. Wiring it into the homelab is M5 work, alongside cron.
+`export --publish` commits and pushes the derived JSON, which needs a git
+remote and a deploy key — the container deliberately has neither (it parses
+adversarial third-party HTML every night and must not hold the one
+credential that can push to the site). Publishing instead runs on the host,
+outside the container, as its own step. See "Unattended publishing" below.
+
+## Unattended publishing
+
+M5 makes the box publish itself: the container writes guarded export
+artifacts to `/data/export`, and a host-side script (`ops/publish.sh`) copies
+them into the repo, commits, and pushes — using a deploy key that lives only
+on the host, never inside the container.
+
+### 1. Create a dedicated deploy key
+
+Don't reuse your personal GitHub key. Generate one just for this repo:
+
+    ssh-keygen -t ed25519 -f ~/.ssh/bellwether_deploy -N ""
+
+### 2. Point an SSH host alias at it
+
+Add this block to `~/.ssh/config` on the box:
+
+    Host github.com-bellwether
+      HostName github.com
+      IdentityFile ~/.ssh/bellwether_deploy
+      IdentitiesOnly yes
+
+### 3. Rewrite the repo's remote to use the alias
+
+    cd ~/bellwether
+    git remote set-url origin git@github.com-bellwether:Ncomeaux3/bellwether.git
+
+### 4. Add the public key to GitHub as a deploy key — with write access
+
+Copy `~/.ssh/bellwether_deploy.pub` and add it under the repo's
+Settings → Deploy keys, checking **Allow write access**. (Or, from a machine
+with `gh` set up: `gh repo deploy-key add ~/.ssh/bellwether_deploy.pub --repo Ncomeaux3/bellwether --title bellwether-homelab --allow-write`.)
+This is normally done from the Mac, since it needs your GitHub credentials,
+not the box's.
+
+### 5. Install the crontab
+
+Replace any existing `collect && export` line with:
+
+    0 7 * * * cd ~/bellwether && docker compose exec -T bellwether pnpm bw pipeline >> cron.log 2>&1; ./ops/publish.sh ~/bellwether >> cron.log 2>&1
+
+Note the `;`, not `&&`, between the two commands. A partially-failed pipeline
+(say, one degraded source) must still publish whatever passed the export
+guards — `ops/publish.sh` has its own freshness precondition (it refuses to
+run if `/data/export/board.json` is missing or older than 26 hours), so it
+never publishes stale data even when it runs unconditionally.
+
+## Backup and restore
+
+The archive is the project's compounding asset and, until this, lives on
+exactly one disk. M5 adds a nightly `VACUUM INTO` snapshot (container) pushed
+to Backblaze B2 with `restic` (host), plus a monthly restore check — because
+a backup you have never restored is a hope, not a backup.
+
+### 1. Install restic
+
+    sudo apt install restic
+
+### 2. Create a Backblaze B2 bucket and application key
+
+Sign up at backblaze.com, create a bucket (private, any name), then
+**Account → Application Keys → Add a New Application Key**, scoped to that
+bucket. Note the key ID and application key — B2 shows the application key
+only once.
+
+### 3. Add the four keys to `.env` on the box
+
+`.env` is not just read as key=value pairs — `ops/backup.sh` shell-sources it
+(`. ./.env`), so a value containing a space, `#`, `$`, or backticks will
+break the source or, worse, get executed as a shell command. Use an
+alphanumeric passphrase and the quoting question never comes up:
+`openssl rand -hex 32` generates one.
+
+    RESTIC_REPOSITORY=b2:your-bucket-name:bellwether
+    RESTIC_PASSWORD=3f9a1c7e2b8d4056a1f9c3e7b2d84f0619ac5e3d7b2f804c9e1a6d3b7f209c48
+    B2_ACCOUNT_ID=<the application key ID>
+    B2_ACCOUNT_KEY=<the application key>
+
+`ops/backup.sh` sources `.env` itself and no-ops with an explicit message if
+`RESTIC_REPOSITORY` is unset, so a box without these keys still runs
+`bw ops backup` (the local snapshot) without error — only the B2 push skips.
+
+### 4. Initialize the restic repository (once)
+
+    cd ~/bellwether
+    set -a; . ./.env; set +a
+    restic init
+
+### 5. Install the crontab
+
+Add these lines **after** the existing pipeline/publish line:
+
+    30 7 * * *  cd ~/bellwether && docker compose exec -T bellwether pnpm bw ops backup >> cron.log 2>&1; ./ops/backup.sh ~/bellwether >> cron.log 2>&1
+    0  8 1 * *  cd ~/bellwether && docker compose exec -T bellwether pnpm bw ops verify-backup >> cron.log 2>&1
+
+The first line runs 30 minutes after the daily pipeline/publish, so the
+snapshot reflects that day's collection: `bw ops backup` writes
+`data/backup/bellwether-YYYYMMDD.db` inside the container (bind-mounted to
+the box's real disk) and prunes local copies beyond the newest 7; then
+`ops/backup.sh` pushes that directory to B2 and prunes the remote repository
+to 7 daily / 4 weekly / 12 monthly. The `;` (not `&&`) matches
+`ops/publish.sh`'s convention — a failed local backup shouldn't also skip
+attempting the push of whatever's already there.
+
+The second line runs monthly, on the 1st: `bw ops verify-backup` opens the
+newest local snapshot readonly, compares `snapshots`/`extractions`/`changes`
+row counts against the live archive, and exits nonzero (with a Telegram
+alert) if a table is out of tolerance. It does not write a `runs` row — the
+heartbeat watchdog tracks a fixed set of kinds (`export`, `publish`,
+`backup`, `restic`), so a failed verify alerts directly rather than teaching
+the watchdog a fifth kind for one monthly check.
+
+### Restoring from B2
+
+Rehearse this before you need it for real — restore into the bind mount
+(`./data`), never straight over the live archive. `--file` on
+`verify-backup` is read from *inside the container*, which only ever sees
+`/data` — a restore to `/tmp` is invisible there and the command throws:
+
+    cd ~/bellwether
+    mkdir -p data/restore
+    set -a; . ./.env; set +a
+    restic restore latest --target data/restore
+
+`restic backup` (see "Install the crontab" above) stores **absolute** host
+paths, so the file does not land at `data/restore/bellwether-YYYYMMDD.db` —
+it lands nested under the full absolute path it was backed up from. Find it:
+
+    find data/restore -name 'bellwether-*.db'
+
+That prints something like
+`data/restore/home/alice/bellwether/data/backup/bellwether-20260819.db` —
+the nested part matches wherever `~/bellwether` actually resolves on this
+box (run `pwd` there if unsure).
+
+Because `./data` is the directory docker-compose bind-mounts to `/data`
+inside the container, that same file is visible inside the container at the
+identical path with `/data` in place of the leading `data`. Verify it
+against the live archive the same way the monthly cron does, using the path
+`find` printed:
+
+    docker compose exec -T bellwether pnpm bw ops verify-backup --file /data/restore/home/alice/bellwether/data/backup/bellwether-20260819.db
+
+A clean `verify-backup: OK` is the actual proof the backup works, not the
+restic command exiting zero.

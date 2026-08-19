@@ -1,4 +1,4 @@
-name: ci
+name: CI
 
 on:
   push:
@@ -8,31 +8,59 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      LLM_ENABLED: 'false'
     steps:
       - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
+
+      # corepack must be enabled before setup-node's pnpm cache step runs
+      # `pnpm store path` — it reads packageManager in package.json (pinned
+      # to pnpm@11.22.0) and resolves that exact version.
+      - run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: pnpm
+          cache-dependency-path: |
+            pnpm-lock.yaml
+            web/pnpm-lock.yaml
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
-      - run: pnpm test
+      - run: pnpm vitest run
 
-  web:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
+      # Deliberately NOT `bw pipeline`: collect makes real network requests
+      # to six third-party pricing pages, and CI must be deterministic and
+      # polite (no scraping on every push/PR). Running each credential-free
+      # step individually against a throwaway DB proves the sequence works
+      # without collect's network dependency. extract uses --dry-run for the
+      # same reason (no LLM calls, LLM_ENABLED=false covers synthesize too
+      # if it's ever added here).
+      - name: credential-free pipeline steps
+        env:
+          BELLWETHER_DB: ${{ runner.temp }}/ci.db
+          BELLWETHER_EXPORT_DIR: ${{ runner.temp }}/export
+          LLM_ENABLED: 'false'
+        run: |
+          pnpm bw migrate
+          pnpm bw seed
+          pnpm bw extract --dry-run
+          pnpm bw detect
+          pnpm bw export
+
+      # web/ is not a declared pnpm workspace member (root pnpm-workspace.yaml
+      # has no `packages:` entry matching it), so a plain `pnpm install` run
+      # from inside web/ walks up to the root workspace and silently installs
+      # the root's dependencies instead of web's — leaving web/node_modules
+      # empty and the build unable to find `next`. --ignore-workspace forces
+      # pnpm to treat web/ as standalone, matching what the Vercel build
+      # needs (verified locally: install fails to populate web/node_modules
+      # without this flag).
+      - name: install web dependencies
         working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: web/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm build
+        run: pnpm install --frozen-lockfile --ignore-workspace
+
+      # Static export build; reads the committed web/public/data/*.json, so
+      # it needs no pipeline output.
+      - name: build web
+        working-directory: web
+        run: pnpm build

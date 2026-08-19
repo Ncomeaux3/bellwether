@@ -194,7 +194,10 @@ program
     const { exportData, publish, buildCommitMessage } = await import('./workflow/export.js');
     const db = openDb(dbPath());
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
-    const stats = exportData(db, outDir);
+    const siteDir = process.env.BELLWETHER_SITE_EXPORT_DIR
+      ? resolve(process.env.BELLWETHER_SITE_EXPORT_DIR)
+      : undefined;
+    const stats = exportData(db, outDir, { siteDir });
     console.log(
       `Wrote ${stats.files.join(', ')} to ${outDir} — ` +
       `${stats.competitors} competitors, ${stats.healthySources}/${stats.totalSources} sources healthy.`
@@ -216,15 +219,20 @@ program
     db.close();
   });
 
+function printStepTable(steps: { name: string; ok: boolean; summary: string }[]): void {
+  for (const step of steps) {
+    console.log(`[${step.ok ? ' ok ' : 'FAIL'}] ${step.name.padEnd(11)} ${step.summary}`);
+  }
+}
+
 program
   .command('start')
-  .description('run the full daily pipeline once (migrate, seed, collect, export), then idle')
+  .description('run the full daily pipeline once (migrate, seed, collect..export), then idle')
   .action(async () => {
     const { seedCompetitors } = await import('./config/seed.js');
     const { COMPETITORS } = await import('./config/competitors.public.js');
-    const { collect } = await import('./workflow/collect.js');
-    const { extract } = await import('./workflow/extract.js');
-    const { exportData } = await import('./workflow/export.js');
+    const { runPipeline } = await import('./workflow/pipeline.js');
+    const { runHeartbeat } = await import('./ops/heartbeat.js');
 
     const db = openDb(dbPath());
 
@@ -234,42 +242,8 @@ program
     const seedStats = seedCompetitors(db, COMPETITORS);
     console.log(`Seeded ${seedStats.competitors} competitors and ${seedStats.sources} sources.`);
 
-    const collectStats = await collect(db, {});
-    console.log(
-      `Checked ${collectStats.attempted}: ${collectStats.stored} new, ${collectStats.unchanged} unchanged, ` +
-      `${collectStats.failed} failed, ${collectStats.degraded} degraded, ${collectStats.cleared} recovered.`
-    );
-
-    const extractStats = await extract(db, {});
-    console.log(
-      `Extracted ${extractStats.extracted}, cached ${extractStats.cached}, ` +
-      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}, ` +
-      `historical failed ${extractStats.historicalFailed}.`,
-    );
-
-    const { detect } = await import('./workflow/detect.js');
-    const detectStats = await detect(db, {});
-    console.log(`Detected ${detectStats.created} changes, ${detectStats.confirmed} confirmed.`);
-
-    const { synthesize } = await import('./workflow/synthesize.js');
-    try {
-      const synthStats = await synthesize(db, {});
-      console.log(synthStats.fired
-        ? `Digest: ${synthStats.itemCount} items, ${synthStats.annotated} annotated.`
-        : `Digest: not fired (${synthStats.reason}).`);
-    } catch (err) {
-      // A transient API failure must not cost the nightly export: the digest
-      // retries next Monday, the export is purely local, and the run row for
-      // 'synthesize' is already marked failed by the workflow's own catch.
-      console.warn(`Digest step failed, continuing to export: ${err instanceof Error ? err.message : String(err)}`);
-    }
-
-    const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
-    const exportStats = exportData(db, outDir);
-    console.log(
-      `Wrote ${exportStats.files.join(', ')} to ${outDir} — ` +
-      `${exportStats.competitors} competitors, ${exportStats.healthySources}/${exportStats.totalSources} sources healthy.`
-    );
+    const pipelineStats = await runPipeline(db, {}, { heartbeat: (d) => runHeartbeat(d) });
+    printStepTable(pipelineStats.steps);
 
     db.close();
 
@@ -293,6 +267,21 @@ program
   });
 
 program
+  .command('pipeline')
+  .description('run the daily sequence once and exit (for cron)')
+  .action(async () => {
+    const { runPipeline } = await import('./workflow/pipeline.js');
+    const { runHeartbeat } = await import('./ops/heartbeat.js');
+    const db = openDb(dbPath());
+
+    const pipelineStats = await runPipeline(db, {}, { heartbeat: (d) => runHeartbeat(d) });
+    printStepTable(pipelineStats.steps);
+
+    db.close();
+    process.exit(pipelineStats.steps.some(s => !s.ok) ? 1 : 0);
+  });
+
+program
   .command('doctor')
   .description('check that everything needed to run is present and working')
   .action(async () => {
@@ -301,10 +290,26 @@ program
     const { promisify } = await import('node:util');
     const run = promisify(execFile);
 
+    const { existsSync, accessSync, constants: fsConstants } = await import('node:fs');
     const db = openDb(dbPath());
     const results = await runDoctor({
       db,
       env: process.env,
+      publishScript: async () => {
+        // ops/ is never copied into the image (see .dockerignore / Dockerfile) —
+        // publishing runs on the host, not in the container — so absence here
+        // is the container's normal state, not a failure to fix.
+        const scriptPath = join(ROOT, 'ops', 'publish.sh');
+        if (!existsSync(scriptPath)) {
+          return { ok: true, skipped: true, detail: 'ops/publish.sh not present — publishing runs on the host, not in the container' };
+        }
+        try {
+          accessSync(scriptPath, fsConstants.X_OK);
+          return { ok: true, detail: 'ops/publish.sh is executable' };
+        } catch {
+          return { ok: false, detail: 'ops/publish.sh exists but is not executable' };
+        }
+      },
       gitPush: async () => {
         // Publishing runs on the host, never in the container — the image carries
         // no .git directory and no deploy key. Reporting "fail" there would be a
@@ -338,6 +343,140 @@ program
         : `\n${failures} check${failures === 1 ? ' needs' : 's need'} attention before this will run unattended.`
     );
     process.exit(failures === 0 ? 0 : 1);
+  });
+
+// Nested so Task 4's `ops backup` / `ops verify-backup` land next to this
+// without a second top-level namespace.
+const ops = program.command('ops').description('operational commands (alerts, backup)');
+
+// The kind/state values a write primitive reachable straight from a shell
+// script (ops/publish.sh, ops/backup.sh) is allowed to write — kept to
+// exactly the two host-side legs, not a general-purpose runs-table editor.
+const RECORD_KINDS = ['publish', 'restic'] as const;
+const RECORD_STATES = ['ok', 'failed'] as const;
+
+function oneOf<T extends string>(flag: string, allowed: readonly T[]) {
+  return (raw: string): T => {
+    if (!(allowed as readonly string[]).includes(raw)) {
+      throw new Error(`${flag} must be one of ${allowed.join(', ')}; got "${raw}"`);
+    }
+    return raw as T;
+  };
+}
+
+ops
+  .command('record')
+  .description('record a completed host-side run (ops/publish.sh, ops/backup.sh) — the work already happened, so this writes the outcome directly')
+  .requiredOption('--kind <kind>', `run kind: ${RECORD_KINDS.join('|')}`, oneOf('--kind', RECORD_KINDS))
+  .requiredOption('--state <state>', `outcome: ${RECORD_STATES.join('|')}`, oneOf('--state', RECORD_STATES))
+  .option('--detail <text>', 'detail text; becomes the error message when --state failed')
+  .action(async (options: { kind: typeof RECORD_KINDS[number]; state: typeof RECORD_STATES[number]; detail?: string }) => {
+    const { recordRun } = await import('./ops/runs.js');
+    const db = openDb(dbPath());
+    recordRun(db, options.kind, options.state === 'ok', options.detail);
+    db.close();
+
+    if (options.state === 'failed') {
+      const { sendTelegram } = await import('./tools/telegram.js');
+      await sendTelegram(`Bellwether ${options.kind} failed: ${options.detail ?? 'no detail provided'}`);
+    }
+    console.log(`Recorded ${options.kind} ${options.state}${options.detail ? `: ${options.detail}` : ''}.`);
+  });
+
+ops
+  .command('heartbeat')
+  .description('run the outcome-based health check once and send any Telegram alert')
+  .action(async () => {
+    const { runHeartbeat } = await import('./ops/heartbeat.js');
+    const db = openDb(dbPath());
+
+    const stats = await runHeartbeat(db);
+    if (stats.alerts.length > 0) {
+      console.log(`${stats.alerts.length} problem(s):`);
+      for (const alert of stats.alerts) console.log(`  - ${alert}`);
+    } else {
+      console.log('No problems found.');
+    }
+    console.log(
+      stats.sent
+        ? `Telegram: sent${stats.allGreenSent ? ' (all-green)' : ''}.`
+        : 'Telegram: not sent (unconfigured, not Monday in CT, or the API call failed).'
+    );
+
+    db.close();
+  });
+
+ops
+  .command('backup')
+  .description('VACUUM INTO a dated snapshot and prune local copies beyond 7')
+  .option('--dir <path>', 'snapshot directory (default: alongside the database)')
+  .action(async (options: { dir?: string }) => {
+    const { backupSnapshot } = await import('./ops/backup.js');
+    const { acquireRun, finishRun } = await import('./ops/runs.js');
+    const { sendTelegram } = await import('./tools/telegram.js');
+
+    const dbFile = dbPath();
+    const dir = options.dir ? resolve(options.dir) : join(dirname(dbFile), 'backup');
+    const db = openDb(dbFile);
+    const runId = acquireRun(db, 'backup');
+
+    try {
+      const result = backupSnapshot(db, dir);
+      finishRun(db, runId, true, result);
+      console.log(
+        `Backed up to ${result.path} (${result.bytes} bytes)` +
+        (result.pruned.length ? `; pruned ${result.pruned.join(', ')}` : '') + '.'
+      );
+      db.close();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      finishRun(db, runId, false, {}, message);
+      db.close();
+      await sendTelegram(`Bellwether: backup failed — ${message}`);
+      throw err;
+    }
+  });
+
+ops
+  .command('verify-backup')
+  .description('open the newest local snapshot and compare row counts against the live archive')
+  .option('--file <path>', 'snapshot file (default: newest bellwether-*.db in the backup dir)')
+  .action(async (options: { file?: string }) => {
+    const { verifyBackup } = await import('./ops/backup.js');
+    const { sendTelegram } = await import('./tools/telegram.js');
+    const { existsSync, readdirSync } = await import('node:fs');
+
+    const livePath = dbPath();
+    const dir = join(dirname(livePath), 'backup');
+
+    // No `runs` row here (see docs/superpowers/plans/2026-08-19-bellwether-m5.md
+    // Task 4): the heartbeat watchdog queries a fixed set of kinds (export,
+    // publish, backup, restic), and adding a fifth means also editing that
+    // query. verify-backup alerts directly and exits nonzero; cron log
+    // output surfaces the rest.
+    try {
+      const file = options.file
+        ? resolve(options.file)
+        : (() => {
+            const newest = existsSync(dir)
+              ? readdirSync(dir).filter(f => /^bellwether-\d{8}\.db$/.test(f)).sort().at(-1)
+              : undefined;
+            if (!newest) throw new Error(`no bellwether-*.db snapshot found in ${dir}`);
+            return join(dir, newest);
+          })();
+
+      const result = verifyBackup(livePath, file);
+      for (const [table, c] of Object.entries(result.counts)) {
+        console.log(`${table.padEnd(12)} live=${c.live} snapshot=${c.snapshot}`);
+      }
+      if (!result.ok) throw new Error(result.detail);
+      console.log('verify-backup: OK');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`verify-backup: FAILED — ${message}`);
+      await sendTelegram(`Bellwether: verify-backup failed — ${message}`);
+      process.exit(1);
+    }
   });
 
 program.parseAsync(process.argv).catch((err: unknown) => {
