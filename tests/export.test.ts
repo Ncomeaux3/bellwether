@@ -52,7 +52,7 @@ describe('exportData', () => {
     await populate();
     const stats = exportData(db, out);
 
-    expect(stats.files.sort()).toEqual(['board.json', 'status.json']);
+    expect(stats.files.sort()).toEqual(['board.json', 'changes.json', 'status.json']);
     expect(stats.competitors).toBe(2);
   });
 
@@ -169,5 +169,65 @@ describe('exportData', () => {
     expect(() => exportData(db, out)).toThrow();
 
     expect(readFileSync(join(out, 'board.json'), 'utf8')).toBe(before);
+  });
+});
+
+describe('exportData — pricing', () => {
+  function addExtraction(hash: string, price: number) {
+    db.prepare(`INSERT INTO snapshots
+      (source_id, observed_at, fetched_at, ok, http_status, raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, '2026-08-18T12:00:00.000Z', '2026-08-18T12:00:00.000Z', 1, 200, 'x', ?, ?, 'live')`)
+      .run(`r-${hash}`, hash);
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES (?, 'pricing', ?, 'high', 'USD', 1, 0, 'm', 'extract-pricing-v1', 9000, '2026-08-18T12:00:00.000Z')`)
+      .run(hash, JSON.stringify({
+        currency: 'USD',
+        tiers: [{
+          name: 'Pro', monthly_price_usd: price, annual_price_usd: null,
+          billing_unit: 'per_seat', included_seats: null,
+          is_free: false, is_enterprise: false, headline_features: [],
+        }],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      }));
+  }
+
+  it('puts the latest tiers on the board', () => {
+    addExtraction('h1', 20);
+    exportData(db, out);
+    const source = read('board.json').competitors.find((c: any) => c.slug === 'acme').sources[0];
+    expect(source.current_pricing.tiers[0].name).toBe('Pro');
+    expect(source.current_pricing.tiers[0].monthly_price_usd).toBe(20);
+  });
+
+  it('leaves current_pricing null when nothing is extracted yet', () => {
+    exportData(db, out);
+    const source = read('board.json').competitors.find((c: any) => c.slug === 'acme').sources[0];
+    expect(source.current_pricing).toBeNull();
+  });
+
+  it('writes changes.json carrying only confirmed material changes', () => {
+    addExtraction('h1', 20);
+    db.prepare(`INSERT INTO changes
+      (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+       before_json, after_json, materiality, state, observed_at)
+      VALUES
+      (1, 1, 1, 'price_changed', 'tiers.Pro.monthly_price_usd', '20', '24', 100, 'confirmed', '2026-08-18T12:00:00.000Z'),
+      (1, 1, 1, 'notes_changed', 'notes', '"a"', '"b"', 5, 'candidate', '2026-08-18T12:00:00.000Z')`).run();
+
+    const stats = exportData(db, out);
+    expect(stats.files).toContain('changes.json');
+
+    const feed = read('changes.json');
+    expect(feed.changes).toHaveLength(1);
+    expect(feed.changes[0].change_type).toBe('price_changed');
+    expect(feed.changes[0].competitor).toBe('Acme');
+  });
+
+  it('counts confirmed changes for the commit message', () => {
+    addExtraction('h1', 20);
+    const stats = exportData(db, out);
+    expect(stats.confirmedChanges).toBe(0);
   });
 });

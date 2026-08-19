@@ -50,6 +50,18 @@ export function BoardTable({ competitors }: { competitors: BoardCompetitor[] }) 
                   {s.degraded_reason && (
                     <p className="mt-1 max-w-xs text-sm text-state-degraded">{s.degraded_reason}</p>
                   )}
+                  {s.current_pricing && s.current_pricing.tiers.length > 0 && (
+                    <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+                      {s.current_pricing.tiers.map(t => (
+                        <li key={t.name} className="font-mono text-sm text-ink">
+                          <span className="text-ink-secondary">{t.name}</span>{' '}
+                          {t.monthly_price_usd === null
+                            ? <span className="text-ink-muted">contact sales</span>
+                            : <span>${t.monthly_price_usd}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </td>
                 <td className="py-4 pr-4"><StateBadge state={s.state} /></td>
                 <td className="py-4 pr-4"><Stamp iso={s.last_ok_at} /></td>

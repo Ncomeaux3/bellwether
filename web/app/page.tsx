@@ -40,8 +40,8 @@ export default function HomePage() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-medium text-ink">The record</h2>
         <p className="mt-2 max-w-2xl text-ink-secondary">
-          Prices and change history arrive next. Today this page reports what Bellwether is
-          watching and whether each source is still readable.
+          Current tiers for every watched source, and whether the page is still readable.
+          Confirmed price changes appear once a second observation agrees.
         </p>
         <div className="mt-6">
           <BoardTable competitors={board.competitors} />
