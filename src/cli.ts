@@ -57,6 +57,22 @@ program
   });
 
 program
+  .command('extract')
+  .description('extract structured pricing from snapshots that lack it')
+  .option('--limit <n>', 'process at most n snapshots', v => Number(v))
+  .option('--dry-run', 'normalize and hash but make no LLM calls')
+  .action(async (options: { limit?: number; dryRun?: boolean }) => {
+    const { extract } = await import('./workflow/extract.js');
+    const db = openDb(dbPath());
+    const s = await extract(db, { limit: options.limit, dryRun: options.dryRun });
+    console.log(
+      `Considered ${s.considered}: ${s.extracted} extracted, ${s.cached} cached, ` +
+      `${s.hashed} hashed, ${s.skipped} skipped, ${s.degraded} degraded, ${s.mismatched} non-USD.`,
+    );
+    db.close();
+  });
+
+program
   .command('export')
   .description('rebuild the published JSON from current database state')
   .option('--publish', 'commit and push the result so Vercel rebuilds')
@@ -93,6 +109,7 @@ program
     const { seedCompetitors } = await import('./config/seed.js');
     const { COMPETITORS } = await import('./config/competitors.public.js');
     const { collect } = await import('./workflow/collect.js');
+    const { extract } = await import('./workflow/extract.js');
     const { exportData } = await import('./workflow/export.js');
 
     const db = openDb(dbPath());
@@ -107,6 +124,12 @@ program
     console.log(
       `Checked ${collectStats.attempted}: ${collectStats.stored} new, ${collectStats.unchanged} unchanged, ` +
       `${collectStats.failed} failed, ${collectStats.degraded} degraded, ${collectStats.cleared} recovered.`
+    );
+
+    const extractStats = await extract(db, {});
+    console.log(
+      `Extracted ${extractStats.extracted}, cached ${extractStats.cached}, ` +
+      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}.`,
     );
 
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
