@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T19:04:59.875Z",
+  "generated_at": "2026-08-19T02:42:37.363Z",
   "total_sources": 6,
   "healthy_sources": 6,
   "sources": [
@@ -47,10 +47,10 @@
     }
   ],
   "last_run": {
-    "kind": "collect",
-    "started_at": "2026-08-18T19:02:43.029Z",
-    "ended_at": "2026-08-18T19:02:43.031Z",
+    "kind": "detect",
+    "started_at": "2026-08-19T02:42:33.218Z",
+    "ended_at": "2026-08-19T02:42:33.232Z",
     "state": "ok"
   },
-  "cost_micros_month": 0
+  "cost_micros_month": 57548
 }

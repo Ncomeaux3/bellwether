@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-18T19:04:59.875Z",
+  "generated_at": "2026-08-19T02:42:37.363Z",
   "competitors": [
     {
       "slug": "figma",
@@ -13,7 +13,80 @@
           "last_checked_at": "2026-08-18T15:01:15.439Z",
           "last_ok_at": "2026-08-18T15:01:15.439Z",
           "distinct_states": 1,
-          "degraded_reason": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Starter",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited drafts",
+                  "UI kits and templates",
+                  "150 AI credits/day, up to 500 AI credits/mo"
+                ]
+              },
+              {
+                "name": "Professional",
+                "monthly_price_usd": 16,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited files and folders",
+                  "Team-wide design libraries",
+                  "Advanced Dev Mode inspection and MCP Server",
+                  "Full seat $16/mo + 3,000 AI credits/mo",
+                  "Dev seat $12/mo + 500 AI credits/mo",
+                  "Collab seat $3/mo + 500 AI credits/mo"
+                ]
+              },
+              {
+                "name": "Organization",
+                "monthly_price_usd": 55,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited teams",
+                  "Shared libraries and fonts",
+                  "Centralized admin tools",
+                  "Full seat $55/mo + 3,500 AI credits/mo",
+                  "Dev seat $25/mo + 500 AI credits/mo",
+                  "Collab seat $5/mo + 500 AI credits/mo"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": 90,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom team workspaces",
+                  "Design system theming and APIs",
+                  "SCIM seat management",
+                  "Full seat $90/mo + 4,250 AI credits/mo",
+                  "Dev seat $35/mo + 500 AI credits/mo",
+                  "Collab seat $5/mo + 500 AI credits/mo"
+                ]
+              }
+            ],
+            "usage_rates": [],
+            "notes": "Professional and Organization tiers are billed annually. Enterprise requires contacting sales. Multiple seat types available (Full, Dev, Collab) with different pricing per tier.",
+            "extraction_confidence": "medium"
+          }
         }
       ]
     },
@@ -29,7 +102,84 @@
           "last_checked_at": "2026-08-18T15:00:52.010Z",
           "last_ok_at": "2026-08-18T15:00:52.010Z",
           "distinct_states": 1,
-          "degraded_reason": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited members",
+                  "2 teams",
+                  "250 issues",
+                  "Agent platform"
+                ]
+              },
+              {
+                "name": "Basic",
+                "monthly_price_usd": 10,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "All Free features +",
+                  "5 teams",
+                  "Unlimited issues",
+                  "Unlimited file uploads",
+                  "Admin roles"
+                ]
+              },
+              {
+                "name": "Business",
+                "monthly_price_usd": 16,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "All Basic features +",
+                  "Unlimited teams",
+                  "Private teams and guests",
+                  "Triage Intelligence",
+                  "Loops",
+                  "Code Intelligence (beta)",
+                  "Linear Insights",
+                  "Linear Asks"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "All Business features +",
+                  "Invoice/PO billing",
+                  "SAML and SCIM",
+                  "Granular admin controls",
+                  "Enterprise-grade security",
+                  "Advanced org modeling",
+                  "Migration & onboarding support",
+                  "Priority support"
+                ]
+              }
+            ],
+            "usage_rates": [],
+            "notes": "Basic and Business tiers support annual billing. Enterprise tier requires annual billing only and custom pricing.",
+            "extraction_confidence": "high"
+          }
         }
       ]
     },
@@ -45,7 +195,100 @@
           "last_checked_at": "2026-08-18T15:01:03.831Z",
           "last_ok_at": "2026-08-18T15:01:03.831Z",
           "distinct_states": 1,
-          "degraded_reason": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Trial AI capabilities like generating docs, or autofilling databases",
+                  "Basic forms",
+                  "Basic sites",
+                  "Notion Calendar",
+                  "Databases including subtasks, dependencies, custom properties and more"
+                ]
+              },
+              {
+                "name": "Plus",
+                "monthly_price_usd": 10,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Trial of Notion AI",
+                  "Custom forms",
+                  "Custom sites",
+                  "Unlimited charts",
+                  "Unlimited collaborative blocks",
+                  "Unlimited file uploads",
+                  "Basic connections"
+                ]
+              },
+              {
+                "name": "Business",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Notion Agent",
+                  "AI Meeting Notes",
+                  "Enterprise Search",
+                  "SAML SSO",
+                  "Granular database permissions",
+                  "Verify any page",
+                  "Private teamspaces",
+                  "Premium connections"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Zero data retention with LLM providers",
+                  "User provisioning (SCIM)",
+                  "Advanced security & controls",
+                  "Audit log",
+                  "Customer success manager",
+                  "Security & Compliance connections (DLP, SIEM)",
+                  "Domain management",
+                  "Advanced connections"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Custom Agents (per 1,000 monthly Notion credits)",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Custom domain and branding (per domain per month, paid monthly)",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Custom domain and branding (per domain per month, paid annually)",
+                "unit_price_usd": 8
+              }
+            ],
+            "notes": "Free plan for students and educators with school email. Guests are free of charge. Pricing is per member/seat. Annual pricing not explicitly stated for Plus and Business tiers. Custom Agents are free to try, then $10 per 1,000 monthly Notion credits. Workers (Beta) free to try, starts using credits on October 15.",
+            "extraction_confidence": "high"
+          }
         }
       ]
     },
@@ -61,7 +304,104 @@
           "last_checked_at": "2026-08-18T15:01:52.314Z",
           "last_ok_at": "2026-08-18T15:01:52.314Z",
           "distinct_states": 1,
-          "degraded_reason": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "50 AI credits",
+                  "API client & core tools",
+                  "Specs & mock servers",
+                  "Native Git",
+                  "Collection Runner & Performance Testing runs",
+                  "Manual Flows Solo"
+                ]
+              },
+              {
+                "name": "Solo",
+                "monthly_price_usd": 9,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "400 AI credits / month",
+                  "Data-driven testing with exports",
+                  "Unlimited private NPM packages & library",
+                  "Custom-branded documentation",
+                  "Unlimited custom domains",
+                  "Expanded API monitoring"
+                ]
+              },
+              {
+                "name": "Team",
+                "monthly_price_usd": 19,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "400 AI credits / user / month",
+                  "Team collaboration",
+                  "Unlimited workspace & collection viewers",
+                  "Basic role-based access control (RBAC)",
+                  "SDK generation & distribution",
+                  "Simple Security (add-on)"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": 49,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "800 AI credits / user / month (pooled)",
+                  "API Catalog",
+                  "Unlimited private and Partner workspaces",
+                  "Private API Network",
+                  "SDK auto-distribution",
+                  "Advanced RBAC & organization controls"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "AI credits overage",
+                "unit_price_usd": 0.05
+              },
+              {
+                "metric": "AI credits overage (Solo tier)",
+                "unit_price_usd": 0.04
+              },
+              {
+                "metric": "AI credits overage (Team tier)",
+                "unit_price_usd": 0.035
+              },
+              {
+                "metric": "Monitoring requests",
+                "unit_price_usd": 20
+              },
+              {
+                "metric": "Flows credits",
+                "unit_price_usd": 1
+              }
+            ],
+            "notes": "Page shows 'billed annually' pricing for Solo ($9/mo), Team ($19/user/mo), and Enterprise ($49/user/mo) tiers. Annual billing saves up to 25%. Simple Security add-on ($6/user/month) available on Team and Enterprise. Advanced Security Administration ($29/user/month) and Premium Support (contact sales) available on Enterprise only. Monitoring costs $20 per 50,000 requests / team / month on paid plans. AI credits and Flows credits have volume-based pricing available for Enterprise customers.",
+            "extraction_confidence": "high"
+          }
         }
       ]
     },
@@ -77,7 +417,123 @@
           "last_checked_at": "2026-08-18T15:01:40.594Z",
           "last_ok_at": "2026-08-18T15:01:40.594Z",
           "distinct_states": 1,
-          "degraded_reason": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "developer",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Limited to one user",
+                  "Error Monitoring and Tracing",
+                  "Alerts and notifications via email",
+                  "10 custom dashboards",
+                  "MCP access"
+                ]
+              },
+              {
+                "name": "team",
+                "monthly_price_usd": 26,
+                "annual_price_usd": 26,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited users",
+                  "Developer features +",
+                  "API & third-party integrations",
+                  "20 custom dashboards",
+                  "Seer: AI debugging agent (subscription required)",
+                  "Additional events"
+                ]
+              },
+              {
+                "name": "business",
+                "monthly_price_usd": 80,
+                "annual_price_usd": 80,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Team features +",
+                  "Unlimited custom dashboards",
+                  "Unlimited metric monitors with anomaly detection",
+                  "Advanced quota management",
+                  "SAML + SCIM support"
+                ]
+              },
+              {
+                "name": "enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Business features +",
+                  "Technical account manager",
+                  "Dedicated customer support"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Logs (per GB)",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Application Metrics (per GB)",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Uptime alerts (per additional alert)",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Cron monitors (per additional monitor)",
+                "unit_price_usd": 0.78
+              },
+              {
+                "metric": "UI Profiling (per hour)",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "Continuous Profiling (per hour)",
+                "unit_price_usd": 0.0315
+              },
+              {
+                "metric": "Errors (50K-100K per month)",
+                "unit_price_usd": 0.0003625
+              },
+              {
+                "metric": "Errors (100K-500K per month)",
+                "unit_price_usd": 0.0002188
+              },
+              {
+                "metric": "Errors (500K-10M per month)",
+                "unit_price_usd": 0.0001875
+              },
+              {
+                "metric": "Errors (10M-20M per month)",
+                "unit_price_usd": 0.0001625
+              },
+              {
+                "metric": "Errors (20M+ per month)",
+                "unit_price_usd": 0.00015
+              }
+            ],
+            "notes": "Team and Business plans include base quotas for errors (50K), logs (5GB), application metrics (5GB), replays (50), spans (5M), cron monitors (1), uptime monitors (1), and attachments (1GB). Usage above these quotas is billed at pay-as-you-go rates. Annual billing is available with prepaid data option.",
+            "extraction_confidence": "high"
+          }
         }
       ]
     },
@@ -93,7 +549,140 @@
           "last_checked_at": "2026-08-18T15:01:28.444Z",
           "last_ok_at": "2026-08-18T15:01:28.444Z",
           "distinct_states": 1,
-          "degraded_reason": null
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited API requests",
+                  "50,000 monthly active users",
+                  "500 MB database size",
+                  "Shared CPU • 500 MB RAM",
+                  "5 GB egress",
+                  "5 GB cached egress",
+                  "1 GB file storage",
+                  "Community support"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 25,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100,000 monthly active users",
+                  "8 GB disk size per project",
+                  "250 GB egress",
+                  "250 GB cached egress",
+                  "100 GB file storage",
+                  "Email support",
+                  "Daily backups stored for 7 days",
+                  "7-day log retention"
+                ]
+              },
+              {
+                "name": "Team",
+                "monthly_price_usd": 599,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "SOC2 & ISO 27001",
+                  "Project-scoped and read-only access",
+                  "HIPAA available as paid add-on",
+                  "SSO for Supabase Dashboard",
+                  "Priority email support & SLAs",
+                  "Daily backups stored for 14 days",
+                  "28-day log retention",
+                  "Everything in the Pro Plan"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Designated Support manager",
+                  "Uptime SLAs",
+                  "BYO Cloud supported",
+                  "24×7×365 premium enterprise support",
+                  "Private Slack channel",
+                  "Custom Security Questionnaires",
+                  "Custom pricing",
+                  "Custom features"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "monthly active users (MAU) over 100,000",
+                "unit_price_usd": 0.00325
+              },
+              {
+                "metric": "database storage (GB) over 8 GB",
+                "unit_price_usd": 0.125
+              },
+              {
+                "metric": "egress (GB) over 250 GB",
+                "unit_price_usd": 0.09
+              },
+              {
+                "metric": "cached egress (GB) over 250 GB",
+                "unit_price_usd": 0.03
+              },
+              {
+                "metric": "file storage (GB) over 100 GB",
+                "unit_price_usd": 0.0213
+              },
+              {
+                "metric": "log drain per project per month",
+                "unit_price_usd": 60
+              },
+              {
+                "metric": "general purpose disk storage (GB) over 8 GB",
+                "unit_price_usd": 0.125
+              },
+              {
+                "metric": "general purpose IOPS over 3,000",
+                "unit_price_usd": 0.024
+              },
+              {
+                "metric": "general purpose throughput (MB/s) over 125",
+                "unit_price_usd": 0.095
+              },
+              {
+                "metric": "high performance disk storage (GB)",
+                "unit_price_usd": 0.195
+              },
+              {
+                "metric": "high performance IOPS",
+                "unit_price_usd": 0.119
+              },
+              {
+                "metric": "compute instance (Micro)",
+                "unit_price_usd": 10
+              }
+            ],
+            "notes": "Pro Plan includes $10/month in compute credits. First project included in Pro and Team plans; additional projects from $10/mo. Free projects are paused after 1 week of inactivity. Limit of 2 active projects on Free plan. Compute instances are billed hourly and can be scaled up or down at any time. Multiple usage-based add-ons available including branching ($0.01344 per branch per hour), pipelines, point-in-time recovery ($100/month), custom domain ($10/month), and various other services. Spend cap available on Pro plan.",
+            "extraction_confidence": "high"
+          }
         }
       ]
     }

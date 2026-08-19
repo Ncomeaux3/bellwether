@@ -1,5 +1,24 @@
 export type SourceState = 'ok' | 'degraded' | 'failing' | 'pending';
 
+export interface Tier {
+  name: string;
+  monthly_price_usd: number | null;
+  annual_price_usd: number | null;
+  billing_unit: 'per_seat' | 'flat' | 'usage' | 'unknown';
+  included_seats: number | null;
+  is_free: boolean;
+  is_enterprise: boolean;
+  headline_features: string[];
+}
+
+export interface CurrentPricing {
+  currency: string;
+  tiers: Tier[];
+  usage_rates: { metric: string; unit_price_usd: number }[];
+  notes: string | null;
+  extraction_confidence: 'high' | 'medium' | 'low';
+}
+
 export interface BoardSource {
   kind: string;
   url: string;
@@ -8,6 +27,7 @@ export interface BoardSource {
   last_ok_at: string | null;
   distinct_states: number;
   degraded_reason: string | null;
+  current_pricing: CurrentPricing | null;
 }
 
 export interface BoardCompetitor {

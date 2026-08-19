@@ -3,6 +3,9 @@ import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { DB } from '../ops/db.js';
+import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
+import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
+import { monthlySpendMicros } from '../agents/_client.js';
 
 const run = promisify(execFile);
 
@@ -18,6 +21,7 @@ export interface ExportStats {
   competitors: number;
   healthySources: number;
   totalSources: number;
+  confirmedChanges: number;
 }
 
 export interface ExportDeps { now?: () => Date }
@@ -36,6 +40,7 @@ interface SourceRow {
   last_ok_at: string | null;
   last_ok_flag: number | null;
   distinct_states: number;
+  current_pricing_json: string | null;
 }
 
 function stateOf(row: SourceRow): SourceState {
@@ -62,12 +67,17 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       (SELECT MAX(fetched_at) FROM snapshots WHERE source_id = s.id) AS last_checked_at,
       (SELECT MAX(fetched_at) FROM snapshots WHERE source_id = s.id AND ok = 1) AS last_ok_at,
       (SELECT ok FROM snapshots WHERE source_id = s.id ORDER BY fetched_at DESC, id DESC LIMIT 1) AS last_ok_flag,
-      (SELECT COUNT(DISTINCT raw_hash) FROM snapshots WHERE source_id = s.id AND raw_hash IS NOT NULL) AS distinct_states
+      (SELECT COUNT(DISTINCT raw_hash) FROM snapshots WHERE source_id = s.id AND raw_hash IS NOT NULL) AS distinct_states,
+      (SELECT e.data_json FROM snapshots sn
+         JOIN extractions e ON e.normalized_hash = sn.normalized_hash
+        WHERE sn.source_id = s.id AND sn.ok = 1
+          AND e.currency = 'USD' AND e.prompt_version = @promptVersion
+        ORDER BY sn.observed_at DESC, sn.id DESC LIMIT 1) AS current_pricing_json
     FROM sources s
     JOIN competitors c ON c.id = s.competitor_id
     WHERE s.active = 1 AND c.active = 1
     ORDER BY c.name, s.kind
-  `).all() as SourceRow[];
+  `).all({ promptVersion: EXTRACT_PROMPT_VERSION }) as SourceRow[];
 
   const bySlug = new Map<string, { slug: string; name: string; homepage: string; sources: unknown[] }>();
   let healthy = 0;
@@ -87,6 +97,9 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       last_ok_at: row.last_ok_at,
       distinct_states: row.distinct_states,
       degraded_reason: row.degraded_reason,
+      current_pricing: row.current_pricing_json === null
+        ? null
+        : JSON.parse(row.current_pricing_json) as unknown,
     });
   }
 
@@ -106,11 +119,36 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       last_ok_at: r.last_ok_at, degraded_reason: r.degraded_reason,
     })),
     last_run: lastRun ?? null,
-    // M2 replaces this with a real sum over extractions and digests (spec 7.1).
-    cost_micros_month: 0,
+    cost_micros_month: monthlySpendMicros(db, now),
   };
 
-  const payloads: Record<string, unknown> = { 'board.json': board, 'status.json': status };
+  const confirmed = db.prepare(`
+    SELECT ch.id, ch.change_type, ch.json_path, ch.before_json, ch.after_json,
+           ch.materiality, ch.observed_at, c.name AS competitor, c.slug
+    FROM changes ch
+    JOIN sources s ON s.id = ch.source_id
+    JOIN competitors c ON c.id = s.competitor_id
+    WHERE ch.state = 'confirmed' AND ch.materiality >= ?
+    ORDER BY ch.observed_at DESC, ch.id DESC
+    LIMIT 200
+  `).all(MATERIALITY_THRESHOLD) as Record<string, unknown>[];
+
+  const changesFeed = {
+    generated_at: generatedAt,
+    threshold: MATERIALITY_THRESHOLD,
+    changes: confirmed.map(c => ({
+      competitor: c.competitor,
+      slug: c.slug,
+      change_type: c.change_type,
+      json_path: c.json_path,
+      before: c.before_json === null ? null : JSON.parse(String(c.before_json)),
+      after: c.after_json === null ? null : JSON.parse(String(c.after_json)),
+      materiality: c.materiality,
+      observed_at: c.observed_at,
+    })),
+  };
+
+  const payloads: Record<string, unknown> = { 'board.json': board, 'status.json': status, 'changes.json': changesFeed };
 
   // ---- Guards (spec 15.7). All must pass before anything is renamed. -----
   if (competitors.length === 0) {
@@ -167,6 +205,7 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
     competitors: competitors.length,
     healthySources: healthy,
     totalSources: rows.length,
+    confirmedChanges: confirmed.length,
   };
 }
 
