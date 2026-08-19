@@ -183,3 +183,92 @@ describe('untrustworthy observations', () => {
     expect((db.prepare("SELECT COUNT(*) n FROM extractions WHERE normalized_hash='h2'").get() as { n: number }).n).toBe(1);
   });
 });
+
+describe('analyses across --rebuild (spec 12.2)', () => {
+  function annotate(changeId: number): void {
+    db.prepare(`INSERT INTO analyses
+      (change_id, implication, so_what, confidence, model, prompt_version, created_at)
+      VALUES (?, 'price up 25%', 'entry tier repriced', 'high', 'm', 'synth-v1', '2026-08-18T00:00:00.000Z')`)
+      .run(changeId);
+  }
+
+  it('re-links an annotation whose change survives rebuild', () => {
+    observe(20, 'h1', 10);
+    observe(21, 'h2', 20);
+    detect(db, {});
+    const change = db.prepare("SELECT id FROM changes WHERE change_type='price_changed'").get() as { id: number };
+    annotate(change.id);
+
+    const stats = detect(db, { rebuild: true });
+
+    const relinked = db.prepare(`
+      SELECT a.change_id, c.json_path, a.created_at, a.model, a.prompt_version
+      FROM analyses a JOIN changes c ON c.id = a.change_id
+    `).all() as { change_id: number; json_path: string; created_at: string; model: string; prompt_version: string }[];
+    expect(relinked).toHaveLength(1);
+    expect(relinked[0]!.json_path).toBe('tiers.Pro.monthly_price_usd');
+    // identity fidelity: a re-link must not look like a fresh annotation —
+    // the parked row's original created_at/model/prompt_version survive.
+    expect(relinked[0]!.created_at).toBe('2026-08-18T00:00:00.000Z');
+    expect(relinked[0]!.model).toBe('m');
+    expect(relinked[0]!.prompt_version).toBe('synth-v1');
+    expect(stats.relinked).toBe(1);
+    expect(stats.orphaned).toBe(0);
+  });
+
+  it('reinserts across a shared (json_path, observed_at) without throwing on the UNIQUE constraint', () => {
+    observe(20, 'h1', 10);
+    observe(21, 'h2', 20);
+    observe(21, 'h3', 30); // same day as h2, different hash: two pairs both land on this observed_at
+    detect(db, {});
+
+    const colliding = db.prepare(`
+      SELECT id, observed_at FROM changes
+      WHERE change_type = 'price_changed' AND json_path = 'tiers.Pro.monthly_price_usd'
+      ORDER BY id
+    `).all() as { id: number; observed_at: string }[];
+    expect(colliding).toHaveLength(2);
+    expect(colliding[0]!.observed_at).toBe(colliding[1]!.observed_at);
+    annotate(colliding[0]!.id);
+    annotate(colliding[1]!.id);
+
+    let stats: ReturnType<typeof detect> | undefined;
+    expect(() => { stats = detect(db, { rebuild: true }); }).not.toThrow();
+
+    expect(stats!.relinked).toBe(1);
+    expect(stats!.orphaned).toBe(1);
+
+    const survivor = db.prepare(`
+      SELECT id FROM changes WHERE json_path = 'tiers.Pro.monthly_price_usd' AND observed_at = ?
+      ORDER BY id LIMIT 1
+    `).get(colliding[0]!.observed_at) as { id: number };
+    const rows = db.prepare('SELECT change_id FROM analyses').all() as { change_id: number }[];
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.change_id).toBe(survivor.id);
+  });
+
+  it('deletes an annotation whose change does not survive', () => {
+    observe(20, 'h1', 10);
+    observe(21, 'h2', 20);
+    detect(db, {});
+    const change = db.prepare("SELECT id FROM changes WHERE change_type='price_changed'").get() as { id: number };
+    annotate(change.id);
+
+    // the second observation becomes untrustworthy, so the pair vanishes on rebuild
+    db.prepare("UPDATE snapshots SET error = 'curated: verified wrong' WHERE normalized_hash = 'h2'").run();
+    const stats = detect(db, { rebuild: true });
+
+    expect((db.prepare('SELECT COUNT(*) n FROM analyses').get() as { n: number }).n).toBe(0);
+    expect(stats.orphaned).toBe(1);
+    expect(stats.relinked).toBe(0);
+  });
+
+  it('rebuild without any analyses is unchanged', () => {
+    observe(20, 'h1', 10);
+    observe(21, 'h2', 20);
+    detect(db, {});
+    const stats = detect(db, { rebuild: true });
+    expect(stats.relinked).toBe(0);
+    expect(stats.orphaned).toBe(0);
+  });
+});

@@ -83,3 +83,42 @@ export interface Timeline {
   observation_count: number;
   competitors: TimelineCompetitor[];
 }
+
+export interface DigestBody {
+  period_start: string;
+  period_end: string;
+  body_markdown: string;
+  item_count: number;
+  created_at: string;
+}
+
+export interface Digest {
+  generated_at: string;
+  digest: DigestBody | null;
+}
+
+export type Confidence = 'high' | 'medium' | 'low';
+
+export interface ChangeAnnotation {
+  implication: string;
+  so_what: string;
+  confidence: Confidence;
+}
+
+export interface ChangeEntry {
+  competitor: string;
+  slug: string;
+  change_type: string;
+  json_path: string;
+  before: unknown;
+  after: unknown;
+  materiality: number;
+  observed_at: string;
+  annotation: ChangeAnnotation | null;
+}
+
+export interface ChangesFeed {
+  generated_at: string;
+  threshold: number;
+  changes: ChangeEntry[];
+}

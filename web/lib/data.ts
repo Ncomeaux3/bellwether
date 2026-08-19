@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Board, Status, Timeline } from './types.js';
+import type { Board, ChangeEntry, ChangesFeed, Digest, Status, Timeline } from './types.js';
 
 const DATA_DIR = join(process.cwd(), 'public', 'data');
 
@@ -29,4 +29,51 @@ export function loadTimeline(): Timeline {
   return read<Timeline>('timeline.json', {
     generated_at: '', observation_count: 0, competitors: [],
   });
+}
+
+export function loadDigest(): Digest {
+  return read<Digest>('digest.json', { generated_at: '', digest: null });
+}
+
+export function loadChanges(): ChangesFeed {
+  return read<ChangesFeed>('changes.json', { generated_at: '', threshold: 0, changes: [] });
+}
+
+export interface DatasetMeta {
+  generatedAt: string;
+  rowCount: number;
+}
+
+/**
+ * Reads the full dataset.json at build time (this only ever runs on the
+ * server, during static export) but returns just the count — the row array
+ * itself never reaches the page bundle.
+ */
+export function loadDatasetMeta(): DatasetMeta {
+  const data = read<{ generated_at: string; rows: unknown[] }>('dataset.json', {
+    generated_at: '', rows: [],
+  });
+  return { generatedAt: data.generated_at, rowCount: data.rows.length };
+}
+
+const fmt = (v: unknown): string => (v === null || v === undefined ? 'none' : String(v));
+
+/**
+ * Same grammar as the exporter's describeChange (src/workflow/dataset.ts),
+ * ported rather than imported — that module pulls in better-sqlite3, which
+ * has no place in a static page bundle. Operates on changes.json's
+ * already-parsed before/after rather than raw JSON strings.
+ */
+export function changeLabel(c: Pick<ChangeEntry, 'json_path' | 'change_type' | 'before' | 'after'>): string {
+  const parts = c.json_path.split('.');
+  const field = parts[parts.length - 1] ?? '';
+  const tier = c.json_path.startsWith('tiers.')
+    ? (parts.slice(1, -1).join('.') || parts.slice(1).join('.'))
+    : c.json_path;
+
+  if (c.change_type === 'price_changed') {
+    const label = field === 'monthly_price_usd' ? '' : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
+    return `${tier} ${label}${fmt(c.before)} to ${fmt(c.after)}`;
+  }
+  return `${tier} ${c.change_type.replace(/_/g, ' ')}`;
 }
