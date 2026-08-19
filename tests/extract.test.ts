@@ -6,6 +6,7 @@ import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import { extract } from '../src/workflow/extract.js';
+import { monthlySpendMicros } from '../src/agents/_client.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 import type { ExtractResult } from '../src/agents/extract_pricing.js';
 
@@ -26,11 +27,13 @@ beforeEach(() => {
 });
 afterEach(() => { db.close(); rmSync(dir, { recursive: true, force: true }); });
 
-function addSnapshot(html: string | null, ok = 1, observedAt = '2026-08-18T12:00:00.000Z') {
+function addSnapshot(
+  html: string | null, ok = 1, observedAt = '2026-08-18T12:00:00.000Z', provenance = 'live',
+) {
   db.prepare(`INSERT INTO snapshots
     (source_id, observed_at, fetched_at, ok, http_status, error, raw_content, raw_hash, normalized_hash, provenance)
-    VALUES (1, ?, ?, ?, 200, NULL, ?, ?, NULL, 'live')`)
-    .run(observedAt, observedAt, ok, html, html ? `h${html.length}${observedAt}` : null);
+    VALUES (1, ?, ?, ?, 200, NULL, ?, ?, NULL, ?)`)
+    .run(observedAt, observedAt, ok, html, html ? `h${html.length}${observedAt}` : null, provenance);
 }
 
 const okResult = (price: number, currency = 'USD', confidence: 'high' | 'low' = 'high'): ExtractResult => ({
@@ -192,5 +195,60 @@ describe('extract', () => {
       { normalized_hash: string | null };
     expect(sibling.normalized_hash).not.toBeNull();
     expect(sibling.normalized_hash).toBe(first.normalized_hash);
+  });
+});
+
+describe('historical snapshots (spec 12.1)', () => {
+  it('never marks a source degraded when a historical extraction fails (R3)', async () => {
+    addSnapshot(HTML, 1, '2025-01-16T00:00:00.000Z', 'wayback:20250116000000');
+
+    const stats = await extract(
+      db,
+      {},
+      deps({ ok: false, reason: 'oversized', detail: '31000 tokens exceeds the 20000 budget' }),
+    );
+
+    const source = db.prepare('SELECT degraded_reason FROM sources WHERE id = 1').get() as
+      { degraded_reason: string | null };
+    expect(source.degraded_reason).toBeNull();
+    expect(stats.historicalFailed).toBe(1);
+    expect(stats.degraded).toBe(0);
+  });
+
+  it('still marks a source degraded when a LIVE extraction fails', async () => {
+    addSnapshot(HTML);
+
+    const stats = await extract(
+      db,
+      {},
+      deps({ ok: false, reason: 'ungrounded', detail: 'price 20 not in source' }),
+    );
+
+    const source = db.prepare('SELECT degraded_reason FROM sources WHERE id = 1').get() as
+      { degraded_reason: string | null };
+    expect(source.degraded_reason).toContain('ungrounded');
+    expect(stats.degraded).toBe(1);
+    expect(stats.historicalFailed).toBe(0);
+  });
+
+  it('tags a historical extraction is_backfill=1 so it misses the recurring cap (R4)', async () => {
+    addSnapshot(HTML, 1, '2025-01-16T00:00:00.000Z', 'wayback:20250116000000');
+
+    await extract(db, {}, deps(okResult(20)));
+
+    const row = db.prepare('SELECT is_backfill, cost_micros FROM extractions').get() as
+      { is_backfill: number; cost_micros: number };
+    expect(row.is_backfill).toBe(1);
+    expect(monthlySpendMicros(db, new Date('2026-08-18T12:00:00.000Z'))).toBe(0);
+  });
+
+  it('tags a live extraction is_backfill=0 so it does count against the cap', async () => {
+    addSnapshot(HTML);
+
+    await extract(db, {}, deps(okResult(20)));
+
+    const row = db.prepare('SELECT is_backfill FROM extractions').get() as { is_backfill: number };
+    expect(row.is_backfill).toBe(0);
+    expect(monthlySpendMicros(db, new Date('2026-08-18T12:00:00.000Z'))).toBeGreaterThan(0);
   });
 });

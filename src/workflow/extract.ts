@@ -12,6 +12,7 @@ export interface ExtractOptions { limit?: number; dryRun?: boolean }
 export interface ExtractStats {
   considered: number; hashed: number; cached: number;
   extracted: number; skipped: number; degraded: number; mismatched: number;
+  historicalFailed: number;
 }
 
 export interface ExtractWorkflowDeps {
@@ -22,7 +23,7 @@ export interface ExtractWorkflowDeps {
 
 interface PendingRow {
   id: number; source_id: number; raw_content: string | null;
-  raw_hash: string | null; normalized_hash: string | null;
+  raw_hash: string | null; normalized_hash: string | null; provenance: string;
 }
 
 /**
@@ -38,7 +39,8 @@ export async function extract(
   const env = deps.env ?? process.env;
   const now = deps.now ?? (() => new Date());
   const stats: ExtractStats = {
-    considered: 0, hashed: 0, cached: 0, extracted: 0, skipped: 0, degraded: 0, mismatched: 0,
+    considered: 0, hashed: 0, cached: 0, extracted: 0, skipped: 0,
+    degraded: 0, mismatched: 0, historicalFailed: 0,
   };
 
   const runId = acquireRun(db, 'extract', { now });
@@ -50,7 +52,7 @@ export async function extract(
     // limiting the query here would make `--limit 1` do no new work at all
     // once the archive has grown past the first run.
     const pending = db.prepare(`
-      SELECT s.id, s.source_id, s.raw_content, s.raw_hash, s.normalized_hash
+      SELECT s.id, s.source_id, s.raw_content, s.raw_hash, s.normalized_hash, s.provenance
       FROM snapshots s
       WHERE s.ok = 1 AND s.raw_content IS NOT NULL
       ORDER BY s.observed_at, s.id
@@ -68,7 +70,7 @@ export async function extract(
         (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
          is_backfill, model, prompt_version, input_tokens, output_tokens, cost_micros, created_at)
       VALUES (@hash, 'pricing', @data, @confidence, @currency, 1,
-              0, @model, @promptVersion, @inputTokens, @outputTokens, @costMicros, @createdAt)
+              @isBackfill, @model, @promptVersion, @inputTokens, @outputTokens, @costMicros, @createdAt)
     `);
     const degrade = db.prepare('UPDATE sources SET degraded_reason = ? WHERE id = ?');
 
@@ -79,6 +81,12 @@ export async function extract(
     for (const row of pending) {
       stats.considered += 1;
       if (row.raw_content === null) continue;
+
+      // Spec 7 schema: provenance is 'live' or 'wayback:<ts>'. An extraction is
+      // keyed on normalized_hash and shared between historical and live
+      // snapshots; whichever one triggered the call is the budget that paid for
+      // it, so the flag records that and is never rewritten afterwards.
+      const historical = row.provenance.startsWith('wayback:');
 
       const { text, normalizedHash } = normalizeAndSlice(row.raw_content);
 
@@ -116,8 +124,17 @@ export async function extract(
       const result = await runExtractor(text);
 
       if (!result.ok) {
-        stats.degraded += 1;
-        degrade.run(`extraction ${result.reason}: ${result.detail}`.slice(0, 300), row.source_id);
+        // Spec 12.1 / ruling R3: a capture from 2025 failing today's extraction
+        // is a fact about that page in 2025, not a health signal about the
+        // source today. Degrading here would paint the live source red on the
+        // public status board with no path back — every later `extract` pass
+        // re-reads the same historical snapshot and re-degrades it.
+        if (historical) {
+          stats.historicalFailed += 1;
+        } else {
+          stats.degraded += 1;
+          degrade.run(`extraction ${result.reason}: ${result.detail}`.slice(0, 300), row.source_id);
+        }
         if (opts.limit !== undefined && llmCalls >= opts.limit) break;
         continue;
       }
@@ -127,6 +144,7 @@ export async function extract(
         data: JSON.stringify(result.data),
         confidence: result.data.extraction_confidence,
         currency: result.data.currency,
+        isBackfill: historical ? 1 : 0,
         model: EXTRACT_MODEL,
         promptVersion: EXTRACT_PROMPT_VERSION,
         inputTokens: result.inputTokens,

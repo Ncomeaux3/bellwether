@@ -67,7 +67,8 @@ program
     const s = await extract(db, { limit: options.limit, dryRun: options.dryRun });
     console.log(
       `Considered ${s.considered}: ${s.extracted} extracted, ${s.cached} cached, ` +
-      `${s.hashed} hashed, ${s.skipped} skipped, ${s.degraded} degraded, ${s.mismatched} non-USD.`,
+      `${s.hashed} hashed, ${s.skipped} skipped, ${s.degraded} degraded, ` +
+      `${s.historicalFailed} historical failed, ${s.mismatched} non-USD.`,
     );
     db.close();
   });
@@ -145,7 +146,8 @@ program
     const extractStats = await extract(db, {});
     console.log(
       `Extracted ${extractStats.extracted}, cached ${extractStats.cached}, ` +
-      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}.`,
+      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}, ` +
+      `historical failed ${extractStats.historicalFailed}.`,
     );
 
     const { detect } = await import('./workflow/detect.js');
