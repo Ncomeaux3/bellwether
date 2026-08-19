@@ -95,10 +95,24 @@ export interface SliceResult { text: string; normalizedHash: string }
  * Never throws — node-html-parser tolerates malformed input, and a page we
  * cannot parse must degrade rather than crash the pipeline.
  */
+/**
+ * node-html-parser handles block-text elements (script/style/pre/noscript) by
+ * scanning for the EXACT literal closer via indexOf — `</style>` and nothing
+ * else. A closer written with whitespace before the `>` (Linear's formatted
+ * shadow-DOM CSS emits `</style\n\t\t\t>`) is invisible to that scan, so the
+ * parser swallows everything up to the next literal closer — or EOF — as one
+ * giant text node. On Linear's archived captures that turned 1.19 MB of the
+ * document into unstructured text, slicing degraded to "densest 30k window of
+ * a JSON payload", and every extraction came back wrong. Proven with a
+ * 60-byte reproduction: `<div>A</div><style>x</style\n><div>B</div>` parses
+ * to ONE div. Normalizing the closers before parse is the whole fix.
+ */
+const WHITESPACE_CLOSER = /<\/(script|style|pre|noscript|textarea|template|title)\s+>/gi;
+
 export function normalizeAndSlice(html: string, opts: { widen?: boolean } = {}): SliceResult {
   // Comments are removed at parse time; `comment: false` is the default but is
   // stated explicitly because the noisy fixture asserts on it.
-  const root = parse(html, { comment: false });
+  const root = parse(html.replace(WHITESPACE_CLOSER, '</$1>'), { comment: false });
   stripNoise(root);
 
   const body = root.querySelector('body') ?? root;

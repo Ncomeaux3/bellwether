@@ -120,3 +120,46 @@ describe('normalizeAndSlice', () => {
     expect(b.normalizedHash).toBe(a.normalizedHash);
   });
 });
+
+describe('whitespace before the > in a block-text closer', () => {
+  // node-html-parser scans for the exact literal `</style>`; a closer written
+  // `</style\n\t>` is invisible to it and everything to the next literal
+  // closer (or EOF) becomes one text node. Linear's shadow-DOM CSS closes
+  // exactly that way, and it silently destroyed every archived extraction.
+
+  it('still sees elements after a style tag closed with trailing whitespace', () => {
+    const html = '<body><div>Plan A $10</div><style>\n:host{color:red}\n</style\n\t\t\t>\n<div>Plan B $20</div></body>';
+    const { text } = normalizeAndSlice(html);
+    expect(text).toContain('Plan A $10');
+    expect(text).toContain('Plan B $20');       // swallowed before the fix
+    expect(text).not.toContain(':host');        // and the CSS is genuinely stripped
+  });
+
+  it('recovers the pricing table on a Linear-shaped page', () => {
+    // Shape of the real failure: a declarative shadow-DOM template whose
+    // <style> closes with whitespace, followed by the tiers the slicer needs.
+    const html = [
+      '<body><main>',
+      '<span><template shadowroot="open" shadowrootmode="open"\n\t\t\t><style>',
+      ':host{display:inline-block}',
+      '</style\n\t\t\t><span>$</span><span>8</span></template\n\t\t></span>',
+      '<h2>Basic</h2><p>$8 per user/month</p>',
+      '<h2>Business</h2><p>$14 per user/month</p>',
+      '<h2>Enterprise</h2><p>Custom pricing</p>',
+      '</main></body>',
+    ].join('\n');
+    const { text } = normalizeAndSlice(html);
+    expect(text).toContain('$8 per user/month');
+    expect(text).toContain('$14 per user/month');
+    expect(text).not.toContain(':host');
+  });
+
+  it('leaves a page without whitespace closers byte-identical, preserving its hash', () => {
+    // The fix must never move the normalized hash of an unaffected page — a
+    // changed hash is a cache miss, and a cache miss is a paid re-extraction
+    // of every archived state.
+    const html = '<body><div>Pro $20/mo</div><style>.a{}</style></body>';
+    const before = normalizeAndSlice(html);
+    expect(before.text).toBe('Pro $20/mo');
+  });
+});
