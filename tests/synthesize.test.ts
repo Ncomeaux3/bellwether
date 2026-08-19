@@ -62,8 +62,12 @@ function insertDigest(periodStart: string, createdAt: string, bodyMd = `digest $
 const digestCount = () => (db.prepare('SELECT COUNT(*) AS n FROM digests').get() as { n: number }).n;
 const analysisCount = () => (db.prepare('SELECT COUNT(*) AS n FROM analyses').get() as { n: number }).n;
 
-/** A stubbed synthesizeWeekly: builds an ok result annotating every change it is shown. */
-function fakeOkSynthesizer(): {
+/** A stubbed synthesizeWeekly: builds an ok result annotating every change it is shown.
+ * `topCount` defaults to 5 (the real schema cap); pass fewer than the change count to
+ * make item_count (top.length) diverge from annotated (annotations.length), which is
+ * the only way a test can tell the digest row's item_count apart from a bug that writes
+ * annotations.length instead. */
+function fakeOkSynthesizer(topCount = 5): {
   fn: (c: ChangeForSynthesis[], p: string[]) => Promise<SynthesizeResult>;
   calls: { changes: ChangeForSynthesis[]; priors: string[] }[];
 } {
@@ -77,7 +81,7 @@ function fakeOkSynthesizer(): {
           index: i, implication: 'it changed', so_what: 'buyers care', confidence: 'high' as const,
         })),
         digest_markdown: '## This week\nStuff happened.',
-        top: changes.slice(0, 5).map((_, i) => ({ index: i, headline: `headline ${i}` })),
+        top: changes.slice(0, topCount).map((_, i) => ({ index: i, headline: `headline ${i}` })),
       },
       changeIdByIndex: new Map(changes.map((c, i) => [i, c.id])),
       inputTokens: 1000, outputTokens: 200, costMicros: 6000, attempts: 1,
@@ -165,7 +169,10 @@ describe('synthesize (workflow)', () => {
     insertChange('2026-08-10T00:00:00.000Z');
     insertChange('2026-08-11T00:00:00.000Z');
     insertChange('2026-08-12T00:00:00.000Z');
-    const { fn } = fakeOkSynthesizer();
+    // topCount=2 against 3 changes: item_count (top.length) must read 2, not
+    // annotated (annotations.length, 3) — the only way to catch a digest
+    // insert that swaps in the wrong count.
+    const { fn } = fakeOkSynthesizer(2);
 
     const stats = await synthesize(db, {}, {
       now: () => NOW_MONDAY,
@@ -175,7 +182,7 @@ describe('synthesize (workflow)', () => {
 
     expect(stats.fired).toBe(true);
     expect(stats.annotated).toBe(3);
-    expect(stats.itemCount).toBe(3);
+    expect(stats.itemCount).toBe(2);
     expect(digestCount()).toBe(1);
     expect(analysisCount()).toBe(3);
 
@@ -183,6 +190,15 @@ describe('synthesize (workflow)', () => {
       { state: string; ok: number };
     expect(run.state).toBe('ok');
     expect(run.ok).toBe(1);
+
+    const digest = db.prepare(
+      'SELECT model, prompt_version, cost_micros, item_count, body_md FROM digests',
+    ).get() as { model: string; prompt_version: string; cost_micros: number; item_count: number; body_md: string };
+    expect(digest.model).toBe(SYNTH_MODEL);
+    expect(digest.prompt_version).toBe(SYNTH_PROMPT_VERSION);
+    expect(digest.cost_micros).toBe(6000);
+    expect(digest.item_count).toBe(2);
+    expect(digest.body_md).toBe('## This week\nStuff happened.');
   });
 
   it('ON CONFLICT(change_id, prompt_version) DO NOTHING de-dupes a repeated annotation index', async () => {
@@ -287,6 +303,7 @@ describe('synthesize (workflow)', () => {
     });
 
     expect(stats.fired).toBe(false);
+    expect(stats.wouldFire).toBe(true); // the trigger says fire; dry-run just never acted on it
     expect(calls).toHaveLength(0);
     expect(digestCount()).toBe(0);
   });
@@ -326,5 +343,43 @@ describe('synthesize (workflow)', () => {
     expect(calls[0]!.priors).toHaveLength(PRIOR_DIGESTS);
     // Newest first: digest-4 (Jul 5) down to digest-1 (Jul 2); digest-0 (Jul 1) is dropped.
     expect(calls[0]!.priors).toEqual(['digest-4', 'digest-3', 'digest-2', 'digest-1']);
+  });
+
+  // Fix round 1, finding 1: detect stamps every change from one snapshot pair
+  // with an identical observed_at, so a change overhaul big enough to split
+  // across two capped (SYNTH_MAX_CHANGES) runs used to hand both runs the
+  // same period_start (= changes[0].observed_at) — the digest insert's old
+  // ON CONFLICT DO NOTHING then silently dropped run 2's digest while its
+  // annotations still committed. period_start is now the run's own
+  // timestamp, so this must no longer collide.
+  it('two runs whose pending changes share one observed_at both keep their digest', async () => {
+    const sharedObservedAt = '2026-08-10T00:00:00.000Z';
+    for (let i = 0; i < 25; i += 1) insertChange(sharedObservedAt);
+
+    const run1 = fakeOkSynthesizer();
+    const stats1 = await synthesize(db, {}, {
+      now: () => NOW_MONDAY, env: { LLM_ENABLED: 'true' }, synthesizer: run1.fn,
+    });
+    expect(stats1.fired).toBe(true);
+    expect(run1.calls[0]!.changes).toHaveLength(SYNTH_MAX_CHANGES); // 20 of 25 consumed
+
+    // A second run, moments later, picks up the 5 changes the cap left behind.
+    const laterNow = new Date(NOW_MONDAY.getTime() + 1000);
+    const run2 = fakeOkSynthesizer();
+    const stats2 = await synthesize(db, {}, {
+      now: () => laterNow, env: { LLM_ENABLED: 'true' }, synthesizer: run2.fn,
+    });
+    expect(stats2.fired).toBe(true);
+    expect(run2.calls[0]!.changes).toHaveLength(25 - SYNTH_MAX_CHANGES);
+
+    expect(digestCount()).toBe(2);
+    const digests = db.prepare('SELECT period_start, body_md, cost_micros FROM digests').all() as
+      { period_start: string; body_md: string; cost_micros: number }[];
+    expect(new Set(digests.map(d => d.period_start)).size).toBe(2); // no collision
+    expect(digests.every(d => d.body_md.length > 0)).toBe(true);
+    expect(digests.reduce((sum, d) => sum + d.cost_micros, 0)).toBe(stats1.costMicros + stats2.costMicros);
+
+    const runs = db.prepare("SELECT state FROM runs WHERE kind = 'synthesize'").all() as { state: string }[];
+    expect(runs.every(r => r.state === 'ok')).toBe(true);
   });
 });

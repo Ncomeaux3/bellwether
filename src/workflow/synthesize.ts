@@ -21,6 +21,7 @@ export interface SynthesizeWorkflowDeps {
 export interface SynthStats {
   fired: boolean; reason: string; skipped: boolean;
   annotated: number; itemCount: number; costMicros: number;
+  wouldFire: boolean;
 }
 
 const pendingQuery = `
@@ -62,12 +63,15 @@ export async function synthesize(
 ): Promise<SynthStats> {
   const env = deps.env ?? process.env;
   const now = deps.now ?? (() => new Date());
-  const stats: SynthStats = { fired: false, reason: '', skipped: false, annotated: 0, itemCount: 0, costMicros: 0 };
+  const stats: SynthStats = {
+    fired: false, reason: '', skipped: false, annotated: 0, itemCount: 0, costMicros: 0, wouldFire: false,
+  };
   const runId = acquireRun(db, 'synthesize', { now });
 
   try {
     const verdict = shouldSynthesize(db, now(), opts);
     stats.reason = verdict.reason;
+    stats.wouldFire = verdict.fire;
     if (!verdict.fire || opts.dryRun) {
       finishRun(db, runId, true, stats);
       return stats;
@@ -113,7 +117,24 @@ export async function synthesize(
 
     stats.fired = true;
     const stamp = now().toISOString();
-    const periodStart = changes[0]!.observed_at;
+
+    // Fix round 1, finding 1: period_start identifies the RUN, not the
+    // coverage window. It used to be changes[0].observed_at, but detect
+    // stamps every change from one snapshot pair with the same observed_at,
+    // so a >20-change overhaul that splits across two capped runs produced
+    // two runs with the *same* periodStart. The digest insert's
+    // ON CONFLICT(period_start, prompt_version) DO NOTHING then silently
+    // discarded run 2's real, paid-for digest while its annotations still
+    // committed — changes stop being pending forever, cost_micros for real
+    // spend never lands in the table monthlySpendMicros reads, and the run
+    // still reports fired/ok. Coverage lives in the annotations (each change
+    // keeps its own observed_at) and in the digest body's own text, so the
+    // period columns are free to just be the run's timestamp, which the run
+    // lock (spec 15.5) guarantees is unique — two synthesize runs can never
+    // share one millisecond. That makes a UNIQUE violation here an
+    // invariant break, not a case to handle: no ON CONFLICT, let it throw
+    // and roll back the annotations with it rather than half-commit.
+    const periodStart = stamp;
 
     // One transaction: a digest with half its annotations is not a state
     // this table is allowed to hold.
@@ -130,8 +151,7 @@ export async function synthesize(
       }
       db.prepare(`
         INSERT INTO digests (period_start, period_end, body_md, item_count, model, prompt_version, cost_micros, created_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ON CONFLICT (period_start, prompt_version) DO NOTHING`)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
         .run(periodStart, stamp, result.data.digest_markdown, result.data.top.length,
           SYNTH_MODEL, SYNTH_PROMPT_VERSION, result.costMicros, stamp);
     })();

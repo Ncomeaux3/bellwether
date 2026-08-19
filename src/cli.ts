@@ -101,7 +101,9 @@ program
     console.log(
       s.fired
         ? `Digest written: ${s.itemCount} items, ${s.annotated} changes annotated, $${(s.costMicros / 1e6).toFixed(4)}.`
-        : `No digest: ${s.reason}${s.skipped ? ' (skipped: LLM disabled or budget exhausted)' : ''}`,
+        : options.dryRun
+          ? `Dry run: ${s.wouldFire ? 'WOULD fire' : 'would hold'} (${s.reason}).`
+          : `No digest: ${s.reason}${s.skipped ? ' (skipped: LLM disabled or budget exhausted)' : ''}`,
     );
     db.close();
   });
@@ -250,10 +252,17 @@ program
     console.log(`Detected ${detectStats.created} changes, ${detectStats.confirmed} confirmed.`);
 
     const { synthesize } = await import('./workflow/synthesize.js');
-    const synthStats = await synthesize(db, {});
-    console.log(synthStats.fired
-      ? `Digest: ${synthStats.itemCount} items, ${synthStats.annotated} annotated.`
-      : `Digest: not fired (${synthStats.reason}).`);
+    try {
+      const synthStats = await synthesize(db, {});
+      console.log(synthStats.fired
+        ? `Digest: ${synthStats.itemCount} items, ${synthStats.annotated} annotated.`
+        : `Digest: not fired (${synthStats.reason}).`);
+    } catch (err) {
+      // A transient API failure must not cost the nightly export: the digest
+      // retries next Monday, the export is purely local, and the run row for
+      // 'synthesize' is already marked failed by the workflow's own catch.
+      console.warn(`Digest step failed, continuing to export: ${err instanceof Error ? err.message : String(err)}`);
+    }
 
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
     const exportStats = exportData(db, outDir);
