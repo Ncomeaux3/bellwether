@@ -1270,7 +1270,9 @@ git commit -m "feat(backfill): drain queued captures into capture-dated snapshot
 
 **How the budget is enforced.**
 
-Spec 12.1 specifies a pre-flight estimate because a Batches job cannot be checked mid-flight. Ruling R1 keeps extraction synchronous, so the estimate has a second, stronger job here: it converts the dollar budget into a **hard call ceiling** that is passed straight to `extract`'s existing `--limit`. No new enforcement code is written anywhere.
+Spec 12.1 specifies a pre-flight estimate because a Batches job cannot be checked mid-flight. Ruling R1 keeps extraction synchronous, so the estimate is also converted into a call ceiling passed straight to `extract`'s existing `--limit`. No new enforcement code is written anywhere.
+
+> **Corrected during execution.** An earlier draft of this section claimed the call ceiling is what enforces the budget. It is not. The gate requires `pending x mean <= budget` and `maxCalls = floor(budget / mean)`, so `maxCalls >= pending` whenever the gate passes — the ceiling never truncates on the happy path, and it cannot bind on cost because it counts calls rather than dollars. **The refusal gate is the enforcement.** The real bound on per-call cost is structural and already exists: `TOKEN_BUDGET = 20_000` in `src/agents/extract_pricing.ts` refuses an oversized page before it is sent, capping one extraction near $0.025 against a measured mean of $0.0096 (largest observed: $0.018). Worst-case overshoot on a ~$1.20 corpus is therefore about $3, not unbounded. `maxCalls` is kept as a cheap backstop for a backlog the estimator cannot see.
 
 ```
 maxCalls = floor(budgetMicros / meanCostMicros)
