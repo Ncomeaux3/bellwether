@@ -26,7 +26,13 @@ export const PricingSnapshot = z.object({
   usage_rates: z.array(z.object({
     metric: z.string(),
     unit_price_usd: z.number(),
-  })).max(12),
+    // Raised from 12 after a real archived Supabase capture exceeded it. The
+    // cap exists to bound output tokens, not to model reality, and a
+    // consumption-priced page legitimately lists dozens of metered rates.
+    // Loosening is backward compatible — everything valid under the old cap
+    // is valid under this one — so EXTRACT_PROMPT_VERSION is deliberately NOT
+    // bumped, which would have forced a full re-extraction of the archive.
+  })).max(40),
   notes: z.string().nullable(),
   /** Self-reported. A useful signal, never a validator — see ground.ts. */
   extraction_confidence: z.enum(['high', 'medium', 'low']),
