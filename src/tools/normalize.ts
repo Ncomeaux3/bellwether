@@ -10,12 +10,6 @@ const NOISE_PATTERN =
 
 const STRIP_TAGS = ['script', 'style', 'svg', 'noscript', 'iframe', 'template', 'nav', 'header', 'footer'];
 
-/** Volatile attribute values: build hashes, nonces, UUIDs, cache-busters. */
-const VOLATILE_VALUE =
-  /^([0-9a-f]{16,}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/i;
-
-const VOLATILE_ATTRS = ['nonce', 'integrity', 'crossorigin', 'srcset', 'style'];
-
 function countPrices(text: string): number {
   return (text.match(PRICE) ?? []).length;
 }
@@ -24,16 +18,15 @@ function stripNoise(root: HTMLElement): void {
   for (const tag of STRIP_TAGS) {
     for (const el of root.querySelectorAll(tag)) el.remove();
   }
+  // No attribute stripping here: HTMLElement.text never includes attribute
+  // values (verified: parse('<div id="x" nonce="y">visible</div>').text ===
+  // 'visible'), so build hashes, nonces, and cache-busters in attributes
+  // already can't reach normalizedHash. Only class/id are read below to
+  // decide removal, and only element text ever feeds the hash. Would become
+  // necessary again if slicing ever switched to outerHTML.
   for (const el of root.querySelectorAll('*')) {
     const marker = `${el.getAttribute('class') ?? ''} ${el.getAttribute('id') ?? ''}`;
-    if (NOISE_PATTERN.test(marker)) { el.remove(); continue; }
-
-    for (const name of Object.keys(el.attributes)) {
-      const value = el.getAttribute(name) ?? '';
-      if (name.startsWith('data-') || VOLATILE_ATTRS.includes(name) || VOLATILE_VALUE.test(value)) {
-        el.removeAttribute(name);
-      }
-    }
+    if (NOISE_PATTERN.test(marker)) el.remove();
   }
 }
 
@@ -51,7 +44,7 @@ function slice(root: HTMLElement): HTMLElement {
   let current = root;
   for (;;) {
     const heir = current.childNodes
-      .filter((n): n is HTMLElement => n instanceof Object && 'querySelectorAll' in n)
+      .filter((n): n is HTMLElement => 'querySelectorAll' in n)
       .find(child => countPrices(child.text) >= total * DENSITY_THRESHOLD);
     if (!heir) return current;
     current = heir;

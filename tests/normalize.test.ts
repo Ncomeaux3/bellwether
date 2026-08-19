@@ -34,15 +34,33 @@ describe('normalizeAndSlice', () => {
     expect(text).toContain('$20');
   });
 
-  it('produces the same hash for noise-only differences', () => {
-    const a = normalizeAndSlice(fixture('pricing-noisy.html'));
-    // Same page, different build hash, different nonce, different cache-buster.
-    const mutated = fixture('pricing-noisy.html')
-      .replace(/9f2a1c4d8e7b6a5f[0-9a-f]*/g, 'deadbeefdeadbeef')
-      .replace('nonce="a3f9"', 'nonce="zz11"')
-      .replace('?v=8f3a2b1c', '?v=11112222');
-    const b = normalizeAndSlice(mutated);
+  it('hash ignores everything STRIP_TAGS/NOISE_PATTERN remove, but reacts to a real price change in main', () => {
+    const original = fixture('pricing-noisy.html');
+    const a = normalizeAndSlice(original);
+
+    // Mutate content that would only reach .text if STRIP_TAGS (script, nav,
+    // footer) and NOISE_PATTERN (cookie-banner, intercom-widget) were not
+    // doing their job: the script body, the nav link text, the cookie-banner
+    // copy, the chat-widget copy, and the footer text (including its own
+    // stray price) — none of this is reachable via attributes, so it proves
+    // the tag/class removal itself, not the (now-deleted) attribute logic.
+    const noiseMutated = original
+      .replace(
+        'window.__DATA__={build:"9f2a1c4d8e7b6a5f4321"};',
+        'window.__DATA__={build:"totally different script body"};',
+      )
+      .replace('>Home<', '>Away<')
+      .replace('We use cookies.', 'We absolutely love cookies.')
+      .replace('Chat with us', 'Talk to our team right now')
+      .replace('© 2026 Example. Pay $0 to start.', '© 2099 Nobody. Pay $77 to start.');
+    const b = normalizeAndSlice(noiseMutated);
     expect(b.normalizedHash).toBe(a.normalizedHash);
+
+    // Paired case: main is never stripped, so a real price change there must
+    // still change the hash.
+    const priceMutated = original.replace('$20/mo', '$24/mo');
+    const c = normalizeAndSlice(priceMutated);
+    expect(c.normalizedHash).not.toBe(a.normalizedHash);
   });
 
   it('produces a different hash when a price changes', () => {
