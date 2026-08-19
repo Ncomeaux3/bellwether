@@ -46,6 +46,29 @@ function throwingClient(error: unknown, tokens = 6_000) {
   };
 }
 
+describe('extractPricing on an empty slice', () => {
+  it('refuses without spending a request', async () => {
+    // Two real archived Supabase captures are JS-only shells that strip to
+    // nothing. The API rejects an empty user message with a 400, which would
+    // abort an entire backfill batch.
+    let calls = 0;
+    const client = {
+      messages: {
+        countTokens: async () => { calls += 1; return { input_tokens: 0 }; },
+        parse: async () => { calls += 1; throw new Error('should never be called'); },
+      },
+    };
+
+    const result = await extractPricing('   \n  ', { client: client as never });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('unreachable');
+    expect(result.reason).toBe('invalid');
+    expect(result.detail).toContain('empty');
+    expect(calls).toBe(0);
+  });
+});
+
 describe('extractPricing when the SDK itself rejects the answer', () => {
   it('degrades to invalid instead of killing the run', async () => {
     // The real crash: a Supabase capture answered with more usage_rates than

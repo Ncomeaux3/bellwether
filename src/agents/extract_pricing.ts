@@ -49,6 +49,14 @@ export type ExtractResult =
 export async function extractPricing(text: string, deps: ExtractDeps): Promise<ExtractResult> {
   const maxAttempts = deps.maxAttempts ?? 2;
 
+  // An empty slice can never yield pricing, and the API rejects an empty user
+  // message with a 400 that aborts the whole batch — two real archived
+  // Supabase captures are JS-only shells that strip to nothing. Refuse here
+  // rather than spending a request to be told no.
+  if (text.trim() === '') {
+    return { ok: false, reason: 'invalid', detail: 'normalized slice is empty — the capture carries no extractable text' };
+  }
+
   const budget = await guardTokens(deps.client, text);
   if (!budget.ok) {
     return { ok: false, reason: 'oversized', detail: `${budget.tokens} tokens exceeds the ${TOKEN_BUDGET} budget` };
