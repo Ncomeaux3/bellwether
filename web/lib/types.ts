@@ -50,3 +50,36 @@ export interface Status {
   last_run: { kind: string; started_at: string; ended_at: string | null; state: string } | null;
   cost_micros_month: number;
 }
+
+export interface TimelinePoint {
+  observed_at: string;
+  price: number;
+}
+
+export type TierClass = 'free' | 'entry' | 'mid' | 'enterprise';
+
+export interface TimelineSeries {
+  tier: string;
+  segments: TimelinePoint[][];
+  tier_class: TierClass;
+}
+
+export interface TimelineMarker {
+  observed_at: string;
+  label: string;
+}
+
+export interface TimelineCompetitor {
+  slug: string;
+  name: string;
+  first_observed_at: string | null;
+  last_observed_at: string | null;
+  series: TimelineSeries[];
+  markers: TimelineMarker[];
+}
+
+export interface Timeline {
+  generated_at: string;
+  observation_count: number;
+  competitors: TimelineCompetitor[];
+}

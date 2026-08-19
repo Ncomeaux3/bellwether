@@ -33,7 +33,12 @@ services:
       # 'Z', SQLite's datetime() emits a space and no zone, and comparing the
       # two as raw strings makes 'T' > ' ' decide same-day ties — see the
       # identical guard (and the same comment) in src/workflow/collect.ts.
-      test: ["CMD", "node", "-e", "const D=require('better-sqlite3');const db=new D('/data/bellwether.db',{readonly:true});const r=db.prepare(\"SELECT COUNT(*) n FROM runs WHERE state='ok' AND datetime(ended_at) > datetime('now','-26 hours')\").get();process.exit(r.n>0?0:1)"]
+      # kind='collect' on purpose: `collect` is what the daily pipeline (`start`)
+      # actually runs, so its freshness is what this check asserts. Without the
+      # filter, a one-off manual `backfill` (including an over-budget refusal,
+      # which still finishes ok) or `export` writes its own `ok` run row and
+      # paints the container healthy for 26 hours while collect keeps failing.
+      test: ["CMD", "node", "-e", "const D=require('better-sqlite3');const db=new D('/data/bellwether.db',{readonly:true});const r=db.prepare(\"SELECT COUNT(*) n FROM runs WHERE kind='collect' AND state='ok' AND datetime(ended_at) > datetime('now','-26 hours')\").get();process.exit(r.n>0?0:1)"]
       interval: 5m
       timeout: 10s
       retries: 3

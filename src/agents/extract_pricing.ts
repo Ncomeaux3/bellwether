@@ -1,3 +1,4 @@
+import { APIError } from '@anthropic-ai/sdk';
 import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { PricingSnapshot, type PricingSnapshotData } from '../schema/pricing.js';
 import { consistencyViolations, groundingViolations } from '../tools/ground.js';
@@ -48,6 +49,14 @@ export type ExtractResult =
 export async function extractPricing(text: string, deps: ExtractDeps): Promise<ExtractResult> {
   const maxAttempts = deps.maxAttempts ?? 2;
 
+  // An empty slice can never yield pricing, and the API rejects an empty user
+  // message with a 400 that aborts the whole batch — two real archived
+  // Supabase captures are JS-only shells that strip to nothing. Refuse here
+  // rather than spending a request to be told no.
+  if (text.trim() === '') {
+    return { ok: false, reason: 'invalid', detail: 'normalized slice is empty — the capture carries no extractable text' };
+  }
+
   const budget = await guardTokens(deps.client, text);
   if (!budget.ok) {
     return { ok: false, reason: 'oversized', detail: `${budget.tokens} tokens exceeds the ${TOKEN_BUDGET} budget` };
@@ -58,13 +67,31 @@ export async function extractPricing(text: string, deps: ExtractDeps): Promise<E
   let correction = '';
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    const response = await deps.client.messages.parse({
-      model: EXTRACT_MODEL,
-      max_tokens: 4_000,
-      system: SYSTEM,
-      messages: [{ role: 'user', content: `${correction}Pricing page text:\n\n${text}` }],
-      output_config: { format: zodOutputFormat(PricingSnapshot) },
-    });
+    // The SDK validates parsed_output against the schema itself and THROWS on
+    // a mismatch, so the safeParse below never sees that case — it was dead
+    // code for exactly the failure it was written to absorb. A real archived
+    // Supabase capture answered with more usage_rates than the schema allows
+    // and killed a 114-capture backfill mid-run.
+    //
+    // An APIError is rethrown deliberately. It is transient (529, auth, rate
+    // limit), and converting it to `invalid` would let extract.ts record the
+    // snapshot as PERMANENTLY unextractable over a blip.
+    let response: Awaited<ReturnType<ExtractClient['messages']['parse']>>;
+    try {
+      response = await deps.client.messages.parse({
+        model: EXTRACT_MODEL,
+        max_tokens: 4_000,
+        system: SYSTEM,
+        messages: [{ role: 'user', content: `${correction}Pricing page text:\n\n${text}` }],
+        output_config: { format: zodOutputFormat(PricingSnapshot) },
+      });
+    } catch (err) {
+      if (err instanceof APIError) throw err;
+      lastReason = 'invalid';
+      lastDetail = err instanceof Error ? err.message.split('\n')[0]! : String(err);
+      correction = `Your previous answer did not match the schema (${lastDetail}). Return valid JSON.\n\n`;
+      continue;
+    }
 
     const parsed = PricingSnapshot.safeParse(response.parsed_output);
     if (!parsed.success) {

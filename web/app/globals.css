@@ -12,6 +12,18 @@
   --color-state-degraded: #9a6b00;
   --color-state-failing: #b03a2e;
 
+  /* Spec 14.3: categorical, four hues in fixed ordinal order (free / entry /
+     mid / enterprise), never cycled, and never reusing a status hue as a
+     fourth series. Chosen for hue-and-lightness separation from the
+     ok/degraded/failing trio above. Spec 14.3 also calls for
+     scripts/validate_palette.js (dataviz skill) to check both surfaces —
+     that script is not present in this environment, so this is a manual
+     choice pending that check, not a validated one. */
+  --color-series-free: #6b7f92;
+  --color-series-entry: #2563a8;
+  --color-series-mid: #7c4a9a;
+  --color-series-enterprise: #0f6c78;
+
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
@@ -34,6 +46,11 @@
     --color-state-ok: #4fd1a5;
     --color-state-degraded: #e0a33a;
     --color-state-failing: #f07167;
+
+    --color-series-free: #93a5b6;
+    --color-series-entry: #6aa8e8;
+    --color-series-mid: #b98ad8;
+    --color-series-enterprise: #4bb8c6;
   }
 }
 

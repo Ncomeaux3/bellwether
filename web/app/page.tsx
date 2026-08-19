@@ -1,10 +1,12 @@
 import { BoardTable } from '@/components/BoardTable';
 import { Stamp } from '@/components/Stamp';
-import { loadBoard, loadStatus } from '@/lib/data';
+import { Timeline } from '@/components/Timeline';
+import { loadBoard, loadStatus, loadTimeline } from '@/lib/data';
 
 export default function HomePage() {
   const board = loadBoard();
   const status = loadStatus();
+  const timeline = loadTimeline();
 
   return (
     <main>
@@ -46,6 +48,33 @@ export default function HomePage() {
         <div className="mt-6">
           <BoardTable competitors={board.competitors} />
         </div>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="font-display text-2xl font-medium text-ink">The timeline</h2>
+        <p className="mt-2 max-w-2xl text-ink-secondary">
+          Monthly price per tier, seeded from the Internet Archive. Historical captures are monthly,
+          so a change is dated to within a month of when it happened. Where the archive has no
+          capture the line breaks — nothing here is interpolated. The price axis is logarithmic, so
+          tiers that differ by orders of magnitude stay readable on one chart.
+        </p>
+
+        {timeline.observation_count === 0 ? (
+          <p className="mt-6 text-sm text-ink-muted">
+            No history yet. Run <span className="font-mono">bellwether backfill</span> to seed it.
+          </p>
+        ) : (
+          <div className="mt-8 grid gap-10">
+            {timeline.competitors.map((competitor, index) => (
+              <article key={`${competitor.slug}-${index}`} className="rounded-lg border border-rule bg-surface-raised p-5">
+                <h3 className="font-display text-lg font-medium text-ink">{competitor.name}</h3>
+                <div className="mt-4">
+                  <Timeline competitor={competitor} />
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="mt-12 border-t border-rule pt-6">

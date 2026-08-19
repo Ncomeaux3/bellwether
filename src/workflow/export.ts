@@ -6,6 +6,7 @@ import type { DB } from '../ops/db.js';
 import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
 import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
 import { monthlySpendMicros } from '../agents/_client.js';
+import { observationsFor } from './detect.js';
 
 const run = promisify(execFile);
 
@@ -48,6 +49,192 @@ function stateOf(row: SourceRow): SourceState {
   if (row.last_ok_flag === 0) return 'failing';
   if (row.degraded_reason !== null) return 'degraded';
   return 'ok';
+}
+
+/**
+ * Wayback captures are monthly (spec 12.1, `collapse=timestamp:6`), so ~31 days
+ * between points is normal and two consecutive missed months is a real hole in
+ * the record. Spec 14.3: a hole renders as a break, never as interpolation.
+ */
+export const TIMELINE_GAP_DAYS = 75;
+const GAP_MS = TIMELINE_GAP_DAYS * 86_400_000;
+
+export interface TimelinePoint { observed_at: string; price: number }
+export type TierClass = 'free' | 'entry' | 'mid' | 'enterprise';
+export interface TimelineSeries { tier: string; segments: TimelinePoint[][]; tier_class: TierClass }
+export interface TimelineMarker { observed_at: string; label: string }
+export interface TimelineCompetitor {
+  slug: string; name: string;
+  first_observed_at: string | null; last_observed_at: string | null;
+  series: TimelineSeries[]; markers: TimelineMarker[];
+}
+export interface TimelinePayload {
+  generated_at: string; observation_count: number; competitors: TimelineCompetitor[];
+}
+
+/**
+ * Spec 14.3. Every series break is decided here, so the React component holds
+ * no judgement: it draws one polyline per segment and nothing else.
+ *
+ * Built on observationsFor(), which already applies the USD filter (12.4), the
+ * prompt-version filter, the repeated-hash collapse (12.2), and Zod validation.
+ */
+export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
+  const sources = db.prepare(`
+    SELECT s.id AS source_id, c.slug, c.name
+    FROM sources s JOIN competitors c ON c.id = s.competitor_id
+    WHERE s.active = 1 AND c.active = 1 AND s.kind = 'pricing'
+    ORDER BY c.name
+  `).all() as { source_id: number; slug: string; name: string }[];
+
+  const markerRows = db.prepare(`
+    SELECT ch.source_id, ch.json_path, ch.change_type, ch.before_json, ch.after_json, ch.observed_at
+    FROM changes ch
+    WHERE ch.state = 'confirmed' AND ch.materiality >= ?
+    ORDER BY ch.observed_at
+  `).all(MATERIALITY_THRESHOLD) as {
+    source_id: number; json_path: string; change_type: string;
+    before_json: string | null; after_json: string | null; observed_at: string;
+  }[];
+
+  let observationCount = 0;
+  const competitors: TimelineCompetitor[] = [];
+
+  for (const source of sources) {
+    const observations = observationsFor(db, source.source_id);
+    observationCount += observations.length;
+
+    // tier name -> the segments built so far, plus where the open one left off
+    const building = new Map<string, { segments: TimelinePoint[][]; lastAt: number | null }>();
+
+    for (const observation of observations) {
+      const at = Date.parse(observation.observedAt);
+      const priced = new Map<string, number>();
+      for (const tier of observation.data.tiers) {
+        // null is "contact sales", and it is not zero. Plotting it as zero
+        // would be the most misleading thing this chart could do.
+        if (typeof tier.monthly_price_usd === 'number') priced.set(tier.name, tier.monthly_price_usd);
+      }
+
+      for (const [name, price] of priced) {
+        let entry = building.get(name);
+        if (!entry) { entry = { segments: [], lastAt: null }; building.set(name, entry); }
+
+        const open = entry.segments[entry.segments.length - 1];
+        const continuous = open !== undefined && entry.lastAt !== null && at - entry.lastAt <= GAP_MS;
+
+        if (continuous) open!.push({ observed_at: observation.observedAt, price });
+        else entry.segments.push([{ observed_at: observation.observedAt, price }]);
+
+        entry.lastAt = at;
+      }
+
+      // A tier absent from this observation ends its run: the next appearance
+      // starts a new segment rather than a line drawn across its absence.
+      for (const [name, entry] of building) {
+        if (!priced.has(name)) entry.lastAt = null;
+      }
+    }
+
+    const plotted = [...building.entries()]
+      .map(([tier, entry]) => ({ tier, segments: entry.segments }))
+      .filter(s => s.segments.length > 0);
+    const tierClasses = classifyTiers(plotted);
+
+    const series: TimelineSeries[] = plotted
+      .map(s => ({ ...s, tier_class: tierClasses.get(s.tier)! }))
+      .sort((a, b) => a.tier.localeCompare(b.tier));
+
+    // The chart only ever plots this range. A marker outside it draws off
+    // the axis (an SVG x1 in the negative thousands, clipped but pointless).
+    const plottedTimes = series.flatMap(s => s.segments.flat()).map(p => Date.parse(p.observed_at));
+    const tMin = plottedTimes.length > 0 ? Math.min(...plottedTimes) : null;
+    const tMax = plottedTimes.length > 0 ? Math.max(...plottedTimes) : null;
+
+    competitors.push({
+      slug: source.slug,
+      name: source.name,
+      first_observed_at: observations[0]?.observedAt ?? null,
+      last_observed_at: observations[observations.length - 1]?.observedAt ?? null,
+      series,
+      markers: markerRows
+        .filter(m => m.source_id === source.source_id)
+        .filter(m => {
+          if (tMin === null || tMax === null) return false;
+          const at = Date.parse(m.observed_at);
+          return at >= tMin && at <= tMax;
+        })
+        .map(m => ({ observed_at: m.observed_at, label: describeChange(m) })),
+    });
+  }
+
+  return { generated_at: generatedAt, observation_count: observationCount, competitors };
+}
+
+/**
+ * Spec 14.3: color encodes tier rung, never competitor or tier name, so the
+ * classification happens once here rather than in the component. Ranked on
+ * each series' *latest* plotted price — the last point of its last segment —
+ * because a tier's rung can only be judged against what it costs now.
+ */
+function classifyTiers(series: { tier: string; segments: TimelinePoint[][] }[]): Map<string, TierClass> {
+  const classes = new Map<string, TierClass>();
+  const priced: { tier: string; price: number }[] = [];
+
+  for (const s of series) {
+    const last = s.segments[s.segments.length - 1]?.at(-1);
+    if (last === undefined) continue;
+    if (last.price === 0) classes.set(s.tier, 'free');
+    else priced.push({ tier: s.tier, price: last.price });
+  }
+
+  priced.sort((a, b) => a.price - b.price);
+  priced.forEach((p, i) => {
+    const cls: TierClass = i === 0 ? 'entry' : i === priced.length - 1 ? 'enterprise' : 'mid';
+    classes.set(p.tier, cls);
+  });
+
+  return classes;
+}
+
+/**
+ * SQL NULL and the JSON string "null" are different things here: diff.ts
+ * always writes JSON.stringify(v ?? null), so an absent value is the
+ * four-character string 'null', never a SQL-NULL column. Both must read as
+ * "none" — a contact-sales tier is not the word "null".
+ */
+const value = (raw: string | null): string => {
+  if (raw === null) return 'none';
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return parsed === null ? 'none' : String(parsed);
+  } catch {
+    return 'none';
+  }
+};
+
+/** Short, literal marker text. No adjectives — the number is the story. */
+function describeChange(row: {
+  json_path: string; change_type: string; before_json: string | null; after_json: string | null;
+}): string {
+  const parts = row.json_path.split('.');
+  const field = parts[parts.length - 1] ?? '';
+  const tier = row.json_path.startsWith('tiers.')
+    ? (parts.slice(1, -1).join('.') || parts.slice(1).join('.'))
+    : row.json_path;
+
+  // diff.ts writes 'price_changed' (past tense) at both .monthly_price_usd
+  // and .annual_price_usd with identical materiality — the field name must
+  // stay in the label or an annual move reads as a monthly one.
+  if (row.change_type === 'price_changed') {
+    // The chart's axis is already dollars, so "usd" is noise in a marker
+    // label: "Pro annual price 96 to 120", not "Pro annual price usd 96 to 120".
+    const label = field === 'monthly_price_usd'
+      ? ''
+      : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
+    return `${tier} ${label}${value(row.before_json)} to ${value(row.after_json)}`;
+  }
+  return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
 }
 
 /**
@@ -148,7 +335,12 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
     })),
   };
 
-  const payloads: Record<string, unknown> = { 'board.json': board, 'status.json': status, 'changes.json': changesFeed };
+  const payloads: Record<string, unknown> = {
+    'board.json': board,
+    'status.json': status,
+    'changes.json': changesFeed,
+    'timeline.json': buildTimeline(db, generatedAt),
+  };
 
   // ---- Guards (spec 15.7). All must pass before anything is renamed. -----
   if (competitors.length === 0) {

@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Board, Status } from './types.js';
+import type { Board, Status, Timeline } from './types.js';
 
 const DATA_DIR = join(process.cwd(), 'public', 'data');
 
@@ -22,5 +22,11 @@ export function loadStatus(): Status {
   return read<Status>('status.json', {
     generated_at: '', total_sources: 0, healthy_sources: 0,
     sources: [], last_run: null, cost_micros_month: 0,
+  });
+}
+
+export function loadTimeline(): Timeline {
+  return read<Timeline>('timeline.json', {
+    generated_at: '', observation_count: 0, competitors: [],
   });
 }

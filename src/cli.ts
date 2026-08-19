@@ -67,7 +67,8 @@ program
     const s = await extract(db, { limit: options.limit, dryRun: options.dryRun });
     console.log(
       `Considered ${s.considered}: ${s.extracted} extracted, ${s.cached} cached, ` +
-      `${s.hashed} hashed, ${s.skipped} skipped, ${s.degraded} degraded, ${s.mismatched} non-USD.`,
+      `${s.hashed} hashed, ${s.skipped} skipped, ${s.degraded} degraded, ` +
+      `${s.historicalFailed} historical failed, ${s.mismatched} non-USD.`,
     );
     db.close();
   });
@@ -85,6 +86,84 @@ program
       `${s.sources} sources, ${s.pairs} state transitions: ${s.created} new changes, ` +
       `${s.confirmed} confirmed, ${s.disputed} disputed, ${s.retracted} retracted.`,
     );
+    db.close();
+  });
+
+// backfill's flags are all numeric and feed budget math or a source-id
+// filter, where a silently-NaN value is either wrong output (--budget) or a
+// falsy filter that backfills every source (--source) — so, unlike the
+// older commands' bare `Number(v)`, these are validated at the CLI boundary.
+function numeric(flag: string, { min }: { min: number }) {
+  return (raw: string): number => {
+    const value = Number(raw);
+    if (!Number.isFinite(value) || value < min) {
+      throw new Error(`${flag} needs a number >= ${min}; got "${raw}"`);
+    }
+    return value;
+  };
+}
+
+program
+  .command('backfill')
+  .description('seed the archive with historical captures from the Internet Archive')
+  .option('--months <n>', 'how far back to look (default 18)', numeric('--months', { min: 1 }))
+  .option('--budget <usd>', 'one-time spend ceiling for this backfill (default 10.00)', numeric('--budget', { min: 0 }))
+  .option('--limit <n>', 'fetch at most n captures this run', numeric('--limit', { min: 1 }))
+  .option('--source <id>', 'restrict to one source', numeric('--source', { min: 1 }))
+  .option('--discover-only', 'enqueue captures but fetch none')
+  .action(async (options: {
+    months?: number; budget?: number; limit?: number; source?: number; discoverOnly?: boolean;
+  }) => {
+    const { runBackfill } = await import('./workflow/backfill.js');
+    const db = openDb(dbPath());
+
+    const s = await runBackfill(db, {
+      months: options.months,
+      budgetUsd: options.budget,
+      limit: options.limit,
+      sourceId: options.source,
+      discoverOnly: options.discoverOnly,
+    });
+
+    const usd = (micros: number) => `$${(micros / 1e6).toFixed(2)}`;
+
+    console.log(
+      `Discovery: ${s.discover.sources} sources, ${s.discover.found} captures found, ` +
+      `${s.discover.enqueued} new, ${s.discover.duplicate} already queued, ${s.discover.failed} failed.`,
+    );
+    console.log(
+      `Estimate: ${s.estimate.pending} pending x ${usd(s.estimate.meanCostMicros)} = ` +
+      `${usd(s.estimate.estimateMicros)} against a ${usd(s.estimate.budgetMicros)} budget.`,
+    );
+
+    if (!s.estimate.withinBudget) {
+      console.log(
+        `\nRefusing to start: the queue would cost more than the budget allows.\n` +
+        `The captures are already queued, so nothing is lost — re-run with\n` +
+        `  bellwether backfill --budget ${(s.estimate.estimateMicros / 1e6).toFixed(2)}\n` +
+        `or work through it in slices with --limit ${Math.max(1, s.estimate.maxCalls)}.\n` +
+        `The estimate is a worst case: identical captures share an extraction and cost nothing.`,
+      );
+      db.close();
+      return;
+    }
+
+    if (options.discoverOnly) {
+      console.log('\nDiscovery only — nothing fetched. Re-run without --discover-only to continue.');
+      db.close();
+      return;
+    }
+
+    console.log(
+      `Fetched ${s.drain.claimed}: ${s.drain.stored} new page states, ${s.drain.deduped} identical, ` +
+      `${s.drain.skipped} skipped, ${s.drain.failed} failed.`,
+    );
+    console.log(
+      `Extracted ${s.extracted} for ${usd(s.actualMicros)} (estimated ${usd(s.estimate.estimateMicros)}). ` +
+      `Rebuilt detection: ${s.changes} changes, ${s.confirmed} confirmed.`,
+    );
+    console.log('\nRun `bellwether export` to publish the new history.');
+
     db.close();
   });
 
@@ -145,7 +224,8 @@ program
     const extractStats = await extract(db, {});
     console.log(
       `Extracted ${extractStats.extracted}, cached ${extractStats.cached}, ` +
-      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}.`,
+      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}, ` +
+      `historical failed ${extractStats.historicalFailed}.`,
     );
 
     const { detect } = await import('./workflow/detect.js');

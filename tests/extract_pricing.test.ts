@@ -34,6 +34,70 @@ function fakeClient(results: Array<{ parsed_output: unknown; usage?: { input_tok
   };
 }
 
+/** A client whose parse() throws, to model the SDK's own schema validation. */
+function throwingClient(error: unknown, tokens = 6_000) {
+  let calls = 0;
+  return {
+    get calls() { return calls; },
+    messages: {
+      countTokens: async () => ({ input_tokens: tokens }),
+      parse: async () => { calls += 1; throw error; },
+    },
+  };
+}
+
+describe('extractPricing on an empty slice', () => {
+  it('refuses without spending a request', async () => {
+    // Two real archived Supabase captures are JS-only shells that strip to
+    // nothing. The API rejects an empty user message with a 400, which would
+    // abort an entire backfill batch.
+    let calls = 0;
+    const client = {
+      messages: {
+        countTokens: async () => { calls += 1; return { input_tokens: 0 }; },
+        parse: async () => { calls += 1; throw new Error('should never be called'); },
+      },
+    };
+
+    const result = await extractPricing('   \n  ', { client: client as never });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('unreachable');
+    expect(result.reason).toBe('invalid');
+    expect(result.detail).toContain('empty');
+    expect(calls).toBe(0);
+  });
+});
+
+describe('extractPricing when the SDK itself rejects the answer', () => {
+  it('degrades to invalid instead of killing the run', async () => {
+    // The real crash: a Supabase capture answered with more usage_rates than
+    // the schema allowed. `messages.parse` throws, so the safeParse fallback
+    // never ran and the exception escaped all the way out of a 114-capture
+    // backfill.
+    const client = throwingClient(new Error('Failed to parse structured output: [\n {...}\n]'));
+
+    const result = await extractPricing(SOURCE, { client: client as never });
+
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error('unreachable');
+    expect(result.reason).toBe('invalid');
+    expect(result.detail).toContain('Failed to parse structured output');
+    expect(client.calls).toBe(2);   // retried with a correction before giving up
+  });
+
+  it('rethrows a transient API error rather than calling it invalid', async () => {
+    // extract.ts records an `invalid` historical result as PERMANENTLY
+    // unextractable and never retries it. Converting a 529 into that would
+    // discard a capture over a blip, so APIError must propagate.
+    const { APIError } = await import('@anthropic-ai/sdk');
+    const client = throwingClient(new APIError(529, undefined, 'overloaded', undefined));
+
+    await expect(extractPricing(SOURCE, { client: client as never })).rejects.toThrow();
+    expect(client.calls).toBe(1);   // no retry loop on a transient failure
+  });
+});
+
 describe('extractPricing', () => {
   it('returns validated, grounded data on the happy path', async () => {
     const client = fakeClient([{ parsed_output: data() }]);

@@ -52,7 +52,7 @@ describe('exportData', () => {
     await populate();
     const stats = exportData(db, out);
 
-    expect(stats.files.sort()).toEqual(['board.json', 'changes.json', 'status.json']);
+    expect(stats.files.sort()).toEqual(['board.json', 'changes.json', 'status.json', 'timeline.json']);
     expect(stats.competitors).toBe(2);
   });
 
