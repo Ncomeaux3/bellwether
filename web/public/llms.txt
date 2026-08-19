@@ -1,0 +1,19 @@
+# Bellwether
+
+Bellwether tracks confirmed SaaS pricing changes and publishes the underlying dataset as static, structured files, licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+
+## Endpoints
+- https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/board.json — current pricing snapshot per competitor
+- https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/changes.json — confirmed change log with annotations
+- https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/timeline.json — per-competitor price history series
+- https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/dataset.json — the full dataset, nested
+- https://bellwether-nicholas-projects-cdfeb046.vercel.app/data/dataset.csv — the full dataset, flat
+- https://bellwether-nicholas-projects-cdfeb046.vercel.app/changes.xml — RSS feed of confirmed changes
+
+## Competitors
+- Figma: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#figma
+- Linear: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#linear
+- Notion: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#notion
+- Postman: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#postman
+- Sentry: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#sentry
+- Supabase: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#supabase

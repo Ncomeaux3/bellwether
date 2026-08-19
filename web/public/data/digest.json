@@ -1,0 +1,10 @@
+{
+  "generated_at": "2026-08-19T18:52:26.446Z",
+  "digest": {
+    "period_start": "2026-08-19T18:51:30.908Z",
+    "period_end": "2026-08-19T18:51:30.908Z",
+    "body_markdown": "## Notion Business plan up 33%\nNotion raised Business from $15 to $20/mo per seat on 2025-06-03 [1]. A 20-seat team pays roughly $1,200/yr more. Separately, a $10/mo Notion AI add-on tier appeared in May [0] and was withdrawn by September [4], suggesting AI was either bundled into base plans or pulled back — worth confirming with Notion before assuming it's gone.\n\n## Linear raises two tiers on the same day\nOn 2025-11-12, Linear raised Basic from $8 to $10/mo (+25%) [5] and Business from $14 to $16/mo (+14%) [6] simultaneously — a coordinated, company-wide price update rather than a single-tier tweak.\n\n## Postman overhauls its paid tier lineup\nOn 2026-04-02, Postman removed Basic ($19/mo) [8] and Professional ($39/mo) [9], replacing them with Solo ($9/mo flat, 1 seat) [10] and Team ($19/mo per seat) [11]. Team's price matches old Basic, but there's no direct successor to the $39 Professional tier — customers there face a downgrade to Team or an upsell to enterprise.\n\n## Postman squeezes free tier seats twice\nPostman's Free tier went from unlimited/unspecified seats to a 3-seat cap in August 2025 [2], then to just 1 seat in April 2026 [7] — two tightenings in eight months, pushing small teams toward paid plans.\n\n## Notion shifts free tier to per-seat billing\nNotion's Free tier moved from flat to per-seat billing on 2025-09-01 [3], the same date its AI add-on was removed [4]. Free tier costs now scale with team size rather than staying fixed.",
+    "item_count": 5,
+    "created_at": "2026-08-19T18:51:30.908Z"
+  }
+}
