@@ -52,22 +52,25 @@ export interface VerifyResult {
   counts: Record<string, { live: number; snapshot: number }>;
 }
 
-// A snapshot is legitimately a little behind live (it is taken minutes
-// earlier), but it must never be a fraction of it: the failure this exists
-// to catch is a truncated or half-written file, and a flat row-count floor
-// cannot catch that on a small archive — at 120 live rows a 200-row
-// tolerance passes an EMPTY snapshot. The floor is therefore proportional,
-// and the upper bound (live + a small overage) catches comparing the wrong
-// pair of files. live=0 passes trivially — a fresh install has nothing to
-// be truncated.
-//
-// Floor is 97%, not the 90% first floated for this rule: at 10,000 rows a
-// 90% floor tolerates 1,000 missing, so a 5%-truncated file (9,500 rows)
-// would still pass — exactly the kind of at-scale truncation this check
-// exists to catch. 97% fails that case while still passing a 120-row
-// archive lagging by 2 rows (118/120).
+// Fix round 2 ruling: the property this check defends is completeness, not
+// currency. The realistic failure modes are an empty file, a wrong file, or
+// a file that will not open — not a precisely-95%-truncated SQLite
+// database, which is not a real failure mode. The earlier 97% floor was
+// chosen against that theoretical partial-truncation case, and in exchange
+// it broke the thing this check most needs to survive: the documented
+// manual restore rehearsal. Live grows ~6 snapshots/day against ~120 total
+// (~5%/day), so any snapshot restored more than ~14 hours ago already reads
+// "below the floor" — a perfectly good backup taught the operator it was
+// broken. 50% still catches every real failure (an empty or wildly
+// truncated file) while giving currency drift, including a day-old
+// rehearsal snapshot, room to pass. The explicit non-empty rule below is
+// the floor's backstop at small row counts, where 50% itself can round
+// down to 0 and let an empty snapshot slip through. The ceiling (live + a
+// small overage) is unchanged — it catches comparing the wrong pair of
+// files. live=0 passes trivially — a fresh install has nothing to truncate.
 function tolerance(live: number, snapshot: number): { ok: boolean; bound?: 'floor' | 'ceiling' } {
-  const floor = Math.floor(live * 0.97);
+  if (live > 0 && snapshot === 0) return { ok: false, bound: 'floor' };
+  const floor = Math.floor(live * 0.5);
   const overage = Math.max(10, Math.ceil(live * 0.02));
   if (snapshot < floor) return { ok: false, bound: 'floor' };
   if (snapshot > live + overage) return { ok: false, bound: 'ceiling' };
@@ -106,7 +109,20 @@ export function verifyBackup(livePath: string, snapshotPath: string): VerifyResu
         counts,
       };
     }
-    return { ok: true, detail: 'within tolerance', counts };
+
+    // Currency isn't a pass/fail condition any more (see the ruling above),
+    // but an operator staring at "OK" still wants to know how stale the
+    // snapshot is — surfaced here rather than silently dropped.
+    const primary = counts.snapshots!;
+    const behindPct = primary.live > 0
+      ? Math.round(((primary.live - primary.snapshot) / primary.live) * 100)
+      : 0;
+    const drift = behindPct > 0 ? ` (${behindPct}% behind)` : '';
+    return {
+      ok: true,
+      detail: `within tolerance: snapshots ${primary.snapshot}/${primary.live}${drift}`,
+      counts,
+    };
   } finally {
     live.close();
     snapshot.close();

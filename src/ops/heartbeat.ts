@@ -16,7 +16,12 @@ export interface HeartbeatStats {
 
 const STALE_HOURS = 48;
 const WATCHDOG_HOURS = 25;
-const WATCHDOG_KINDS = ['export', 'backup'] as const;
+const ABSENCE_HOURS = 26;
+const WATCHDOG_KINDS = ['export', 'publish', 'backup', 'restic'] as const;
+// restic is opt-in (most homelab installs never configure B2) — the
+// absence check below stays silent on it until the operator has used it
+// at least once. Every other kind is core to the nightly pipeline.
+const OPTIONAL_WATCHDOG_KINDS = new Set<string>(['restic']);
 
 interface StaleSource { url: string; last_ok: string | null }
 interface DegradedSource { url: string; degraded_reason: string }
@@ -76,15 +81,51 @@ export async function runHeartbeat(db: DB, deps: HeartbeatDeps = {}): Promise<He
   const latestRunOfKind = db.prepare(
     'SELECT state, ended_at, error FROM runs WHERE kind = ? ORDER BY id DESC LIMIT 1'
   );
+  const lastOkOfKind = db.prepare(
+    "SELECT MAX(ended_at) AS last_ok FROM runs WHERE kind = ? AND state = 'ok'"
+  );
+  // Same datetime()-on-both-sides idiom as the stale-source query above —
+  // both windows below need it for the same reason.
   const withinWatchdogWindow = db.prepare(
     `SELECT datetime(?) > datetime(?, '-${WATCHDOG_HOURS} hours') AS within_window`
   );
+  const withinAbsenceWindow = db.prepare(
+    `SELECT datetime(?) > datetime(?, '-${ABSENCE_HOURS} hours') AS within_window`
+  );
+  const archiveNonEmpty = (db.prepare('SELECT COUNT(*) AS n FROM snapshots').get() as { n: number }).n > 0;
+
   for (const kind of WATCHDOG_KINDS) {
+    // An explicit failure deserves same-night visibility, not a 26h wait —
+    // this fires independently of, and alongside, the absence check below.
     const latest = latestRunOfKind.get(kind) as LatestRun | undefined;
-    if (!latest || latest.state !== 'failed' || !latest.ended_at) continue;
-    const within = withinWatchdogWindow.get(latest.ended_at, nowIso) as { within_window: number };
-    if (within.within_window) {
-      alerts.push(`${kind} failed at ${latest.ended_at}: ${latest.error ?? 'unknown error'}`);
+    if (latest && latest.state === 'failed' && latest.ended_at) {
+      const within = withinWatchdogWindow.get(latest.ended_at, nowIso) as { within_window: number };
+      if (within.within_window) {
+        alerts.push(`${kind} failed at ${latest.ended_at}: ${latest.error ?? 'unknown error'}`);
+      }
+    }
+
+    // Outcome-based absence check (spec 15.3): a run that never HAPPENS
+    // (dead container, deleted cron line, disk full before the row is
+    // written) leaves yesterday's 'ok' row as the latest one forever — the
+    // failed-run check above never fires for that, because nothing ever
+    // gets far enough to write a 'failed' row.
+    const lastOk = (lastOkOfKind.get(kind) as { last_ok: string | null }).last_ok;
+
+    if (lastOk === null) {
+      // Never had an ok run. Silence is correct on a genuinely fresh
+      // install (nothing collected yet) and, for the optional restic leg,
+      // until the operator has opted in at least once. Once there is real
+      // data and the kind is core to the pipeline, a kind that never runs
+      // is exactly the frozen-site bug this check exists to catch.
+      if (OPTIONAL_WATCHDOG_KINDS.has(kind) || !archiveNonEmpty) continue;
+      alerts.push(`${kind}: no successful run in ${ABSENCE_HOURS}h (last ok: never)`);
+      continue;
+    }
+
+    const withinAbsence = withinAbsenceWindow.get(lastOk, nowIso) as { within_window: number };
+    if (!withinAbsence.within_window) {
+      alerts.push(`${kind}: no successful run in ${ABSENCE_HOURS}h (last ok: ${lastOk})`);
     }
   }
 
@@ -103,8 +144,12 @@ export async function runHeartbeat(db: DB, deps: HeartbeatDeps = {}): Promise<He
   }
 
   const total = (db.prepare('SELECT COUNT(*) AS n FROM sources WHERE active = 1').get() as { n: number }).n;
+  // 'publish' is the host-side push (ops/publish.sh -> `bw ops record`), not
+  // the container's local `export` step — reading `export` here was the
+  // milestone-defining bug: a site whose host-side leg died a month ago
+  // still had a fresh local `export` row every night and reported healthy.
   const lastPublish = (db.prepare(
-    "SELECT ended_at FROM runs WHERE kind = 'export' AND state = 'ok' ORDER BY id DESC LIMIT 1"
+    "SELECT ended_at FROM runs WHERE kind = 'publish' AND state = 'ok' ORDER BY id DESC LIMIT 1"
   ).get() as { ended_at: string } | undefined)?.ended_at ?? 'never';
   const spendMicros = monthlySpendMicros(db, now());
 

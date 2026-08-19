@@ -202,8 +202,14 @@ only once.
 
 ### 3. Add the four keys to `.env` on the box
 
+`.env` is not just read as key=value pairs — `ops/backup.sh` shell-sources it
+(`. ./.env`), so a value containing a space, `#`, `$`, or backticks will
+break the source or, worse, get executed as a shell command. Use an
+alphanumeric passphrase and the quoting question never comes up:
+`openssl rand -hex 32` generates one.
+
     RESTIC_REPOSITORY=b2:your-bucket-name:bellwether
-    RESTIC_PASSWORD=<a long random passphrase — losing it loses the backups>
+    RESTIC_PASSWORD=3f9a1c7e2b8d4056a1f9c3e7b2d84f0619ac5e3d7b2f804c9e1a6d3b7f209c48
     B2_ACCOUNT_ID=<the application key ID>
     B2_ACCOUNT_KEY=<the application key>
 
@@ -237,27 +243,40 @@ The second line runs monthly, on the 1st: `bw ops verify-backup` opens the
 newest local snapshot readonly, compares `snapshots`/`extractions`/`changes`
 row counts against the live archive, and exits nonzero (with a Telegram
 alert) if a table is out of tolerance. It does not write a `runs` row — the
-heartbeat watchdog only tracks `export` and `backup`, so a failed verify
-alerts directly rather than teaching the watchdog a third kind for one
-monthly check.
+heartbeat watchdog tracks a fixed set of kinds (`export`, `publish`,
+`backup`, `restic`), so a failed verify alerts directly rather than teaching
+the watchdog a fifth kind for one monthly check.
 
 ### Restoring from B2
 
-Rehearse this before you need it for real — restore to a scratch directory,
-never straight over the live archive:
+Rehearse this before you need it for real — restore into the bind mount
+(`./data`), never straight over the live archive. `--file` on
+`verify-backup` is read from *inside the container*, which only ever sees
+`/data` — a restore to `/tmp` is invisible there and the command throws:
 
-    mkdir -p /tmp/bellwether-restore
     cd ~/bellwether
+    mkdir -p data/restore
     set -a; . ./.env; set +a
-    restic restore latest --target /tmp/bellwether-restore
+    restic restore latest --target data/restore
 
-That drops the snapshot back out under
-`/tmp/bellwether-restore/data/backup/bellwether-YYYYMMDD.db`. Verify it
-against the live archive the same way the monthly cron does:
+`restic backup` (see "Install the crontab" above) stores **absolute** host
+paths, so the file does not land at `data/restore/bellwether-YYYYMMDD.db` —
+it lands nested under the full absolute path it was backed up from. Find it:
 
-    docker compose exec -T bellwether pnpm bw ops verify-backup --file /tmp/bellwether-restore/data/backup/bellwether-YYYYMMDD.db
+    find data/restore -name 'bellwether-*.db'
 
-(Or, if verifying outside the container, copy the file into `./data/backup/`
-first — `--file` is read from inside the container's `/data` mount.) A clean
-`verify-backup: OK` is the actual proof the backup works, not the restic
-command exiting zero.
+That prints something like
+`data/restore/home/alice/bellwether/data/backup/bellwether-20260819.db` —
+the nested part matches wherever `~/bellwether` actually resolves on this
+box (run `pwd` there if unsure).
+
+Because `./data` is the directory docker-compose bind-mounts to `/data`
+inside the container, that same file is visible inside the container at the
+identical path with `/data` in place of the leading `data`. Verify it
+against the live archive the same way the monthly cron does, using the path
+`find` printed:
+
+    docker compose exec -T bellwether pnpm bw ops verify-backup --file /data/restore/home/alice/bellwether/data/backup/bellwether-20260819.db
+
+A clean `verify-backup: OK` is the actual proof the backup works, not the
+restic command exiting zero.

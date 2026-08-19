@@ -349,6 +349,40 @@ program
 // without a second top-level namespace.
 const ops = program.command('ops').description('operational commands (alerts, backup)');
 
+// The kind/state values a write primitive reachable straight from a shell
+// script (ops/publish.sh, ops/backup.sh) is allowed to write — kept to
+// exactly the two host-side legs, not a general-purpose runs-table editor.
+const RECORD_KINDS = ['publish', 'restic'] as const;
+const RECORD_STATES = ['ok', 'failed'] as const;
+
+function oneOf<T extends string>(flag: string, allowed: readonly T[]) {
+  return (raw: string): T => {
+    if (!(allowed as readonly string[]).includes(raw)) {
+      throw new Error(`${flag} must be one of ${allowed.join(', ')}; got "${raw}"`);
+    }
+    return raw as T;
+  };
+}
+
+ops
+  .command('record')
+  .description('record a completed host-side run (ops/publish.sh, ops/backup.sh) — the work already happened, so this writes the outcome directly')
+  .requiredOption('--kind <kind>', `run kind: ${RECORD_KINDS.join('|')}`, oneOf('--kind', RECORD_KINDS))
+  .requiredOption('--state <state>', `outcome: ${RECORD_STATES.join('|')}`, oneOf('--state', RECORD_STATES))
+  .option('--detail <text>', 'detail text; becomes the error message when --state failed')
+  .action(async (options: { kind: typeof RECORD_KINDS[number]; state: typeof RECORD_STATES[number]; detail?: string }) => {
+    const { recordRun } = await import('./ops/runs.js');
+    const db = openDb(dbPath());
+    recordRun(db, options.kind, options.state === 'ok', options.detail);
+    db.close();
+
+    if (options.state === 'failed') {
+      const { sendTelegram } = await import('./tools/telegram.js');
+      await sendTelegram(`Bellwether ${options.kind} failed: ${options.detail ?? 'no detail provided'}`);
+    }
+    console.log(`Recorded ${options.kind} ${options.state}${options.detail ? `: ${options.detail}` : ''}.`);
+  });
+
 ops
   .command('heartbeat')
   .description('run the outcome-based health check once and send any Telegram alert')
@@ -416,9 +450,10 @@ ops
     const dir = join(dirname(livePath), 'backup');
 
     // No `runs` row here (see docs/superpowers/plans/2026-08-19-bellwether-m5.md
-    // Task 4): the heartbeat watchdog only queries kinds `export` and `backup`,
-    // and adding a third kind means also editing that query. verify-backup
-    // alerts directly and exits nonzero; cron log output surfaces the rest.
+    // Task 4): the heartbeat watchdog queries a fixed set of kinds (export,
+    // publish, backup, restic), and adding a fifth means also editing that
+    // query. verify-backup alerts directly and exits nonzero; cron log
+    // output surfaces the rest.
     try {
       const file = options.file
         ? resolve(options.file)

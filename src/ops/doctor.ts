@@ -130,9 +130,44 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
     }
   }
 
-  // 6 & 7 — M5
-  results.push({ name: 'telegram alerts', status: 'pending', detail: 'not checked yet; alerts arrive in M5' });
-  results.push({ name: 'backup target', status: 'pending', detail: 'not checked yet; B2 backup arrives in M5' });
+  // 6. Telegram alerts — both set is the only way a message can actually
+  // send; neither set is a valid (if unalerted) choice; exactly one set is
+  // a real misconfiguration worth failing on, since it can never work.
+  {
+    const tokenSet = !!deps.env.TELEGRAM_BOT_TOKEN?.trim();
+    const chatIdSet = !!deps.env.TELEGRAM_CHAT_ID?.trim();
+    results.push(
+      tokenSet && chatIdSet
+        ? { name: 'telegram alerts', status: 'ok', detail: 'TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are both set' }
+        : !tokenSet && !chatIdSet
+          ? { name: 'telegram alerts', status: 'pending', detail: 'not configured — alerts are optional; see docs/homelab.md' }
+          : {
+              name: 'telegram alerts', status: 'fail',
+              detail: `only ${tokenSet ? 'TELEGRAM_BOT_TOKEN' : 'TELEGRAM_CHAT_ID'} is set`,
+              fix: 'Set both TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID in .env, or clear both to leave alerts off.',
+            }
+    );
+  }
+
+  // 7. Backup target — RESTIC_REPOSITORY unset means the operator hasn't
+  // opted into B2 backup at all (a valid, common choice), so that alone is
+  // pending, not a failure. Once a repository is named, a missing password
+  // is a real misconfiguration: `restic init`/backup will simply fail.
+  {
+    const repo = deps.env.RESTIC_REPOSITORY?.trim();
+    const password = deps.env.RESTIC_PASSWORD?.trim();
+    results.push(
+      !repo
+        ? { name: 'backup target', status: 'pending', detail: 'RESTIC_REPOSITORY is unset — B2 backup is optional; see docs/homelab.md' }
+        : password
+          ? { name: 'backup target', status: 'ok', detail: 'RESTIC_REPOSITORY and RESTIC_PASSWORD are both set' }
+          : {
+              name: 'backup target', status: 'fail',
+              detail: 'RESTIC_REPOSITORY is set but RESTIC_PASSWORD is not',
+              fix: 'Set RESTIC_PASSWORD in .env — see docs/homelab.md for the quoting warning.',
+            }
+    );
+  }
 
   // 8. Publish script
   if (deps.publishScript) {
@@ -155,15 +190,23 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
     }
   }
 
-  // 9. Site export dir — meaningful only in container mode. Unset means this
-  // isn't running under docker-compose's env (e.g. a bare CI/test invocation),
-  // so reporting fail here would be exactly the old gitPush mistake: a red
-  // that's permanent outside the one context the check is actually about.
+  // 9. Site export dir — meaningful only in container mode, where
+  // docker-compose sets BELLWETHER_EXPORT_DIR under the /data bind mount.
+  // A SET BELLWETHER_EXPORT_DIR is not proof of container mode: both
+  // .env.example and the real Mac .env set it to a relative
+  // ./web/public/data path for local exports — a legitimate, unrelated use
+  // of the same variable. Asserting the pairing off-container is exactly
+  // the old gitPush mistake (see its comment above): a permanent red the
+  // operator can never clear, and here, following its own fix line would
+  // move changes.xml/llms.txt into web/public/data and break the live site.
   const exportDir = deps.env.BELLWETHER_EXPORT_DIR;
-  if (!exportDir || exportDir.trim() === '') {
+  const inContainer = !!exportDir && exportDir.trim().startsWith('/data');
+  if (!inContainer) {
     results.push({
       name: 'site export dir', status: 'pending',
-      detail: 'BELLWETHER_EXPORT_DIR is unset — not running in container mode',
+      detail: exportDir
+        ? `BELLWETHER_EXPORT_DIR (${exportDir}) is not a container path — not applicable outside docker-compose`
+        : 'BELLWETHER_EXPORT_DIR is unset — not running in container mode',
     });
   } else {
     const siteDir = deps.env.BELLWETHER_SITE_EXPORT_DIR;

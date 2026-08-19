@@ -176,9 +176,37 @@ describe('verifyBackup', () => {
     expect(verify.counts.snapshots!.snapshot).toBeGreaterThan(verify.counts.snapshots!.live);
   });
 
-  it('fails at scale when 5% of rows are missing (truncation, not lag)', () => {
+  it('passes at scale when 5% of rows are behind (currency drift, not truncation)', () => {
+    // Fix round 2 ruling (src/ops/backup.ts's tolerance() comment): the
+    // property this check defends is completeness, not currency. The
+    // earlier 97% floor treated this as a failure, but a 5%-behind snapshot
+    // is exactly the drift a live archive accumulates in less than a day —
+    // and that same floor made the documented manual restore rehearsal
+    // (necessarily hours old) fail on a perfectly good backup. 50% still
+    // catches the real failure modes (empty, wrong, or unopenable file).
     const live = buildArchive('live-e', 10_000);
     const snapshot = buildArchive('snap-e', 9_500);
+
+    const verify = verifyBackup(live, snapshot);
+
+    expect(verify.ok).toBe(true);
+  });
+
+  it('passes on a day-old snapshot — the documented manual restore rehearsal scenario', () => {
+    // Live grows ~6 snapshots/day against ~120 total, so a snapshot this
+    // old (114/120, ~5% behind) is exactly what an operator sees restoring
+    // yesterday's B2 backup and rehearsing verify-backup against it.
+    const live = buildArchive('live-f', 120);
+    const snapshot = buildArchive('snap-f', 114);
+
+    const verify = verifyBackup(live, snapshot);
+
+    expect(verify.ok).toBe(true);
+  });
+
+  it('still fails an empty snapshot at scale (the real failure mode)', () => {
+    const live = buildArchive('live-g', 10_000);
+    const snapshot = buildArchive('snap-g', 0);
 
     const verify = verifyBackup(live, snapshot);
 

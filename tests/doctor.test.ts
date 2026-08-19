@@ -98,15 +98,68 @@ describe('runDoctor', () => {
     expect(find(results, 'source: acme/pricing').status).toBe('ok');
   });
 
-  it('marks not-yet-built checks as pending, never as failures', async () => {
+  it('marks the not-yet-built anthropic key check as pending, never as a failure', async () => {
     migrate(db, join(process.cwd(), 'migrations'));
     const results = await runDoctor(baseDeps());
+    const check = find(results, 'anthropic key');
+    expect(check.status).toBe('pending');
+    expect(check.detail).toMatch(/M2/);
+  });
 
-    for (const name of ['anthropic key', 'telegram alerts', 'backup target']) {
-      const check = find(results, name);
-      expect(check.status).toBe('pending');
-      expect(check.detail).toMatch(/M[25]/);
-    }
+  describe('telegram alerts check', () => {
+    it('is pending when neither TELEGRAM_BOT_TOKEN nor TELEGRAM_CHAT_ID is set', async () => {
+      migrate(db, join(process.cwd(), 'migrations'));
+      const results = await runDoctor(baseDeps());
+      expect(find(results, 'telegram alerts').status).toBe('pending');
+    });
+
+    it('is ok when both TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID are set', async () => {
+      migrate(db, join(process.cwd(), 'migrations'));
+      const results = await runDoctor({
+        ...baseDeps(),
+        env: { ...baseDeps().env, TELEGRAM_BOT_TOKEN: 'tok', TELEGRAM_CHAT_ID: '123' },
+      });
+      expect(find(results, 'telegram alerts').status).toBe('ok');
+    });
+
+    it('fails when only one of TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID is set', async () => {
+      migrate(db, join(process.cwd(), 'migrations'));
+      const results = await runDoctor({
+        ...baseDeps(),
+        env: { ...baseDeps().env, TELEGRAM_BOT_TOKEN: 'tok' },
+      });
+      const check = find(results, 'telegram alerts');
+      expect(check.status).toBe('fail');
+      expect(check.fix).toBeTruthy();
+    });
+  });
+
+  describe('backup target check', () => {
+    it('is pending when RESTIC_REPOSITORY is unset', async () => {
+      migrate(db, join(process.cwd(), 'migrations'));
+      const results = await runDoctor(baseDeps());
+      expect(find(results, 'backup target').status).toBe('pending');
+    });
+
+    it('is ok when RESTIC_REPOSITORY and RESTIC_PASSWORD are both set', async () => {
+      migrate(db, join(process.cwd(), 'migrations'));
+      const results = await runDoctor({
+        ...baseDeps(),
+        env: { ...baseDeps().env, RESTIC_REPOSITORY: 'b2:bucket:bw', RESTIC_PASSWORD: 'secret' },
+      });
+      expect(find(results, 'backup target').status).toBe('ok');
+    });
+
+    it('fails when RESTIC_REPOSITORY is set but RESTIC_PASSWORD is not', async () => {
+      migrate(db, join(process.cwd(), 'migrations'));
+      const results = await runDoctor({
+        ...baseDeps(),
+        env: { ...baseDeps().env, RESTIC_REPOSITORY: 'b2:bucket:bw' },
+      });
+      const check = find(results, 'backup target');
+      expect(check.status).toBe('fail');
+      expect(check.fix).toBeTruthy();
+    });
   });
 
   it('reports git push as not-applicable when there is no repository', async () => {
@@ -186,6 +239,21 @@ describe('runDoctor', () => {
     const results = await runDoctor({ ...baseDeps(), env: {} });
 
     const check = find(results, 'site export dir');
+    expect(check.status).toBe('pending');
+  });
+
+  it('does not fail site export dir on the Mac shape: a relative export dir, no site var set', async () => {
+    // This is exactly .env.example's and the real Mac .env's shape
+    // (BELLWETHER_EXPORT_DIR=./web/public/data) — a SET export dir that is
+    // not a container path must never read as proof of container mode.
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      env: { BELLWETHER_DB: './data/bellwether.db', BELLWETHER_EXPORT_DIR: './web/public/data' },
+    });
+
+    const check = find(results, 'site export dir');
+    expect(check.status).not.toBe('fail');
     expect(check.status).toBe('pending');
   });
 

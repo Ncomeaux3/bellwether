@@ -55,3 +55,19 @@ export function finishRun(db: DB, id: number, ok: boolean, stats: unknown, error
     id
   );
 }
+
+/**
+ * M5: the host-side legs (ops/publish.sh, ops/backup.sh) run as a cron job
+ * outside this process entirely — there is no in-process run to acquire and
+ * finish, because the work already happened by the time this is called.
+ * `bw ops record` (src/cli.ts) writes the outcome directly as an
+ * already-completed row (started_at = ended_at = now) so the heartbeat
+ * watchdog can see it. `detail` becomes the row's `error` only on failure —
+ * an `ok` row never carries one.
+ */
+export function recordRun(db: DB, kind: string, ok: boolean, detail?: string, deps: RunDeps = {}): void {
+  const now = (deps.now ?? (() => new Date()))().toISOString();
+  db.prepare(
+    "INSERT INTO runs (kind, started_at, ended_at, state, ok, error) VALUES (?, ?, ?, ?, ?, ?)"
+  ).run(kind, now, now, ok ? 'ok' : 'failed', ok ? 1 : 0, ok ? null : (detail ?? null));
+}
