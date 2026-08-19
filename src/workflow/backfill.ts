@@ -280,6 +280,11 @@ export function estimateBackfill(db: DB, budgetUsd: number, limit?: number): Bac
   const unextracted = (db.prepare(`
     SELECT COUNT(*) AS n FROM snapshots s
     WHERE s.ok = 1 AND s.raw_content IS NOT NULL
+      -- Mirrors extract's pending query. A snapshot marked permanently
+      -- unextractable will never be billed again, so counting it here would
+      -- inflate the estimate forever and could refuse a future backfill over
+      -- work that costs nothing.
+      AND s.error IS NULL
       AND NOT EXISTS (
         SELECT 1 FROM extractions e
         WHERE e.normalized_hash = s.normalized_hash AND e.prompt_version = ?)
@@ -409,13 +414,20 @@ export async function runBackfill(
       // budget the operator trusted.
       if (stats.extracted > 0) {
         const estimateMicros = stats.estimate.estimateMicros;
-        const variance = estimateMicros === 0
+        // Deliberately one-sided. The estimate is a worst case that assumes
+        // every capture is a distinct page state, when content-addressed
+        // dedup means many share a hash and cost nothing — so a healthy run
+        // routinely lands far UNDER estimate, and a symmetric check would
+        // warn on exactly the runs that went well. Only an overrun means the
+        // per-extraction mean has drifted.
+        const overrun = estimateMicros === 0
           ? (stats.actualMicros > 0 ? Infinity : 0)
-          : Math.abs(stats.actualMicros - estimateMicros) / estimateMicros;
-        if (variance > 0.2) {
+          : (stats.actualMicros - estimateMicros) / estimateMicros;
+        if (overrun > 0.2) {
           console.warn(
-            `backfill: actual spend $${(stats.actualMicros / 1e6).toFixed(4)} vs estimate ` +
-            `$${(estimateMicros / 1e6).toFixed(4)} — recalibrate the cost estimate.`,
+            `backfill: actual spend $${(stats.actualMicros / 1e6).toFixed(4)} overran the ` +
+            `$${(estimateMicros / 1e6).toFixed(4)} estimate by more than 20% — the measured ` +
+            `mean cost per extraction has drifted; recalibrate before the next backfill.`,
           );
         }
       }

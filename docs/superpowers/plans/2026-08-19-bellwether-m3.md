@@ -2307,4 +2307,13 @@ Not a task — the controller runs this after Task 6 is reviewed and merged, bec
   adding a final-URL field to `FetchResult`, which touches live collection too, so it is out of
   M3's scope. The error is bounded by how far apart neighbouring captures are, which is inside
   the monthly resolution the timeline already states. Fix when `FetchResult` is next revised.
+- **A `prompt_version` bump does not re-attempt permanently-failed historical snapshots.** The
+  final review's fix records a deterministic extraction failure in `snapshots.error` and excludes
+  that row from `extract`'s pending set forever, which is right for `oversized` (a page's token
+  count does not change with the prompt) but not for `invalid` or `ungrounded`, which are
+  prompt- and model-dependent. Spec 7.1 makes reprocessing history under a better prompt a
+  headline capability, so those rows should come back into play on a bump. Until that is built,
+  clearing them is one statement:
+  `UPDATE snapshots SET error = NULL WHERE ok = 1 AND error LIKE 'extraction %';`
+  Wire it into whatever command implements `bellwether extract --all`.
 - **`bellwether qualify`** and the watch-list expansion to 50 competitors (M3.5).

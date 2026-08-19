@@ -328,6 +328,27 @@ describe('estimateBackfill', () => {
     expect(estimateBackfill(db, 10).pending).toBe(0);
   });
 
+  it('never counts a snapshot marked permanently unextractable', () => {
+    const insert = db.prepare(`
+      INSERT INTO snapshots
+        (source_id, observed_at, fetched_at, ok, http_status, error,
+         raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, ?, ?, 1, 200, ?, '<html>$5</html>', ?, NULL, 'wayback:20250101000000')
+    `);
+    insert.run('2025-01-01T00:00:00.000Z', '2025-01-01T00:00:00.000Z', null, 'raw-ok');
+    expect(estimateBackfill(db, 10).pending).toBe(1);
+
+    // extract marks a deterministic failure (oversized / invalid / ungrounded)
+    // on the row itself and never retries it, so it can never be billed again
+    // — counting it would inflate the estimate forever and could refuse a
+    // future backfill over work that costs nothing.
+    insert.run(
+      '2025-02-01T00:00:00.000Z', '2025-02-01T00:00:00.000Z',
+      'extraction oversized: 31000 tokens exceeds the 20000 budget', 'raw-dead',
+    );
+    expect(estimateBackfill(db, 10).pending).toBe(1);
+  });
+
   it('caps the queue contribution at --limit, so a sliced run costs only the slice', () => {
     enqueuePending(10);
     expect(estimateBackfill(db, 10, 3).pending).toBe(3);
