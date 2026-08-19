@@ -161,7 +161,7 @@ describe('buildTimeline', () => {
 
     const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
     expect(markers).toHaveLength(1);
-    expect(markers[0]!.label).toBe('Pro annual price usd 96 to 120');
+    expect(markers[0]!.label).toBe('Pro annual price 96 to 120');
   });
 
   it('extracts a tier name containing a dot from the json_path unmangled', () => {

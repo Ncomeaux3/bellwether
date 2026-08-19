@@ -196,7 +196,11 @@ function describeChange(row: {
   // and .annual_price_usd with identical materiality — the field name must
   // stay in the label or an annual move reads as a monthly one.
   if (row.change_type === 'price_changed') {
-    const label = field === 'monthly_price_usd' ? '' : `${field.replace(/_/g, ' ')} `;
+    // The chart's axis is already dollars, so "usd" is noise in a marker
+    // label: "Pro annual price 96 to 120", not "Pro annual price usd 96 to 120".
+    const label = field === 'monthly_price_usd'
+      ? ''
+      : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
     return `${tier} ${label}${value(row.before_json)} to ${value(row.after_json)}`;
   }
   return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
