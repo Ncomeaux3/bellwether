@@ -8,7 +8,7 @@ const PRICE = /[$€£]\s?\d/g;
 const NOISE_PATTERN =
   /(cookie|consent|gdpr|intercom|drift|zendesk|crisp|chat-widget|livechat|banner-notice)/i;
 
-const STRIP_TAGS = ['script', 'style', 'svg', 'noscript', 'iframe', 'template'];
+const STRIP_TAGS = ['script', 'style', 'svg', 'noscript', 'iframe', 'template', 'nav', 'header', 'footer'];
 
 /** Volatile attribute values: build hashes, nonces, UUIDs, cache-busters. */
 const VOLATILE_VALUE =
@@ -46,14 +46,7 @@ function slice(root: HTMLElement): HTMLElement {
   const total = countPrices(root.text);
   if (total === 0) return root;
 
-  // ponytail: 0.8 (the density the design doc describes) fails on real pages —
-  // a single stray price in nav/footer boilerplate (e.g. a "$0 to start" CTA)
-  // dilutes the ratio below 80% and stops descent one level too early. 0.6
-  // still stays well above the ~50% a single sibling tier could reach on its
-  // own (which would over-slice into one tier), verified against both
-  // fixtures. Revisit with a real density/DOM-depth heuristic if a page needs
-  // a value outside (0.5, 0.667].
-  const DENSITY_THRESHOLD = 0.6;
+  const DENSITY_THRESHOLD = 0.8;
 
   let current = root;
   for (;;) {
@@ -63,6 +56,35 @@ function slice(root: HTMLElement): HTMLElement {
     if (!heir) return current;
     current = heir;
   }
+}
+
+/** ~10k tokens, comfortably inside the 20,000-token extraction guard. */
+const MAX_SLICE_CHARS = 40_000;
+
+/**
+ * Deterministic last-resort cap for pages where density-descent stops near
+ * the root (prices spread across siblings on some DOMs) and still hands back
+ * more than the token budget can take. Picks the contiguous MAX_SLICE_CHARS
+ * window with the most currency matches instead of an arbitrary truncation.
+ *
+ * ponytail: stride-40000/8 scan is O(n) but coarse — it can miss the true
+ * best window by up to one stride and never checks the exact tail window.
+ * Fine for a deterministic safety net; upgrade to an exact O(n) sliding-window
+ * count if a page ever needs pixel-perfect window selection.
+ */
+function densestWindow(text: string, size: number): string {
+  if (text.length <= size) return text;
+  const stride = Math.max(1, Math.floor(size / 8));
+  let bestStart = 0;
+  let bestCount = -1;
+  for (let start = 0; start + size <= text.length; start += stride) {
+    const count = countPrices(text.slice(start, start + size));
+    if (count > bestCount) {
+      bestCount = count;
+      bestStart = start;
+    }
+  }
+  return text.slice(bestStart, bestStart + size);
 }
 
 export interface SliceResult { text: string; normalizedHash: string }
@@ -81,6 +103,7 @@ export function normalizeAndSlice(html: string, opts: { widen?: boolean } = {}):
   const body = root.querySelector('body') ?? root;
   const region = opts.widen ? body : slice(body);
 
-  const text = region.text.replace(/\s+/g, ' ').trim();
+  let text = region.text.replace(/\s+/g, ' ').trim();
+  if (text.length > MAX_SLICE_CHARS) text = densestWindow(text, MAX_SLICE_CHARS);
   return { text, normalizedHash: sha256(text) };
 }

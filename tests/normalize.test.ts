@@ -60,7 +60,7 @@ describe('normalizeAndSlice', () => {
     const narrow = normalizeAndSlice(fixture('pricing-noisy.html'));
     const wide = normalizeAndSlice(fixture('pricing-noisy.html'), { widen: true });
     expect(wide.text.length).toBeGreaterThan(narrow.text.length);
-    expect(wide.text).toContain('© 2026 Example');
+    expect(wide.text).toContain('Loved by teams everywhere');
   });
 
   it('falls back to the body when no prices are present', () => {
@@ -70,5 +70,35 @@ describe('normalizeAndSlice', () => {
 
   it('never throws on malformed html', () => {
     expect(() => normalizeAndSlice('<div><p>$5<//div>')).not.toThrow();
+  });
+
+  it('caps oversized flat text to the densest pricing window', () => {
+    const filler = (n: number) => 'x'.repeat(n);
+    const cluster = Array.from({ length: 50 }, (_, i) => `$${(i % 9) + 1}`).join(' ');
+    // Two lone stray prices, each separated from the dense cluster by more
+    // than MAX_SLICE_CHARS (40,000) of filler, so no single 40k window can
+    // straddle a stray and the cluster together.
+    const html = `<body><main>${filler(50000)} STRAYONE $1 STRAYONE ${filler(45000)}` +
+      ` CLUSTERSTART ${cluster} CLUSTEREND ${filler(45000)}` +
+      ` STRAYTWO $2 STRAYTWO ${filler(50000)}</main></body>`;
+
+    const { text } = normalizeAndSlice(html);
+    expect(text.length).toBeLessThanOrEqual(40_000);
+    expect(text).toContain('CLUSTERSTART');
+    expect(text).toContain('CLUSTEREND');
+    expect(text).not.toContain('STRAYONE');
+    expect(text).not.toContain('STRAYTWO');
+  });
+
+  it('windowing stays deterministic: identical input hashes identically', () => {
+    const filler = (n: number) => 'x'.repeat(n);
+    const cluster = Array.from({ length: 50 }, (_, i) => `$${(i % 9) + 1}`).join(' ');
+    const html = `<body><main>${filler(50000)} STRAYONE $1 STRAYONE ${filler(45000)}` +
+      ` CLUSTERSTART ${cluster} CLUSTEREND ${filler(45000)}` +
+      ` STRAYTWO $2 STRAYTWO ${filler(50000)}</main></body>`;
+
+    const a = normalizeAndSlice(html);
+    const b = normalizeAndSlice(html);
+    expect(b.normalizedHash).toBe(a.normalizedHash);
   });
 });
