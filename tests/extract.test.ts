@@ -150,4 +150,28 @@ describe('extract', () => {
     const row = db.prepare("SELECT state, ok FROM runs WHERE kind = 'extract'").get() as { state: string; ok: number };
     expect(row).toEqual({ state: 'ok', ok: 1 });
   });
+
+  it('propagates normalized_hash to a dedup sibling inserted after the source row was already hashed', async () => {
+    addSnapshot(HTML, 1, '2026-08-18T12:00:00.000Z');
+    await extract(db, {}, deps(okResult(20)));
+
+    const first = db.prepare('SELECT raw_hash, normalized_hash FROM snapshots').get() as
+      { raw_hash: string; normalized_hash: string };
+    expect(first.normalized_hash).not.toBeNull();
+
+    // Exactly what `collect` does on a repeat day: a dedup row sharing
+    // raw_hash with the already-hashed source row, but with raw_content NULL
+    // and normalized_hash NULL, inserted *after* that source row was hashed.
+    db.prepare(`INSERT INTO snapshots
+      (source_id, observed_at, fetched_at, ok, http_status, error, raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, '2026-08-19T12:00:00.000Z', '2026-08-19T12:00:00.000Z', 1, 200, NULL, NULL, ?, NULL, 'live')`)
+      .run(first.raw_hash);
+
+    await extract(db, {}, deps(okResult(20)));
+
+    const sibling = db.prepare('SELECT normalized_hash FROM snapshots WHERE raw_content IS NULL').get() as
+      { normalized_hash: string | null };
+    expect(sibling.normalized_hash).not.toBeNull();
+    expect(sibling.normalized_hash).toBe(first.normalized_hash);
+  });
 });

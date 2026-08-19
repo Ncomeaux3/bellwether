@@ -50,7 +50,7 @@ export async function extract(
       FROM snapshots s
       WHERE s.ok = 1 AND s.raw_content IS NOT NULL
       ORDER BY s.observed_at, s.id
-      ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
+      ${opts.limit !== undefined ? 'LIMIT ' + Number(opts.limit) : ''}
     `).all() as PendingRow[];
 
     const setHash = db.prepare('UPDATE snapshots SET normalized_hash = ? WHERE id = ?');
@@ -80,12 +80,15 @@ export async function extract(
 
       if (row.normalized_hash !== normalizedHash) {
         setHash.run(normalizedHash, row.id);
-        // Deduplicated snapshots share a raw_hash but carry NULL raw_content,
-        // so they can never be hashed on their own. Propagate to them here or
-        // detect (spec 12.2) skips them forever.
-        if (row.raw_hash !== null) propagate.run(normalizedHash, row.source_id, row.raw_hash);
         stats.hashed += 1;
       }
+
+      // Deduplicated snapshots share a raw_hash but carry NULL raw_content, so
+      // they can never be hashed on their own. `collect` keeps inserting new
+      // siblings like this on every repeat day, so this must run every pass —
+      // not just the first time this row's own hash is written — or detect
+      // (spec 12.2) silently sees a shrinking fraction of the archive.
+      if (row.raw_hash !== null) propagate.run(normalizedHash, row.source_id, row.raw_hash);
 
       if (findExtraction.get(normalizedHash, EXTRACT_PROMPT_VERSION) !== undefined) {
         stats.cached += 1;

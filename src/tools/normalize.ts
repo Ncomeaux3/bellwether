@@ -51,8 +51,16 @@ function slice(root: HTMLElement): HTMLElement {
   }
 }
 
-/** ~10k tokens, comfortably inside the 20,000-token extraction guard. */
-const MAX_SLICE_CHARS = 40_000;
+/**
+ * Bounded by worst-case token density, not average. Ordinary prose tokenizes
+ * at roughly 0.28 tokens/char, but Linear's mangled markup measured at
+ * roughly 0.53 tokens/char — nearly double. At 40k chars that pushed Linear
+ * to 21,355 tokens, over the 20,000-token extraction guard. 30k chars keeps
+ * Linear around 16k tokens (~20% under budget) while still giving a normal
+ * page roughly 8.5k tokens of pricing content. Raise this only after
+ * measuring token density on the densest known page, not the average one.
+ */
+const MAX_SLICE_CHARS = 30_000;
 
 /**
  * Deterministic last-resort cap for pages where density-descent stops near
