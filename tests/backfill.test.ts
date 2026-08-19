@@ -6,6 +6,7 @@ import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import { discoverCaptures, drainQueue, MAX_CAPTURE_ATTEMPTS } from '../src/workflow/backfill.js';
+import { collect } from '../src/workflow/collect.js';
 import type { FetchResult } from '../src/tools/fetch.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
@@ -158,13 +159,10 @@ describe('drainQueue', () => {
     const snap = db.prepare('SELECT fetched_at FROM snapshots').get() as { fetched_at: string };
     expect(snap.fetched_at).toBe('2025-01-16T00:29:09.000Z');
 
-    // The proof that matters: collect still considers the source due.
-    const due = db.prepare(`
-      SELECT s.id FROM sources s WHERE s.active = 1 AND NOT EXISTS (
-        SELECT 1 FROM snapshots snap WHERE snap.source_id = s.id
-          AND datetime(snap.fetched_at) > datetime(?, '-' || s.cadence_hours || ' hours'))
-    `).all(NOW().toISOString());
-    expect(due).toHaveLength(1);
+    // The proof that matters: collect still considers the source due, proven
+    // through the real cadence gate rather than a hand-copied query.
+    const collected = await collect(db, { dryRun: true }, { fetcher: async () => ok(PAGE), now: NOW });
+    expect(collected.attempted).toBe(1);
   });
 
   it('marks the queue row fetched and never re-fetches it', async () => {

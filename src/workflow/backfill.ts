@@ -204,20 +204,28 @@ export async function drainQueue(
     if (seen) stats.deduped += 1;
     else stats.stored += 1;
 
-    insertSnapshot.run({
-      sourceId: row.source_id,
-      // Spec 12.1: the capture time, or eighteen months of history lands on
-      // today's date. fetched_at matches it deliberately (ruling R5) so
-      // collect's cadence gate and export's freshness queries stay correct
-      // without either of them learning about provenance.
-      observedAt,
-      fetchedAt: observedAt,
-      rawContent: seen ? null : result.body,
-      rawHash,
-      provenance: `wayback:${row.wayback_ts}`,
-    });
+    // The insert and the queue-row update must land together: if the process
+    // dies or hits SQLITE_BUSY between them, a `pending` row with unchanged
+    // attempts gets re-fetched next run and a second snapshot is inserted for
+    // the same capture. confirmChanges reads the non-collapsing observation
+    // stream, so that duplicate reads as "observed again" and would promote a
+    // change to confirmed off a single real observation.
+    db.transaction(() => {
+      insertSnapshot.run({
+        sourceId: row.source_id,
+        // Spec 12.1: the capture time, or eighteen months of history lands on
+        // today's date. fetched_at matches it deliberately (ruling R5) so
+        // collect's cadence gate and export's freshness queries stay correct
+        // without either of them learning about provenance.
+        observedAt,
+        fetchedAt: observedAt,
+        rawContent: seen ? null : result.body,
+        rawHash,
+        provenance: `wayback:${row.wayback_ts}`,
+      });
 
-    setState.run('fetched', row.attempts, null, stampedAt, row.id);
+      setState.run('fetched', row.attempts, null, stampedAt, row.id);
+    })();
   }
 
   return stats;
