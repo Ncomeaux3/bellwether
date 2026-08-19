@@ -14,13 +14,25 @@ interface ChangeRow {
 interface RawObservation { normalizedHash: string; confidence: string; data: PricingSnapshotData }
 
 /**
- * Distinct from a genuinely-null field. A path that doesn't resolve (a
- * removed usage rate, a tier name diffPricing's naive dot-join mangled) must
- * never be silently read as `null` — that inverts confirm/retract logic for
- * every change type whose after_json or before_json is legitimately null
- * (usage_rate_added/removed). See task-7-report.md, code-review findings 1-2.
+ * A path we cannot evaluate at all: an unknown container, or the wrong
+ * number of segments for the container it names. Distinct from a genuine
+ * `null` — "the array exists but the key isn't in it" (a removed usage
+ * rate, a removed tier) IS a real value worth comparing, not an unknown.
+ * Conflating the two inverts confirm/retract in opposite directions
+ * depending on which way the conflation goes — see task-7-report.md,
+ * code-review findings across both rounds.
  */
 const NOT_FOUND = Symbol('valueAt/not-found');
+
+/**
+ * The only field names diff.ts ever appends after a tier name (plus the
+ * synthetic 'flags'). Used to tell "this is a field access" apart from "this
+ * is a whole-tier path whose dotted name got split" — see valueAt below.
+ */
+const TIER_FIELDS = new Set([
+  'monthly_price_usd', 'annual_price_usd', 'billing_unit',
+  'included_seats', 'headline_features', 'flags',
+]);
 
 /**
  * Read one JSON path out of a stored PricingSnapshot, mirroring diff.ts's
@@ -28,9 +40,17 @@ const NOT_FOUND = Symbol('valueAt/not-found');
  *
  * Tier names are joined into the path with no escaping, so a name containing
  * '.' (e.g. "Team 2.0") splits into multiple parts. Parsed positionally:
- * `tiers.<name>` (2 parts) is the whole tier (tier_added/removed/renamed);
- * `tiers.<name...>.<field>` (3+ parts) has the field as the LAST part and
- * the name as everything between, rejoined with '.'.
+ * `tiers.<name>` is the whole tier (tier_added/removed/renamed);
+ * `tiers.<name...>.<field>` has a field access when the LAST part is a known
+ * Tier field name — the name is everything between, rejoined with '.'. A
+ * last part that ISN'T a known field (e.g. the "0" a dotted name like
+ * "Team 2.0" splits off) means there is no field: the whole remainder is
+ * the name. This disambiguation is what keeps a dotted-name whole-tier path
+ * from being misread as an unmatchable field access.
+ *
+ * Structural rule: container missing / path malformed -> NOT_FOUND (can't
+ * evaluate). Container present but the key absent -> `null` (the thing is
+ * genuinely not there, which is a real value to compare).
  */
 function valueAt(data: unknown, path: string): unknown {
   const parts = path.split('.');
@@ -45,18 +65,19 @@ function valueAt(data: unknown, path: string): unknown {
     const metric = parts[1]!;
     const rate = ((data as { usage_rates?: Array<{ metric: string; unit_price_usd: number }> })
       .usage_rates ?? []).find(r => r.metric === metric);
-    return rate ? rate.unit_price_usd : NOT_FOUND;
+    return rate ? rate.unit_price_usd : null;   // metric genuinely absent — a real value
   }
 
   if (container === 'tiers') {
     if (parts.length < 2) return NOT_FOUND;
-    const hasField = parts.length > 2;
-    const name = hasField ? parts.slice(1, -1).join('.') : parts[1]!;
-    const field = hasField ? parts[parts.length - 1]! : undefined;
+    const lastPart = parts[parts.length - 1]!;
+    const hasField = parts.length > 2 && TIER_FIELDS.has(lastPart);
+    const name = hasField ? parts.slice(1, -1).join('.') : parts.slice(1).join('.');
+    const field = hasField ? lastPart : undefined;
 
     const tiers = (data as { tiers?: Array<Record<string, unknown>> }).tiers ?? [];
     const tier = tiers.find(t => t.name === name);
-    if (!tier) return NOT_FOUND;
+    if (!tier) return null;   // tier genuinely absent — a real value (matches tier_removed's after_json)
     if (!hasField) return tier;
     if (field === 'flags') return { is_free: tier.is_free, is_enterprise: tier.is_enterprise };
     return field! in tier ? tier[field!] : NOT_FOUND;

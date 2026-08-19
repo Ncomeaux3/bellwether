@@ -200,4 +200,40 @@ describe('confirmation', () => {
     expect(s.length).toBe(1);
     expect(s[0]!.state).toBe('confirmed');
   });
+
+  it('confirms a usage_rate_removed once a later observation still lacks that metric', () => {
+    observeFull(18, 'a', {
+      tiers: [defaultTier()],
+      usage_rates: [{ metric: 'api_calls', unit_price_usd: 0.01 }],
+    });
+    observeFull(19, 'b', { tiers: [defaultTier()], usage_rates: [] });   // removed
+    observeFull(20, 'c', { tiers: [defaultTier()], usage_rates: [] });   // still gone
+    detect(db, {});
+    const s = statesOf('usage_rate_removed');
+    expect(s.length).toBe(1);
+    expect(s[0]!.state).toBe('confirmed');
+  });
+
+  it('retracts a usage_rate_added when a later observation lacks it again', () => {
+    observeFull(18, 'a', { tiers: [defaultTier()], usage_rates: [] });
+    observeFull(19, 'b', {
+      tiers: [defaultTier()],
+      usage_rates: [{ metric: 'seats', unit_price_usd: 5 }],
+    });                                                                  // added
+    observeFull(20, 'c', { tiers: [defaultTier()], usage_rates: [] });   // gone again — a phantom add
+    detect(db, {});
+    const s = statesOf('usage_rate_added');
+    expect(s.length).toBe(1);
+    expect(s[0]!.state).toBe('retracted');
+  });
+
+  it('confirms a tier_removed once a later observation still lacks that tier', () => {
+    observeFull(18, 'a', { tiers: [defaultTier(), defaultTier({ name: 'Team' })] });
+    observeFull(19, 'b', { tiers: [defaultTier()] });   // Team removed
+    observeFull(20, 'c', { tiers: [defaultTier()] });   // still gone
+    detect(db, {});
+    const s = statesOf('tier_removed');
+    expect(s.length).toBe(1);
+    expect(s[0]!.state).toBe('confirmed');
+  });
 });
