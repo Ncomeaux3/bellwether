@@ -17,12 +17,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${bricolage.variable} ${publicSans.variable} ${plexMono.variable}`}>
       <body className="min-h-screen bg-surface text-ink antialiased">
+        {/* React 19 hoists <link> into <head> regardless of where it renders. */}
+        <link rel="alternate" type="application/rss+xml" title="Bellwether changes" href="/changes.xml" />
         <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-16">
           {children}
           <footer className="mt-20 border-t border-rule pt-6 text-sm text-ink-muted">
             <p>
               Bellwether records public pricing pages. The raw archive stays private; only
               derived data is published, never the pages themselves.
+            </p>
+            <p className="mt-2">
+              <a href="/data/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+                The dataset
+              </a>
+              {' · '}
+              <a href="/changes.xml" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+                RSS feed
+              </a>
             </p>
           </footer>
         </div>

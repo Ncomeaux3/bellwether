@@ -1,12 +1,16 @@
 import { BoardTable } from '@/components/BoardTable';
 import { Stamp } from '@/components/Stamp';
 import { Timeline } from '@/components/Timeline';
-import { loadBoard, loadStatus, loadTimeline } from '@/lib/data';
+import { changeLabel, loadBoard, loadChanges, loadDigest, loadStatus, loadTimeline } from '@/lib/data';
+import { renderMarkdown } from '@/lib/markdown';
 
 export default function HomePage() {
   const board = loadBoard();
   const status = loadStatus();
   const timeline = loadTimeline();
+  const digest = loadDigest();
+  const changes = loadChanges();
+  const recentChanges = changes.changes.slice(0, 10);
 
   return (
     <main>
@@ -74,6 +78,59 @@ export default function HomePage() {
               </article>
             ))}
           </div>
+        )}
+      </section>
+
+      <section className="mt-12">
+        <h2 className="font-display text-2xl font-medium text-ink">The brief</h2>
+        <p className="mt-2 max-w-2xl text-ink-secondary">
+          A digest fires once three confirmed changes are pending, or every 30 days — whichever
+          comes first.
+        </p>
+
+        {digest.digest === null ? (
+          <p className="mt-6 text-sm text-ink-muted">
+            No digest yet — the first one fires after three confirmed changes.
+          </p>
+        ) : (
+          <article className="mt-6 rounded-lg border border-rule bg-surface-raised p-5">
+            <p className="font-mono text-xs text-ink-muted">
+              Published <Stamp iso={digest.digest.created_at} /> · {digest.digest.item_count} change
+              {digest.digest.item_count === 1 ? '' : 's'}
+            </p>
+            <div
+              className="mt-4 max-w-2xl text-ink-secondary [&_h2]:mt-4 [&_h2]:font-display [&_h2]:text-lg [&_h2]:font-medium [&_h2]:text-ink [&_h3]:mt-3 [&_h3]:font-display [&_h3]:text-base [&_h3]:font-medium [&_h3]:text-ink [&_p]:mt-2 [&_p:first-child]:mt-0 [&_ul]:mt-2 [&_ul]:list-disc [&_ul]:pl-5 [&_strong]:text-ink"
+              dangerouslySetInnerHTML={{ __html: renderMarkdown(digest.digest.body_markdown) }}
+            />
+          </article>
+        )}
+      </section>
+
+      <section className="mt-12">
+        <h2 className="font-display text-2xl font-medium text-ink">Recent confirmed changes</h2>
+        <p className="mt-2 max-w-2xl text-ink-secondary">
+          The last {recentChanges.length === 1 ? 'change' : `${recentChanges.length} changes`} to
+          clear confirmation, most recent first. Full history is in{' '}
+          <a href="/data/" className="underline decoration-rule-strong underline-offset-4 hover:text-ink">
+            the dataset
+          </a>.
+        </p>
+
+        {recentChanges.length === 0 ? (
+          <p className="mt-6 text-sm text-ink-muted">No confirmed changes yet.</p>
+        ) : (
+          <ul className="mt-6 divide-y divide-rule">
+            {recentChanges.map(c => (
+              <li key={`${c.slug}-${c.json_path}-${c.observed_at}`} className="py-3">
+                <p className="font-mono text-sm text-ink">
+                  <span className="text-ink-secondary">{c.competitor}</span> · {changeLabel(c)}
+                </p>
+                {c.annotation && (
+                  <p className="mt-1 text-sm text-ink-secondary">{c.annotation.implication}</p>
+                )}
+              </li>
+            ))}
+          </ul>
         )}
       </section>
 
