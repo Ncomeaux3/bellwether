@@ -6,6 +6,7 @@ import type { DB } from '../ops/db.js';
 import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
 import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
 import { monthlySpendMicros } from '../agents/_client.js';
+import { observationsFor } from './detect.js';
 
 const run = promisify(execFile);
 
@@ -48,6 +49,123 @@ function stateOf(row: SourceRow): SourceState {
   if (row.last_ok_flag === 0) return 'failing';
   if (row.degraded_reason !== null) return 'degraded';
   return 'ok';
+}
+
+/**
+ * Wayback captures are monthly (spec 12.1, `collapse=timestamp:6`), so ~31 days
+ * between points is normal and two consecutive missed months is a real hole in
+ * the record. Spec 14.3: a hole renders as a break, never as interpolation.
+ */
+export const TIMELINE_GAP_DAYS = 75;
+const GAP_MS = TIMELINE_GAP_DAYS * 86_400_000;
+
+export interface TimelinePoint { observed_at: string; price: number }
+export interface TimelineSeries { tier: string; segments: TimelinePoint[][] }
+export interface TimelineMarker { observed_at: string; label: string }
+export interface TimelineCompetitor {
+  slug: string; name: string;
+  first_observed_at: string | null; last_observed_at: string | null;
+  series: TimelineSeries[]; markers: TimelineMarker[];
+}
+export interface TimelinePayload {
+  generated_at: string; observation_count: number; competitors: TimelineCompetitor[];
+}
+
+/**
+ * Spec 14.3. Every series break is decided here, so the React component holds
+ * no judgement: it draws one polyline per segment and nothing else.
+ *
+ * Built on observationsFor(), which already applies the USD filter (12.4), the
+ * prompt-version filter, the repeated-hash collapse (12.2), and Zod validation.
+ */
+export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
+  const sources = db.prepare(`
+    SELECT s.id AS source_id, c.slug, c.name
+    FROM sources s JOIN competitors c ON c.id = s.competitor_id
+    WHERE s.active = 1 AND c.active = 1 AND s.kind = 'pricing'
+    ORDER BY c.name
+  `).all() as { source_id: number; slug: string; name: string }[];
+
+  const markerRows = db.prepare(`
+    SELECT ch.source_id, ch.json_path, ch.change_type, ch.before_json, ch.after_json, ch.observed_at
+    FROM changes ch
+    WHERE ch.state = 'confirmed' AND ch.materiality >= ?
+    ORDER BY ch.observed_at
+  `).all(MATERIALITY_THRESHOLD) as {
+    source_id: number; json_path: string; change_type: string;
+    before_json: string | null; after_json: string | null; observed_at: string;
+  }[];
+
+  let observationCount = 0;
+  const competitors: TimelineCompetitor[] = [];
+
+  for (const source of sources) {
+    const observations = observationsFor(db, source.source_id);
+    observationCount += observations.length;
+
+    // tier name -> the segments built so far, plus where the open one left off
+    const building = new Map<string, { segments: TimelinePoint[][]; lastAt: number | null }>();
+
+    for (const observation of observations) {
+      const at = Date.parse(observation.observedAt);
+      const priced = new Map<string, number>();
+      for (const tier of observation.data.tiers) {
+        // null is "contact sales", and it is not zero. Plotting it as zero
+        // would be the most misleading thing this chart could do.
+        if (typeof tier.monthly_price_usd === 'number') priced.set(tier.name, tier.monthly_price_usd);
+      }
+
+      for (const [name, price] of priced) {
+        let entry = building.get(name);
+        if (!entry) { entry = { segments: [], lastAt: null }; building.set(name, entry); }
+
+        const open = entry.segments[entry.segments.length - 1];
+        const continuous = open !== undefined && entry.lastAt !== null && at - entry.lastAt <= GAP_MS;
+
+        if (continuous) open!.push({ observed_at: observation.observedAt, price });
+        else entry.segments.push([{ observed_at: observation.observedAt, price }]);
+
+        entry.lastAt = at;
+      }
+
+      // A tier absent from this observation ends its run: the next appearance
+      // starts a new segment rather than a line drawn across its absence.
+      for (const [name, entry] of building) {
+        if (!priced.has(name)) entry.lastAt = null;
+      }
+    }
+
+    const series: TimelineSeries[] = [...building.entries()]
+      .map(([tier, entry]) => ({ tier, segments: entry.segments }))
+      .filter(s => s.segments.length > 0)
+      .sort((a, b) => a.tier.localeCompare(b.tier));
+
+    competitors.push({
+      slug: source.slug,
+      name: source.name,
+      first_observed_at: observations[0]?.observedAt ?? null,
+      last_observed_at: observations[observations.length - 1]?.observedAt ?? null,
+      series,
+      markers: markerRows
+        .filter(m => m.source_id === source.source_id)
+        .map(m => ({ observed_at: m.observed_at, label: describeChange(m) })),
+    });
+  }
+
+  return { generated_at: generatedAt, observation_count: observationCount, competitors };
+}
+
+/** Short, literal marker text. No adjectives — the number is the story. */
+function describeChange(row: {
+  json_path: string; change_type: string; before_json: string | null; after_json: string | null;
+}): string {
+  const tier = row.json_path.startsWith('tiers.')
+    ? row.json_path.split('.').slice(1, -1).join('.') || row.json_path.slice(6)
+    : row.json_path;
+  const before = row.before_json === null ? 'none' : String(JSON.parse(row.before_json));
+  const after = row.after_json === null ? 'none' : String(JSON.parse(row.after_json));
+  if (row.change_type === 'price_change') return `${tier} ${before} to ${after}`;
+  return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
 }
 
 /**
@@ -148,7 +266,12 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
     })),
   };
 
-  const payloads: Record<string, unknown> = { 'board.json': board, 'status.json': status, 'changes.json': changesFeed };
+  const payloads: Record<string, unknown> = {
+    'board.json': board,
+    'status.json': status,
+    'changes.json': changesFeed,
+    'timeline.json': buildTimeline(db, generatedAt),
+  };
 
   // ---- Guards (spec 15.7). All must pass before anything is renamed. -----
   if (competitors.length === 0) {

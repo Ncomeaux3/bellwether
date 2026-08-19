@@ -12,6 +12,12 @@
   --color-state-degraded: #9a6b00;
   --color-state-failing: #b03a2e;
 
+  --color-series-1: #2563a8;
+  --color-series-2: #1f7a5c;
+  --color-series-3: #9a6b00;
+  --color-series-4: #7c4a9a;
+  --color-series-5: #b03a2e;
+
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
@@ -34,6 +40,12 @@
     --color-state-ok: #4fd1a5;
     --color-state-degraded: #e0a33a;
     --color-state-failing: #f07167;
+
+    --color-series-1: #6aa8e8;
+    --color-series-2: #4fd1a5;
+    --color-series-3: #e0a33a;
+    --color-series-4: #b98ad8;
+    --color-series-5: #f07167;
   }
 }
 
