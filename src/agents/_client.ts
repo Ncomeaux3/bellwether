@@ -35,6 +35,16 @@ export function costMicros(inputTokens: number, outputTokens: number): number {
   return inputTokens * INPUT_MICROS_PER_TOKEN + outputTokens * OUTPUT_MICROS_PER_TOKEN;
 }
 
+export const SYNTH_MODEL = 'claude-sonnet-5';
+
+/** Claude Sonnet 5: $3.00 per Mtok input, $15.00 per Mtok output. */
+const SYNTH_INPUT_MICROS_PER_TOKEN = 3;
+const SYNTH_OUTPUT_MICROS_PER_TOKEN = 15;
+
+export function synthCostMicros(inputTokens: number, outputTokens: number): number {
+  return inputTokens * SYNTH_INPUT_MICROS_PER_TOKEN + outputTokens * SYNTH_OUTPUT_MICROS_PER_TOKEN;
+}
+
 /** Spec 15.2: recurring spend only — is_backfill rows have their own budget. */
 export function monthlySpendMicros(db: DB, now: Date = new Date()): number {
   const monthStart = `${now.toISOString().slice(0, 7)}-01T00:00:00.000Z`;
