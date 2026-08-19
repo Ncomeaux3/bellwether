@@ -107,12 +107,21 @@ export function detect(db: DB, opts: DetectOptions = {}, deps: DetectDeps = {}):
       WHERE c.source_id = ?
     `);
     const dropAnalysis = db.prepare('DELETE FROM analyses WHERE id = ?');
+    // ORDER BY id: (source_id, json_path, observed_at) isn't unique on changes
+    // — two snapshots sharing an observed_at each spawn their own row — so the
+    // pick must be deterministic or two parked rows can resolve to the same
+    // survivor and collide on analyses' (change_id, prompt_version) UNIQUE.
     const findSurvivor = db.prepare(
-      'SELECT id FROM changes WHERE source_id = ? AND json_path = ? AND observed_at = ? LIMIT 1',
+      'SELECT id FROM changes WHERE source_id = ? AND json_path = ? AND observed_at = ? ORDER BY id LIMIT 1',
     );
+    // ON CONFLICT DO NOTHING: a second parked row landing on the same survivor
+    // at the same prompt_version is redundant by analyses' own UNIQUE(change_id,
+    // prompt_version) — dropping it as an orphan (via info.changes below) is
+    // correct, not a bug to work around.
     const reinsertAnalysis = db.prepare(`
       INSERT INTO analyses (change_id, implication, so_what, confidence, model, prompt_version, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT (change_id, prompt_version) DO NOTHING
     `);
 
     db.transaction(() => {
@@ -156,9 +165,10 @@ export function detect(db: DB, opts: DetectOptions = {}, deps: DetectDeps = {}):
         for (const row of parked) {
           const survivor = findSurvivor.get(source.id, row.json_path, row.observed_at) as { id: number } | undefined;
           if (survivor) {
-            reinsertAnalysis.run(survivor.id, row.implication, row.so_what, row.confidence,
+            const info = reinsertAnalysis.run(survivor.id, row.implication, row.so_what, row.confidence,
               row.model, row.prompt_version, row.created_at);
-            stats.relinked += 1;
+            if (info.changes > 0) stats.relinked += 1;
+            else stats.orphaned += 1;   // redundant at (change_id, prompt_version) — dropped, not an error
           } else {
             stats.orphaned += 1;   // already deleted above — spec: orphans are deleted
           }
