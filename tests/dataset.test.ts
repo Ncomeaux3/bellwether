@@ -121,6 +121,64 @@ describe('buildDatasetRows', () => {
     const rows = buildDatasetRows(db);
     expect(rows[0]!.provenance).toBe('live');
   });
+
+  // Fix round 1, finding 1: observationsFor collapses a later snapshot with
+  // an identical hash into its representative, keeping only the FIRST
+  // snapshot's date and provenance. A live re-fetch confirming a wayback
+  // capture's state must still move last_observed_at and register as mixed.
+  it('does not lose a live re-confirmation collapsed by observationsFor\'s hash dedup', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Pro', price: 8 }], { hash: 'same', provenance: 'wayback:20250116' });
+    observe('2026-08-18T00:00:00.000Z', [{ name: 'Pro', price: 8 }], { hash: 'same', provenance: 'live' });
+
+    const rows = buildDatasetRows(db);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.provenance).toBe('mixed');
+    expect(rows[0]!.last_observed_at).toBe('2026-08-18T00:00:00.000Z');
+  });
+
+  // Fix round 1, finding 3: Zod permits a duplicate tier name in one
+  // extraction; keying runs on bare name made every repeat clobber the run
+  // in progress mid-observation.
+  it('bounds a duplicate tier name to one row per occurrence, not one per encounter', () => {
+    const dup = [{ name: 'Pro', price: 8 }, { name: 'Pro', price: 8 }];
+    observe('2025-01-16T00:00:00.000Z', dup, { hash: 'a' });
+    observe('2025-02-16T00:00:00.000Z', dup, { hash: 'b' });
+    observe('2025-03-16T00:00:00.000Z', dup, { hash: 'c' });
+
+    const rows = buildDatasetRows(db);
+    expect(rows).toHaveLength(2);
+    expect(rows.every(r => r.tier === 'Pro')).toBe(true);
+    expect(rows[0]).toMatchObject({
+      first_observed_at: '2025-01-16T00:00:00.000Z',
+      last_observed_at: '2025-03-16T00:00:00.000Z',
+    });
+  });
+
+  // Fix round 1, finding 6 (ruling): billing_unit jitter against 'unknown'
+  // does not split a run — measured on Supabase Enterprise, which alternated
+  // flat/unknown across re-extractions of an otherwise-unchanged tier.
+  it('does not split a run when billing_unit jitters against "unknown"', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Enterprise', price: null, billing_unit: 'flat' }], { hash: 'a' });
+    observe('2025-02-16T00:00:00.000Z', [{ name: 'Enterprise', price: null, billing_unit: 'unknown' }], { hash: 'b' });
+    observe('2025-03-16T00:00:00.000Z', [{ name: 'Enterprise', price: null, billing_unit: 'flat' }], { hash: 'c' });
+
+    const rows = buildDatasetRows(db);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.billing_unit).toBe('flat'); // first observation's value is kept
+    expect(rows[0]!.last_observed_at).toBe('2025-03-16T00:00:00.000Z');
+  });
+
+  // Fix round 1, finding 6 (ruling): annual_price_usd jitter between 0 and
+  // null does not split a run when the tier's monthly price is 0 on both
+  // sides — measured on Notion Free, which flipped this way across re-runs.
+  it('does not split a run when annual_price_usd jitters 0/null on a free tier', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Free', price: 0, annual: 0 }], { hash: 'a' });
+    observe('2025-02-16T00:00:00.000Z', [{ name: 'Free', price: 0, annual: null }], { hash: 'b' });
+
+    const rows = buildDatasetRows(db);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.annual_price_usd).toBe(0); // first observation's value is kept
+  });
 });
 
 describe('toCsv', () => {
@@ -142,6 +200,18 @@ describe('toCsv', () => {
       'competitor,tier,first_observed_at,last_observed_at,monthly_price_usd,annual_price_usd,' +
       'billing_unit,included_seats,is_free,is_enterprise,currency,provenance',
     );
+  });
+
+  // Fix round 1, finding 2: tier/competitor names come from third-party
+  // pages via the model, so an attacker-controlled page can inject a
+  // formula into the CSV we tell people to open in Excel.
+  it('defuses a formula-injection payload in a tier name', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: '=HYPERLINK("http://evil.test","x")', price: 5 }]);
+    const rows = buildDatasetRows(db);
+    const csv = toCsv(rows);
+    const dataLine = csv.trim().split('\n')[1]!;
+    expect(dataLine).toContain('"\'=HYPERLINK');
+    expect(dataLine).not.toMatch(/^=/);
   });
 });
 
@@ -209,7 +279,7 @@ describe('buildRssXml', () => {
     expect(xml).not.toContain('Acme & Co');
   });
 
-  it('caps at 50 items out of 60 supplied', () => {
+  it('caps at 50 items out of 60 supplied, keeping the newest and dropping the oldest', () => {
     const changes = Array.from({ length: 60 }, (_, i) => makeChange({
       observed_at: new Date(2025, 0, i + 1).toISOString(),
       json_path: `tiers.T${i}.monthly_price_usd`,
@@ -217,12 +287,46 @@ describe('buildRssXml', () => {
     const xml = buildRssXml(changes, '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
     const opens = xml.match(/<item>/g) ?? [];
     expect(opens).toHaveLength(50);
+    expect(xml).toContain('T59'); // newest (day 60) survived
+    expect(xml).not.toContain('T0 '); // oldest (day 1) was dropped
   });
 
   it('builds guid as slug|json_path|observed_at with isPermaLink false', () => {
     const change = makeChange();
     const xml = buildRssXml([change], '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
     expect(xml).toContain('<guid isPermaLink="false">acme|tiers.Pro.monthly_price_usd|2025-02-16T00:00:00.000Z</guid>');
+  });
+
+  // Fix round 1, finding 4: tier_added/tier_removed carry whole tier objects
+  // as before/after and always reach the feed at materiality 100.
+  it('does not stringify an object value into the description (tier_added)', () => {
+    const change = makeChange({
+      change_type: 'tier_added', json_path: 'tiers.Solo',
+      before: null, after: { name: 'Solo', monthly_price_usd: 5 },
+    });
+    const xml = buildRssXml([change], '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
+    expect(xml).not.toContain('[object');
+    expect(xml).toContain('Solo tier added');
+  });
+
+  // Fix round 1, finding 5: /c/<slug> has no route (deferred milestone);
+  // the RSS link must agree with the anchor format llms.txt already uses.
+  it('links to the same anchor format llms.txt uses, not a /c/ route', () => {
+    const xml = buildRssXml([makeChange()], '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
+    expect(xml).toContain('<link>https://bellwether.test/#acme</link>');
+    expect(xml).not.toContain('/c/acme');
+  });
+
+  // Fix round 1, finding 7: defensive — no legitimate row should have an
+  // unparseable observed_at, but one must not corrupt the sort or print
+  // "Invalid Date" into a published feed.
+  it('drops a feed change with an unparseable observed_at', () => {
+    const bad = makeChange({ observed_at: 'not-a-date', json_path: 'tiers.Bad.monthly_price_usd' });
+    const good = makeChange({ observed_at: '2025-06-01T00:00:00.000Z', json_path: 'tiers.Good.monthly_price_usd' });
+    const xml = buildRssXml([bad, good], '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
+    expect(xml).not.toContain('Invalid Date');
+    expect(xml).toContain('Good');
+    expect(xml).not.toContain('Bad');
   });
 });
 

@@ -19,10 +19,15 @@ export interface DetectDeps { now?: () => Date }
 export interface Observation {
   snapshotId: number;
   observedAt: string;
+  /** The LATEST snapshot collapsed into this observation (see below) — same as observedAt when nothing collapsed. */
+  lastObservedAt: string;
   normalizedHash: string;
   confidence: string;
   data: PricingSnapshotData;
+  /** The first collapsed snapshot's provenance — kept for existing callers. */
   provenance: string;
+  /** Every distinct provenance among the snapshots collapsed into this observation. */
+  provenances: string[];
 }
 
 /**
@@ -58,7 +63,17 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
   const observations: Observation[] = [];
   for (const row of rows) {
     const previous = observations[observations.length - 1];
-    if (previous?.normalizedHash === row.normalized_hash) continue;   // collapse repeats
+    if (previous?.normalizedHash === row.normalized_hash) {
+      // Collapsed into the representative, not discarded (M4 fix round 1,
+      // finding 1): a later snapshot confirming the same state — including
+      // a live re-fetch confirming what a wayback capture first saw — must
+      // still move the window's end and register its own provenance, or a
+      // consumer reading only the representative sees a stale date and the
+      // wrong live/wayback split for up to a third of the archive.
+      previous.lastObservedAt = row.observed_at;
+      if (!previous.provenances.includes(row.provenance)) previous.provenances.push(row.provenance);
+      continue;
+    }
 
     const parsed = PricingSnapshot.safeParse(JSON.parse(row.data_json));
     if (!parsed.success) continue;   // a malformed stored row is skipped, never guessed at
@@ -66,10 +81,12 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
     observations.push({
       snapshotId: row.id,
       observedAt: row.observed_at,
+      lastObservedAt: row.observed_at,
       normalizedHash: row.normalized_hash,
       confidence: row.extraction_confidence,
       data: parsed.data,
       provenance: row.provenance,
+      provenances: [row.provenance],
     });
   }
   return observations;

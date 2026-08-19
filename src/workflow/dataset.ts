@@ -1,5 +1,6 @@
 import type { DB } from '../ops/db.js';
 import { observationsFor } from './detect.js';
+import type { TierData } from '../schema/pricing.js';
 
 export interface DatasetRow {
   competitor: string;
@@ -67,17 +68,58 @@ export function describeChange(row: {
   return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
 }
 
+const classifyProvenance = (p: string): 'live' | 'wayback' => (p.startsWith('wayback:') ? 'wayback' : 'live');
+
+/**
+ * Ruling (M4 fix round 1, finding 6): two fields jitter across re-extractions
+ * of an otherwise-unchanged page, and treating the jitter as a real state
+ * change would turn one held price into a dozen fictional rows. Measured on
+ * the real archive: Supabase Enterprise's billing_unit alternates
+ * flat/unknown across re-extractions of the same contact-sales tier (12 rows
+ * where 1 belongs); Notion Free's annual_price_usd flips between 0 and null
+ * on a tier whose monthly price is already 0. Both mirror M3's materiality
+ * treatment of 'unknown' as a model shrug, not a fact, so neither counts as
+ * a run boundary here. The stored row keeps the run's FIRST observation's
+ * values regardless of which side of the jitter a later one lands on.
+ */
+function sameRunState(a: TierData, b: TierData): boolean {
+  if (a.monthly_price_usd !== b.monthly_price_usd) return false;
+  if (a.included_seats !== b.included_seats) return false;
+  if (a.is_free !== b.is_free) return false;
+  if (a.is_enterprise !== b.is_enterprise) return false;
+
+  const billingMatches = a.billing_unit === b.billing_unit
+    || a.billing_unit === 'unknown' || b.billing_unit === 'unknown';
+  if (!billingMatches) return false;
+
+  const zeroNullAnnual = (v: number | null): boolean => v === null || v === 0;
+  const annualMatches = a.annual_price_usd === b.annual_price_usd
+    || (a.monthly_price_usd === 0 && b.monthly_price_usd === 0
+        && zeroNullAnnual(a.annual_price_usd) && zeroNullAnnual(b.annual_price_usd));
+  if (!annualMatches) return false;
+
+  return true;
+}
+
 /**
  * Spec 14.5: one row per (competitor, tier, observed_at) collapses to one row
  * per contiguous run of identical tier state (ruling R4) — a price held for a
- * year is one row, not 365. Runs are per tier name: a tier's disappearance
- * from an observation (renamed, retired, page reshuffled) closes its run,
- * so a later reappearance with the same numbers starts a fresh row rather
- * than silently bridging the gap where it was not observed at all.
+ * year is one row, not 365. Runs are keyed per (tier name, occurrence index
+ * within the observation) rather than bare name — Zod permits a duplicate
+ * tier name in one extraction, and keying on name alone made every repeat
+ * clobber the previous run mid-observation (M4 fix round 1, finding 3). A
+ * tier's disappearance from an observation (renamed, retired, page
+ * reshuffled) closes its run, so a later reappearance with the same numbers
+ * starts a fresh row rather than silently bridging the gap where it was not
+ * observed at all.
  *
  * provenance collapses the run's observations (spec 14.5: reconstructed vs
  * observed must stay distinguishable) — 'live' only if every observation in
  * the run was live, 'wayback' only if every one was a capture, else 'mixed'.
+ * This reads every provenance observationsFor collapsed into each
+ * observation, not just the representative's — a live re-fetch confirming a
+ * wayback-first state must still register as 'mixed' and move the window's
+ * end (M4 fix round 1, finding 1).
  */
 export function buildDatasetRows(db: DB): DatasetRow[] {
   const sources = db.prepare(`
@@ -92,7 +134,7 @@ export function buildDatasetRows(db: DB): DatasetRow[] {
   for (const source of sources) {
     const observations = observationsFor(db, source.source_id);
 
-    interface Run { row: DatasetRow; key: string; provKinds: Set<'live' | 'wayback'> }
+    interface Run { row: DatasetRow; tier: TierData; provKinds: Set<'live' | 'wayback'> }
     const building = new Map<string, Run>();
 
     const finalize = (run: Run): void => {
@@ -101,33 +143,33 @@ export function buildDatasetRows(db: DB): DatasetRow[] {
     };
 
     for (const observation of observations) {
-      const obsProv: 'live' | 'wayback' = observation.provenance.startsWith('wayback:') ? 'wayback' : 'live';
-      const seen = new Set<string>();
+      const obsProvKinds = new Set(observation.provenances.map(classifyProvenance));
+      const seenKeys = new Set<string>();
+      const occurrenceCounts = new Map<string, number>();
 
       for (const tier of observation.data.tiers) {
-        seen.add(tier.name);
-        const key = JSON.stringify([
-          tier.monthly_price_usd, tier.annual_price_usd, tier.billing_unit,
-          tier.included_seats, tier.is_free, tier.is_enterprise,
-        ]);
+        const occurrence = occurrenceCounts.get(tier.name) ?? 0;
+        occurrenceCounts.set(tier.name, occurrence + 1);
+        const runKey = `${tier.name}#${occurrence}`;
+        seenKeys.add(runKey);
 
-        const existing = building.get(tier.name);
-        if (existing !== undefined && existing.key === key) {
-          existing.row.last_observed_at = observation.observedAt;
-          existing.provKinds.add(obsProv);
+        const existing = building.get(runKey);
+        if (existing !== undefined && sameRunState(existing.tier, tier)) {
+          existing.row.last_observed_at = observation.lastObservedAt;
+          for (const kind of obsProvKinds) existing.provKinds.add(kind);
           continue;
         }
 
         if (existing !== undefined) finalize(existing);
 
-        building.set(tier.name, {
-          key,
-          provKinds: new Set([obsProv]),
+        building.set(runKey, {
+          tier,
+          provKinds: new Set(obsProvKinds),
           row: {
             competitor: source.name,
             tier: tier.name,
             first_observed_at: observation.observedAt,
-            last_observed_at: observation.observedAt,
+            last_observed_at: observation.lastObservedAt,
             monthly_price_usd: tier.monthly_price_usd,
             annual_price_usd: tier.annual_price_usd,
             billing_unit: tier.billing_unit,
@@ -142,8 +184,8 @@ export function buildDatasetRows(db: DB): DatasetRow[] {
 
       // A tier absent from this observation was not observed holding any
       // state — its run closes here rather than bridging the silence.
-      for (const [name, run] of building) {
-        if (!seen.has(name)) { finalize(run); building.delete(name); }
+      for (const [runKey, run] of building) {
+        if (!seenKeys.has(runKey)) { finalize(run); building.delete(runKey); }
       }
     }
 
@@ -159,10 +201,20 @@ const CSV_HEADER = [
   'is_free', 'is_enterprise', 'currency', 'provenance',
 ];
 
-/** RFC-4180: quote a field only when it needs it; embedded quotes double up. */
+/**
+ * RFC-4180: quote a field only when it needs it; embedded quotes double up.
+ *
+ * Formula-injection guard (M4 fix round 1, finding 2): tier and competitor
+ * names come from third-party pages via the model, and a leading =, +, -, @,
+ * tab, or CR is a live formula trigger when Excel/Sheets opens this exact
+ * file unquoted — a reviewer got a page to emit `=cmd|' /C calc'!A0`. A
+ * leading apostrophe defuses it in every spreadsheet reader while leaving
+ * the visible text unchanged.
+ */
 function csvField(v: string): string {
-  if (/[",\n]/.test(v)) return `"${v.replace(/"/g, '""')}"`;
-  return v;
+  const guarded = /^[=+\-@\t\r]/.test(v) ? `'${v}` : v;
+  if (/[",\n]/.test(guarded)) return `"${guarded.replace(/"/g, '""')}"`;
+  return guarded;
 }
 
 /** null is an empty field, never the string "null" and never 0 — a contact-sales price is not free. */
@@ -204,24 +256,40 @@ const formatValue = (v: unknown): string => (v === null || v === undefined ? 'no
  * same event.
  */
 export function buildRssXml(changes: FeedChange[], generatedAt: string, siteUrl: string): string {
-  const items = [...changes]
+  const items = changes
+    // Defensive: no legitimate row should carry an unparseable observed_at,
+    // but a NaN here would both sort wrong and print "Invalid Date" into a
+    // published feed (M4 fix round 1, finding 7).
+    .filter(c => !Number.isNaN(Date.parse(c.observed_at)))
     .sort((a, b) => Date.parse(b.observed_at) - Date.parse(a.observed_at))
     .slice(0, 50)
     .map(change => {
-      const title = `${change.competitor} ${describeChange({
+      const asDescribeChangeRow = {
         json_path: change.json_path,
         change_type: change.change_type,
         before_json: JSON.stringify(change.before ?? null),
         after_json: JSON.stringify(change.after ?? null),
-      })}`;
+      };
+      const title = `${change.competitor} ${describeChange(asDescribeChangeRow)}`;
 
+      // tier_added/tier_removed carry whole tier objects as before/after —
+      // stringifying one prints "[object Object]" into a published feed
+      // (M4 fix round 1, finding 4). describeChange already renders the
+      // right grammar for a non-price change ("Solo tier added"), so reuse
+      // it instead of formatValue whenever either side is an object.
+      const isObject = (v: unknown): boolean => typeof v === 'object' && v !== null;
       const description = change.annotation !== null
         ? `${change.annotation.implication} — ${change.annotation.so_what}`
-        : `${formatValue(change.before)} -> ${formatValue(change.after)}`;
+        : isObject(change.before) || isObject(change.after)
+          ? describeChange(asDescribeChangeRow)
+          : `${formatValue(change.before)} -> ${formatValue(change.after)}`;
 
       const guid = [change.slug, change.json_path, change.observed_at].map(escapeXml).join('|');
       const pubDate = new Date(change.observed_at).toUTCString();
-      const link = `${siteUrl}/c/${change.slug}`;
+      // /c/<slug> has no route yet (deferred milestone) — link to the same
+      // anchor llms.txt uses so the feed never points readers at a 404
+      // (M4 fix round 1, finding 5).
+      const link = `${siteUrl}/#${change.slug}`;
 
       return [
         '<item>',
