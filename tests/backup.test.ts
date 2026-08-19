@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
@@ -16,11 +16,9 @@ const CONFIG: CompetitorConfig[] = [{
   sources: [{ kind: 'pricing', url: 'https://acme.test/pricing', canaryString: 'Enterprise', cadenceHours: 24 }],
 }];
 
-// The row-count tolerance is "diff <= 200 OR diff <= 2% of live" — with the
-// 2% branch essentially inert below ~10,000 rows, so exercising both a
-// legitimate few-rows-behind pass AND a genuine failure needs a live row
-// count well above 200. 300 keeps setup fast while giving both branches a
-// diff that actually crosses/stays under the 200-row floor.
+// Row count used by the backupSnapshot file-mechanics tests below (dated
+// file creation, atomic same-day replace, pruning) — arbitrary, since those
+// tests don't touch verifyBackup's tolerance at all.
 const SEED_ROWS = 300;
 
 function sourceId(target: DB = db): number {
@@ -117,55 +115,74 @@ describe('backupSnapshot', () => {
   });
 });
 
+// Fix round 1: the previous version of this suite built both sides off a
+// shared 300-row fixture and a diff<=200-OR-2% tolerance, which made
+// live=100/snapshot=0 PASS (0 diff is unreachable when everything shares
+// one fixture, and 200 rows swallows the real archive's actual sizes —
+// snapshots=120, extractions=99). These five build two INDEPENDENT
+// archives at exact row counts each time, so nothing passes vacuously.
+function buildArchive(name: string, rows: number): string {
+  const archiveDir = join(dir, name);
+  mkdirSync(archiveDir, { recursive: true });
+  const path = join(archiveDir, 'archive.db');
+  const archiveDb = openDb(path);
+  migrate(archiveDb, join(process.cwd(), 'migrations'));
+  seedCompetitors(archiveDb, CONFIG);
+  seedRows(rows, archiveDb);
+  archiveDb.close();
+  return path;
+}
+
 describe('verifyBackup', () => {
-  it('passes when the snapshot matches live exactly', () => {
-    const now = new Date('2026-08-19T12:00:00.000Z');
-    const result = backupSnapshot(db, join(dir, 'backup'), { now: () => now });
+  it('fails on an empty snapshot table against a small live archive — the real-archive case', () => {
+    // snapshots=120 is close to the box's actual current count; a flat
+    // 200-row tolerance would let a completely empty snapshot pass here,
+    // which is exactly the bug this tolerance rewrite exists to fix.
+    const live = buildArchive('live-a', 120);
+    const snapshot = buildArchive('snap-a', 0);
 
-    const verify = verifyBackup(dbPath, result.path);
-
-    expect(verify.ok).toBe(true);
-    expect(verify.counts.snapshots).toEqual({ live: SEED_ROWS, snapshot: SEED_ROWS });
-  });
-
-  it('passes when the snapshot is a few rows behind live (legitimate drift)', () => {
-    const now = new Date('2026-08-19T12:00:00.000Z');
-    const result = backupSnapshot(db, join(dir, 'backup'), { now: () => now });
-
-    seedRows(5); // live moves on after the snapshot was taken
-
-    const verify = verifyBackup(dbPath, result.path);
-
-    expect(verify.ok).toBe(true);
-    expect(verify.counts.snapshots).toEqual({ live: SEED_ROWS + 5, snapshot: SEED_ROWS });
-  });
-
-  it('fails, naming the table and both counts, when the snapshot is truncated well past tolerance', () => {
-    const now = new Date('2026-08-19T12:00:00.000Z');
-    const result = backupSnapshot(db, join(dir, 'backup'), { now: () => now });
-
-    const snap = new Database(result.path);
-    snap.prepare('DELETE FROM snapshots WHERE id > 50').run(); // 250-row shortfall: past both 200 and 2%
-    snap.close();
-
-    const verify = verifyBackup(dbPath, result.path);
+    const verify = verifyBackup(live, snapshot);
 
     expect(verify.ok).toBe(false);
-    expect(verify.detail).toBe(`snapshots: live=${SEED_ROWS} snapshot=50`);
-    expect(verify.counts.snapshots).toEqual({ live: SEED_ROWS, snapshot: 50 });
+    expect(verify.detail).toContain('snapshots');
+    expect(verify.counts.snapshots).toEqual({ live: 120, snapshot: 0 });
+  });
+
+  it('passes when the snapshot is a couple of rows behind live (normal lag)', () => {
+    const live = buildArchive('live-b', 120);
+    const snapshot = buildArchive('snap-b', 118);
+
+    const verify = verifyBackup(live, snapshot);
+
+    expect(verify.ok).toBe(true);
+  });
+
+  it('passes on a fresh install with nothing in either archive', () => {
+    const live = buildArchive('live-c', 0);
+    const snapshot = buildArchive('snap-c', 0);
+
+    const verify = verifyBackup(live, snapshot);
+
+    expect(verify.ok).toBe(true);
   });
 
   it('fails when the snapshot has far MORE rows than live (comparing the wrong files)', () => {
-    const now = new Date('2026-08-19T12:00:00.000Z');
-    const result = backupSnapshot(db, join(dir, 'backup'), { now: () => now });
+    const live = buildArchive('live-d', 100);
+    const snapshot = buildArchive('snap-d', 500);
 
-    const snap = new Database(result.path, { fileMustExist: true });
-    seedRows(SEED_ROWS, snap); // doubles the snapshot's row counts without touching live
-    snap.close();
-
-    const verify = verifyBackup(dbPath, result.path);
+    const verify = verifyBackup(live, snapshot);
 
     expect(verify.ok).toBe(false);
     expect(verify.counts.snapshots!.snapshot).toBeGreaterThan(verify.counts.snapshots!.live);
+  });
+
+  it('fails at scale when 5% of rows are missing (truncation, not lag)', () => {
+    const live = buildArchive('live-e', 10_000);
+    const snapshot = buildArchive('snap-e', 9_500);
+
+    const verify = verifyBackup(live, snapshot);
+
+    expect(verify.ok).toBe(false);
+    expect(verify.detail).toContain('below the floor');
   });
 });

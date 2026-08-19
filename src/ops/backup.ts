@@ -52,14 +52,26 @@ export interface VerifyResult {
   counts: Record<string, { live: number; snapshot: number }>;
 }
 
-// A snapshot is legitimately a little behind live (it was taken before
-// today's collect run). Tolerant of drift either direction — but a snapshot
-// with MANY more rows than live means the two files don't belong together
-// (wrong path, a restore of a much newer backup), so the same tolerance
-// bounds excess as well as shortfall.
-function withinTolerance(live: number, snapshot: number): boolean {
-  const diff = Math.abs(live - snapshot);
-  return diff <= 200 || diff <= live * 0.02;
+// A snapshot is legitimately a little behind live (it is taken minutes
+// earlier), but it must never be a fraction of it: the failure this exists
+// to catch is a truncated or half-written file, and a flat row-count floor
+// cannot catch that on a small archive — at 120 live rows a 200-row
+// tolerance passes an EMPTY snapshot. The floor is therefore proportional,
+// and the upper bound (live + a small overage) catches comparing the wrong
+// pair of files. live=0 passes trivially — a fresh install has nothing to
+// be truncated.
+//
+// Floor is 97%, not the 90% first floated for this rule: at 10,000 rows a
+// 90% floor tolerates 1,000 missing, so a 5%-truncated file (9,500 rows)
+// would still pass — exactly the kind of at-scale truncation this check
+// exists to catch. 97% fails that case while still passing a 120-row
+// archive lagging by 2 rows (118/120).
+function tolerance(live: number, snapshot: number): { ok: boolean; bound?: 'floor' | 'ceiling' } {
+  const floor = Math.floor(live * 0.97);
+  const overage = Math.max(10, Math.ceil(live * 0.02));
+  if (snapshot < floor) return { ok: false, bound: 'floor' };
+  if (snapshot > live + overage) return { ok: false, bound: 'ceiling' };
+  return { ok: true };
 }
 
 /**
@@ -73,18 +85,26 @@ export function verifyBackup(livePath: string, snapshotPath: string): VerifyResu
 
   try {
     const counts: VerifyResult['counts'] = {};
-    let failing: string | undefined;
+    let failing: { table: string; bound: 'floor' | 'ceiling' } | undefined;
 
     for (const table of VERIFY_TABLES) {
       const liveCount = (live.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n;
       const snapCount = (snapshot.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n;
       counts[table] = { live: liveCount, snapshot: snapCount };
-      if (!failing && !withinTolerance(liveCount, snapCount)) failing = table;
+      if (!failing) {
+        const check = tolerance(liveCount, snapCount);
+        if (!check.ok) failing = { table, bound: check.bound! };
+      }
     }
 
     if (failing) {
-      const c = counts[failing]!;
-      return { ok: false, detail: `${failing}: live=${c.live} snapshot=${c.snapshot}`, counts };
+      const c = counts[failing.table]!;
+      const crossed = failing.bound === 'floor' ? 'below the floor' : 'above the ceiling';
+      return {
+        ok: false,
+        detail: `${failing.table}: live=${c.live} snapshot=${c.snapshot} (${crossed})`,
+        counts,
+      };
     }
     return { ok: true, detail: 'within tolerance', counts };
   } finally {

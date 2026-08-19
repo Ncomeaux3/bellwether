@@ -23,6 +23,10 @@ if ! command -v restic >/dev/null 2>&1; then
   exit 1
 fi
 
+# The whole dir, not just today's file: restic dedups unchanged content so
+# the extra cost is negligible, and re-sending the retained dailies means a
+# night whose push failed self-heals on the next run instead of leaving a
+# permanent hole in the remote history.
 if ! restic backup "$REPO/data/backup"; then
   echo "backup: restic backup failed"
   exit 1
