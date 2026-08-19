@@ -129,6 +129,55 @@ happens per container start. To collect on demand:
 
 ## Publishing from the homelab
 
-Not yet. `export --publish` commits and pushes the derived JSON, which needs a
-git remote and a deploy key that the container does not have. For now, publishing
-runs from the Mac. Wiring it into the homelab is M5 work, alongside cron.
+`export --publish` commits and pushes the derived JSON, which needs a git
+remote and a deploy key — the container deliberately has neither (it parses
+adversarial third-party HTML every night and must not hold the one
+credential that can push to the site). Publishing instead runs on the host,
+outside the container, as its own step. See "Unattended publishing" below.
+
+## Unattended publishing
+
+M5 makes the box publish itself: the container writes guarded export
+artifacts to `/data/export`, and a host-side script (`ops/publish.sh`) copies
+them into the repo, commits, and pushes — using a deploy key that lives only
+on the host, never inside the container.
+
+### 1. Create a dedicated deploy key
+
+Don't reuse your personal GitHub key. Generate one just for this repo:
+
+    ssh-keygen -t ed25519 -f ~/.ssh/bellwether_deploy -N ""
+
+### 2. Point an SSH host alias at it
+
+Add this block to `~/.ssh/config` on the box:
+
+    Host github.com-bellwether
+      HostName github.com
+      IdentityFile ~/.ssh/bellwether_deploy
+      IdentitiesOnly yes
+
+### 3. Rewrite the repo's remote to use the alias
+
+    cd ~/bellwether
+    git remote set-url origin git@github.com-bellwether:Ncomeaux3/bellwether.git
+
+### 4. Add the public key to GitHub as a deploy key — with write access
+
+Copy `~/.ssh/bellwether_deploy.pub` and add it under the repo's
+Settings → Deploy keys, checking **Allow write access**. (Or, from a machine
+with `gh` set up: `gh repo deploy-key add ~/.ssh/bellwether_deploy.pub --repo Ncomeaux3/bellwether --title bellwether-homelab --allow-write`.)
+This is normally done from the Mac, since it needs your GitHub credentials,
+not the box's.
+
+### 5. Install the crontab
+
+Replace any existing `collect && export` line with:
+
+    0 7 * * * cd ~/bellwether && docker compose exec -T bellwether pnpm bw pipeline >> cron.log 2>&1; ./ops/publish.sh ~/bellwether >> cron.log 2>&1
+
+Note the `;`, not `&&`, between the two commands. A partially-failed pipeline
+(say, one degraded source) must still publish whatever passed the export
+guards — `ops/publish.sh` has its own freshness precondition (it refuses to
+run if `/data/export/board.json` is missing or older than 26 hours), so it
+never publishes stale data even when it runs unconditionally.

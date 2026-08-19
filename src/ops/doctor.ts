@@ -13,6 +13,7 @@ export interface DoctorDeps {
   env: Record<string, string | undefined>;
   fetcher?: (url: string) => Promise<FetchResult>;
   gitPush?: () => Promise<{ ok: boolean; detail: string; skipped?: boolean }>;
+  publishScript?: () => Promise<{ ok: boolean; detail: string; skipped?: boolean }>;
 }
 
 const REQUIRED_ENV = ['BELLWETHER_DB', 'BELLWETHER_EXPORT_DIR'] as const;
@@ -132,6 +133,27 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
   // 6 & 7 — M5
   results.push({ name: 'telegram alerts', status: 'pending', detail: 'not checked yet; alerts arrive in M5' });
   results.push({ name: 'backup target', status: 'pending', detail: 'not checked yet; B2 backup arrives in M5' });
+
+  // 8. Publish script
+  if (deps.publishScript) {
+    try {
+      const check = await deps.publishScript();
+      results.push(check.skipped
+        ? { name: 'publish script', status: 'pending', detail: check.detail }
+        : check.ok
+        ? { name: 'publish script', status: 'ok', detail: check.detail }
+        : {
+            name: 'publish script', status: 'fail', detail: check.detail,
+            fix: 'From the repo root: `chmod +x ops/publish.sh`.',
+          });
+    } catch (err) {
+      results.push({
+        name: 'publish script', status: 'fail',
+        detail: err instanceof Error ? err.message : String(err),
+        fix: 'From the repo root: `chmod +x ops/publish.sh`.',
+      });
+    }
+  }
 
   return results;
 }

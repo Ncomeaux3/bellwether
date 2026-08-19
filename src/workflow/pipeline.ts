@@ -100,7 +100,12 @@ export async function runPipeline(
 
   try {
     const outDir = resolve(env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
-    const s = exportFn(db, outDir, { now });
+    // Unset on the Mac (siteDir defaults to outDir/.. inside exportData). Set on
+    // the box to /data/export so all nine artifacts land beside each other for
+    // ops/publish.sh to copy in one pass, instead of changes.xml/llms.txt
+    // landing one level up at /data, beside the SQLite file.
+    const siteDir = env.BELLWETHER_SITE_EXPORT_DIR ? resolve(env.BELLWETHER_SITE_EXPORT_DIR) : undefined;
+    const s = exportFn(db, outDir, { now, siteDir });
     steps.push({
       name: 'export', ok: true,
       summary: `Wrote ${s.files.join(', ')} to ${outDir} — ` +

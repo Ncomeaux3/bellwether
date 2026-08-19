@@ -194,7 +194,10 @@ program
     const { exportData, publish, buildCommitMessage } = await import('./workflow/export.js');
     const db = openDb(dbPath());
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
-    const stats = exportData(db, outDir);
+    const siteDir = process.env.BELLWETHER_SITE_EXPORT_DIR
+      ? resolve(process.env.BELLWETHER_SITE_EXPORT_DIR)
+      : undefined;
+    const stats = exportData(db, outDir, { siteDir });
     console.log(
       `Wrote ${stats.files.join(', ')} to ${outDir} — ` +
       `${stats.competitors} competitors, ${stats.healthySources}/${stats.totalSources} sources healthy.`
@@ -287,10 +290,26 @@ program
     const { promisify } = await import('node:util');
     const run = promisify(execFile);
 
+    const { existsSync, accessSync, constants: fsConstants } = await import('node:fs');
     const db = openDb(dbPath());
     const results = await runDoctor({
       db,
       env: process.env,
+      publishScript: async () => {
+        // ops/ is never copied into the image (see .dockerignore / Dockerfile) —
+        // publishing runs on the host, not in the container — so absence here
+        // is the container's normal state, not a failure to fix.
+        const scriptPath = join(ROOT, 'ops', 'publish.sh');
+        if (!existsSync(scriptPath)) {
+          return { ok: true, skipped: true, detail: 'ops/publish.sh not present — publishing runs on the host, not in the container' };
+        }
+        try {
+          accessSync(scriptPath, fsConstants.X_OK);
+          return { ok: true, detail: 'ops/publish.sh is executable' };
+        } catch {
+          return { ok: false, detail: 'ops/publish.sh exists but is not executable' };
+        }
+      },
       gitPush: async () => {
         // Publishing runs on the host, never in the container — the image carries
         // no .git directory and no deploy key. Reporting "fail" there would be a

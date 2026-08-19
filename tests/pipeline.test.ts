@@ -212,4 +212,32 @@ describe('runPipeline — default wiring (real extract/detect/synthesize/export)
 
     rmSync(exportParent, { recursive: true, force: true });
   });
+
+  it('routes changes.xml/llms.txt into BELLWETHER_SITE_EXPORT_DIR when set, alongside the other seven artifacts', async () => {
+    seedCompetitors(db, CONFIG);
+    const exportParent = mkdtempSync(join(tmpdir(), 'bw-pipeline-siteexport-'));
+    const exportDir = join(exportParent, 'data');
+    const siteExportDir = join(exportParent, 'export'); // one directory, all nine files
+
+    const result = await runPipeline(db, {}, {
+      now: () => new Date('2026-08-19T12:00:00.000Z'),
+      env: {
+        LLM_ENABLED: 'false',
+        BELLWETHER_EXPORT_DIR: exportDir,
+        BELLWETHER_SITE_EXPORT_DIR: siteExportDir,
+      },
+      collectFn: vi.fn(async () => COLLECT_STATS),
+    });
+
+    expect(result.steps.every(s => s.ok)).toBe(true);
+    expect(existsSync(join(exportDir, 'board.json'))).toBe(true);
+    // Without the env, this would land at exportDir/../changes.xml (siteDir
+    // default) — the whole point of BELLWETHER_SITE_EXPORT_DIR is that it
+    // doesn't, and lands in the same directory as board.json instead.
+    expect(existsSync(join(exportDir, '..', 'changes.xml'))).toBe(false);
+    expect(existsSync(join(siteExportDir, 'changes.xml'))).toBe(true);
+    expect(existsSync(join(siteExportDir, 'llms.txt'))).toBe(true);
+
+    rmSync(exportParent, { recursive: true, force: true });
+  });
 });

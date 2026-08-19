@@ -134,4 +134,50 @@ describe('runDoctor', () => {
     expect(check.status).toBe('fail');
     expect(check.fix).toBeTruthy();
   });
+
+  it('omits the publish script check entirely when no publishScript dep is injected', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor(baseDeps());
+    expect(results.some(r => r.name === 'publish script')).toBe(false);
+  });
+
+  it('passes the publish script check when ops/publish.sh exists and is executable', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      publishScript: async () => ({ ok: true, detail: 'ops/publish.sh is executable' }),
+    });
+
+    const check = find(results, 'publish script');
+    expect(check.status).toBe('ok');
+  });
+
+  it('reports the publish script as not-applicable inside the container, where ops/ is never copied in', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      publishScript: async () => ({
+        ok: true, skipped: true,
+        detail: 'ops/publish.sh not present — publishing runs on the host, not in the container',
+      }),
+    });
+
+    const check = find(results, 'publish script');
+    // Same reasoning as git push: the container never has ops/, so failing
+    // here would be a permanent red the operator could never clear.
+    expect(check.status).toBe('pending');
+    expect(check.detail).toMatch(/publishing runs on the host/i);
+  });
+
+  it('fails the publish script check when the file exists but is not executable', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      publishScript: async () => ({ ok: false, detail: 'ops/publish.sh exists but is not executable' }),
+    });
+
+    const check = find(results, 'publish script');
+    expect(check.status).toBe('fail');
+    expect(check.fix).toMatch(/chmod \+x/);
+  });
 });
