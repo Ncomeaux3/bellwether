@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-19T18:52:26.446Z",
-  "observation_count": 74,
+  "generated_at": "2026-08-19T23:28:44.227Z",
+  "observation_count": 75,
   "competitors": [
     {
       "slug": "figma",
@@ -87,7 +87,7 @@
       "slug": "linear",
       "name": "Linear",
       "first_observed_at": "2025-02-19T07:53:31.000Z",
-      "last_observed_at": "2026-08-03T13:02:45.000Z",
+      "last_observed_at": "2026-08-19T23:28:17.074Z",
       "series": [
         {
           "tier": "Basic",
@@ -143,6 +143,10 @@
               },
               {
                 "observed_at": "2026-08-03T13:02:45.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-08-19T23:28:17.074Z",
                 "price": 10
               }
             ]
@@ -204,6 +208,10 @@
               {
                 "observed_at": "2026-08-03T13:02:45.000Z",
                 "price": 16
+              },
+              {
+                "observed_at": "2026-08-19T23:28:17.074Z",
+                "price": 16
               }
             ]
           ],
@@ -263,6 +271,10 @@
               },
               {
                 "observed_at": "2026-08-03T13:02:45.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-19T23:28:17.074Z",
                 "price": 0
               }
             ]
