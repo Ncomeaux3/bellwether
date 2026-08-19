@@ -1,0 +1,120 @@
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { openDb, type DB } from '../src/ops/db.js';
+import { migrate } from '../src/ops/migrate.js';
+import { runPipeline } from '../src/workflow/pipeline.js';
+import type { CollectStats } from '../src/workflow/collect.js';
+import type { ExtractStats } from '../src/workflow/extract.js';
+import type { DetectStats } from '../src/workflow/detect.js';
+import type { SynthStats } from '../src/workflow/synthesize.js';
+import type { ExportStats } from '../src/workflow/export.js';
+
+let dir: string;
+let db: DB;
+
+beforeEach(() => {
+  dir = mkdtempSync(join(tmpdir(), 'bw-pipeline-'));
+  db = openDb(join(dir, 'test.db'));
+  migrate(db, join(process.cwd(), 'migrations'));
+});
+afterEach(() => { db.close(); rmSync(dir, { recursive: true, force: true }); });
+
+const COLLECT_STATS: CollectStats = { attempted: 0, stored: 0, unchanged: 0, failed: 0, degraded: 0, cleared: 0 };
+const EXTRACT_STATS: ExtractStats = {
+  considered: 0, hashed: 0, cached: 0, extracted: 0, skipped: 0, degraded: 0, mismatched: 0, historicalFailed: 0,
+};
+const DETECT_STATS: DetectStats = {
+  sources: 0, pairs: 0, created: 0, confirmed: 0, disputed: 0, retracted: 0, relinked: 0, orphaned: 0,
+};
+const SYNTH_STATS: SynthStats = {
+  fired: false, reason: 'nothing pending', skipped: false, annotated: 0, itemCount: 0, costMicros: 0, wouldFire: false,
+};
+const EXPORT_STATS: ExportStats = { files: [], competitors: 0, healthySources: 0, totalSources: 0, confirmedChanges: 0 };
+
+function greenDeps() {
+  return {
+    now: () => new Date('2026-08-19T12:00:00.000Z'),
+    collectFn: vi.fn(async () => COLLECT_STATS),
+    extractFn: vi.fn(async () => EXTRACT_STATS),
+    detectFn: vi.fn(() => DETECT_STATS),
+    synthesizeFn: vi.fn(async () => SYNTH_STATS),
+    exportFn: vi.fn(() => EXPORT_STATS),
+  };
+}
+
+describe('runPipeline', () => {
+  it('runs every step and reports all-green when nothing throws', async () => {
+    const deps = greenDeps();
+    const result = await runPipeline(db, {}, deps);
+
+    expect(result.steps.map(s => s.name)).toEqual(['collect', 'extract', 'detect', 'synthesize', 'export']);
+    expect(result.steps.every(s => s.ok)).toBe(true);
+    expect(deps.collectFn).toHaveBeenCalledTimes(1);
+    expect(deps.extractFn).toHaveBeenCalledTimes(1);
+    expect(deps.detectFn).toHaveBeenCalledTimes(1);
+    expect(deps.synthesizeFn).toHaveBeenCalledTimes(1);
+    expect(deps.exportFn).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps running later steps after an earlier one throws, and never throws itself', async () => {
+    const deps = greenDeps();
+    deps.detectFn = vi.fn(() => { throw new Error('detect blew up\nwith a stack trace'); });
+
+    const result = await runPipeline(db, {}, deps);
+
+    const detectStep = result.steps.find(s => s.name === 'detect')!;
+    expect(detectStep.ok).toBe(false);
+    expect(detectStep.summary).toBe('detect blew up');   // first line only
+
+    // synthesize and export must still have run despite detect throwing.
+    expect(deps.synthesizeFn).toHaveBeenCalledTimes(1);
+    expect(deps.exportFn).toHaveBeenCalledTimes(1);
+    const exportStep = result.steps.find(s => s.name === 'export')!;
+    expect(exportStep.ok).toBe(true);
+  });
+
+  it('records a failed export step without throwing when export rejects', async () => {
+    const deps = greenDeps();
+    deps.exportFn = vi.fn(() => { throw new Error('disk full'); });
+
+    const result = await runPipeline(db, {}, deps);
+
+    const exportStep = result.steps.find(s => s.name === 'export')!;
+    expect(exportStep.ok).toBe(false);
+    expect(exportStep.summary).toBe('disk full');
+  });
+
+  it('calls the heartbeat when provided, after export', async () => {
+    const deps = greenDeps();
+    const order: string[] = [];
+    deps.exportFn = vi.fn(() => { order.push('export'); return EXPORT_STATS; });
+    const heartbeat = vi.fn(async () => { order.push('heartbeat'); });
+
+    const result = await runPipeline(db, {}, { ...deps, heartbeat });
+
+    expect(heartbeat).toHaveBeenCalledTimes(1);
+    expect(heartbeat).toHaveBeenCalledWith(db);
+    expect(order).toEqual(['export', 'heartbeat']);
+    expect(result.steps.map(s => s.name)).toContain('heartbeat');
+    expect(result.steps.find(s => s.name === 'heartbeat')!.ok).toBe(true);
+  });
+
+  it('skips the heartbeat step entirely when none is provided', async () => {
+    const deps = greenDeps();
+    const result = await runPipeline(db, {}, deps);
+    expect(result.steps.map(s => s.name)).not.toContain('heartbeat');
+  });
+
+  it('records a failed heartbeat without throwing', async () => {
+    const deps = greenDeps();
+    const heartbeat = vi.fn(async () => { throw new Error('ping failed'); });
+
+    const result = await runPipeline(db, {}, { ...deps, heartbeat });
+
+    const step = result.steps.find(s => s.name === 'heartbeat')!;
+    expect(step.ok).toBe(false);
+    expect(step.summary).toBe('ping failed');
+  });
+});

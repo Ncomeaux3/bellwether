@@ -216,15 +216,19 @@ program
     db.close();
   });
 
+function printStepTable(steps: { name: string; ok: boolean; summary: string }[]): void {
+  for (const step of steps) {
+    console.log(`[${step.ok ? ' ok ' : 'FAIL'}] ${step.name.padEnd(11)} ${step.summary}`);
+  }
+}
+
 program
   .command('start')
-  .description('run the full daily pipeline once (migrate, seed, collect, export), then idle')
+  .description('run the full daily pipeline once (migrate, seed, collect..export), then idle')
   .action(async () => {
     const { seedCompetitors } = await import('./config/seed.js');
     const { COMPETITORS } = await import('./config/competitors.public.js');
-    const { collect } = await import('./workflow/collect.js');
-    const { extract } = await import('./workflow/extract.js');
-    const { exportData } = await import('./workflow/export.js');
+    const { runPipeline } = await import('./workflow/pipeline.js');
 
     const db = openDb(dbPath());
 
@@ -234,42 +238,8 @@ program
     const seedStats = seedCompetitors(db, COMPETITORS);
     console.log(`Seeded ${seedStats.competitors} competitors and ${seedStats.sources} sources.`);
 
-    const collectStats = await collect(db, {});
-    console.log(
-      `Checked ${collectStats.attempted}: ${collectStats.stored} new, ${collectStats.unchanged} unchanged, ` +
-      `${collectStats.failed} failed, ${collectStats.degraded} degraded, ${collectStats.cleared} recovered.`
-    );
-
-    const extractStats = await extract(db, {});
-    console.log(
-      `Extracted ${extractStats.extracted}, cached ${extractStats.cached}, ` +
-      `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}, ` +
-      `historical failed ${extractStats.historicalFailed}.`,
-    );
-
-    const { detect } = await import('./workflow/detect.js');
-    const detectStats = await detect(db, {});
-    console.log(`Detected ${detectStats.created} changes, ${detectStats.confirmed} confirmed.`);
-
-    const { synthesize } = await import('./workflow/synthesize.js');
-    try {
-      const synthStats = await synthesize(db, {});
-      console.log(synthStats.fired
-        ? `Digest: ${synthStats.itemCount} items, ${synthStats.annotated} annotated.`
-        : `Digest: not fired (${synthStats.reason}).`);
-    } catch (err) {
-      // A transient API failure must not cost the nightly export: the digest
-      // retries next Monday, the export is purely local, and the run row for
-      // 'synthesize' is already marked failed by the workflow's own catch.
-      console.warn(`Digest step failed, continuing to export: ${err instanceof Error ? err.message : String(err)}`);
-    }
-
-    const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
-    const exportStats = exportData(db, outDir);
-    console.log(
-      `Wrote ${exportStats.files.join(', ')} to ${outDir} — ` +
-      `${exportStats.competitors} competitors, ${exportStats.healthySources}/${exportStats.totalSources} sources healthy.`
-    );
+    const pipelineStats = await runPipeline(db);
+    printStepTable(pipelineStats.steps);
 
     db.close();
 
@@ -290,6 +260,20 @@ program
     await new Promise<never>(() => {
       setInterval(() => {}, 60_000);
     });
+  });
+
+program
+  .command('pipeline')
+  .description('run the daily sequence once and exit (for cron)')
+  .action(async () => {
+    const { runPipeline } = await import('./workflow/pipeline.js');
+    const db = openDb(dbPath());
+
+    const pipelineStats = await runPipeline(db);
+    printStepTable(pipelineStats.steps);
+
+    db.close();
+    process.exit(pipelineStats.steps.some(s => !s.ok) ? 1 : 0);
   });
 
 program

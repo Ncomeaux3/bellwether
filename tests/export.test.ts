@@ -197,6 +197,29 @@ describe('exportData', () => {
 
     expect(readFileSync(join(out, 'board.json'), 'utf8')).toBe(before);
   });
+
+  it('writes a runs row on success', async () => {
+    await populate();
+    exportData(db, out);
+
+    const row = db.prepare("SELECT state, ok FROM runs WHERE kind = 'export'").get() as
+      { state: string; ok: number };
+    expect(row.state).toBe('ok');
+    expect(row.ok).toBe(1);
+  });
+
+  it('writes a failed runs row when a guard trips, and still throws', () => {
+    const empty = openDb(join(dir, 'empty.db'));
+    migrate(empty, join(process.cwd(), 'migrations'));
+
+    expect(() => exportData(empty, out)).toThrow(ExportGuardError);
+
+    const row = empty.prepare("SELECT state, ok FROM runs WHERE kind = 'export'").get() as
+      { state: string; ok: number };
+    expect(row.state).toBe('failed');
+    expect(row.ok).toBe(0);
+    empty.close();
+  });
 });
 
 describe('exportData — pricing', () => {

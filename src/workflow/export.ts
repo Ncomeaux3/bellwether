@@ -9,6 +9,7 @@ import { SYNTH_PROMPT_VERSION } from '../schema/synthesis.js';
 import { monthlySpendMicros } from '../agents/_client.js';
 import { observationsFor } from './detect.js';
 import { describeChange, buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, type FeedChange } from './dataset.js';
+import { acquireRun, finishRun } from '../ops/runs.js';
 
 const run = promisify(execFile);
 
@@ -210,236 +211,247 @@ function classifyTiers(series: { tier: string; segments: TimelinePoint[][] }[]):
  */
 export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): ExportStats {
   const now = (deps.now ?? (() => new Date()))();
-  const generatedAt = now.toISOString();
-  const siteDir = deps.siteDir ?? join(outDir, '..');
-  mkdirSync(outDir, { recursive: true });
-  mkdirSync(siteDir, { recursive: true });
+  const runId = acquireRun(db, 'export', { now: () => now });
 
-  const rows = db.prepare(`
-    SELECT
-      s.id AS source_id, c.slug, c.name, c.homepage, s.kind, s.url, s.degraded_reason,
-      (SELECT MAX(fetched_at) FROM snapshots WHERE source_id = s.id) AS last_checked_at,
-      (SELECT MAX(fetched_at) FROM snapshots WHERE source_id = s.id AND ok = 1) AS last_ok_at,
-      (SELECT ok FROM snapshots WHERE source_id = s.id ORDER BY fetched_at DESC, id DESC LIMIT 1) AS last_ok_flag,
-      (SELECT COUNT(DISTINCT raw_hash) FROM snapshots WHERE source_id = s.id AND raw_hash IS NOT NULL) AS distinct_states,
-      (SELECT e.data_json FROM snapshots sn
-         JOIN extractions e ON e.normalized_hash = sn.normalized_hash
-        WHERE sn.source_id = s.id AND sn.ok = 1
-          AND e.currency = 'USD' AND e.prompt_version = @promptVersion
-        ORDER BY sn.observed_at DESC, sn.id DESC LIMIT 1) AS current_pricing_json
-    FROM sources s
-    JOIN competitors c ON c.id = s.competitor_id
-    WHERE s.active = 1 AND c.active = 1
-    ORDER BY c.name, s.kind
-  `).all({ promptVersion: EXTRACT_PROMPT_VERSION }) as SourceRow[];
+  try {
+    const generatedAt = now.toISOString();
+    const siteDir = deps.siteDir ?? join(outDir, '..');
+    mkdirSync(outDir, { recursive: true });
+    mkdirSync(siteDir, { recursive: true });
 
-  const bySlug = new Map<string, { slug: string; name: string; homepage: string; sources: unknown[] }>();
-  let healthy = 0;
+    const rows = db.prepare(`
+      SELECT
+        s.id AS source_id, c.slug, c.name, c.homepage, s.kind, s.url, s.degraded_reason,
+        (SELECT MAX(fetched_at) FROM snapshots WHERE source_id = s.id) AS last_checked_at,
+        (SELECT MAX(fetched_at) FROM snapshots WHERE source_id = s.id AND ok = 1) AS last_ok_at,
+        (SELECT ok FROM snapshots WHERE source_id = s.id ORDER BY fetched_at DESC, id DESC LIMIT 1) AS last_ok_flag,
+        (SELECT COUNT(DISTINCT raw_hash) FROM snapshots WHERE source_id = s.id AND raw_hash IS NOT NULL) AS distinct_states,
+        (SELECT e.data_json FROM snapshots sn
+           JOIN extractions e ON e.normalized_hash = sn.normalized_hash
+          WHERE sn.source_id = s.id AND sn.ok = 1
+            AND e.currency = 'USD' AND e.prompt_version = @promptVersion
+          ORDER BY sn.observed_at DESC, sn.id DESC LIMIT 1) AS current_pricing_json
+      FROM sources s
+      JOIN competitors c ON c.id = s.competitor_id
+      WHERE s.active = 1 AND c.active = 1
+      ORDER BY c.name, s.kind
+    `).all({ promptVersion: EXTRACT_PROMPT_VERSION }) as SourceRow[];
 
-  for (const row of rows) {
-    const state = stateOf(row);
-    if (state === 'ok') healthy += 1;
+    const bySlug = new Map<string, { slug: string; name: string; homepage: string; sources: unknown[] }>();
+    let healthy = 0;
 
-    if (!bySlug.has(row.slug)) {
-      bySlug.set(row.slug, { slug: row.slug, name: row.name, homepage: row.homepage, sources: [] });
+    for (const row of rows) {
+      const state = stateOf(row);
+      if (state === 'ok') healthy += 1;
+
+      if (!bySlug.has(row.slug)) {
+        bySlug.set(row.slug, { slug: row.slug, name: row.name, homepage: row.homepage, sources: [] });
+      }
+      bySlug.get(row.slug)!.sources.push({
+        kind: row.kind,
+        url: row.url,
+        state,
+        last_checked_at: row.last_checked_at,
+        last_ok_at: row.last_ok_at,
+        distinct_states: row.distinct_states,
+        degraded_reason: row.degraded_reason,
+        current_pricing: row.current_pricing_json === null
+          ? null
+          : JSON.parse(row.current_pricing_json) as unknown,
+      });
     }
-    bySlug.get(row.slug)!.sources.push({
-      kind: row.kind,
-      url: row.url,
-      state,
-      last_checked_at: row.last_checked_at,
-      last_ok_at: row.last_ok_at,
-      distinct_states: row.distinct_states,
-      degraded_reason: row.degraded_reason,
-      current_pricing: row.current_pricing_json === null
-        ? null
-        : JSON.parse(row.current_pricing_json) as unknown,
+
+    const competitors = [...bySlug.values()];
+
+    // Excludes this export's own just-inserted 'running' row (acquireRun below),
+    // or status.json would report the export currently in flight as the last run.
+    const lastRun = db.prepare(
+      'SELECT kind, started_at, ended_at, state FROM runs WHERE id != ? ORDER BY id DESC LIMIT 1'
+    ).get(runId) as { kind: string; started_at: string; ended_at: string | null; state: string } | undefined;
+
+    const board = { generated_at: generatedAt, competitors };
+    const status = {
+      generated_at: generatedAt,
+      total_sources: rows.length,
+      healthy_sources: healthy,
+      sources: rows.map(r => ({
+        slug: r.slug, kind: r.kind, state: stateOf(r),
+        last_ok_at: r.last_ok_at, degraded_reason: r.degraded_reason,
+      })),
+      last_run: lastRun ?? null,
+      cost_micros_month: monthlySpendMicros(db, now),
+    };
+
+    const confirmed = db.prepare(`
+      SELECT ch.id, ch.change_type, ch.json_path, ch.before_json, ch.after_json,
+             ch.materiality, ch.observed_at, c.name AS competitor, c.slug,
+             a.implication, a.so_what, a.confidence
+      FROM changes ch
+      JOIN sources s ON s.id = ch.source_id
+      JOIN competitors c ON c.id = s.competitor_id
+      LEFT JOIN analyses a ON a.change_id = ch.id AND a.prompt_version = @promptVersion
+      WHERE ch.state = 'confirmed' AND ch.materiality >= @threshold
+      ORDER BY ch.observed_at DESC, ch.id DESC
+      LIMIT 200
+    `).all({ threshold: MATERIALITY_THRESHOLD, promptVersion: SYNTH_PROMPT_VERSION }) as Record<string, unknown>[];
+
+    // Shared by changes.json and the RSS feed (spec: build both from one query result).
+    const changeEntries = confirmed.map(c => ({
+      competitor: c.competitor,
+      slug: c.slug,
+      change_type: c.change_type,
+      json_path: c.json_path,
+      before: c.before_json === null ? null : JSON.parse(String(c.before_json)),
+      after: c.after_json === null ? null : JSON.parse(String(c.after_json)),
+      materiality: c.materiality,
+      observed_at: c.observed_at,
+      annotation: c.implication === null ? null : {
+        implication: c.implication, so_what: c.so_what, confidence: c.confidence,
+      },
+    }));
+
+    const changesFeed = {
+      generated_at: generatedAt,
+      threshold: MATERIALITY_THRESHOLD,
+      changes: changeEntries,
+    };
+
+    const latestDigest = db.prepare(`
+      SELECT period_start, period_end, body_md, item_count, created_at
+      FROM digests
+      ORDER BY created_at DESC
+      LIMIT 1
+    `).get() as { period_start: string; period_end: string; body_md: string; item_count: number; created_at: string } | undefined;
+
+    const digestPayload = {
+      generated_at: generatedAt,
+      digest: latestDigest === undefined ? null : {
+        period_start: latestDigest.period_start,
+        period_end: latestDigest.period_end,
+        body_markdown: latestDigest.body_md,
+        item_count: latestDigest.item_count,
+        created_at: latestDigest.created_at,
+      },
+    };
+
+    const datasetRows = buildDatasetRows(db);
+    const datasetPayload = {
+      generated_at: generatedAt,
+      license: 'CC BY 4.0',
+      schema_version: 1,
+      rows: datasetRows,
+    };
+    const csvContent = toCsv(datasetRows);
+    const csvHeaderLine = toCsv([]).split('\n')[0]!;
+
+    const rssContent = buildRssXml(changeEntries as FeedChange[], generatedAt, SITE_URL);
+    const llmsContent = buildLlmsTxt(SITE_URL, competitors.map(c => ({ name: c.name, slug: c.slug })));
+
+    interface Artifact { name: string; dir: string; content: string; verify: (raw: string) => void }
+    const jsonArtifact = (dir: string, name: string, payload: unknown): Artifact => ({
+      name, dir,
+      content: JSON.stringify(payload, null, 2),
+      verify: raw => { JSON.parse(raw); },
     });
-  }
 
-  const competitors = [...bySlug.values()];
-
-  const lastRun = db.prepare(
-    'SELECT kind, started_at, ended_at, state FROM runs ORDER BY id DESC LIMIT 1'
-  ).get() as { kind: string; started_at: string; ended_at: string | null; state: string } | undefined;
-
-  const board = { generated_at: generatedAt, competitors };
-  const status = {
-    generated_at: generatedAt,
-    total_sources: rows.length,
-    healthy_sources: healthy,
-    sources: rows.map(r => ({
-      slug: r.slug, kind: r.kind, state: stateOf(r),
-      last_ok_at: r.last_ok_at, degraded_reason: r.degraded_reason,
-    })),
-    last_run: lastRun ?? null,
-    cost_micros_month: monthlySpendMicros(db, now),
-  };
-
-  const confirmed = db.prepare(`
-    SELECT ch.id, ch.change_type, ch.json_path, ch.before_json, ch.after_json,
-           ch.materiality, ch.observed_at, c.name AS competitor, c.slug,
-           a.implication, a.so_what, a.confidence
-    FROM changes ch
-    JOIN sources s ON s.id = ch.source_id
-    JOIN competitors c ON c.id = s.competitor_id
-    LEFT JOIN analyses a ON a.change_id = ch.id AND a.prompt_version = @promptVersion
-    WHERE ch.state = 'confirmed' AND ch.materiality >= @threshold
-    ORDER BY ch.observed_at DESC, ch.id DESC
-    LIMIT 200
-  `).all({ threshold: MATERIALITY_THRESHOLD, promptVersion: SYNTH_PROMPT_VERSION }) as Record<string, unknown>[];
-
-  // Shared by changes.json and the RSS feed (spec: build both from one query result).
-  const changeEntries = confirmed.map(c => ({
-    competitor: c.competitor,
-    slug: c.slug,
-    change_type: c.change_type,
-    json_path: c.json_path,
-    before: c.before_json === null ? null : JSON.parse(String(c.before_json)),
-    after: c.after_json === null ? null : JSON.parse(String(c.after_json)),
-    materiality: c.materiality,
-    observed_at: c.observed_at,
-    annotation: c.implication === null ? null : {
-      implication: c.implication, so_what: c.so_what, confidence: c.confidence,
-    },
-  }));
-
-  const changesFeed = {
-    generated_at: generatedAt,
-    threshold: MATERIALITY_THRESHOLD,
-    changes: changeEntries,
-  };
-
-  const latestDigest = db.prepare(`
-    SELECT period_start, period_end, body_md, item_count, created_at
-    FROM digests
-    ORDER BY created_at DESC
-    LIMIT 1
-  `).get() as { period_start: string; period_end: string; body_md: string; item_count: number; created_at: string } | undefined;
-
-  const digestPayload = {
-    generated_at: generatedAt,
-    digest: latestDigest === undefined ? null : {
-      period_start: latestDigest.period_start,
-      period_end: latestDigest.period_end,
-      body_markdown: latestDigest.body_md,
-      item_count: latestDigest.item_count,
-      created_at: latestDigest.created_at,
-    },
-  };
-
-  const datasetRows = buildDatasetRows(db);
-  const datasetPayload = {
-    generated_at: generatedAt,
-    license: 'CC BY 4.0',
-    schema_version: 1,
-    rows: datasetRows,
-  };
-  const csvContent = toCsv(datasetRows);
-  const csvHeaderLine = toCsv([]).split('\n')[0]!;
-
-  const rssContent = buildRssXml(changeEntries as FeedChange[], generatedAt, SITE_URL);
-  const llmsContent = buildLlmsTxt(SITE_URL, competitors.map(c => ({ name: c.name, slug: c.slug })));
-
-  interface Artifact { name: string; dir: string; content: string; verify: (raw: string) => void }
-  const jsonArtifact = (dir: string, name: string, payload: unknown): Artifact => ({
-    name, dir,
-    content: JSON.stringify(payload, null, 2),
-    verify: raw => { JSON.parse(raw); },
-  });
-
-  const artifacts: Artifact[] = [
-    jsonArtifact(outDir, 'board.json', board),
-    jsonArtifact(outDir, 'status.json', status),
-    jsonArtifact(outDir, 'changes.json', changesFeed),
-    jsonArtifact(outDir, 'timeline.json', buildTimeline(db, generatedAt)),
-    jsonArtifact(outDir, 'digest.json', digestPayload),
-    jsonArtifact(outDir, 'dataset.json', datasetPayload),
-    {
-      name: 'dataset.csv', dir: outDir, content: csvContent,
-      verify: raw => {
-        if (raw.length === 0 || !raw.startsWith(csvHeaderLine)) {
-          throw new ExportGuardError('Refusing to publish: dataset.csv failed verification (missing header).');
-        }
+    const artifacts: Artifact[] = [
+      jsonArtifact(outDir, 'board.json', board),
+      jsonArtifact(outDir, 'status.json', status),
+      jsonArtifact(outDir, 'changes.json', changesFeed),
+      jsonArtifact(outDir, 'timeline.json', buildTimeline(db, generatedAt)),
+      jsonArtifact(outDir, 'digest.json', digestPayload),
+      jsonArtifact(outDir, 'dataset.json', datasetPayload),
+      {
+        name: 'dataset.csv', dir: outDir, content: csvContent,
+        verify: raw => {
+          if (raw.length === 0 || !raw.startsWith(csvHeaderLine)) {
+            throw new ExportGuardError('Refusing to publish: dataset.csv failed verification (missing header).');
+          }
+        },
       },
-    },
-    {
-      name: 'changes.xml', dir: siteDir, content: rssContent,
-      verify: raw => {
-        const opens = (raw.match(/<item>/g) ?? []).length;
-        const closes = (raw.match(/<\/item>/g) ?? []).length;
-        if (!raw.includes('<rss') || opens !== closes) {
-          throw new ExportGuardError('Refusing to publish: changes.xml failed verification.');
-        }
+      {
+        name: 'changes.xml', dir: siteDir, content: rssContent,
+        verify: raw => {
+          const opens = (raw.match(/<item>/g) ?? []).length;
+          const closes = (raw.match(/<\/item>/g) ?? []).length;
+          if (!raw.includes('<rss') || opens !== closes) {
+            throw new ExportGuardError('Refusing to publish: changes.xml failed verification.');
+          }
+        },
       },
-    },
-    {
-      name: 'llms.txt', dir: siteDir, content: llmsContent,
-      verify: raw => {
-        if (!raw.includes('/data/dataset.json')) {
-          throw new ExportGuardError('Refusing to publish: llms.txt failed verification.');
-        }
+      {
+        name: 'llms.txt', dir: siteDir, content: llmsContent,
+        verify: raw => {
+          if (!raw.includes('/data/dataset.json')) {
+            throw new ExportGuardError('Refusing to publish: llms.txt failed verification.');
+          }
+        },
       },
-    },
-  ];
+    ];
 
-  // ---- Guards (spec 15.7). All must pass before anything is renamed. -----
-  if (competitors.length === 0) {
-    throw new ExportGuardError(
-      'Refusing to publish: no active competitors found. Run `bellwether seed` first.'
-    );
-  }
-
-  const previousBoardPath = join(outDir, 'board.json');
-  if (existsSync(previousBoardPath)) {
-    const previous = JSON.parse(readFileSync(previousBoardPath, 'utf8')) as { competitors?: unknown[] };
-    const previousCount = previous.competitors?.length ?? 0;
-    if (competitors.length < previousCount) {
+    // ---- Guards (spec 15.7). All must pass before anything is renamed. -----
+    if (competitors.length === 0) {
       throw new ExportGuardError(
-        `Refusing to publish fewer competitors than the last publish ` +
-        `(${competitors.length} now, ${previousCount} before). ` +
-        `If this is intentional, delete ${previousBoardPath} and export again.`
+        'Refusing to publish: no active competitors found. Run `bellwether seed` first.'
       );
     }
-  }
 
-  const staged: { final: string; tmp: string }[] = [];
-  try {
-    for (const artifact of artifacts) {
-      const { name, dir, content } = artifact;
-      const finalPath = join(dir, name);
-
-      if (existsSync(finalPath)) {
-        const previousSize = readFileSync(finalPath, 'utf8').length;
-        if (previousSize > 0 && content.length < previousSize * 0.5) {
-          throw new ExportGuardError(
-            `Refusing to publish: ${name} shrank from ${previousSize} to ${content.length} bytes. ` +
-            `A file losing more than half its content usually means a query broke.`
-          );
-        }
+    const previousBoardPath = join(outDir, 'board.json');
+    if (existsSync(previousBoardPath)) {
+      const previous = JSON.parse(readFileSync(previousBoardPath, 'utf8')) as { competitors?: unknown[] };
+      const previousCount = previous.competitors?.length ?? 0;
+      if (competitors.length < previousCount) {
+        throw new ExportGuardError(
+          `Refusing to publish fewer competitors than the last publish ` +
+          `(${competitors.length} now, ${previousCount} before). ` +
+          `If this is intentional, delete ${previousBoardPath} and export again.`
+        );
       }
-
-      const tmpPath = `${finalPath}.tmp`;
-      writeFileSync(tmpPath, content);
-      artifact.verify(readFileSync(tmpPath, 'utf8'));
-      staged.push({ final: finalPath, tmp: tmpPath });
     }
 
-    for (const { final, tmp } of staged) renameSync(tmp, final);
+    const staged: { final: string; tmp: string }[] = [];
+    try {
+      for (const artifact of artifacts) {
+        const { name, dir, content } = artifact;
+        const finalPath = join(dir, name);
+
+        if (existsSync(finalPath)) {
+          const previousSize = readFileSync(finalPath, 'utf8').length;
+          if (previousSize > 0 && content.length < previousSize * 0.5) {
+            throw new ExportGuardError(
+              `Refusing to publish: ${name} shrank from ${previousSize} to ${content.length} bytes. ` +
+              `A file losing more than half its content usually means a query broke.`
+            );
+          }
+        }
+
+        const tmpPath = `${finalPath}.tmp`;
+        writeFileSync(tmpPath, content);
+        artifact.verify(readFileSync(tmpPath, 'utf8'));
+        staged.push({ final: finalPath, tmp: tmpPath });
+      }
+
+      for (const { final, tmp } of staged) renameSync(tmp, final);
+    } catch (err) {
+      // A tripped guard must leave no trace. Remove anything already staged so a
+      // later run never renames a half-written set.
+      for (const { tmp } of staged) { try { unlinkSync(tmp); } catch { /* already gone */ } }
+      throw err;
+    }
+
+    const stats: ExportStats = {
+      files: artifacts.map(a => a.name),
+      competitors: competitors.length,
+      healthySources: healthy,
+      totalSources: rows.length,
+      confirmedChanges: confirmed.length,
+    };
+    finishRun(db, runId, true, stats);
+    return stats;
   } catch (err) {
-    // A tripped guard must leave no trace. Remove anything already staged so a
-    // later run never renames a half-written set.
-    for (const { tmp } of staged) { try { unlinkSync(tmp); } catch { /* already gone */ } }
+    finishRun(db, runId, false, {}, err instanceof Error ? err.message : String(err));
     throw err;
   }
-
-  return {
-    files: artifacts.map(a => a.name),
-    competitors: competitors.length,
-    healthySources: healthy,
-    totalSources: rows.length,
-    confirmedChanges: confirmed.length,
-  };
 }
 
 export interface CommitFacts { changes: number; sources: number; date: string }
