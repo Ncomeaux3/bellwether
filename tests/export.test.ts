@@ -7,6 +7,7 @@ import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import { collect } from '../src/workflow/collect.js';
 import { ExportGuardError, exportData } from '../src/workflow/export.js';
+import { SYNTH_PROMPT_VERSION } from '../src/schema/synthesis.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
 let dir: string;
@@ -52,7 +53,10 @@ describe('exportData', () => {
     await populate();
     const stats = exportData(db, out);
 
-    expect(stats.files.sort()).toEqual(['board.json', 'changes.json', 'status.json', 'timeline.json']);
+    expect(stats.files.sort()).toEqual([
+      'board.json', 'changes.json', 'changes.xml', 'dataset.csv', 'dataset.json',
+      'digest.json', 'llms.txt', 'status.json', 'timeline.json',
+    ]);
     expect(stats.competitors).toBe(2);
   });
 
@@ -130,6 +134,29 @@ describe('exportData', () => {
     // status.json shrink guard fires) must be cleaned up rather than renamed.
     expect(existsSync(join(out, 'board.json.tmp'))).toBe(false);
     expect(existsSync(join(out, 'status.json.tmp'))).toBe(false);
+    expect(readFileSync(join(out, 'board.json'), 'utf8')).toBe(boardBefore);
+  });
+
+  it('leaves no tmp litter in either directory when a guard trips on a siteDir file', async () => {
+    // llms.txt is staged last, after every outDir artifact and changes.xml —
+    // tripping its shrink guard exercises cleanup across both directories at
+    // once, not just outDir.
+    await populate();
+    exportData(db, out);
+    const boardBefore = readFileSync(join(out, 'board.json'), 'utf8');
+    const llmsPath = join(dir, 'llms.txt');
+    writeFileSync(llmsPath, 'x'.repeat(20_000));
+
+    expect(() => exportData(db, out)).toThrow(/shrank/i);
+
+    for (const name of [
+      'board.json', 'status.json', 'changes.json', 'timeline.json',
+      'digest.json', 'dataset.json', 'dataset.csv',
+    ]) {
+      expect(existsSync(join(out, `${name}.tmp`))).toBe(false);
+    }
+    expect(existsSync(join(dir, 'changes.xml.tmp'))).toBe(false);
+    expect(existsSync(join(dir, 'llms.txt.tmp'))).toBe(false);
     expect(readFileSync(join(out, 'board.json'), 'utf8')).toBe(boardBefore);
   });
 
@@ -294,5 +321,80 @@ describe('exportData — pricing', () => {
       (1, 1, 1, 'flag_changed', 'tiers.Pro.is_enterprise', '0', '1', 60, 'confirmed', '2026-08-18T12:00:00.000Z')`).run();
 
     expect(exportData(db, out).confirmedChanges).toBe(2);
+  });
+});
+
+describe('exportData — distribution artifacts', () => {
+  function addConfirmedChange(): number {
+    db.prepare(`INSERT INTO changes
+      (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+       before_json, after_json, materiality, state, observed_at)
+      VALUES (1, 1, 1, 'price_changed', 'tiers.Pro.monthly_price_usd', '20', '24', 100, 'confirmed', '2026-08-18T12:00:00.000Z')`).run();
+    return (db.prepare('SELECT id FROM changes ORDER BY id DESC LIMIT 1').get() as { id: number }).id;
+  }
+
+  it('carries an annotation into changes.json when one exists at the current prompt version', () => {
+    const changeId = addConfirmedChange();
+    db.prepare(`INSERT INTO analyses
+      (change_id, implication, so_what, confidence, model, prompt_version, created_at)
+      VALUES (?, 'Competitor raised prices', 'Customers may churn', 'high', 'm', ?, '2026-08-18T12:00:00.000Z')`)
+      .run(changeId, SYNTH_PROMPT_VERSION);
+
+    exportData(db, out);
+    const feed = read('changes.json');
+    expect(feed.changes[0].annotation).toEqual({
+      implication: 'Competitor raised prices', so_what: 'Customers may churn', confidence: 'high',
+    });
+  });
+
+  it('leaves annotation null when no analysis exists at the current prompt version', () => {
+    addConfirmedChange();
+    exportData(db, out);
+    const feed = read('changes.json');
+    expect(feed.changes[0].annotation).toBeNull();
+  });
+
+  it('digest.json is null when no digest exists', () => {
+    exportData(db, out);
+    expect(read('digest.json').digest).toBeNull();
+  });
+
+  it('digest.json returns the newest digest, without model or cost', () => {
+    db.prepare(`INSERT INTO digests
+      (period_start, period_end, body_md, item_count, model, prompt_version, cost_micros, created_at)
+      VALUES ('2026-08-01T00:00:00.000Z', '2026-08-07T00:00:00.000Z', 'old digest', 3, 'm', 'synthesize-v1', 1000, '2026-08-07T00:00:00.000Z')`).run();
+    db.prepare(`INSERT INTO digests
+      (period_start, period_end, body_md, item_count, model, prompt_version, cost_micros, created_at)
+      VALUES ('2026-08-08T00:00:00.000Z', '2026-08-14T00:00:00.000Z', 'new digest', 5, 'm', 'synthesize-v1', 2000, '2026-08-14T00:00:00.000Z')`).run();
+
+    exportData(db, out);
+    const digest = read('digest.json').digest;
+    expect(digest.body_markdown).toBe('new digest');
+    expect(digest.item_count).toBe(5);
+    expect(digest.model).toBeUndefined();
+    expect(digest.cost_micros).toBeUndefined();
+  });
+
+  it('dataset.csv starts with the exact header line', () => {
+    exportData(db, out);
+    const csv = readFileSync(join(out, 'dataset.csv'), 'utf8');
+    expect(csv.startsWith(
+      'competitor,tier,first_observed_at,last_observed_at,monthly_price_usd,annual_price_usd,'
+      + 'billing_unit,included_seats,is_free,is_enterprise,currency,provenance\n'
+    )).toBe(true);
+  });
+
+  it('writes changes.xml to siteDir with an item for a confirmed change', () => {
+    addConfirmedChange();
+    exportData(db, out);
+    const xml = readFileSync(join(dir, 'changes.xml'), 'utf8');
+    expect(xml).toContain('<rss');
+    expect(xml).toContain('<item>');
+  });
+
+  it('writes llms.txt to siteDir', () => {
+    exportData(db, out);
+    const llms = readFileSync(join(dir, 'llms.txt'), 'utf8');
+    expect(llms).toContain('/data/dataset.json');
   });
 });

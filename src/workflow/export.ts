@@ -5,11 +5,15 @@ import { promisify } from 'node:util';
 import type { DB } from '../ops/db.js';
 import { MATERIALITY_THRESHOLD } from '../tools/materiality.js';
 import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
+import { SYNTH_PROMPT_VERSION } from '../schema/synthesis.js';
 import { monthlySpendMicros } from '../agents/_client.js';
 import { observationsFor } from './detect.js';
-import { describeChange } from './dataset.js';
+import { describeChange, buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, type FeedChange } from './dataset.js';
 
 const run = promisify(execFile);
+
+// TODO: move to config once a custom domain lands.
+const SITE_URL = 'https://bellwether-nicholas-projects-cdfeb046.vercel.app';
 
 export class ExportGuardError extends Error {
   constructor(message: string) {
@@ -26,7 +30,7 @@ export interface ExportStats {
   confirmedChanges: number;
 }
 
-export interface ExportDeps { now?: () => Date }
+export interface ExportDeps { now?: () => Date; siteDir?: string }
 
 export type SourceState = 'ok' | 'degraded' | 'failing' | 'pending';
 
@@ -207,7 +211,9 @@ function classifyTiers(series: { tier: string; segments: TimelinePoint[][] }[]):
 export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): ExportStats {
   const now = (deps.now ?? (() => new Date()))();
   const generatedAt = now.toISOString();
+  const siteDir = deps.siteDir ?? join(outDir, '..');
   mkdirSync(outDir, { recursive: true });
+  mkdirSync(siteDir, { recursive: true });
 
   const rows = db.prepare(`
     SELECT
@@ -272,36 +278,110 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
 
   const confirmed = db.prepare(`
     SELECT ch.id, ch.change_type, ch.json_path, ch.before_json, ch.after_json,
-           ch.materiality, ch.observed_at, c.name AS competitor, c.slug
+           ch.materiality, ch.observed_at, c.name AS competitor, c.slug,
+           a.implication, a.so_what, a.confidence
     FROM changes ch
     JOIN sources s ON s.id = ch.source_id
     JOIN competitors c ON c.id = s.competitor_id
-    WHERE ch.state = 'confirmed' AND ch.materiality >= ?
+    LEFT JOIN analyses a ON a.change_id = ch.id AND a.prompt_version = @promptVersion
+    WHERE ch.state = 'confirmed' AND ch.materiality >= @threshold
     ORDER BY ch.observed_at DESC, ch.id DESC
     LIMIT 200
-  `).all(MATERIALITY_THRESHOLD) as Record<string, unknown>[];
+  `).all({ threshold: MATERIALITY_THRESHOLD, promptVersion: SYNTH_PROMPT_VERSION }) as Record<string, unknown>[];
+
+  // Shared by changes.json and the RSS feed (spec: build both from one query result).
+  const changeEntries = confirmed.map(c => ({
+    competitor: c.competitor,
+    slug: c.slug,
+    change_type: c.change_type,
+    json_path: c.json_path,
+    before: c.before_json === null ? null : JSON.parse(String(c.before_json)),
+    after: c.after_json === null ? null : JSON.parse(String(c.after_json)),
+    materiality: c.materiality,
+    observed_at: c.observed_at,
+    annotation: c.implication === null ? null : {
+      implication: c.implication, so_what: c.so_what, confidence: c.confidence,
+    },
+  }));
 
   const changesFeed = {
     generated_at: generatedAt,
     threshold: MATERIALITY_THRESHOLD,
-    changes: confirmed.map(c => ({
-      competitor: c.competitor,
-      slug: c.slug,
-      change_type: c.change_type,
-      json_path: c.json_path,
-      before: c.before_json === null ? null : JSON.parse(String(c.before_json)),
-      after: c.after_json === null ? null : JSON.parse(String(c.after_json)),
-      materiality: c.materiality,
-      observed_at: c.observed_at,
-    })),
+    changes: changeEntries,
   };
 
-  const payloads: Record<string, unknown> = {
-    'board.json': board,
-    'status.json': status,
-    'changes.json': changesFeed,
-    'timeline.json': buildTimeline(db, generatedAt),
+  const latestDigest = db.prepare(`
+    SELECT period_start, period_end, body_md, item_count, created_at
+    FROM digests
+    ORDER BY created_at DESC
+    LIMIT 1
+  `).get() as { period_start: string; period_end: string; body_md: string; item_count: number; created_at: string } | undefined;
+
+  const digestPayload = {
+    generated_at: generatedAt,
+    digest: latestDigest === undefined ? null : {
+      period_start: latestDigest.period_start,
+      period_end: latestDigest.period_end,
+      body_markdown: latestDigest.body_md,
+      item_count: latestDigest.item_count,
+      created_at: latestDigest.created_at,
+    },
   };
+
+  const datasetRows = buildDatasetRows(db);
+  const datasetPayload = {
+    generated_at: generatedAt,
+    license: 'CC BY 4.0',
+    schema_version: 1,
+    rows: datasetRows,
+  };
+  const csvContent = toCsv(datasetRows);
+  const csvHeaderLine = toCsv([]).split('\n')[0]!;
+
+  const rssContent = buildRssXml(changeEntries as FeedChange[], generatedAt, SITE_URL);
+  const llmsContent = buildLlmsTxt(SITE_URL, competitors.map(c => ({ name: c.name, slug: c.slug })));
+
+  interface Artifact { name: string; dir: string; content: string; verify: (raw: string) => void }
+  const jsonArtifact = (dir: string, name: string, payload: unknown): Artifact => ({
+    name, dir,
+    content: JSON.stringify(payload, null, 2),
+    verify: raw => { JSON.parse(raw); },
+  });
+
+  const artifacts: Artifact[] = [
+    jsonArtifact(outDir, 'board.json', board),
+    jsonArtifact(outDir, 'status.json', status),
+    jsonArtifact(outDir, 'changes.json', changesFeed),
+    jsonArtifact(outDir, 'timeline.json', buildTimeline(db, generatedAt)),
+    jsonArtifact(outDir, 'digest.json', digestPayload),
+    jsonArtifact(outDir, 'dataset.json', datasetPayload),
+    {
+      name: 'dataset.csv', dir: outDir, content: csvContent,
+      verify: raw => {
+        if (raw.length === 0 || !raw.startsWith(csvHeaderLine)) {
+          throw new ExportGuardError('Refusing to publish: dataset.csv failed verification (missing header).');
+        }
+      },
+    },
+    {
+      name: 'changes.xml', dir: siteDir, content: rssContent,
+      verify: raw => {
+        const opens = (raw.match(/<item>/g) ?? []).length;
+        const closes = (raw.match(/<\/item>/g) ?? []).length;
+        if (!raw.includes('<rss') || opens !== closes) {
+          throw new ExportGuardError('Refusing to publish: changes.xml failed verification.');
+        }
+      },
+    },
+    {
+      name: 'llms.txt', dir: siteDir, content: llmsContent,
+      verify: raw => {
+        if (!raw.includes('/data/dataset.json')) {
+          throw new ExportGuardError('Refusing to publish: llms.txt failed verification.');
+        }
+      },
+    },
+  ];
 
   // ---- Guards (spec 15.7). All must pass before anything is renamed. -----
   if (competitors.length === 0) {
@@ -325,23 +405,23 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
 
   const staged: { final: string; tmp: string }[] = [];
   try {
-    for (const [name, payload] of Object.entries(payloads)) {
-      const serialized = JSON.stringify(payload, null, 2);
-      const finalPath = join(outDir, name);
+    for (const artifact of artifacts) {
+      const { name, dir, content } = artifact;
+      const finalPath = join(dir, name);
 
       if (existsSync(finalPath)) {
         const previousSize = readFileSync(finalPath, 'utf8').length;
-        if (previousSize > 0 && serialized.length < previousSize * 0.5) {
+        if (previousSize > 0 && content.length < previousSize * 0.5) {
           throw new ExportGuardError(
-            `Refusing to publish: ${name} shrank from ${previousSize} to ${serialized.length} bytes. ` +
+            `Refusing to publish: ${name} shrank from ${previousSize} to ${content.length} bytes. ` +
             `A file losing more than half its content usually means a query broke.`
           );
         }
       }
 
       const tmpPath = `${finalPath}.tmp`;
-      writeFileSync(tmpPath, serialized);
-      JSON.parse(readFileSync(tmpPath, 'utf8'));
+      writeFileSync(tmpPath, content);
+      artifact.verify(readFileSync(tmpPath, 'utf8'));
       staged.push({ final: finalPath, tmp: tmpPath });
     }
 
@@ -354,7 +434,7 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
   }
 
   return {
-    files: Object.keys(payloads),
+    files: artifacts.map(a => a.name),
     competitors: competitors.length,
     healthySources: healthy,
     totalSources: rows.length,
