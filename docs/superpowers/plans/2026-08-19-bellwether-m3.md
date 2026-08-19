@@ -2316,6 +2316,18 @@ Not a task — the controller runs this after Task 6 is reviewed and merged, bec
   clearing them is one statement:
   `UPDATE snapshots SET error = NULL WHERE ok = 1 AND error LIKE 'extraction %';`
   Wire it into whatever command implements `bellwether extract --all`.
+- **RESOLVED 2026-08-19.** The three items below were closed the same day:
+  the normalizer bug was root-caused to node-html-parser's block-text scan matching only the
+  literal `</style>` — Linear closes two style tags as `</style\n\t\t\t>`, so 1.19 MB became one
+  text node. Fixed by normalizing whitespace closers before parse (60-byte repro in the tests).
+  Linear re-extracted perfectly and surfaced a real, previously-invisible price rise: Basic
+  $8 -> $10 and Business $14 -> $16 in November 2025. Usage rates got identity matching
+  (`rate_identity.ts`), but measurement kept the materiality at 30: matching removed only ~11%
+  of raw churn, because the residual drift is genuinely different wording. Figma's pre-2026-04
+  captures turned out to be a different failure — the page carries Figma and FigJam pricing side
+  by side and extraction returned FigJam's $3/$5 as Figma tiers (grounded, wrong product); those
+  captures are curated out and Figma's history starts 2026-04. Original notes kept below for the
+  record.
 - **`normalize.ts` does not strip inline scripts on some pages — the highest-value follow-up.**
   On Linear's archived captures `node-html-parser` finds 1 `<style>` and almost no `<script>` in
   a 1.23 MB document; stripping removes only 36 KB, so ~1.19 MB of Next.js RSC payload survives
