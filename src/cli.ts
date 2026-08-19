@@ -89,6 +89,23 @@ program
     db.close();
   });
 
+program
+  .command('synthesize')
+  .description('annotate confirmed changes and write a digest when the trigger fires')
+  .option('--force', 'ignore the Monday and volume gates (never the budget or kill switch)')
+  .option('--dry-run', 'evaluate the trigger and report, calling nothing')
+  .action(async (options: { force?: boolean; dryRun?: boolean }) => {
+    const { synthesize } = await import('./workflow/synthesize.js');
+    const db = openDb(dbPath());
+    const s = await synthesize(db, { force: options.force, dryRun: options.dryRun });
+    console.log(
+      s.fired
+        ? `Digest written: ${s.itemCount} items, ${s.annotated} changes annotated, $${(s.costMicros / 1e6).toFixed(4)}.`
+        : `No digest: ${s.reason}${s.skipped ? ' (skipped: LLM disabled or budget exhausted)' : ''}`,
+    );
+    db.close();
+  });
+
 // backfill's flags are all numeric and feed budget math or a source-id
 // filter, where a silently-NaN value is either wrong output (--budget) or a
 // falsy filter that backfills every source (--source) — so, unlike the
@@ -231,6 +248,12 @@ program
     const { detect } = await import('./workflow/detect.js');
     const detectStats = await detect(db, {});
     console.log(`Detected ${detectStats.created} changes, ${detectStats.confirmed} confirmed.`);
+
+    const { synthesize } = await import('./workflow/synthesize.js');
+    const synthStats = await synthesize(db, {});
+    console.log(synthStats.fired
+      ? `Digest: ${synthStats.itemCount} items, ${synthStats.annotated} annotated.`
+      : `Digest: not fired (${synthStats.reason}).`);
 
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
     const exportStats = exportData(db, outDir);
