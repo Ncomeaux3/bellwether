@@ -21,8 +21,12 @@ const month = (iso: string) =>
 export function Timeline({ competitor }: { competitor: TimelineCompetitor }) {
   const points = competitor.series.flatMap(s => s.segments.flat());
 
-  // One point cannot be a line, and saying so is more useful than an empty box.
-  if (points.length < 2) {
+  // Counted in DISTINCT MOMENTS, not points. A competitor observed once but
+  // priced across four tiers has four points and no line — every x collapses
+  // onto one coordinate and the chart is a meaningless column of dots. A line
+  // needs two moments in time, and saying so is more useful than an empty box.
+  const moments = new Set(points.map(p => p.observed_at)).size;
+  if (moments < 2) {
     return (
       <p className="text-sm text-ink-muted">
         Not enough history yet — a line needs at least two observations.
