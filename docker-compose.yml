@@ -6,7 +6,12 @@ services:
     env_file: .env
     environment:
       BELLWETHER_DB: /data/bellwether.db
-      BELLWETHER_EXPORT_DIR: /app/web/public/data
+      # Untracked on purpose. web/public/data/*.json are tracked in git — that
+      # is how the Mac publishes — so writing them from the container dirtied
+      # tracked files on every run and made `git pull` fail every single day.
+      # The container never publishes (no git credentials), so its export only
+      # needs somewhere to land.
+      BELLWETHER_EXPORT_DIR: /data/export
       TZ: America/Chicago
     volumes:
       # Mounted read-only so tsx's --env-file-if-exists finds it. Compose already
@@ -14,7 +19,6 @@ services:
       # misleading "\.env not found" on every command.
       - ./.env:/app/.env:ro
       - ./data:/data
-      - ./web/public/data:/app/web/public/data
     # No entrypoint override here on purpose: the Dockerfile's
     # ENTRYPOINT ["pnpm","bw"] stays in force, so `docker compose run --rm
     # bellwether doctor` runs exactly `pnpm bw doctor` — the command
