@@ -2316,4 +2316,21 @@ Not a task — the controller runs this after Task 6 is reviewed and merged, bec
   clearing them is one statement:
   `UPDATE snapshots SET error = NULL WHERE ok = 1 AND error LIKE 'extraction %';`
   Wire it into whatever command implements `bellwether extract --all`.
+- **`normalize.ts` does not strip inline scripts on some pages — the highest-value follow-up.**
+  On Linear's archived captures `node-html-parser` finds 1 `<style>` and almost no `<script>` in
+  a 1.23 MB document; stripping removes only 36 KB, so ~1.19 MB of Next.js RSC payload survives
+  as text and `densestWindow` picks its 30,000-char window out of that JSON instead of the
+  pricing table. Linear's 13 archived extractions all self-reported `low` confidence as a result
+  (the quarantine held — none published). Figma extracted $3/$5 where the page says $15/$45.
+  Both competitors' archived snapshots are curated out via `snapshots.error`; un-curate them and
+  re-run `detect --rebuild` once this is fixed. Live collection survives the same weakness only
+  because its density window happens to land on real pricing text. M2 half-saw this and recorded
+  it as a token-density quirk in the `MAX_SLICE_CHARS` comment.
+- **Usage rates need identity matching, the way spec 12.3 gave it to tiers.** Without it the model
+  re-composes the list per capture and every wording difference is an add/remove pair: 607 of 642
+  confirmed changes on the first backfill. They are scored below the publication threshold as a
+  stopgap; restore `usage_rate_*` to 45 once exact -> normalized -> positional matching exists.
+- **Re-examine the null/`unknown` materiality rule once extraction stabilises.** A genuine move to
+  "contact sales" is a real pricing event and is currently scored 35 alongside copy churn, because
+  the two are indistinguishable at that layer today.
 - **`bellwether qualify`** and the watch-list expansion to 50 competitors (M3.5).
