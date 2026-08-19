@@ -6,6 +6,7 @@ import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import { detect } from '../src/workflow/detect.js';
+import { confirmChanges } from '../src/workflow/confirm.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
 let dir: string; let db: DB;
@@ -43,6 +44,24 @@ function observe(day: number, hash: string, price: number, confidence: 'high' | 
       }],
       usage_rates: [], notes: null, extraction_confidence: confidence,
     }), confidence, at);
+}
+
+/**
+ * Usage-rate changes are scored BELOW the publication threshold (see
+ * materiality.ts): they have no stable identity, so the same page enumerates
+ * them differently between captures and they churn. `confirmChanges`
+ * deliberately skips sub-threshold rows.
+ *
+ * The `valueAt()` logic that resolves `usage_rates.*` paths still has to be
+ * correct — it cost two fix rounds to get right, and it is what will publish
+ * the day identity matching lands. These tests therefore raise the score so
+ * that logic is exercised on its own terms, independent of publication policy.
+ */
+function confirmUsageRates(): void {
+  db.prepare(
+    "UPDATE changes SET materiality = 45, state = 'candidate' WHERE change_type LIKE 'usage_rate%'",
+  ).run();
+  confirmChanges(db, {});
 }
 
 const states = () => db.prepare(
@@ -159,6 +178,7 @@ describe('confirmation', () => {
       usage_rates: [{ metric: 'api_calls', unit_price_usd: 0.01 }],
     });
     detect(db, {});
+    confirmUsageRates();
     const s = statesOf('usage_rate_removed');
     expect(s.length).toBe(1);
     expect(s[0]!.state).not.toBe('confirmed');
@@ -176,6 +196,7 @@ describe('confirmation', () => {
       usage_rates: [{ metric: 'seats', unit_price_usd: 5 }],
     });
     detect(db, {});
+    confirmUsageRates();
     const s = statesOf('usage_rate_added');
     expect(s.length).toBe(1);
     expect(s[0]!.state).toBe('confirmed');
@@ -209,6 +230,7 @@ describe('confirmation', () => {
     observeFull(19, 'b', { tiers: [defaultTier()], usage_rates: [] });   // removed
     observeFull(20, 'c', { tiers: [defaultTier()], usage_rates: [] });   // still gone
     detect(db, {});
+    confirmUsageRates();
     const s = statesOf('usage_rate_removed');
     expect(s.length).toBe(1);
     expect(s[0]!.state).toBe('confirmed');
@@ -222,6 +244,7 @@ describe('confirmation', () => {
     });                                                                  // added
     observeFull(20, 'c', { tiers: [defaultTier()], usage_rates: [] });   // gone again — a phantom add
     detect(db, {});
+    confirmUsageRates();
     const s = statesOf('usage_rate_added');
     expect(s.length).toBe(1);
     expect(s[0]!.state).toBe('retracted');
@@ -248,6 +271,7 @@ describe('confirmation', () => {
       usage_rates: [{ metric: 'v2.0 calls', unit_price_usd: 0.01 }],
     });
     detect(db, {});
+    confirmUsageRates();
     const s = statesOf('usage_rate_added');
     expect(s.length).toBe(1);
     expect(s[0]!.state).toBe('confirmed');
@@ -307,5 +331,41 @@ describe('confirmation', () => {
     observe(21, 'c', 24);   // valid, matches the claimed value — should still confirm
     expect(() => detect(db, {})).not.toThrow();
     expect(states()[0]!.state).toBe('confirmed');
+  });
+});
+
+describe('tier existence is confirmed on presence, not on content', () => {
+  it('confirms a tier_added even when its feature copy churns', () => {
+    // Real case: Postman's April 2026 restructure. Deep-comparing the whole
+    // tier object compares headline_features too, so an addition could never
+    // confirm while the matching removal always did — publishing "Basic
+    // removed" with no mention of the Solo tier that replaced it.
+    observeFull(10, 'a', { tiers: [defaultTier()], usage_rates: [] });
+    observeFull(11, 'b', {
+      tiers: [defaultTier(), defaultTier({ name: 'Solo', headline_features: ['one'] })],
+      usage_rates: [],
+    });
+    observeFull(12, 'c', {
+      tiers: [defaultTier(), defaultTier({ name: 'Solo', headline_features: ['one', 'two rewritten'] })],
+      usage_rates: [],
+    });
+
+    detect(db, {});
+
+    const s = statesOf('tier_added');
+    expect(s).toHaveLength(1);
+    expect(s[0]!.state).toBe('confirmed');
+  });
+
+  it('retracts a tier_added that vanishes again', () => {
+    observeFull(10, 'a', { tiers: [defaultTier()], usage_rates: [] });
+    observeFull(11, 'b', { tiers: [defaultTier(), defaultTier({ name: 'Solo' })], usage_rates: [] });
+    observeFull(12, 'c', { tiers: [defaultTier()], usage_rates: [] });
+
+    detect(db, {});
+
+    const s = statesOf('tier_added');
+    expect(s).toHaveLength(1);
+    expect(s[0]!.state).toBe('retracted');
   });
 });

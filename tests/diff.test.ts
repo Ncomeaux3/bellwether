@@ -132,10 +132,8 @@ describe('scoreMateriality', () => {
   it('scores structural changes above the threshold', () => {
     expect(scoreMateriality(ev('tier_added'))).toBe(100);
     expect(scoreMateriality(ev('tier_removed'))).toBe(100);
-    expect(scoreMateriality(ev('billing_unit_changed'))).toBe(70);
     expect(scoreMateriality(ev('flag_changed'))).toBe(60);
     expect(scoreMateriality(ev('seats_changed'))).toBe(50);
-    expect(scoreMateriality(ev('usage_rate_changed'))).toBe(45);
   });
 
   it('scores a price change by magnitude, capped at 100', () => {
@@ -143,8 +141,31 @@ describe('scoreMateriality', () => {
     expect(scoreMateriality(ev('price_changed', 20, 40))).toBe(100);  // 100% -> capped
   });
 
-  it('scores a price change involving null at the base', () => {
-    expect(scoreMateriality(ev('price_changed', null, 20))).toBe(80);
+  it('keeps a price appearing or disappearing below the threshold', () => {
+    // Measured on the M3 backfill: every null transition was a page
+    // rewording, not a pricing event — an optional annual figure stated one
+    // month and omitted the next. Recorded, never published.
+    expect(scoreMateriality(ev('price_changed', null, 20))).toBe(35);
+    expect(scoreMateriality(ev('price_changed', 20, null))).toBe(35);
+    expect(scoreMateriality(ev('price_changed', null, 20))).toBeLessThan(MATERIALITY_THRESHOLD);
+  });
+
+  it('keeps a billing unit moving to or from "unknown" below the threshold', () => {
+    // "unknown" is the model declining to classify, not a page fact.
+    expect(scoreMateriality(ev('billing_unit_changed', 'flat', 'unknown'))).toBe(35);
+    expect(scoreMateriality(ev('billing_unit_changed', 'unknown', 'flat'))).toBe(35);
+    // A real reclassification still publishes.
+    expect(scoreMateriality(ev('billing_unit_changed', 'flat', 'per_seat'))).toBe(70);
+  });
+
+  it('keeps usage-rate churn below the threshold', () => {
+    // Usage rates have no stable identity (spec 12.3 gave tiers matching and
+    // never gave them the equivalent), so the same page enumerates them
+    // differently between captures. 607 of 642 confirmed M3 changes were this.
+    for (const t of ['usage_rate_changed', 'usage_rate_added', 'usage_rate_removed']) {
+      expect(scoreMateriality(ev(t))).toBe(30);
+      expect(scoreMateriality(ev(t))).toBeLessThan(MATERIALITY_THRESHOLD);
+    }
   });
 
   it('scores copy churn below the threshold', () => {

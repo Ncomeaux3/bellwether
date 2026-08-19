@@ -7,6 +7,7 @@ export interface ConfirmStats { examined: number; confirmed: number; disputed: n
 
 interface ChangeRow {
   id: number; source_id: number; to_snapshot_id: number;
+  change_type: string;
   json_path: string; before_json: string | null; after_json: string | null;
   materiality: number; state: string;
 }
@@ -104,7 +105,7 @@ function nextRawObservation(
     SELECT s.id, s.normalized_hash, e.data_json, e.extraction_confidence
     FROM snapshots s
     JOIN extractions e ON e.normalized_hash = s.normalized_hash
-    WHERE s.source_id = ? AND s.ok = 1 AND s.normalized_hash IS NOT NULL
+    WHERE s.source_id = ? AND s.ok = 1 AND s.normalized_hash IS NOT NULL AND s.error IS NULL
       AND e.currency = 'USD' AND e.prompt_version = ?
       AND (s.observed_at > ? OR (s.observed_at = ? AND s.id > ?))
     ORDER BY s.observed_at, s.id
@@ -147,7 +148,7 @@ export function confirmChanges(db: DB, opts: { sourceId?: number } = {}): Confir
       const indexOf = new Map(observations.map((o, i) => [o.snapshotId, i]));
 
       const pending = db.prepare(`
-        SELECT id, source_id, to_snapshot_id, json_path, before_json, after_json, materiality, state
+        SELECT id, source_id, to_snapshot_id, change_type, json_path, before_json, after_json, materiality, state
         FROM changes
         WHERE source_id = ? AND state IN ('candidate', 'disputed')
         ORDER BY id
@@ -173,6 +174,25 @@ export function confirmChanges(db: DB, opts: { sourceId?: number } = {}): Confir
         if (actual === NOT_FOUND) continue;   // path doesn't resolve — can't judge, stay put
 
         const claimed = change.after_json === null ? null : JSON.parse(change.after_json);
+
+        // A tier appearing or disappearing is a claim about EXISTENCE, not
+        // about content. Deep-comparing the whole tier object also compares
+        // `headline_features` — marketing copy that churns between captures —
+        // so a removal (compared against a stable null) confirms easily while
+        // an addition almost never can. That asymmetry published Postman's
+        // April 2026 restructure as "Basic removed, Professional removed" with
+        // no mention of the Solo and Team tiers that replaced them: a real
+        // event told as a misleading half-story. Judge these on presence.
+        if (change.change_type === 'tier_added' || change.change_type === 'tier_removed') {
+          if ((actual !== null) === (claimed !== null)) {
+            setState.run('confirmed', change.id);
+            stats.confirmed += 1;
+          } else {
+            setState.run('retracted', change.id);
+            stats.retracted += 1;
+          }
+          continue;
+        }
 
         if (JSON.stringify(actual) === JSON.stringify(claimed)) {
           setState.run('confirmed', change.id);

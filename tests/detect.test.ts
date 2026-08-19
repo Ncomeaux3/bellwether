@@ -161,3 +161,25 @@ describe('detect', () => {
     expect(row).toEqual({ state: 'ok', ok: 1 });
   });
 });
+
+describe('untrustworthy observations', () => {
+  it('excludes a snapshot recorded as untrustworthy from pairing', () => {
+    // `error` on an ok=1 row means "fetched fine, but this observation must
+    // not anchor published history" — set either by a deterministic
+    // extraction failure or by deliberate curation of a verified-wrong
+    // extraction. The row and its extraction are kept (spec 7.1 discards
+    // nothing); the series just breaks there (spec 14.3).
+    observe(20, 'h1', 10);
+    observe(21, 'h2', 20);
+    detect(db, { rebuild: true });
+    expect(observationsFor(db, 1)).toHaveLength(2);
+
+    db.prepare("UPDATE snapshots SET error = 'curated: verified wrong' WHERE normalized_hash = 'h2'").run();
+
+    const after = observationsFor(db, 1);
+    expect(after).toHaveLength(1);
+    expect(after[0]!.normalizedHash).toBe('h1');
+    // nothing was deleted
+    expect((db.prepare("SELECT COUNT(*) n FROM extractions WHERE normalized_hash='h2'").get() as { n: number }).n).toBe(1);
+  });
+});

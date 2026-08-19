@@ -28,6 +28,12 @@ export interface Observation {
  * consecutive hash pairs with the next; repeated hashes collapse to one state,
  * and the state is dated to the FIRST snapshot exhibiting it.
  *
+ * `s.error IS NULL` excludes snapshots recorded as untrustworthy. Two things
+ * set it: a deterministic extraction failure (extract.ts), and deliberate
+ * curation of an observation verified to be wrong. Neither is discarded —
+ * spec 7.1 keeps everything — but neither may anchor published history. The
+ * series simply breaks there, which spec 14.3 says is exactly right.
+ *
  * Only USD extractions participate (spec 12.4) — a geo-served EUR page is a
  * collection anomaly, not a pricing event. Only the current EXTRACT_PROMPT_VERSION
  * participates too — bumping the version leaves the old row in place (spec
@@ -39,7 +45,7 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
            e.data_json, e.extraction_confidence, e.currency
     FROM snapshots s
     JOIN extractions e ON e.normalized_hash = s.normalized_hash
-    WHERE s.source_id = ? AND s.ok = 1 AND s.normalized_hash IS NOT NULL
+    WHERE s.source_id = ? AND s.ok = 1 AND s.normalized_hash IS NOT NULL AND s.error IS NULL
       AND e.currency = 'USD' AND e.prompt_version = ?
     ORDER BY s.observed_at, s.id
   `).all(sourceId, EXTRACT_PROMPT_VERSION) as {
