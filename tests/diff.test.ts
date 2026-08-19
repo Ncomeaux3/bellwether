@@ -123,6 +123,58 @@ describe('diffPricing', () => {
   });
 });
 
+describe('usage-rate identity matching', () => {
+  const rate = (metric: string, price = 5) => ({ metric, unit_price_usd: price });
+  const withRates = (rates: { metric: string; unit_price_usd: number }[]) =>
+    snap([tier({})], { usage_rates: rates });
+
+  it('does not churn when the model re-words the same metric', () => {
+    // Every pair here is real drift observed in the first backfill's archive.
+    const pairs: [string, string][] = [
+      ['AI credits overage (Enterprise tier)', 'AI credits overage (Enterprise)'],
+      ['AI credits overages (Enterprise)', 'AI credits overage (Enterprise)'],
+      ['Additional Mocks (per 1000 calls)', 'Additional Mocks per 1000 calls'],
+      ['Advanced Multi-Factor Auth - Phone (Pro Plan)', 'Advanced Multi-Factor Auth - Phone - Pro plan'],
+    ];
+    for (const [a, b] of pairs) {
+      const cs = diffPricing(withRates([rate(a)]), withRates([rate(b)]));
+      expect(cs.filter(c => c.change_type.startsWith('usage_rate')), `${a} vs ${b}`).toHaveLength(0);
+    }
+  });
+
+  it('still reports a real price move on a re-worded metric', () => {
+    const cs = diffPricing(
+      withRates([rate('AI credits overage (Enterprise tier)', 5)]),
+      withRates([rate('AI credits overage (Enterprise)', 8)]),
+    );
+    const changed = cs.filter(c => c.change_type === 'usage_rate_changed');
+    expect(changed).toHaveLength(1);
+    expect(changed[0]!.before_json).toBe('5');
+    expect(changed[0]!.after_json).toBe('8');
+  });
+
+  it('refuses to merge when normalization is ambiguous', () => {
+    // "(first project)" and "(additional projects)" are genuinely different
+    // rates; a greedy filler list must never fold them together.
+    const before = [rate('MFA Phone (first project)', 75), rate('MFA Phone (additional projects)', 10)];
+    const after = [rate('MFA Phone (first project)', 75), rate('MFA Phone (additional projects)', 10)];
+    const cs = diffPricing(withRates(before), withRates(after));
+    expect(cs.filter(c => c.change_type.startsWith('usage_rate'))).toHaveLength(0);
+
+    // and when one side drops one of an ambiguous pair, it reads as removed
+    const cs2 = diffPricing(withRates(before), withRates([rate('MFA Phone first project additional projects', 75)]));
+    expect(cs2.some(c => c.change_type === 'usage_rate_removed')).toBe(true);
+  });
+
+  it('reports genuinely new and vanished metrics', () => {
+    const cs = diffPricing(
+      withRates([rate('Egress per GB', 0.09)]),
+      withRates([rate('Compute per hour', 0.01)]),
+    );
+    expect(cs.map(c => c.change_type).sort()).toEqual(['usage_rate_added', 'usage_rate_removed']);
+  });
+});
+
 describe('scoreMateriality', () => {
   const ev = (change_type: string, before: unknown = null, after: unknown = null) => ({
     change_type, json_path: 'tiers.Pro.x',

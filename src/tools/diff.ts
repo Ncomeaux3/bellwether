@@ -1,4 +1,5 @@
 import type { PricingSnapshotData } from '../schema/pricing.js';
+import { matchRates } from './rate_identity.js';
 import { matchTiers } from './tier_identity.js';
 
 export interface ChangeEvent {
@@ -59,15 +60,18 @@ export function diffPricing(
     }
   }
 
-  const rates = (s: PricingSnapshotData) => new Map(s.usage_rates.map(r => [r.metric, r.unit_price_usd]));
-  const rb = rates(before), ra = rates(after);
-  for (const [metric, price] of ra) {
-    const prior = rb.get(metric);
-    if (prior === undefined) push('usage_rate_added', `usage_rates.${metric}`, null, price);
-    else if (prior !== price) push('usage_rate_changed', `usage_rates.${metric}`, prior, price);
-  }
-  for (const [metric, price] of rb) {
-    if (!ra.has(metric)) push('usage_rate_removed', `usage_rates.${metric}`, price, null);
+  // Identity-matched, not name-keyed (the usage-rate counterpart of the tier
+  // matching above): the model re-words the same metric between captures, and
+  // name-keying turned every re-wording into a remove+add pair — 607 of 642
+  // confirmed changes on the first backfill.
+  for (const m of matchRates(before.usage_rates, after.usage_rates)) {
+    if (m.before === null && m.after !== null) {
+      push('usage_rate_added', `usage_rates.${m.after.metric}`, null, m.after.unit_price_usd);
+    } else if (m.after === null && m.before !== null) {
+      push('usage_rate_removed', `usage_rates.${m.before.metric}`, m.before.unit_price_usd, null);
+    } else if (m.before!.unit_price_usd !== m.after!.unit_price_usd) {
+      push('usage_rate_changed', `usage_rates.${m.after!.metric}`, m.before!.unit_price_usd, m.after!.unit_price_usd);
+    }
   }
 
   if (before.notes !== after.notes) push('notes_changed', 'notes', before.notes, after.notes);
