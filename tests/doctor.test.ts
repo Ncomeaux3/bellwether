@@ -180,4 +180,35 @@ describe('runDoctor', () => {
     expect(check.status).toBe('fail');
     expect(check.fix).toMatch(/chmod \+x/);
   });
+
+  it('reports site export dir as not-applicable when BELLWETHER_EXPORT_DIR is unset', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({ ...baseDeps(), env: {} });
+
+    const check = find(results, 'site export dir');
+    expect(check.status).toBe('pending');
+  });
+
+  it('passes site export dir when BELLWETHER_SITE_EXPORT_DIR matches BELLWETHER_EXPORT_DIR', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      env: { BELLWETHER_DB: './data/bellwether.db', BELLWETHER_EXPORT_DIR: '/data/export', BELLWETHER_SITE_EXPORT_DIR: '/data/export' },
+    });
+
+    const check = find(results, 'site export dir');
+    expect(check.status).toBe('ok');
+  });
+
+  it('fails site export dir when BELLWETHER_SITE_EXPORT_DIR is unset or mismatched while BELLWETHER_EXPORT_DIR is set', async () => {
+    migrate(db, join(process.cwd(), 'migrations'));
+    const results = await runDoctor({
+      ...baseDeps(),
+      env: { BELLWETHER_DB: './data/bellwether.db', BELLWETHER_EXPORT_DIR: '/data/export' },
+    });
+
+    const check = find(results, 'site export dir');
+    expect(check.status).toBe('fail');
+    expect(check.fix).toMatch(/docker-compose\.yml/);
+  });
 });

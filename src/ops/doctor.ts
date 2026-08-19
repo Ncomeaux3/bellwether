@@ -155,5 +155,28 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
     }
   }
 
+  // 9. Site export dir — meaningful only in container mode. Unset means this
+  // isn't running under docker-compose's env (e.g. a bare CI/test invocation),
+  // so reporting fail here would be exactly the old gitPush mistake: a red
+  // that's permanent outside the one context the check is actually about.
+  const exportDir = deps.env.BELLWETHER_EXPORT_DIR;
+  if (!exportDir || exportDir.trim() === '') {
+    results.push({
+      name: 'site export dir', status: 'pending',
+      detail: 'BELLWETHER_EXPORT_DIR is unset — not running in container mode',
+    });
+  } else {
+    const siteDir = deps.env.BELLWETHER_SITE_EXPORT_DIR;
+    results.push(siteDir === exportDir
+      ? { name: 'site export dir', status: 'ok', detail: `BELLWETHER_SITE_EXPORT_DIR matches BELLWETHER_EXPORT_DIR (${exportDir})` }
+      : {
+          name: 'site export dir', status: 'fail',
+          detail: siteDir
+            ? `BELLWETHER_SITE_EXPORT_DIR (${siteDir}) does not match BELLWETHER_EXPORT_DIR (${exportDir})`
+            : 'BELLWETHER_SITE_EXPORT_DIR is unset',
+          fix: 'Set BELLWETHER_SITE_EXPORT_DIR to the same value as BELLWETHER_EXPORT_DIR in docker-compose.yml, so all nine export artifacts land in one directory.',
+        });
+  }
+
   return results;
 }
