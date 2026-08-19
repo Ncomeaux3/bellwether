@@ -20,6 +20,8 @@ export interface BackfillDeps {
   now?: () => Date;
   /** Test seam: forwarded to extract() so a test can count/stub LLM calls. */
   extractor?: (text: string) => Promise<ExtractResult>;
+  /** Test seam: forwarded to extract() instead of mutating process.env. */
+  env?: NodeJS.ProcessEnv;
 }
 
 export interface DiscoverOptions { months?: number; sourceId?: number }
@@ -376,7 +378,7 @@ export async function runBackfill(
     stats.drain = await drainQueue(db, { limit: opts.limit }, { fetcher, now });
 
     if (opts.llmEnabled !== false) {
-      const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now, extractor: deps.extractor });
+      const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now, env: deps.env, extractor: deps.extractor });
       stats.extracted = extracted.extracted;
     }
 

@@ -430,59 +430,71 @@ describe('runBackfill', () => {
     expect(run.ok).toBe(1);
   });
 
-  it('threads estimate.maxCalls through to extract as --limit, so a sliced, tightly-budgeted run makes exactly that many calls', async () => {
-    const okResult: ExtractResult = {
-      ok: true,
-      data: {
-        currency: 'USD',
-        tiers: [{
-          name: 'Pro', monthly_price_usd: 20, annual_price_usd: null,
-          billing_unit: 'per_seat', included_seats: null,
-          is_free: false, is_enterprise: false, headline_features: [],
-        }],
-        usage_rates: [], notes: null, extraction_confidence: 'high',
-      },
-      inputTokens: 6_000, outputTokens: 600, costMicros: 9_000, attempts: 1,
-    };
+  it('threads estimate.maxCalls through to extract as --limit, capping real calls below the candidates available', async () => {
+    // Five already-drained, distinct-content snapshots — real extraction
+    // candidates once `extract` recomputes their hash from raw_content. Their
+    // *stored* normalized_hash is stale (sitting under a decoy cached
+    // extraction with an unrelated hash), so estimateBackfill's own
+    // (correct, column-based) accounting sees them as already covered and
+    // reports pending=0 — this is what buys a passing --budget 0.02 gate
+    // despite there being five real un-cached candidates once extract()
+    // computes their real hash fresh, which is what it always does. Without
+    // this staleness, an honest estimate always reports pending equal to the
+    // true candidate count, and — because maxCalls and the withinBudget gate
+    // are computed from that same count — a passing gate then guarantees
+    // maxCalls >= real candidates, so extract's --limit would never truncate
+    // anything and a mutation removing it could never be observed (this is
+    // what round 1's version of this test got wrong).
+    db.prepare(`
+      INSERT INTO extractions
+        (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+         is_backfill, model, prompt_version, input_tokens, output_tokens, cost_micros, created_at)
+      VALUES ('decoy', 'pricing', '{}', 'high', 'USD', 1, 1, 'm', 'extract-pricing-v1', 1, 1, 10000,
+              '2025-01-01T00:00:00.000Z')
+    `).run();
 
-    let calls = 0;
-    const extractor = async (): Promise<ExtractResult> => { calls += 1; return okResult; };
-
-    // Five distinct captures, each with distinct page text so none dedup
-    // against each other or cache against a shared extraction. --limit slices
-    // the queue down to 2 (fix 3), and the budget is set to cover exactly
-    // that slice at the fallback mean cost — "low" relative to what all five
-    // would cost ($0.05), not relative to the two actually drained.
-    const fetcher = async (url: string): Promise<FetchResult> => {
-      if (url.includes('/cdx/search/')) {
-        return ok(cdxBody(
-          '20250101000000', '20250102000000', '20250103000000', '20250104000000', '20250105000000',
-        ));
-      }
-      const ts = /web\/(\d{14})id_/.exec(url)?.[1] ?? '0';
-      return ok(`<html><h2>Pro</h2><p>$${ts}/mo</p><h2>Enterprise</h2></html>`);
-    };
-
-    // runBackfill forwards no env of its own to extract() — same as the real
-    // CLI, extract's LLM_ENABLED gate reads process.env, so exercising a real
-    // (stubbed) extractor call here means toggling it like an operator would.
-    const prevLlmEnabled = process.env.LLM_ENABLED;
-    process.env.LLM_ENABLED = 'true';
-    let stats;
-    try {
-      stats = await runBackfill(db, { budgetUsd: 0.02, limit: 2 }, {
-        fetcher, extractor, now: NOW,
-      });
-    } finally {
-      if (prevLlmEnabled === undefined) delete process.env.LLM_ENABLED;
-      else process.env.LLM_ENABLED = prevLlmEnabled;
+    const insertSnapshot = db.prepare(`
+      INSERT INTO snapshots
+        (source_id, observed_at, fetched_at, ok, http_status, error,
+         raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, ?, ?, 1, 200, NULL, ?, ?, 'decoy', ?)
+    `);
+    for (let i = 0; i < 5; i += 1) {
+      insertSnapshot.run(
+        `2025-01-0${i + 1}T00:00:00.000Z`, `2025-01-0${i + 1}T00:00:00.000Z`,
+        `<html><h2>Pro</h2><p>$${i}0/mo</p></html>`, `rawh${i}`, `wayback:2025010${i + 1}000000`,
+      );
     }
 
+    let calls = 0;
+    const extractor = async (): Promise<ExtractResult> => {
+      calls += 1;
+      return {
+        ok: true,
+        data: {
+          currency: 'USD',
+          tiers: [{
+            name: 'Pro', monthly_price_usd: 20, annual_price_usd: null,
+            billing_unit: 'per_seat', included_seats: null,
+            is_free: false, is_enterprise: false, headline_features: [],
+          }],
+          usage_rates: [], notes: null, extraction_confidence: 'high',
+        },
+        inputTokens: 1, outputTokens: 1, costMicros: 9_000, attempts: 1,
+      };
+    };
+
+    const stats = await runBackfill(db, { budgetUsd: 0.02 }, {
+      fetcher: async () => ok(cdxBody()),   // nothing new to discover; all candidates pre-seeded
+      extractor,
+      env: { LLM_ENABLED: 'true' },
+      now: NOW,
+    });
+
     expect(stats.estimate.withinBudget).toBe(true);
-    expect(stats.estimate.pending).toBe(2);          // capped by --limit, not the full queue of 5
     expect(stats.estimate.maxCalls).toBe(2);
-    expect(stats.drain.claimed).toBe(2);
-    expect(calls).toBe(2);
+    expect(calls).toBe(stats.estimate.maxCalls);
+    expect(calls).toBeLessThan(5);   // strictly fewer than the 5 real candidates available
     expect(stats.extracted).toBe(2);
   });
 });
