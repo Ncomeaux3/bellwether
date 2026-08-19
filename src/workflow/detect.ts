@@ -10,6 +10,7 @@ export interface DetectOptions { rebuild?: boolean; sourceId?: number }
 export interface DetectStats {
   sources: number; pairs: number; created: number;
   confirmed: number; disputed: number; retracted: number;
+  relinked: number; orphaned: number;
 }
 
 export interface DetectDeps { now?: () => Date }
@@ -74,7 +75,10 @@ export function observationsFor(db: DB, sourceId: number): Observation[] {
 
 export function detect(db: DB, opts: DetectOptions = {}, deps: DetectDeps = {}): DetectStats {
   const now = deps.now ?? (() => new Date());
-  const stats: DetectStats = { sources: 0, pairs: 0, created: 0, confirmed: 0, disputed: 0, retracted: 0 };
+  const stats: DetectStats = {
+    sources: 0, pairs: 0, created: 0, confirmed: 0, disputed: 0, retracted: 0,
+    relinked: 0, orphaned: 0,
+  };
   const runId = acquireRun(db, 'detect', { now });
 
   try {
@@ -91,12 +95,41 @@ export function detect(db: DB, opts: DetectOptions = {}, deps: DetectDeps = {}):
       ON CONFLICT (source_id, from_snapshot_id, to_snapshot_id, json_path) DO NOTHING
     `);
 
+    // Spec 12.2: annotations are re-linked by (source_id, json_path,
+    // observed_at) where the change survives rebuild; orphans are deleted.
+    // analyses.change_id is NOT NULL REFERENCES changes(id) with
+    // foreign_keys=ON, so rows are parked in memory, deleted before the
+    // wipe, and re-created against the surviving change afterwards.
+    const parkAnalyses = db.prepare(`
+      SELECT a.id, a.change_id, c.json_path, c.observed_at,
+             a.implication, a.so_what, a.confidence, a.model, a.prompt_version, a.created_at
+      FROM analyses a JOIN changes c ON c.id = a.change_id
+      WHERE c.source_id = ?
+    `);
+    const dropAnalysis = db.prepare('DELETE FROM analyses WHERE id = ?');
+    const findSurvivor = db.prepare(
+      'SELECT id FROM changes WHERE source_id = ? AND json_path = ? AND observed_at = ? LIMIT 1',
+    );
+    const reinsertAnalysis = db.prepare(`
+      INSERT INTO analyses (change_id, implication, so_what, confidence, model, prompt_version, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
     db.transaction(() => {
       for (const source of sources) {
         stats.sources += 1;
         // Spec 12.2: backfill invalidates prior detection, so rebuild re-derives
         // from scratch. Free, because extractions are content-addressed.
-        if (opts.rebuild) wipe.run(source.id);
+        const parked = (opts.rebuild
+          ? parkAnalyses.all(source.id)
+          : []) as {
+            id: number; json_path: string; observed_at: string; implication: string;
+            so_what: string; confidence: string; model: string; prompt_version: string; created_at: string;
+          }[];
+        if (opts.rebuild) {
+          for (const row of parked) dropAnalysis.run(row.id);
+          wipe.run(source.id);
+        }
 
         const observations = observationsFor(db, source.id);
         for (let i = 1; i < observations.length; i += 1) {
@@ -117,6 +150,17 @@ export function detect(db: DB, opts: DetectOptions = {}, deps: DetectDeps = {}):
               observedAt: after.observedAt,
             });
             if (info.changes > 0) stats.created += 1;
+          }
+        }
+
+        for (const row of parked) {
+          const survivor = findSurvivor.get(source.id, row.json_path, row.observed_at) as { id: number } | undefined;
+          if (survivor) {
+            reinsertAnalysis.run(survivor.id, row.implication, row.so_what, row.confidence,
+              row.model, row.prompt_version, row.created_at);
+            stats.relinked += 1;
+          } else {
+            stats.orphaned += 1;   // already deleted above — spec: orphans are deleted
           }
         }
       }
