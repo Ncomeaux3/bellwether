@@ -73,6 +73,22 @@ program
   });
 
 program
+  .command('detect')
+  .description('derive change events from consecutive extractions')
+  .option('--rebuild', 're-derive all change rows from scratch')
+  .option('--source <id>', 'restrict to one source', v => Number(v))
+  .action(async (options: { rebuild?: boolean; source?: number }) => {
+    const { detect } = await import('./workflow/detect.js');
+    const db = openDb(dbPath());
+    const s = detect(db, { rebuild: options.rebuild, sourceId: options.source });
+    console.log(
+      `${s.sources} sources, ${s.pairs} state transitions: ${s.created} new changes, ` +
+      `${s.confirmed} confirmed, ${s.disputed} disputed, ${s.retracted} retracted.`,
+    );
+    db.close();
+  });
+
+program
   .command('export')
   .description('rebuild the published JSON from current database state')
   .option('--publish', 'commit and push the result so Vercel rebuilds')
@@ -131,6 +147,10 @@ program
       `Extracted ${extractStats.extracted}, cached ${extractStats.cached}, ` +
       `skipped ${extractStats.skipped}, degraded ${extractStats.degraded}.`,
     );
+
+    const { detect } = await import('./workflow/detect.js');
+    const detectStats = await detect(db, {});
+    console.log(`Detected ${detectStats.created} changes, ${detectStats.confirmed} confirmed.`);
 
     const outDir = resolve(process.env.BELLWETHER_EXPORT_DIR ?? './web/public/data');
     const exportStats = exportData(db, outDir);
