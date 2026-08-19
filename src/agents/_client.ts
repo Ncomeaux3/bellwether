@@ -50,11 +50,19 @@ export function monthlySpendMicros(db: DB, now: Date = new Date()): number {
 
 export interface BudgetDeps { now?: () => Date; env?: NodeJS.ProcessEnv }
 
-/** Called before every LLM request. Refuses rather than overspending. */
+/**
+ * Called before every LLM request. Refuses rather than overspending.
+ *
+ * A blank/whitespace-only override is treated as unset (falls back to the
+ * default), same as a missing variable — an operator who genuinely wants a
+ * zero cap can write "0", which is unambiguous. A non-numeric override also
+ * falls back to the default rather than producing a NaN cap.
+ */
 export function assertWithinBudget(db: DB, deps: BudgetDeps = {}): void {
   const env = deps.env ?? process.env;
   const now = (deps.now ?? (() => new Date()))();
-  const capUsd = Number(env.BELLWETHER_MONTHLY_BUDGET_USD ?? DEFAULT_MONTHLY_BUDGET_USD);
+  const rawBudget = env.BELLWETHER_MONTHLY_BUDGET_USD?.trim();
+  const capUsd = rawBudget ? Number(rawBudget) : DEFAULT_MONTHLY_BUDGET_USD;
   const capMicros = Math.round((Number.isFinite(capUsd) ? capUsd : DEFAULT_MONTHLY_BUDGET_USD) * 1e6);
   const spent = monthlySpendMicros(db, now);
   if (spent >= capMicros) throw new BudgetExceededError(spent, capMicros);

@@ -91,6 +91,30 @@ describe('assertWithinBudget', () => {
     addExtraction(5_000_000, '2026-08-02T00:00:00.000Z');
     expect(() => assertWithinBudget(db, deps)).toThrow(/5\.00.*5\.00|\$5\.00/);
   });
+
+  it('falls back to the $5 default when the override is non-numeric', () => {
+    addExtraction(1_000_000, '2026-08-02T00:00:00.000Z');   // $1.00 — under the $5 default
+    const env = { BELLWETHER_MONTHLY_BUDGET_USD: 'not-a-number' } as NodeJS.ProcessEnv;
+    expect(() => assertWithinBudget(db, { ...deps, env })).not.toThrow();
+  });
+
+  it('a negative override produces a cap that blocks all spend', () => {
+    addExtraction(1, '2026-08-02T00:00:00.000Z');   // one micro-dollar spent
+    const env = { BELLWETHER_MONTHLY_BUDGET_USD: '-1' } as NodeJS.ProcessEnv;
+    expect(() => assertWithinBudget(db, { ...deps, env })).toThrow(BudgetExceededError);
+  });
+
+  it('an override of "0" produces a zero cap that blocks all spend', () => {
+    addExtraction(1, '2026-08-02T00:00:00.000Z');   // one micro-dollar spent
+    const env = { BELLWETHER_MONTHLY_BUDGET_USD: '0' } as NodeJS.ProcessEnv;
+    expect(() => assertWithinBudget(db, { ...deps, env })).toThrow(BudgetExceededError);
+  });
+
+  it('a blank override is treated as unset and falls back to the $5 default', () => {
+    addExtraction(1_000_000, '2026-08-02T00:00:00.000Z');   // $1.00 — under the $5 default
+    const env = { BELLWETHER_MONTHLY_BUDGET_USD: '   ' } as NodeJS.ProcessEnv;
+    expect(() => assertWithinBudget(db, { ...deps, env })).not.toThrow();
+  });
 });
 
 describe('guardTokens', () => {

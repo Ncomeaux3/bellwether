@@ -57,4 +57,41 @@ describe('groundingViolations', () => {
     );
     expect(v).toHaveLength(2);
   });
+
+  describe('digit-boundary matching', () => {
+    it('rejects 20 hiding inside 2026 — a digit follows', () => {
+      const v = groundingViolations(snap({ tiers: [tier(20)] }), 'Copyright 2026');
+      expect(v).toHaveLength(1);
+    });
+
+    it('rejects 20 hiding inside 20.50 — the real price is 20.50, not 20', () => {
+      const v = groundingViolations(snap({ tiers: [tier(20)] }), 'Pro $20.50/mo');
+      expect(v).toHaveLength(1);
+    });
+
+    it('accepts 20 in "$20/mo"', () => {
+      expect(groundingViolations(snap({ tiers: [tier(20)] }), '$20/mo')).toEqual([]);
+    });
+
+    it('accepts 20 in "Pro $20 per seat"', () => {
+      expect(groundingViolations(snap({ tiers: [tier(20)] }), 'Pro $20 per seat')).toEqual([]);
+    });
+
+    it('accepts 0.09 in "$0.09 per GB"', () => {
+      const v = groundingViolations(
+        snap({ usage_rates: [{ metric: 'egress_gb', unit_price_usd: 0.09 }] }),
+        '$0.09 per GB',
+      );
+      expect(v).toEqual([]);
+    });
+
+    it('accepts 1200 in "$1,200/mo"', () => {
+      expect(groundingViolations(snap({ tiers: [tier(1200)] }), '$1,200/mo')).toEqual([]);
+    });
+
+    it('rejects a fabricated 0 when the page has no standalone zero, only 2026 and $120', () => {
+      const v = groundingViolations(snap({ tiers: [tier(0)] }), 'Copyright 2026. Was $120/mo.');
+      expect(v).toHaveLength(1);
+    });
+  });
 });

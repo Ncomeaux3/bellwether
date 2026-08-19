@@ -1,10 +1,18 @@
 import type { PricingSnapshotData } from '../schema/pricing.js';
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
  * Spec 12.6. `extraction_confidence` is self-reported, and a model confident
  * enough to hallucinate a price is confident enough to report "high". This is
  * the deterministic check that actually holds: a price the model produced but
  * the page never contained is fabricated by construction.
+ *
+ * Matching is anchored on both sides to a digit-or-decimal-point boundary, so
+ * a fabricated "20" cannot hide inside "2026" or inside "20.50" (a different
+ * price). A plain substring test would accept both.
  */
 function appearsIn(value: number, text: string): boolean {
   const digitsOnly = text.replace(/,/g, '');       // "$1,200" -> "$1200"
@@ -13,7 +21,10 @@ function appearsIn(value: number, text: string): boolean {
     value.toFixed(2).replace(/\.?0+$/, ''),        // 20.00 -> "20"
     value.toFixed(2),                              // 0.09 -> "0.09"
   ]);
-  return [...forms].some(f => digitsOnly.includes(f));
+  return [...forms].some(f => {
+    const boundary = new RegExp(`(?<![\\d.])${escapeRegExp(f)}(?![\\d.])`);
+    return boundary.test(digitsOnly);
+  });
 }
 
 /** Empty array means grounded. Each entry names one fabricated value. */
