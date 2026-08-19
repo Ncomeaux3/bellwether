@@ -53,7 +53,7 @@
 
 ### Task 1: `pipeline` + export runs-row
 
-**Interfaces produced:** `runPipeline(db, opts?: { skipCollect?: boolean }, deps?): Promise<PipelineStats>` where `PipelineStats = { steps: { name: string; ok: boolean; summary: string }[] }`; `exportData` unchanged signature but now writes a `runs` row.
+**Interfaces produced:** `runPipeline(db, opts?, deps?): Promise<PipelineStats>` where `PipelineStats = { steps: { name: string; ok: boolean; summary: string }[] }`; `exportData` unchanged signature but now writes a `runs` row.
 
 - Sequence: collect → extract → detect → synthesize → export → heartbeat (heartbeat stub-injected until Task 3; call it via `deps.heartbeat?`). Each step in try/catch: a failure records `{ ok: false, summary: err.message }` and CONTINUES (ruling R4); the pipeline itself never throws. Every step already writes its own `runs` row; export gains one: wrap `exportData`'s body in `acquireRun(db, 'export')`/`finishRun` — on guard trips `finishRun(..., false, ...)` then rethrow (callers depend on the throw; `runPipeline` catches it).
 - `start` in `cli.ts` becomes: migrate, seed, `runPipeline`, print step table, idle. `bw pipeline` runs it once and exits non-zero if any step failed (cron visibility).

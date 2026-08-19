@@ -1,15 +1,17 @@
-import { mkdtempSync, rmSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
+import { seedCompetitors } from '../src/config/seed.js';
 import { runPipeline } from '../src/workflow/pipeline.js';
 import type { CollectStats } from '../src/workflow/collect.js';
 import type { ExtractStats } from '../src/workflow/extract.js';
 import type { DetectStats } from '../src/workflow/detect.js';
 import type { SynthStats } from '../src/workflow/synthesize.js';
 import type { ExportStats } from '../src/workflow/export.js';
+import type { CompetitorConfig } from '../src/config/types.js';
 
 let dir: string;
 let db: DB;
@@ -116,5 +118,39 @@ describe('runPipeline', () => {
     const step = result.steps.find(s => s.name === 'heartbeat')!;
     expect(step.ok).toBe(false);
     expect(step.summary).toBe('ping failed');
+  });
+});
+
+describe('runPipeline — default wiring (real extract/detect/synthesize/export)', () => {
+  const CONFIG: CompetitorConfig[] = [{
+    slug: 'acme', name: 'Acme', homepage: 'https://acme.test',
+    sources: [{ kind: 'pricing', url: 'https://acme.test/pricing', canaryString: 'Enterprise', cadenceHours: 24 }],
+  }];
+
+  it('resolves outDir/siteDir from env.BELLWETHER_EXPORT_DIR and runs every default step for real', async () => {
+    seedCompetitors(db, CONFIG);
+    // One level under its own scratch dir, so siteDir (exportDir/..) is that
+    // scratch dir, not the shared OS tmpdir — cleanup below must not touch that.
+    const exportParent = mkdtempSync(join(tmpdir(), 'bw-pipeline-export-'));
+    const exportDir = join(exportParent, 'data');
+
+    const result = await runPipeline(db, {}, {
+      now: () => new Date('2026-08-19T12:00:00.000Z'),
+      env: { LLM_ENABLED: 'false', BELLWETHER_EXPORT_DIR: exportDir },
+      // Only collect touches the network; extract is killed by LLM_ENABLED=false
+      // and synthesize holds itself (nothing pending) — zero network either way.
+      collectFn: vi.fn(async () => COLLECT_STATS),
+    });
+
+    expect(result.steps.every(s => s.ok)).toBe(true);
+    expect(existsSync(join(exportDir, 'board.json'))).toBe(true);       // outDir
+    expect(existsSync(join(exportDir, '..', 'changes.xml'))).toBe(true); // siteDir
+
+    const run = db.prepare("SELECT state, ok FROM runs WHERE kind = 'export'").get() as
+      { state: string; ok: number };
+    expect(run.state).toBe('ok');
+    expect(run.ok).toBe(1);
+
+    rmSync(exportParent, { recursive: true, force: true });
   });
 });
