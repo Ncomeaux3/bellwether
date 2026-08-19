@@ -89,13 +89,27 @@ program
     db.close();
   });
 
+// backfill's flags are all numeric and feed budget math or a source-id
+// filter, where a silently-NaN value is either wrong output (--budget) or a
+// falsy filter that backfills every source (--source) — so, unlike the
+// older commands' bare `Number(v)`, these are validated at the CLI boundary.
+function numeric(flag: string, { min }: { min: number }) {
+  return (raw: string): number => {
+    const value = Number(raw);
+    if (!Number.isFinite(value) || value < min) {
+      throw new Error(`${flag} needs a number >= ${min}; got "${raw}"`);
+    }
+    return value;
+  };
+}
+
 program
   .command('backfill')
   .description('seed the archive with historical captures from the Internet Archive')
-  .option('--months <n>', 'how far back to look (default 18)', v => Number(v))
-  .option('--budget <usd>', 'one-time spend ceiling for this backfill (default 10.00)', v => Number(v))
-  .option('--limit <n>', 'fetch at most n captures this run', v => Number(v))
-  .option('--source <id>', 'restrict to one source', v => Number(v))
+  .option('--months <n>', 'how far back to look (default 18)', numeric('--months', { min: 1 }))
+  .option('--budget <usd>', 'one-time spend ceiling for this backfill (default 10.00)', numeric('--budget', { min: 0 }))
+  .option('--limit <n>', 'fetch at most n captures this run', numeric('--limit', { min: 1 }))
+  .option('--source <id>', 'restrict to one source', numeric('--source', { min: 1 }))
   .option('--discover-only', 'enqueue captures but fetch none')
   .action(async (options: {
     months?: number; budget?: number; limit?: number; source?: number; discoverOnly?: boolean;

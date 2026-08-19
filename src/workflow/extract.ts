@@ -78,6 +78,7 @@ export async function extract(
       ?? ((text: string) => extractPricing(text, { client: anthropic() as never }));
 
     let llmCalls = 0;
+    let liveBudgetExhausted = false;
     for (const row of pending) {
       stats.considered += 1;
       if (row.raw_content === null) continue;
@@ -114,16 +115,27 @@ export async function extract(
       // sitting near its recurring cap would refuse the whole historical
       // corpus. Bulk history is bounded by `backfill --budget` instead
       // (spec 12.1), which reaches this loop as opts.limit.
-      try {
-        if (!historical) assertWithinBudget(db, { now, env });
-      } catch (err) {
-        if (!(err instanceof BudgetExceededError)) throw err;
-        console.warn(err.message);
-        stats.skipped += pending.length - stats.considered + 1;
-        break;
+      if (!historical) {
+        if (!liveBudgetExhausted) {
+          try {
+            assertWithinBudget(db, { now, env });
+          } catch (err) {
+            if (!(err instanceof BudgetExceededError)) throw err;
+            console.warn(err.message);
+            liveBudgetExhausted = true;
+          }
+        }
+        // Only live rows are gated. Historical rows keep going: they are
+        // invisible to monthlySpendMicros, so gating them on it would be
+        // one-sided, and `break` would abandon every capture ordered after
+        // the first exhausted live row.
+        if (liveBudgetExhausted) { stats.skipped += 1; continue; }
       }
 
       if (opts.dryRun) { stats.skipped += 1; continue; }
+
+      // Checked before the call, not after: a limit of 0 must mean zero calls.
+      if (opts.limit !== undefined && llmCalls >= opts.limit) break;
 
       llmCalls += 1;
       const result = await runExtractor(text);
@@ -140,7 +152,6 @@ export async function extract(
           stats.degraded += 1;
           degrade.run(`extraction ${result.reason}: ${result.detail}`.slice(0, 300), row.source_id);
         }
-        if (opts.limit !== undefined && llmCalls >= opts.limit) break;
         continue;
       }
 
@@ -160,10 +171,6 @@ export async function extract(
       stats.extracted += 1;
       // Spec 12.4: stored, but excluded from diffing by detect.
       if (result.data.currency !== 'USD') stats.mismatched += 1;
-
-      // --limit caps LLM calls made (spec 5.2), not candidates scanned — see
-      // the comment on the `pending` query above.
-      if (opts.limit !== undefined && llmCalls >= opts.limit) break;
     }
 
     finishRun(db, runId, true, stats);

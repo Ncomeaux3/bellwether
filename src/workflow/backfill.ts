@@ -7,6 +7,8 @@ import { PRICE_PATTERN } from './collect.js';
 import { acquireRun, finishRun } from '../ops/runs.js';
 import { detect } from './detect.js';
 import { extract } from './extract.js';
+import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
+import type { ExtractResult } from '../agents/extract_pricing.js';
 
 /** Spec 12.1: Wayback is slow and answers 429 under load. One request per 4s. */
 export const WAYBACK_MIN_INTERVAL_MS = 4_000;
@@ -16,6 +18,8 @@ export const DEFAULT_BACKFILL_MONTHS = 18;
 export interface BackfillDeps {
   fetcher?: (url: string) => Promise<FetchResult>;
   now?: () => Date;
+  /** Test seam: forwarded to extract() so a test can count/stub LLM calls. */
+  extractor?: (text: string) => Promise<ExtractResult>;
 }
 
 export interface DiscoverOptions { months?: number; sourceId?: number }
@@ -258,11 +262,28 @@ export interface BackfillEstimate {
  * page state, when content-addressed dedup (spec 7.1) means many share a hash
  * and cost nothing. `maxCalls` turns the dollar figure into a hard ceiling that
  * `extract`'s existing --limit enforces, so no new spend-guard code exists.
+ *
+ * `pending` means "extractions this run could have to pay for", not "queue
+ * rows": it is capped by `limit` (a sliced run only drains `limit` captures)
+ * and it also counts snapshots that are already drained but not yet
+ * extracted — the routine backlog a sliced run leaves behind, which `extract`
+ * will bill on the very next call if this estimate ignores it.
  */
-export function estimateBackfill(db: DB, budgetUsd: number): BackfillEstimate {
-  const pending = (db.prepare(
+export function estimateBackfill(db: DB, budgetUsd: number, limit?: number): BackfillEstimate {
+  const queued = (db.prepare(
     "SELECT COUNT(*) AS n FROM backfill_queue WHERE state = 'pending' AND attempts < ?",
   ).get(MAX_CAPTURE_ATTEMPTS) as { n: number }).n;
+  const queueWork = limit === undefined ? queued : Math.min(queued, limit);
+
+  const unextracted = (db.prepare(`
+    SELECT COUNT(*) AS n FROM snapshots s
+    WHERE s.ok = 1 AND s.raw_content IS NOT NULL
+      AND NOT EXISTS (
+        SELECT 1 FROM extractions e
+        WHERE e.normalized_hash = s.normalized_hash AND e.prompt_version = ?)
+  `).get(EXTRACT_PROMPT_VERSION) as { n: number }).n;
+
+  const pending = queueWork + unextracted;
 
   const measured = (db.prepare(
     'SELECT AVG(cost_micros) AS mean FROM extractions WHERE cost_micros IS NOT NULL',
@@ -338,7 +359,7 @@ export async function runBackfill(
     stats.discover = await discoverCaptures(
       db, { months: opts.months, sourceId: opts.sourceId }, { fetcher, now },
     );
-    stats.estimate = estimateBackfill(db, budgetUsd);
+    stats.estimate = estimateBackfill(db, budgetUsd, opts.limit);
 
     if (opts.discoverOnly) {
       finishRun(db, runId, true, stats);
@@ -355,7 +376,7 @@ export async function runBackfill(
     stats.drain = await drainQueue(db, { limit: opts.limit }, { fetcher, now });
 
     if (opts.llmEnabled !== false) {
-      const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now });
+      const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now, extractor: deps.extractor });
       stats.extracted = extracted.extracted;
     }
 

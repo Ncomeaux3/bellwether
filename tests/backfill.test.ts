@@ -12,6 +12,7 @@ import {
 import { collect } from '../src/workflow/collect.js';
 import type { FetchResult } from '../src/tools/fetch.js';
 import type { CompetitorConfig } from '../src/config/types.js';
+import type { ExtractResult } from '../src/agents/extract_pricing.js';
 
 let dir: string;
 let db: DB;
@@ -326,6 +327,27 @@ describe('estimateBackfill', () => {
     db.prepare("UPDATE backfill_queue SET state = 'fetched'").run();
     expect(estimateBackfill(db, 10).pending).toBe(0);
   });
+
+  it('caps the queue contribution at --limit, so a sliced run costs only the slice', () => {
+    enqueuePending(10);
+    expect(estimateBackfill(db, 10, 3).pending).toBe(3);
+    // No limit given: the whole queue counts, same as before.
+    expect(estimateBackfill(db, 10).pending).toBe(10);
+  });
+
+  it('counts drained-but-unextracted snapshots too — the backlog a sliced run leaves behind', () => {
+    db.prepare(`
+      INSERT INTO snapshots
+        (source_id, observed_at, fetched_at, ok, http_status, error,
+         raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, '2025-01-16T00:00:00.000Z', '2025-01-16T00:00:00.000Z', 1, 200, NULL,
+              '<html>$20</html>', 'rawh', NULL, 'wayback:20250116000000')
+    `).run();
+
+    // Nothing left in the queue — a naive "queue rows only" estimate would say zero.
+    const est = estimateBackfill(db, 10);
+    expect(est.pending).toBe(1);
+  });
 });
 
 describe('runBackfill', () => {
@@ -406,5 +428,61 @@ describe('runBackfill', () => {
       { state: string; ok: number };
     expect(run.state).toBe('ok');
     expect(run.ok).toBe(1);
+  });
+
+  it('threads estimate.maxCalls through to extract as --limit, so a sliced, tightly-budgeted run makes exactly that many calls', async () => {
+    const okResult: ExtractResult = {
+      ok: true,
+      data: {
+        currency: 'USD',
+        tiers: [{
+          name: 'Pro', monthly_price_usd: 20, annual_price_usd: null,
+          billing_unit: 'per_seat', included_seats: null,
+          is_free: false, is_enterprise: false, headline_features: [],
+        }],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      },
+      inputTokens: 6_000, outputTokens: 600, costMicros: 9_000, attempts: 1,
+    };
+
+    let calls = 0;
+    const extractor = async (): Promise<ExtractResult> => { calls += 1; return okResult; };
+
+    // Five distinct captures, each with distinct page text so none dedup
+    // against each other or cache against a shared extraction. --limit slices
+    // the queue down to 2 (fix 3), and the budget is set to cover exactly
+    // that slice at the fallback mean cost — "low" relative to what all five
+    // would cost ($0.05), not relative to the two actually drained.
+    const fetcher = async (url: string): Promise<FetchResult> => {
+      if (url.includes('/cdx/search/')) {
+        return ok(cdxBody(
+          '20250101000000', '20250102000000', '20250103000000', '20250104000000', '20250105000000',
+        ));
+      }
+      const ts = /web\/(\d{14})id_/.exec(url)?.[1] ?? '0';
+      return ok(`<html><h2>Pro</h2><p>$${ts}/mo</p><h2>Enterprise</h2></html>`);
+    };
+
+    // runBackfill forwards no env of its own to extract() — same as the real
+    // CLI, extract's LLM_ENABLED gate reads process.env, so exercising a real
+    // (stubbed) extractor call here means toggling it like an operator would.
+    const prevLlmEnabled = process.env.LLM_ENABLED;
+    process.env.LLM_ENABLED = 'true';
+    let stats;
+    try {
+      stats = await runBackfill(db, { budgetUsd: 0.02, limit: 2 }, {
+        fetcher, extractor, now: NOW,
+      });
+    } finally {
+      if (prevLlmEnabled === undefined) delete process.env.LLM_ENABLED;
+      else process.env.LLM_ENABLED = prevLlmEnabled;
+    }
+
+    expect(stats.estimate.withinBudget).toBe(true);
+    expect(stats.estimate.pending).toBe(2);          // capped by --limit, not the full queue of 5
+    expect(stats.estimate.maxCalls).toBe(2);
+    expect(stats.drain.claimed).toBe(2);
+    expect(calls).toBe(2);
+    expect(stats.extracted).toBe(2);
   });
 });
