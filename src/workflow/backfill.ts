@@ -325,6 +325,15 @@ export interface BackfillStats {
   extracted: number;
   changes: number;
   confirmed: number;
+  /** Spec 12.1: what this run's extractions actually cost, reconciled against `estimate`. */
+  actualMicros: number;
+}
+
+/** Sum of what the backfill corpus has spent so far — the reconciliation baseline. */
+function backfillSpendMicros(db: DB): number {
+  return (db.prepare(
+    "SELECT COALESCE(SUM(cost_micros), 0) AS n FROM extractions WHERE is_backfill = 1",
+  ).get() as { n: number }).n;
 }
 
 /**
@@ -354,7 +363,7 @@ export async function runBackfill(
       pending: 0, meanCostMicros: 0, estimateMicros: 0,
       budgetMicros: 0, withinBudget: true, maxCalls: 0,
     },
-    extracted: 0, changes: 0, confirmed: 0,
+    extracted: 0, changes: 0, confirmed: 0, actualMicros: 0,
   };
 
   try {
@@ -377,14 +386,46 @@ export async function runBackfill(
 
     stats.drain = await drainQueue(db, { limit: opts.limit }, { fetcher, now });
 
+    // extract()'s error must not skip the rebuild below (spec 12.2): snapshots
+    // are already inserted by this point, so a half-extracted archive still
+    // needs detection re-derived, or nothing else ever repairs it — the
+    // nightly `start` command runs `detect` without --rebuild. Caught here,
+    // rethrown after the rebuild runs.
+    let extractError: unknown;
     if (opts.llmEnabled !== false) {
-      const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now, env: deps.env, extractor: deps.extractor });
-      stats.extracted = extracted.extracted;
+      const spendBefore = backfillSpendMicros(db);
+      try {
+        const extracted = await extract(db, { limit: stats.estimate.maxCalls }, { now, env: deps.env, extractor: deps.extractor });
+        stats.extracted = extracted.extracted;
+      } catch (err) {
+        extractError = err;   // rebuild first — a half-extracted archive still needs re-derivation
+      }
+      stats.actualMicros = backfillSpendMicros(db) - spendBefore;
+
+      // Spec 12.1: reconcile actual spend into the estimate. maxCalls can
+      // never bind once the pre-run gate has passed, so variance is the only
+      // remaining signal the estimator has drifted, and under-estimating is
+      // the dangerous direction — it is the one that silently overruns a
+      // budget the operator trusted.
+      if (stats.extracted > 0) {
+        const estimateMicros = stats.estimate.estimateMicros;
+        const variance = estimateMicros === 0
+          ? (stats.actualMicros > 0 ? Infinity : 0)
+          : Math.abs(stats.actualMicros - estimateMicros) / estimateMicros;
+        if (variance > 0.2) {
+          console.warn(
+            `backfill: actual spend $${(stats.actualMicros / 1e6).toFixed(4)} vs estimate ` +
+            `$${(estimateMicros / 1e6).toFixed(4)} — recalibrate the cost estimate.`,
+          );
+        }
+      }
     }
 
     const detected = detect(db, { rebuild: true, sourceId: opts.sourceId }, { now });
     stats.changes = detected.created;
     stats.confirmed = detected.confirmed;
+
+    if (extractError) throw extractError;
 
     finishRun(db, runId, true, stats);
     return stats;

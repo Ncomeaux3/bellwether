@@ -60,7 +60,8 @@ export const TIMELINE_GAP_DAYS = 75;
 const GAP_MS = TIMELINE_GAP_DAYS * 86_400_000;
 
 export interface TimelinePoint { observed_at: string; price: number }
-export interface TimelineSeries { tier: string; segments: TimelinePoint[][] }
+export type TierClass = 'free' | 'entry' | 'mid' | 'enterprise';
+export interface TimelineSeries { tier: string; segments: TimelinePoint[][]; tier_class: TierClass }
 export interface TimelineMarker { observed_at: string; label: string }
 export interface TimelineCompetitor {
   slug: string; name: string;
@@ -135,9 +136,13 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
       }
     }
 
-    const series: TimelineSeries[] = [...building.entries()]
+    const plotted = [...building.entries()]
       .map(([tier, entry]) => ({ tier, segments: entry.segments }))
-      .filter(s => s.segments.length > 0)
+      .filter(s => s.segments.length > 0);
+    const tierClasses = classifyTiers(plotted);
+
+    const series: TimelineSeries[] = plotted
+      .map(s => ({ ...s, tier_class: tierClasses.get(s.tier)! }))
       .sort((a, b) => a.tier.localeCompare(b.tier));
 
     // The chart only ever plots this range. A marker outside it draws off
@@ -164,6 +169,32 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
   }
 
   return { generated_at: generatedAt, observation_count: observationCount, competitors };
+}
+
+/**
+ * Spec 14.3: color encodes tier rung, never competitor or tier name, so the
+ * classification happens once here rather than in the component. Ranked on
+ * each series' *latest* plotted price — the last point of its last segment —
+ * because a tier's rung can only be judged against what it costs now.
+ */
+function classifyTiers(series: { tier: string; segments: TimelinePoint[][] }[]): Map<string, TierClass> {
+  const classes = new Map<string, TierClass>();
+  const priced: { tier: string; price: number }[] = [];
+
+  for (const s of series) {
+    const last = s.segments[s.segments.length - 1]?.at(-1);
+    if (last === undefined) continue;
+    if (last.price === 0) classes.set(s.tier, 'free');
+    else priced.push({ tier: s.tier, price: last.price });
+  }
+
+  priced.sort((a, b) => a.price - b.price);
+  priced.forEach((p, i) => {
+    const cls: TierClass = i === 0 ? 'entry' : i === priced.length - 1 ? 'enterprise' : 'mid';
+    classes.set(p.tier, cls);
+  });
+
+  return classes;
 }
 
 /**

@@ -208,4 +208,38 @@ describe('buildTimeline', () => {
     expect(payload.competitors[0]!.first_observed_at).toBeNull();
     expect(payload.observation_count).toBe(0);
   });
+
+  it('classifies a four-tier competitor by rung, not by name order (spec 14.3)', () => {
+    observe('2025-01-16T00:00:00.000Z', [
+      { name: 'Free', price: 0 },
+      { name: 'Basic', price: 10 },
+      { name: 'Pro', price: 25 },
+      { name: 'Scale', price: 99 },
+    ]);
+
+    const byTier = new Map(buildTimeline(db, GENERATED).competitors[0]!.series.map(s => [s.tier, s.tier_class]));
+    expect(byTier.get('Free')).toBe('free');
+    expect(byTier.get('Basic')).toBe('entry');
+    expect(byTier.get('Pro')).toBe('mid');
+    expect(byTier.get('Scale')).toBe('enterprise');
+  });
+
+  it('classifies the cheapest of two priced tiers as entry with no free tier present', () => {
+    observe('2025-01-16T00:00:00.000Z', [
+      { name: 'Starter', price: 15 },
+      { name: 'Growth', price: 60 },
+    ]);
+
+    const byTier = new Map(buildTimeline(db, GENERATED).competitors[0]!.series.map(s => [s.tier, s.tier_class]));
+    expect(byTier.get('Starter')).toBe('entry');
+    expect(byTier.get('Growth')).toBe('enterprise');
+  });
+
+  it('classifies a lone priced tier as entry, and a competitor\'s own tier order never flips another competitor\'s hues', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Only', price: 40 }]);
+
+    const series = buildTimeline(db, GENERATED).competitors[0]!.series;
+    expect(series).toHaveLength(1);
+    expect(series[0]!.tier_class).toBe('entry');
+  });
 });

@@ -497,4 +497,57 @@ describe('runBackfill', () => {
     expect(calls).toBeLessThan(5);   // strictly fewer than the 5 real candidates available
     expect(stats.extracted).toBe(2);
   });
+
+  it('reconciles actual spend against the estimate (spec 12.1)', async () => {
+    const okResult: ExtractResult = {
+      ok: true,
+      data: {
+        currency: 'USD',
+        tiers: [{
+          name: 'Pro', monthly_price_usd: 20, annual_price_usd: null,
+          billing_unit: 'per_seat', included_seats: null,
+          is_free: false, is_enterprise: false, headline_features: [],
+        }],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      },
+      inputTokens: 1, outputTokens: 1, costMicros: 7_000, attempts: 1,
+    };
+
+    const stats = await runBackfill(db, {}, {
+      fetcher: router(cdxBody('20250116002909'), PAGE),
+      extractor: async () => okResult,
+      env: { LLM_ENABLED: 'true' },
+      now: NOW,
+    });
+
+    expect(stats.extracted).toBe(1);
+    expect(stats.actualMicros).toBe(7_000);
+  });
+
+  it('still rebuilds detection when the extractor throws mid-run, and the run itself still rejects', async () => {
+    db.prepare(`
+      INSERT INTO changes
+        (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+         before_json, after_json, materiality, state, observed_at)
+      VALUES (1, 1, 2, 'price_change', 'tiers.Pro.monthly_price_usd', '10', '20', 80,
+              'confirmed', '2026-08-01T00:00:00.000Z')
+    `).run();
+
+    await expect(runBackfill(db, {}, {
+      fetcher: router(cdxBody('20250116002909'), PAGE),
+      extractor: async () => { throw new Error('boom'); },
+      env: { LLM_ENABLED: 'true' },
+      now: NOW,
+    })).rejects.toThrow('boom');
+
+    // The stale row named snapshots that no longer pair; the rebuild must
+    // still have run despite the extractor throwing, clearing it rather than
+    // leaving a change spanning newly-inserted history unrepaired.
+    expect((db.prepare('SELECT COUNT(*) n FROM changes').get() as { n: number }).n).toBe(0);
+
+    const run = db.prepare("SELECT state, ok FROM runs WHERE kind = 'backfill'").get() as
+      { state: string; ok: number };
+    expect(run.state).toBe('failed');
+    expect(run.ok).toBe(0);
+  });
 });

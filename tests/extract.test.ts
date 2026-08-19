@@ -268,4 +268,38 @@ describe('historical snapshots (spec 12.1)', () => {
     expect(stats.extracted).toBe(1);
     expect(stats.skipped).toBe(0);
   });
+
+  it('records a permanent error on a historical snapshot whose extraction fails, and never retries it', async () => {
+    addSnapshot(HTML, 1, '2025-01-16T00:00:00.000Z', 'wayback:20250116000000');
+
+    let calls = 0;
+    const failResult: ExtractResult = { ok: false, reason: 'oversized', detail: '31000 tokens exceeds the 20000 budget' };
+    const base = deps(failResult);
+    const countingExtractor = async () => { calls += 1; return failResult; };
+
+    await extract(db, {}, { ...base, extractor: countingExtractor });
+
+    const row = db.prepare('SELECT error FROM snapshots WHERE id = 1').get() as { error: string | null };
+    expect(row.error).toMatch(/oversized/);
+
+    const stats2 = await extract(db, {}, { ...base, extractor: countingExtractor });
+    expect(calls).toBe(1);
+    expect(stats2.considered).toBe(0);
+  });
+
+  it('leaves snapshots.error NULL when a LIVE extraction fails (regression guard)', async () => {
+    addSnapshot(HTML);
+
+    await extract(
+      db,
+      {},
+      deps({ ok: false, reason: 'ungrounded', detail: 'price 20 not in source' }),
+    );
+
+    const row = db.prepare('SELECT error, id FROM snapshots').get() as { error: string | null; id: number };
+    expect(row.error).toBeNull();
+    const source = db.prepare('SELECT degraded_reason FROM sources WHERE id = 1').get() as
+      { degraded_reason: string | null };
+    expect(source.degraded_reason).toContain('ungrounded');
+  });
 });

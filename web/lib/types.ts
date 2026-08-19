@@ -56,9 +56,12 @@ export interface TimelinePoint {
   price: number;
 }
 
+export type TierClass = 'free' | 'entry' | 'mid' | 'enterprise';
+
 export interface TimelineSeries {
   tier: string;
   segments: TimelinePoint[][];
+  tier_class: TierClass;
 }
 
 export interface TimelineMarker {

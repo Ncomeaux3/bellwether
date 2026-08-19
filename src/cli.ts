@@ -159,7 +159,8 @@ program
       `${s.drain.skipped} skipped, ${s.drain.failed} failed.`,
     );
     console.log(
-      `Extracted ${s.extracted}. Rebuilt detection: ${s.changes} changes, ${s.confirmed} confirmed.`,
+      `Extracted ${s.extracted} for ${usd(s.actualMicros)} (estimated ${usd(s.estimate.estimateMicros)}). ` +
+      `Rebuilt detection: ${s.changes} changes, ${s.confirmed} confirmed.`,
     );
     console.log('\nRun `bellwether export` to publish the new history.');
 

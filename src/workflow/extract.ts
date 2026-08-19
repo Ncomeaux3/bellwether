@@ -54,7 +54,7 @@ export async function extract(
     const pending = db.prepare(`
       SELECT s.id, s.source_id, s.raw_content, s.raw_hash, s.normalized_hash, s.provenance
       FROM snapshots s
-      WHERE s.ok = 1 AND s.raw_content IS NOT NULL
+      WHERE s.ok = 1 AND s.raw_content IS NOT NULL AND s.error IS NULL
       ORDER BY s.observed_at, s.id
     `).all() as PendingRow[];
 
@@ -73,6 +73,15 @@ export async function extract(
               @isBackfill, @model, @promptVersion, @inputTokens, @outputTokens, @costMicros, @createdAt)
     `);
     const degrade = db.prepare('UPDATE sources SET degraded_reason = ? WHERE id = ?');
+    // `error` on an ok = 1 snapshot means "fetched fine, permanently unextractable" —
+    // the historical counterpart of degraded_reason above. The three failure
+    // reasons extractPricing can return (oversized, invalid, ungrounded) are all
+    // deterministic properties of the stored content, not transient faults (a
+    // transient API error throws and never reaches this branch), so retrying
+    // buys nothing but re-spend. Recording it once here, and excluding it from
+    // `pending` above, is what stops a failing historical capture from being
+    // re-extracted — at real, budget-bypassing cost — every night forever.
+    const markUnextractable = db.prepare('UPDATE snapshots SET error = ? WHERE id = ?');
 
     const runExtractor = deps.extractor
       ?? ((text: string) => extractPricing(text, { client: anthropic() as never }));
@@ -148,6 +157,7 @@ export async function extract(
         // re-reads the same historical snapshot and re-degrades it.
         if (historical) {
           stats.historicalFailed += 1;
+          markUnextractable.run(`extraction ${result.reason}: ${result.detail}`.slice(0, 300), row.id);
         } else {
           stats.degraded += 1;
           degrade.run(`extraction ${result.reason}: ${result.detail}`.slice(0, 300), row.source_id);
