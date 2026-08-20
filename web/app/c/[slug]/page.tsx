@@ -154,7 +154,8 @@ export default async function CompetitorPage({ params }: { params: Promise<{ slu
         <h2 className="font-display text-2xl font-medium text-ink">Current tiers</h2>
         {competitor.current_tiers.length === 0 ? (
           <p className="mt-2 text-sm text-ink-muted">
-            No current pricing has been extracted for {competitor.name} yet.
+            No current pricing has been extracted for {competitor.name} yet, as of{' '}
+            <Stamp iso={competitor.generated_at || null} empty="the last export" />.
           </p>
         ) : (
           <div className="mt-6 overflow-x-auto">
@@ -204,7 +205,9 @@ export default async function CompetitorPage({ params }: { params: Promise<{ slu
         {competitor.changes.length === 0 ? (
           <p className="mt-2 text-sm text-ink-muted">
             No confirmed changes recorded yet for {competitor.name}
-            {hasHistory && <> since <Stamp iso={competitor.first_observed_at} /></>}.
+            {hasHistory
+              ? <> since <Stamp iso={competitor.first_observed_at} /></>
+              : <>, as of <Stamp iso={competitor.generated_at || null} empty="the last export" /></>}.
           </p>
         ) : (
           <ul className="mt-6 divide-y divide-rule">

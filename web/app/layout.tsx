@@ -20,6 +20,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* React 19 hoists <link> into <head> regardless of where it renders. */}
         <link rel="alternate" type="application/rss+xml" title="Bellwether changes" href="/changes.xml" />
         <div className="mx-auto max-w-5xl px-5 py-10 sm:px-8 sm:py-16">
+          {/* Every page shares this nav — the only way to move between the four
+              route families (board, dataset, mechanics, per-competitor pages)
+              without going back through the browser. */}
+          <nav aria-label="Site" className="mb-10 flex flex-wrap gap-x-6 gap-y-2 font-mono text-sm">
+            <a href="/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+              Bellwether
+            </a>
+            <a href="/data/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+              Data
+            </a>
+            <a href="/how-it-works/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+              How it works
+            </a>
+          </nav>
           {children}
           <footer className="mt-20 border-t border-rule pt-6 text-sm text-ink-muted">
             <p>
@@ -27,8 +41,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               derived data is published, never the pages themselves.
             </p>
             <p className="mt-2">
+              <a href="/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+                Board
+              </a>
+              {' · '}
               <a href="/data/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
                 The dataset
+              </a>
+              {' · '}
+              <a href="/how-it-works/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+                How it works
               </a>
               {' · '}
               <a href="/changes.xml" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">

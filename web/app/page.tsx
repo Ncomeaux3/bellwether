@@ -11,6 +11,13 @@ export default function HomePage() {
   const digest = loadDigest();
   const changes = loadChanges();
   const recentChanges = changes.changes.slice(0, 10);
+  // Real datum for the "no confirmed changes" empty state below: the
+  // earliest observation on file across every competitor, already loaded
+  // via loadTimeline() — no new payload field needed.
+  const earliestObservedAt = timeline.competitors
+    .map(c => c.first_observed_at)
+    .filter((d): d is string => d !== null)
+    .sort()[0] ?? null;
 
   return (
     <main>
@@ -65,7 +72,10 @@ export default function HomePage() {
 
         {timeline.observation_count === 0 ? (
           <p className="mt-6 text-sm text-ink-muted">
-            No history yet. Run <span className="font-mono">bellwether backfill</span> to seed it.
+            No observations recorded yet across {status.total_sources} watched source
+            {status.total_sources === 1 ? '' : 's'}. Run{' '}
+            <span className="font-mono">bellwether backfill</span> to seed history, or{' '}
+            <span className="font-mono">bellwether collect</span> for the first live observation.
           </p>
         ) : (
           <div className="mt-8 grid gap-10">
@@ -97,7 +107,20 @@ export default function HomePage() {
 
         {digest.digest === null ? (
           <p className="mt-6 text-sm text-ink-muted">
-            No digest yet — the first one fires after three confirmed changes.
+            {/* digest.digest === null means no digest has ever fired, so every
+                confirmed change on file is still pending — changes.changes.length
+                is exactly that count, no separate datum required. */}
+            {changes.changes.length >= 3 ? (
+              <>
+                {changes.changes.length} confirmed changes are pending — the next digest fires
+                the following Monday.
+              </>
+            ) : (
+              <>
+                {changes.changes.length} of 3 confirmed changes recorded — the first digest fires
+                once a third arrives, or after 30 days, whichever comes first.
+              </>
+            )}
           </p>
         ) : (
           <article className="mt-6 rounded-lg border border-rule bg-surface-raised p-5">
@@ -124,7 +147,11 @@ export default function HomePage() {
         </p>
 
         {recentChanges.length === 0 ? (
-          <p className="mt-6 text-sm text-ink-muted">No confirmed changes yet.</p>
+          <p className="mt-6 text-sm text-ink-muted">
+            No confirmed changes
+            {earliestObservedAt && <> since <Stamp iso={earliestObservedAt} /></>}. Last checked{' '}
+            <Stamp iso={status.generated_at || null} empty="not yet" />.
+          </p>
         ) : (
           <ul className="mt-6 divide-y divide-rule">
             {recentChanges.map(c => (

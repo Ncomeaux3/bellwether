@@ -71,9 +71,13 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
   const moments = new Set(points.map(p => p.observed_at)).size;
   if (moments < 2) {
     if (scale !== 'hero') return null;
+    // Spec 14.3: specific and directional, not "no data" — name what is
+    // actually on file (a count, and a date when there is one to give).
     return (
       <p className="text-sm text-ink-muted">
-        Not enough history yet — a line needs at least two observations.
+        {moments === 0
+          ? `No pricing observed yet for ${competitor.name}.`
+          : `One observation recorded, ${month(points[0]!.observed_at)} — a trend line needs a second.`}
       </p>
     );
   }

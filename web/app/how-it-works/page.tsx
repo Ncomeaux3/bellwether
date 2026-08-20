@@ -22,7 +22,7 @@ const PIPELINE: { step: string; body: string }[] = [
 ];
 
 export default function HowItWorksPage() {
-  const { filter, coverage, health, cost } = loadMechanics();
+  const { generated_at, filter, coverage, health, cost } = loadMechanics();
 
   return (
     <main>
@@ -119,7 +119,10 @@ export default function HowItWorksPage() {
               {coverage.backfilled_snapshots} backfilled from the Internet Archive.
             </>
           ) : (
-            'No observations recorded yet.'
+            <>
+              {filter.total_snapshots} snapshot{filter.total_snapshots === 1 ? '' : 's'} collected
+              so far; none has produced a priced observation yet.
+            </>
           )}
         </p>
       </section>
@@ -211,7 +214,12 @@ export default function HowItWorksPage() {
                 </tr>
               ))}
               {health.runs.length === 0 && (
-                <tr><td colSpan={3} className="py-3 text-sm text-ink-muted">No completed runs recorded yet.</td></tr>
+                <tr>
+                  <td colSpan={3} className="py-3 text-sm text-ink-muted">
+                    No pipeline step has completed yet, as of{' '}
+                    <Stamp iso={generated_at || null} empty="the last export" />.
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
