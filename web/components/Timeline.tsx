@@ -1,3 +1,4 @@
+import { stepPoints } from '@/lib/data';
 import type { TierClass, TimelineCompetitor } from '@/lib/types';
 
 const WIDTH = 720;
@@ -85,7 +86,7 @@ export function Timeline({ competitor }: { competitor: TimelineCompetitor }) {
           s.segments.map((segment, j) => (
             <g key={`${s.tier}-${j}`}>
               <polyline
-                points={segment.map(p => `${x(p.observed_at)},${y(p.price)}`).join(' ')}
+                points={stepPoints(segment).map(p => `${x(p.observed_at)},${y(p.price)}`).join(' ')}
                 fill="none" stroke={TIER_COLORS[s.tier_class]}
                 strokeWidth="2" strokeLinejoin="round" strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"

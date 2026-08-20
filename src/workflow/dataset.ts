@@ -68,6 +68,35 @@ export function describeChange(row: {
   return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
 }
 
+/**
+ * Spec 14.3: "Step-after interpolation, never smooth lines. Prices are
+ * piecewise constant. A line sloping from $16 to $18 between two monthly
+ * observations asserts a continuous change that did not happen. This is a
+ * correctness rule, not a stylistic one, and it is the most common way a
+ * pricing chart lies." A straight polyline between observations draws that
+ * lie; inserting a point at the next date holding the CURRENT price makes
+ * the segment horizontal-then-vertical (the vertical leg is implicit once
+ * the next original point is drawn), matching what actually happened: the
+ * price held, then jumped.
+ *
+ * Pinned to web/lib/data.ts's copy of this function by the cross-check test
+ * in tests/dataset.test.ts (web/ cannot import from src/).
+ */
+export function stepPoints(
+  points: { observed_at: string; price: number }[],
+): { observed_at: string; price: number }[] {
+  if (points.length < 2) return [...points];
+
+  const out: { observed_at: string; price: number }[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const current = points[i]!;
+    const next = points[i + 1]!;
+    out.push(current, { observed_at: next.observed_at, price: current.price });
+  }
+  out.push(points[points.length - 1]!);
+  return out;
+}
+
 const classifyProvenance = (p: string): 'live' | 'wayback' => (p.startsWith('wayback:') ? 'wayback' : 'live');
 
 /**

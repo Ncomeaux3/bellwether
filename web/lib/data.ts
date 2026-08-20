@@ -77,3 +77,32 @@ export function changeLabel(c: Pick<ChangeEntry, 'json_path' | 'change_type' | '
   }
   return `${tier} ${c.change_type.replace(/_/g, ' ')}`;
 }
+
+/**
+ * Same rule as the exporter's stepPoints (src/workflow/dataset.ts), ported
+ * rather than imported — web/ cannot import from src/. Spec 14.3: "Step-after
+ * interpolation, never smooth lines. Prices are piecewise constant. A line
+ * sloping from $16 to $18 between two monthly observations asserts a
+ * continuous change that did not happen. This is a correctness rule, not a
+ * stylistic one, and it is the most common way a pricing chart lies."
+ * Inserting a point at the next date holding the CURRENT price makes the
+ * segment horizontal-then-vertical instead of diagonal.
+ *
+ * Pinned to describeChange's sibling by the cross-check test in the root
+ * suite (tests/dataset.test.ts) — nothing else guards against the two
+ * copies drifting apart.
+ */
+export function stepPoints(
+  points: { observed_at: string; price: number }[],
+): { observed_at: string; price: number }[] {
+  if (points.length < 2) return [...points];
+
+  const out: { observed_at: string; price: number }[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const current = points[i]!;
+    const next = points[i + 1]!;
+    out.push(current, { observed_at: next.observed_at, price: current.price });
+  }
+  out.push(points[points.length - 1]!);
+  return out;
+}

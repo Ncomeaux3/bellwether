@@ -6,7 +6,7 @@ import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import {
-  buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, describeChange,
+  buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, describeChange, stepPoints,
   type FeedChange,
 } from '../src/workflow/dataset.js';
 import { EXTRACT_PROMPT_VERSION } from '../src/schema/pricing.js';
@@ -234,6 +234,60 @@ describe('describeChange', () => {
   });
 });
 
+describe('stepPoints', () => {
+  it('expands three points ($8/$8/$10) to five, with the step landing on the next date', () => {
+    const points = [
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+    ];
+    expect(stepPoints(points)).toEqual([
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 }, // step to next date, current price
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 8 }, // step to next date, current price
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+    ]);
+  });
+
+  it('leaves a one-point segment unchanged', () => {
+    const points = [{ observed_at: '2025-01-16T00:00:00.000Z', price: 8 }];
+    expect(stepPoints(points)).toEqual(points);
+  });
+
+  it('leaves an empty segment unchanged', () => {
+    expect(stepPoints([])).toEqual([]);
+  });
+
+  it('never reorders or drops an original point', () => {
+    const points = [
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+    ];
+    const result = stepPoints(points);
+    // Every original point object survives, by identity, as a subsequence
+    // of the output in its original order — searching forward from the
+    // last match found guards against reordering, not just presence.
+    let searchFrom = 0;
+    for (const original of points) {
+      const foundAt = result.indexOf(original, searchFrom);
+      expect(foundAt).toBeGreaterThanOrEqual(searchFrom);
+      searchFrom = foundAt + 1;
+    }
+  });
+
+  it('does not mutate the input array or its points', () => {
+    const points = [
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 10 },
+    ];
+    const snapshot = JSON.parse(JSON.stringify(points));
+    stepPoints(points);
+    expect(points).toEqual(snapshot);
+  });
+});
+
 function makeChange(overrides: Partial<FeedChange> = {}): FeedChange {
   return {
     competitor: 'Acme', slug: 'acme', change_type: 'price_changed',
@@ -371,6 +425,29 @@ describe('the web changeLabel stays pinned to describeChange', () => {
         after: c.after_json === null ? null : JSON.parse(c.after_json),
       });
       expect(web, `${c.change_type} ${c.json_path}`).toBe(describeChange(c));
+    }
+  });
+});
+
+describe('the web stepPoints stays pinned to src stepPoints', () => {
+  // web/ cannot import from src/, so Timeline.tsx's step-after interpolation
+  // is an intentional reimplementation of stepPoints's expansion. Nothing
+  // else guards against drift — the web package has no test runner — so
+  // this pins the two together the same way changeLabel is pinned above.
+  it('agrees on a multi-point series, a one-point segment, and an empty segment', async () => {
+    const { stepPoints: webStepPoints } = await import('../web/lib/data.js');
+
+    const cases: { observed_at: string; price: number }[][] = [
+      [
+        { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+        { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+        { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+      ],
+      [{ observed_at: '2025-01-16T00:00:00.000Z', price: 8 }],
+      [],
+    ];
+    for (const points of cases) {
+      expect(webStepPoints(points)).toEqual(stepPoints(points));
     }
   });
 });
