@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T03:05:21.651Z",
+  "generated_at": "2026-08-20T07:00:59.550Z",
   "competitors": [
     {
       "slug": "figma",
@@ -10,9 +10,9 @@
           "kind": "pricing",
           "url": "https://www.figma.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-18T15:01:15.439Z",
-          "last_ok_at": "2026-08-18T15:01:15.439Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-08-20T07:00:14.017Z",
+          "last_ok_at": "2026-08-20T07:00:14.017Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -99,9 +99,9 @@
           "kind": "pricing",
           "url": "https://linear.app/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-18T15:00:52.010Z",
-          "last_ok_at": "2026-08-18T15:00:52.010Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-08-19T23:28:17.074Z",
+          "last_ok_at": "2026-08-19T23:28:17.074Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -131,7 +131,7 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "All Free features",
+                  "All Free features +",
                   "5 teams",
                   "Unlimited issues",
                   "Unlimited file uploads",
@@ -147,12 +147,12 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "All Basic features",
+                  "All Basic features +",
                   "Unlimited teams",
                   "Private teams and guests",
                   "Triage Intelligence",
                   "Loops",
-                  "Code Intelligence (beta)",
+                  "Code Intelligence",
                   "Linear Insights",
                   "Linear Asks"
                 ]
@@ -166,7 +166,7 @@
                 "is_free": false,
                 "is_enterprise": true,
                 "headline_features": [
-                  "All Business features",
+                  "All Business features +",
                   "Invoice/PO billing",
                   "SAML and SCIM",
                   "Granular admin controls",
@@ -178,7 +178,7 @@
               }
             ],
             "usage_rates": [],
-            "notes": "Basic and Business tiers show '$X per user/month' with 'Billed yearly' notation, indicating annual commitment with monthly per-seat rates.",
+            "notes": "Basic and Business tiers show per user/month pricing with annual billing. Enterprise tier shows 'Contact sales' with custom annual billing only.",
             "extraction_confidence": "high"
           }
         }
@@ -193,9 +193,9 @@
           "kind": "pricing",
           "url": "https://www.notion.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-18T15:01:03.831Z",
-          "last_ok_at": "2026-08-18T15:01:03.831Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-08-19T23:28:28.899Z",
+          "last_ok_at": "2026-08-19T23:28:28.899Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -302,9 +302,9 @@
           "kind": "pricing",
           "url": "https://www.postman.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-18T15:01:52.314Z",
-          "last_ok_at": "2026-08-18T15:01:52.314Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-08-20T07:00:48.495Z",
+          "last_ok_at": "2026-08-20T07:00:48.495Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -384,24 +384,32 @@
                 "unit_price_usd": 0.05
               },
               {
-                "metric": "AI credits overage (Solo tier)",
+                "metric": "AI credits overage (Solo+)",
                 "unit_price_usd": 0.04
               },
               {
-                "metric": "AI credits overage (Team tier)",
+                "metric": "AI credits overage (Team)",
                 "unit_price_usd": 0.035
               },
               {
-                "metric": "Monitoring requests",
+                "metric": "Monitoring per 50,000 requests / team / month",
                 "unit_price_usd": 20
               },
               {
-                "metric": "Flows credits",
+                "metric": "Flows credits per 1000",
                 "unit_price_usd": 1
+              },
+              {
+                "metric": "Simple Security add-on per user/month",
+                "unit_price_usd": 6
+              },
+              {
+                "metric": "Advanced Security Administration per user/month",
+                "unit_price_usd": 29
               }
             ],
-            "notes": "Page shows 'billed annually' pricing for Solo ($9/mo), Team ($19/user/mo), and Enterprise ($49/user/mo) tiers. Annual billing saves up to 25%. Simple Security add-on ($6/user/month) available on Team and Enterprise. Advanced Security Administration ($29/user/month) and Premium Support (contact sales) available on Enterprise only. Monitoring costs $20 per 50,000 requests / team / month on paid plans. AI credits and Flows credits have volume-based pricing available for Enterprise customers.",
-            "extraction_confidence": "high"
+            "notes": "Solo plan shown at $9/month billed annually. Team and Enterprise plans shown at per-user monthly rates billed annually. Free plan is $0. Solo plan description mentions '400 AI credits / month' at $9/month (billed annually). Annual discount of up to 25% mentioned but specific annual prices not provided for paid tiers beyond monthly rates with annual billing. Simple Security is a Team plan add-on ($6/user/month). Advanced Security Administration and Premium Support are Enterprise plan only add-ons.",
+            "extraction_confidence": "medium"
           }
         }
       ]
@@ -415,9 +423,9 @@
           "kind": "pricing",
           "url": "https://sentry.io/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-18T15:01:40.594Z",
-          "last_ok_at": "2026-08-18T15:01:40.594Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-08-20T07:00:36.816Z",
+          "last_ok_at": "2026-08-20T07:00:36.816Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -547,9 +555,9 @@
           "kind": "pricing",
           "url": "https://supabase.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-18T15:01:28.444Z",
-          "last_ok_at": "2026-08-18T15:01:28.444Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-08-20T07:00:24.435Z",
+          "last_ok_at": "2026-08-20T07:00:24.435Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",

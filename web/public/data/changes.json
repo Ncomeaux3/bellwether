@@ -1,7 +1,18 @@
 {
-  "generated_at": "2026-08-20T03:05:21.651Z",
+  "generated_at": "2026-08-20T07:00:59.550Z",
   "threshold": 40,
   "changes": [
+    {
+      "competitor": "Supabase",
+      "slug": "supabase",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "flat",
+      "after": "usage",
+      "materiality": 70,
+      "observed_at": "2026-08-18T15:01:28.444Z",
+      "annotation": null
+    },
     {
       "competitor": "Postman",
       "slug": "postman",

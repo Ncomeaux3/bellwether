@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-20T03:05:21.651Z",
-  "observation_count": 74,
+  "generated_at": "2026-08-20T07:00:59.550Z",
+  "observation_count": 76,
   "competitors": [
     {
       "slug": "figma",
       "name": "Figma",
       "first_observed_at": "2026-04-09T02:32:27.000Z",
-      "last_observed_at": "2026-08-18T15:01:15.439Z",
+      "last_observed_at": "2026-08-06T03:10:08.000Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -87,7 +87,7 @@
       "slug": "linear",
       "name": "Linear",
       "first_observed_at": "2025-02-19T07:53:31.000Z",
-      "last_observed_at": "2026-08-18T15:00:52.010Z",
+      "last_observed_at": "2026-08-19T23:28:17.074Z",
       "series": [
         {
           "tier": "Basic",
@@ -143,6 +143,10 @@
               },
               {
                 "observed_at": "2026-08-03T13:02:45.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-08-19T23:28:17.074Z",
                 "price": 10
               }
             ]
@@ -204,6 +208,10 @@
               {
                 "observed_at": "2026-08-03T13:02:45.000Z",
                 "price": 16
+              },
+              {
+                "observed_at": "2026-08-19T23:28:17.074Z",
+                "price": 16
               }
             ]
           ],
@@ -264,6 +272,10 @@
               {
                 "observed_at": "2026-08-03T13:02:45.000Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-08-19T23:28:17.074Z",
+                "price": 0
               }
             ]
           ],
@@ -273,11 +285,11 @@
       "markers": [
         {
           "observed_at": "2025-11-12T01:16:11.000Z",
-          "label": "Basic $8 → $10"
+          "label": "Basic 8 to 10"
         },
         {
           "observed_at": "2025-11-12T01:16:11.000Z",
-          "label": "Business $14 → $16"
+          "label": "Business 14 to 16"
         }
       ]
     },
@@ -517,7 +529,7 @@
         },
         {
           "observed_at": "2025-06-03T01:07:05.000Z",
-          "label": "Business $15 → $20"
+          "label": "Business 15 to 20"
         },
         {
           "observed_at": "2025-09-01T07:52:45.000Z",
@@ -533,7 +545,7 @@
       "slug": "postman",
       "name": "Postman",
       "first_observed_at": "2025-02-23T11:47:21.000Z",
-      "last_observed_at": "2026-08-18T15:01:52.314Z",
+      "last_observed_at": "2026-08-20T07:00:48.495Z",
       "series": [
         {
           "tier": "Basic",
@@ -628,6 +640,10 @@
               {
                 "observed_at": "2026-08-18T15:01:52.314Z",
                 "price": 49
+              },
+              {
+                "observed_at": "2026-08-20T07:00:48.495Z",
+                "price": 49
               }
             ]
           ],
@@ -689,6 +705,10 @@
               },
               {
                 "observed_at": "2026-08-18T15:01:52.314Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-20T07:00:48.495Z",
                 "price": 0
               }
             ]
@@ -758,6 +778,10 @@
               {
                 "observed_at": "2026-08-18T15:01:52.314Z",
                 "price": 9
+              },
+              {
+                "observed_at": "2026-08-20T07:00:48.495Z",
+                "price": 9
               }
             ]
           ],
@@ -789,6 +813,10 @@
               },
               {
                 "observed_at": "2026-08-18T15:01:52.314Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-08-20T07:00:48.495Z",
                 "price": 19
               }
             ]
@@ -827,7 +855,7 @@
       "slug": "sentry",
       "name": "Sentry",
       "first_observed_at": "2025-02-19T05:34:02.000Z",
-      "last_observed_at": "2026-08-18T15:01:40.594Z",
+      "last_observed_at": "2026-08-11T15:50:53.000Z",
       "series": [
         {
           "tier": "business",
@@ -1313,7 +1341,12 @@
           "tier_class": "enterprise"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-08-18T15:01:28.444Z",
+          "label": "Pro billing unit changed"
+        }
+      ]
     }
   ]
 }
