@@ -73,11 +73,45 @@ function countPriceMatches(text: string): number {
   return (text.match(re) ?? []).length;
 }
 
-/** Longest qualifying heading with no digit — a canary must survive a legitimate price change. */
-function pickCanary(headings: string[]): string | null {
-  const noDigit = headings.filter(h => !/\d/.test(h));
-  if (noDigit.length === 0) return null;
-  return noDigit.reduce((longest, h) => h.length > longest.length ? h : longest);
+function countOccurrences(haystack: string, needle: string): number {
+  return needle === '' ? 0 : haystack.split(needle).length - 1;
+}
+
+/**
+ * INVARIANT: `collect.ts`'s `healthProblem` checks a source's canary against
+ * the RAW response body it just fetched — not any normalized or sliced
+ * representation of it. A canary must therefore be selected against the raw
+ * body too, or it can never be found there and the source degrades on its
+ * first fetch, permanently. This is the same bug class that keeps recurring
+ * here (M3's normalizer, M6's timeline/dataset date split): a value derived
+ * from one representation of a page, checked against a different one.
+ *
+ * Fix round 7 live evidence: `normalizeAndSlice`'s whitespace collapsing
+ * merges adjacent elements with nothing between them in the source
+ * (`<h2>Business</h2><span>Monthly</span>` -> "BusinessMonthlyAnnual" in the
+ * flattened text — see HEADING_ADJACENT_TO_PRICE's own doc comment for why
+ * that merge happens). That concatenated fragment is a real match in the
+ * normalized text but can never occur in the raw HTML, where the tags are
+ * still between the words — 9 of 27 admitted sources degraded on their very
+ * first collection this way.
+ *
+ * Longest qualifying heading, preferring one that occurs 1-2 times in the
+ * raw body (specific enough to prove nothing changed) over one that occurs
+ * many times (boilerplate/nav chrome present on every page, which would
+ * still be present after a redesign and so would never catch one).
+ */
+function pickCanary(headings: string[], rawHtml: string): string | null {
+  const candidates = headings
+    .filter(h => !/\d/.test(h))
+    .map(text => ({ text, count: countOccurrences(rawHtml, text) }))
+    .filter(({ count }) => count >= 1); // must actually occur in the raw body collect() will check against
+
+  if (candidates.length === 0) return null;
+
+  const rare = candidates.filter(c => c.count <= 2);
+  const pool = rare.length > 0 ? rare : candidates;
+
+  return pool.reduce((longest, c) => c.text.length > longest.text.length ? c : longest).text;
 }
 
 /**
@@ -96,7 +130,7 @@ export function scoreCandidate(rawHtml: string): QualifyVerdict {
   const priceMatches = countPriceMatches(text);
   const headings = findTierHeadings(text);
   const tierHeadings = headings.length;
-  const proposedCanary = pickCanary(headings);
+  const proposedCanary = pickCanary(headings, rawHtml);
 
   if (priceMatches >= MIN_PRICE_MATCHES) {
     return {

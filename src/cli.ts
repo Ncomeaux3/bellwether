@@ -65,13 +65,21 @@ program
   .option('--emit-config', 'print TypeScript competitor entries for every pass/admit verdict and exit')
   .option('--verify', 'run two real extractions against every pass verdict, admitting only on reproducible agreement')
   .option('--budget <usd>', 'one-time spend ceiling for --verify (default 3.00)', v => Number(v))
-  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean; verify?: boolean; budget?: number }) => {
-    const { qualifyCandidates, verifyCandidates, emitConfig } = await import('./workflow/qualify.js');
+  .option('--recanary', 're-fetch every admitted candidate and re-derive proposed_canary under the fixed rule (no LLM)')
+  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean; verify?: boolean; budget?: number; recanary?: boolean }) => {
+    const { qualifyCandidates, verifyCandidates, recanaryCandidates, emitConfig } = await import('./workflow/qualify.js');
     const db = openDb(dbPath());
     const usd = (micros: number) => `$${(micros / 1e6).toFixed(2)}`;
 
     if (options.emitConfig) {
       console.log(emitConfig(db));
+      db.close();
+      return;
+    }
+
+    if (options.recanary) {
+      const stats = await recanaryCandidates(db, { limit: options.limit });
+      console.log(`Re-derived ${stats.considered}: ${stats.changed} changed, ${stats.unchanged} unchanged, ${stats.errored} errored.`);
       db.close();
       return;
     }

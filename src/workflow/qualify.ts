@@ -481,3 +481,60 @@ export async function verifyCandidates(
   stats.actualMicros = actualMicros;
   return stats;
 }
+
+// --- recanary --------------------------------------------------------------
+
+export interface RecanaryOptions { limit?: number }
+export interface RecanaryDeps { fetcher?: (url: string) => Promise<FetchResult> }
+
+export interface RecanaryStats { considered: number; changed: number; unchanged: number; errored: number }
+
+/**
+ * Fix round 7: re-derives `proposed_canary` for the admitted set under the
+ * fixed rule (a canary must occur in the raw body — see pickCanary's own
+ * invariant comment in tools/qualify.ts). Pre-filter scoring only, same as
+ * `qualifyCandidates` — no LLM, so it costs nothing but polite fetches, and
+ * is safe to re-run any number of times. Per-candidate try/catch mirrors
+ * verifyCandidates' isolation (fix round 4): one blocked or failing fetch
+ * costs one candidate, not the run.
+ */
+export async function recanaryCandidates(
+  db: DB,
+  opts: RecanaryOptions = {},
+  deps: RecanaryDeps = {},
+): Promise<RecanaryStats> {
+  const fetcher = deps.fetcher ?? qualifyFetcher();
+  const stats: RecanaryStats = { considered: 0, changed: 0, unchanged: 0, errored: 0 };
+
+  const rows = db.prepare(`
+    SELECT url, proposed_canary FROM candidates WHERE verdict = 'admit' ORDER BY name
+    ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
+  `).all() as { url: string; proposed_canary: string | null }[];
+
+  const update = db.prepare('UPDATE candidates SET proposed_canary = ? WHERE url = ?');
+
+  for (const row of rows) {
+    stats.considered += 1;
+    try {
+      const fetched = await fetcher(row.url);
+      if (!fetched.ok || fetched.body === null) {
+        stats.errored += 1;
+        console.error(`qualify --recanary: ${row.url} fetch failed: ${fetched.error ?? `HTTP ${fetched.httpStatus}`}`);
+        continue;
+      }
+
+      const { proposedCanary } = scoreCandidate(fetched.body);
+      if (proposedCanary !== row.proposed_canary) {
+        stats.changed += 1;
+        update.run(proposedCanary, row.url);
+      } else {
+        stats.unchanged += 1;
+      }
+    } catch (err) {
+      stats.errored += 1;
+      console.error(`qualify --recanary: ${row.url} errored: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  return stats;
+}

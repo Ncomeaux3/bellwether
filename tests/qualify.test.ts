@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { scoreCandidate } from '../src/tools/qualify.js';
-import { qualifyCandidates, verifyCandidates } from '../src/workflow/qualify.js';
+import { qualifyCandidates, verifyCandidates, recanaryCandidates } from '../src/workflow/qualify.js';
 import type { FetchResult } from '../src/tools/fetch.js';
 import type { ExtractResult } from '../src/agents/extract_pricing.js';
 import type { TierData } from '../src/schema/pricing.js';
@@ -806,5 +806,109 @@ describe('verifyCandidates — fix round 6: admission is a range (MIN_PRICED_TIE
     expect(row.verdict).toBe('reject');
     expect(row.reason).toBe('prices per product or unit rather than per plan (27 priced entries)');
     expect(row.priced_tiers).toBeNull();
+  });
+});
+
+describe('scoreCandidate — fix round 7: a proposed canary must be verified against the RAW body', () => {
+  it('a heading present in the normalized text but split by tags in the raw HTML is not proposed', () => {
+    // <h2>Business</h2><span>Monthly</span><span>Annual</span> flattens to the
+    // single normalized-text token "BusinessMonthlyAnnual" (no whitespace
+    // between the source elements) — a string that can never occur in the
+    // raw HTML, where the tags still sit between the words.
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Team</h2><span>Yearly</span><p>$199/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).not.toBe('BusinessMonthlyAnnual');
+    // Nothing else qualifies in this fixture either — see the null test below.
+    expect(result.proposedCanary).toBeNull();
+  });
+
+  it('a heading present in both the normalized text and the raw HTML is proposed', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Enterprise</h2><p>$199/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    // "BusinessMonthlyAnnual" is filtered out (never occurs in raw HTML);
+    // "Enterprise" is a real, unsplit tag and is what remains.
+    expect(result.proposedCanary).toBe('Enterprise');
+    expect(html.includes(result.proposedCanary!)).toBe(true);
+  });
+
+  it('a heading occurring 50 times in the raw body is skipped in favour of a rarer one', () => {
+    const filler = Array.from({ length: 50 }, () => '<li>Enterprise</li>').join('');
+    const html =
+      `<html><body>${filler}<main>` +
+      '<div class="pricing-tier"><h2>Enterprise</h2><p>$199/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Growth</h2><p>$49/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    // "Enterprise" occurs 51 times (boilerplate nav chrome) — too common to
+    // detect a redesign. "Growth" occurs once and is preferred.
+    expect(result.proposedCanary).toBe('Growth');
+  });
+
+  it('is null when nothing qualifies (every candidate heading is a raw-HTML-unmatchable merge)', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Team</h2><span>Yearly</span><p>$199/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.tierHeadings).toBeGreaterThan(0); // the merged headings ARE counted as signal
+    expect(result.proposedCanary).toBeNull();        // but none of them qualify as a canary
+  });
+});
+
+describe('recanaryCandidates — fix round 7: re-derive canaries for the admitted set', () => {
+  function insertAdmitCandidate(url: string, proposedCanary: string | null, name = 'Acme'): void {
+    db.prepare(`
+      INSERT INTO candidates (url, name, category, verdict, reason, price_matches, tier_headings, proposed_canary, http_status, screened_at)
+      VALUES (?, ?, 'hosting', 'admit', 'test fixture', 3, 3, ?, 200, '2026-08-20T00:00:00.000Z')
+    `).run(url, name, proposedCanary);
+  }
+
+  it('re-fetches, recomputes under the fixed rule, and updates only what changed — no LLM involved', async () => {
+    // A: stored canary was the old bug's merged fragment; re-deriving against
+    // the same page's raw HTML now correctly falls through to "Enterprise".
+    insertAdmitCandidate('https://acme.test/a', 'BusinessMonthlyAnnual', 'CandA');
+    // B: already correct — re-deriving must be a no-op.
+    insertAdmitCandidate('https://acme.test/b', 'Enterprise', 'CandB');
+
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Enterprise</h2><p>$199/mo</p></div>' +
+      '</main></body></html>';
+
+    const stats = await recanaryCandidates(db, {}, { fetcher: async () => ok(html) });
+
+    expect(stats.considered).toBe(2);
+    expect(stats.changed).toBe(1);
+    expect(stats.unchanged).toBe(1);
+
+    const rowA = db.prepare('SELECT proposed_canary FROM candidates WHERE url = ?').get('https://acme.test/a') as { proposed_canary: string | null };
+    const rowB = db.prepare('SELECT proposed_canary FROM candidates WHERE url = ?').get('https://acme.test/b') as { proposed_canary: string | null };
+    expect(rowA.proposed_canary).toBe('Enterprise');
+    expect(rowB.proposed_canary).toBe('Enterprise');
+  });
+
+  it('a fetch failure is isolated to that candidate and counted as errored', async () => {
+    insertAdmitCandidate('https://acme.test/gone', 'Enterprise', 'CandGone');
+
+    const stats = await recanaryCandidates(db, {}, { fetcher: async () => fail(503, 'HTTP 503') });
+
+    expect(stats.errored).toBe(1);
+    expect(stats.changed).toBe(0);
+    const row = db.prepare('SELECT proposed_canary FROM candidates WHERE url = ?').get('https://acme.test/gone') as { proposed_canary: string | null };
+    expect(row.proposed_canary).toBe('Enterprise'); // untouched
   });
 });
