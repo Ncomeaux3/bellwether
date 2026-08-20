@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T01:18:21.112Z",
+  "generated_at": "2026-08-20T03:04:27.048Z",
   "license": "CC BY 4.0",
   "schema_version": 1,
   "rows": [
@@ -205,7 +205,7 @@
       "first_observed_at": "2025-09-01T07:52:45.000Z",
       "last_observed_at": "2026-08-18T15:01:03.831Z",
       "monthly_price_usd": 0,
-      "annual_price_usd": null,
+      "annual_price_usd": 0,
       "billing_unit": "per_seat",
       "included_seats": null,
       "is_free": true,
