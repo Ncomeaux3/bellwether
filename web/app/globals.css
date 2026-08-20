@@ -14,19 +14,42 @@
 
   /* Spec 14.3: categorical, four hues in fixed ordinal order (free / entry /
      mid / enterprise), never cycled, and never reusing a status hue as a
-     fourth series. Chosen for hue-and-lightness separation from the
-     ok/degraded/failing trio above. Spec 14.3 also calls for
+     fourth series. Re-tuned in M6 task 2: the M3 values were separated by
+     hue alone and failed adjacent-pair contrast badly (measured 1.04-1.48:1
+     in light, 1.01-1.17:1 in dark — see task-2-report.md for the full
+     by-hand table). These values zigzag lightness across the ordinal order
+     (free/mid mid-lightness, entry/enterprise near the light/dark extreme)
+     so every adjacent pair clears 3:1 while every hue still clears 3:1
+     against both surfaces. Spec 14.3 also calls for
      scripts/validate_palette.js (dataviz skill) to check both surfaces —
-     that script is not present in this environment, so this is a manual
-     choice pending that check, not a validated one. */
-  --color-series-free: #6b7f92;
-  --color-series-entry: #2563a8;
-  --color-series-mid: #7c4a9a;
-  --color-series-enterprise: #0f6c78;
+     that script is not present in this environment (verified during M3), so
+     this is a manual by-hand measurement pending that check, not a
+     validated one. */
+  --color-series-free: #708397;
+  --color-series-entry: #0b264c;
+  --color-series-mid: #9b67b6;
+  --color-series-enterprise: #032528;
 
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Spec 14.3: diverging pair for price direction only — the emotional core of
+   the dataset, and deliberately the strongest color in the system.
+   --color-rise / --color-fall / --color-flat (the neutral midpoint) must
+   never be used for anything but marking a price increase, decrease, or no
+   change. Do not reach for these as a general "danger/success" pair or a
+   fifth series color — that is what the status trio and the four tier hues
+   are for. In its own `@theme static` block (not the main @theme above)
+   because Tailwind v4 only emits theme variables it sees referenced in
+   scanned source, and this task lands the tokens before task 3 (the change
+   ribbon) is the one that consumes them — `static` keeps them in the
+   compiled CSS regardless. */
+@theme static {
+  --color-rise: #d01131;
+  --color-fall: #0c7098;
+  --color-flat: #7c818b;
 }
 
 /* Tailwind v4's @theme must be top level — it cannot nest inside @media.
@@ -47,10 +70,14 @@
     --color-state-degraded: #e0a33a;
     --color-state-failing: #f07167;
 
-    --color-series-free: #93a5b6;
-    --color-series-entry: #6aa8e8;
-    --color-series-mid: #b98ad8;
-    --color-series-enterprise: #4bb8c6;
+    --color-series-free: #5f7184;
+    --color-series-entry: #c4dcfa;
+    --color-series-mid: #9b42c8;
+    --color-series-enterprise: #b1ecea;
+
+    --color-rise: #eb7488;
+    --color-fall: #39a9d5;
+    --color-flat: #91959d;
   }
 }
 
@@ -59,11 +86,15 @@ html {
   color: var(--color-ink);
 }
 
+:root {
+  /* Spec 14.3: tabular numerals everywhere, including inline in body copy.
+     In a price archive, digits that do not line up are a defect. Set on
+     :root (not body) so it applies uniformly with no cascade gap. */
+  font-variant-numeric: tabular-nums;
+}
+
 body {
   font-family: var(--font-sans);
-  /* Spec 14.3: tabular numerals everywhere, including inline in body copy.
-     In a price archive, digits that do not line up are a defect. */
-  font-variant-numeric: tabular-nums;
 }
 
 :focus-visible {
