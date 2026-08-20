@@ -50,13 +50,45 @@ function parseMarker(marker: TimelineMarker): { direction: Direction; displayLab
   };
 }
 
+// Two markers landing on the same calendar day are one pricing event (a
+// vendor moving several tiers at once), not two. Grouping by
+// observed_at.slice(0, 10) and rendering one notch per group is the hero-
+// scale fix: markers arrive from the exporter pre-sorted by observed_at
+// (src/workflow/export.ts), so same-day entries are already contiguous and
+// a Map preserves that chronological order without a re-sort.
+function groupMarkersByDate(markers: TimelineMarker[]): { date: string; markers: TimelineMarker[] }[] {
+  const groups = new Map<string, TimelineMarker[]>();
+  for (const marker of markers) {
+    const day = marker.observed_at.slice(0, 10);
+    const group = groups.get(day);
+    if (group) group.push(marker);
+    else groups.set(day, [marker]);
+  }
+  return [...groups.entries()].map(([date, dayMarkers]) => ({ date, markers: dayMarkers }));
+}
+
+// Spec: same direction across the group keeps that token; any disagreement
+// (including a non-numeric "flat" mixed in with a rise or fall) reads as
+// the neutral midpoint — a mixed-direction event is not a rise.
+function groupDirection(markers: TimelineMarker[]): Direction {
+  const directions = markers.map(m => parseMarker(m).direction);
+  return directions.every(d => d === directions[0]) ? directions[0]! : 'flat';
+}
+
+const HERO_LABEL_LINE_DY = 12;
+const HERO_LABEL_MAX_LINES = 3;
+
 const lastPointOf = (s: TimelineSeries): TimelinePoint | undefined => s.segments[s.segments.length - 1]?.at(-1);
 
+// height grew 160 -> 180 to fit a merged notch's worst case: a 3-line
+// label stack plus the date row beneath it (see HERO_LABEL_MAX_LINES).
+// The plot area (chartTop/chartBottom/bandY) is untouched — only the
+// label band below it gained room.
 const HERO = {
-  width: 720, height: 160,
+  width: 720, height: 180,
   padX: 8, rightPadPlain: 8, rightPadLabels: 74,
   chartTop: 10, chartBottom: 96,
-  bandY: 112, labelY: 132, dateY: 146,
+  bandY: 112, labelY: 132, dateGap: 14,
 };
 const ROW = { width: 200, height: 28, padX: 4, bandY: 14 };
 const SPARK = { width: 120, height: 28, padX: 2, chartTop: 3, chartBottom: 25 };
@@ -218,12 +250,20 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
           ))}
         </g>
 
-        {competitor.markers.map(marker => {
-          const { direction, displayLabel } = parseMarker(marker);
-          const mx = x(marker.observed_at);
+        {groupMarkersByDate(competitor.markers).map(group => {
+          const direction = groupDirection(group.markers);
+          const mx = x(group.markers[0]!.observed_at);
+          // Cap the visible stack at three lines: past that, the first two
+          // entries plus a "+N more" summary — the full list still lives in
+          // the <title> below, unabridged, for the accessible name.
+          const overflow = group.markers.length - 2;
+          const lines = group.markers.length > HERO_LABEL_MAX_LINES
+            ? [group.markers[0]!.label, group.markers[1]!.label, `+${overflow} more`]
+            : group.markers.map(m => m.label);
+          const dateY = HERO.labelY + (lines.length - 1) * HERO_LABEL_LINE_DY + HERO.dateGap;
           return (
-            <g key={`${marker.observed_at}-${marker.label}`}>
-              <title>{marker.label}</title>
+            <g key={group.date}>
+              <title>{group.markers.map(m => m.label).join('\n')}</title>
               <rect
                 x={mx - 6} y={HERO.chartTop} width="12" height={HERO.bandY - HERO.chartTop + 8}
                 fill="transparent" tabIndex={0}
@@ -233,10 +273,12 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
                 stroke={DIRECTION_COLORS[direction]} strokeWidth="2" vectorEffect="non-scaling-stroke"
               />
               <text x={mx} y={HERO.labelY} textAnchor="middle" fontSize="11" fill="var(--color-ink-secondary)" className="font-mono">
-                {displayLabel}
+                {lines.map((line, i) => (
+                  <tspan key={i} x={mx} dy={i === 0 ? 0 : HERO_LABEL_LINE_DY}>{line}</tspan>
+                ))}
               </text>
-              <text x={mx} y={HERO.dateY} textAnchor="middle" fontSize="11" fill="var(--color-ink-muted)" className="font-mono">
-                {month(marker.observed_at)}
+              <text x={mx} y={dateY} textAnchor="middle" fontSize="11" fill="var(--color-ink-muted)" className="font-mono">
+                {month(group.markers[0]!.observed_at)}
               </text>
             </g>
           );
