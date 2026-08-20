@@ -71,7 +71,14 @@ export default function HomePage() {
           <div className="mt-8 grid gap-10">
             {timeline.competitors.map((competitor, index) => (
               <article key={`${competitor.slug}-${index}`} className="rounded-lg border border-rule bg-surface-raised p-5">
-                <h3 className="font-display text-lg font-medium text-ink">{competitor.name}</h3>
+                <h3 className="font-display text-lg font-medium text-ink">
+                  <a
+                    href={`/c/${competitor.slug}/`}
+                    className="underline decoration-rule-strong underline-offset-4 hover:text-ink-secondary"
+                  >
+                    {competitor.name}
+                  </a>
+                </h3>
                 <div className="mt-4">
                   <Ribbon competitor={competitor} scale="hero" />
                 </div>

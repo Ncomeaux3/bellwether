@@ -1,0 +1,422 @@
+{
+  "generated_at": "2026-08-20T01:18:21.112Z",
+  "slug": "notion",
+  "name": "Notion",
+  "homepage": "https://www.notion.com",
+  "source_url": "https://www.notion.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Trial AI capabilities like generating docs, or autofilling databases",
+        "Basic forms",
+        "Basic sites",
+        "Notion Calendar",
+        "Databases including subtasks, dependencies, custom properties and more"
+      ]
+    },
+    {
+      "name": "Plus",
+      "monthly_price_usd": 10,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Trial of Notion AI",
+        "Custom forms",
+        "Custom sites",
+        "Unlimited charts",
+        "Unlimited collaborative blocks",
+        "Unlimited file uploads",
+        "Basic connections"
+      ]
+    },
+    {
+      "name": "Business",
+      "monthly_price_usd": 20,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Notion Agent",
+        "AI Meeting Notes",
+        "Enterprise Search",
+        "SAML SSO",
+        "Granular database permissions",
+        "Verify any page",
+        "Private teamspaces",
+        "Premium connections"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Zero data retention with LLM providers",
+        "User provisioning (SCIM)",
+        "Advanced security & controls",
+        "Audit log",
+        "Customer success manager",
+        "Security & Compliance connections (DLP, SIEM)",
+        "Domain management",
+        "Advanced connections"
+      ]
+    }
+  ],
+  "first_observed_at": "2025-02-19T07:54:17.000Z",
+  "last_observed_at": "2026-08-18T15:01:03.831Z",
+  "series": [
+    {
+      "tier": "Business",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:54:17.000Z",
+            "price": 15
+          },
+          {
+            "observed_at": "2025-03-02T21:53:58.000Z",
+            "price": 15
+          },
+          {
+            "observed_at": "2025-04-01T09:55:48.000Z",
+            "price": 15
+          },
+          {
+            "observed_at": "2025-05-04T06:15:55.000Z",
+            "price": 15
+          },
+          {
+            "observed_at": "2025-06-03T01:07:05.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2025-07-01T13:46:53.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2025-09-01T07:52:45.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2025-10-01T12:53:30.000Z",
+            "price": 20
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-03-03T01:27:45.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-04-01T18:53:03.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-05-09T13:56:51.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-06-01T05:29:02.000Z",
+            "price": 20
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-08-18T15:01:03.831Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:54:17.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-03-02T21:53:58.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-04-01T09:55:48.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-05-04T06:15:55.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-06-03T01:07:05.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-07-01T13:46:53.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-09-01T07:52:45.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-10-01T12:53:30.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-03-03T01:27:45.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-01T18:53:03.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-09T13:56:51.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-01T05:29:02.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-08-18T15:01:03.831Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Notion AI",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:54:17.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-03-02T21:53:58.000Z",
+            "price": 10
+          }
+        ],
+        [
+          {
+            "observed_at": "2025-05-04T06:15:55.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-06-03T01:07:05.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-07-01T13:46:53.000Z",
+            "price": 10
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Plus",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:54:17.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-03-02T21:53:58.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-04-01T09:55:48.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-05-04T06:15:55.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-06-03T01:07:05.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-07-01T13:46:53.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-09-01T07:52:45.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-10-01T12:53:30.000Z",
+            "price": 10
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-03-03T01:27:45.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-04-01T18:53:03.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-05-09T13:56:51.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-06-01T05:29:02.000Z",
+            "price": 10
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-08-18T15:01:03.831Z",
+            "price": 10
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [
+    {
+      "observed_at": "2025-05-04T06:15:55.000Z",
+      "label": "Notion AI tier added"
+    },
+    {
+      "observed_at": "2025-06-03T01:07:05.000Z",
+      "label": "Business 15 to 20"
+    },
+    {
+      "observed_at": "2025-09-01T07:52:45.000Z",
+      "label": "Free billing unit changed"
+    },
+    {
+      "observed_at": "2025-09-01T07:52:45.000Z",
+      "label": "Notion AI tier removed"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Notion",
+      "slug": "notion",
+      "change_type": "tier_removed",
+      "json_path": "tiers.Notion AI",
+      "before": {
+        "name": "Notion AI",
+        "monthly_price_usd": 10,
+        "annual_price_usd": 8,
+        "billing_unit": "per_seat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Limit the AI's search to your trusted sources",
+          "Generate and edit text in any doc",
+          "Autofill databases with summaries & insights",
+          "Chat about anything using GPT-4 & Claude",
+          "Automatically organize your inbox and draft emails"
+        ]
+      },
+      "after": null,
+      "materiality": 100,
+      "observed_at": "2025-09-01T07:52:45.000Z",
+      "annotation": {
+        "implication": "The Notion AI add-on tier (added in May) was removed four months later.",
+        "so_what": "AI capability was likely folded into other paid plans rather than sold separately; buyers should check if AI is now bundled or gone.",
+        "confidence": "low"
+      }
+    },
+    {
+      "competitor": "Notion",
+      "slug": "notion",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Free.billing_unit",
+      "before": "flat",
+      "after": "per_seat",
+      "materiality": 70,
+      "observed_at": "2025-09-01T07:52:45.000Z",
+      "annotation": {
+        "implication": "Notion's Free tier switched from flat pricing to per-seat billing.",
+        "so_what": "Free tier cost now scales with team size rather than being a single flat allowance.",
+        "confidence": "medium"
+      }
+    },
+    {
+      "competitor": "Notion",
+      "slug": "notion",
+      "change_type": "price_changed",
+      "json_path": "tiers.Business.monthly_price_usd",
+      "before": 15,
+      "after": 20,
+      "materiality": 100,
+      "observed_at": "2025-06-03T01:07:05.000Z",
+      "annotation": {
+        "implication": "Notion's Business tier rose from $15 to $20/mo per seat, a 33% increase.",
+        "so_what": "Teams on Business pay $5 more per seat monthly; a 20-seat team now costs $1,200/yr more.",
+        "confidence": "high"
+      }
+    },
+    {
+      "competitor": "Notion",
+      "slug": "notion",
+      "change_type": "tier_added",
+      "json_path": "tiers.Notion AI",
+      "before": null,
+      "after": {
+        "name": "Notion AI",
+        "monthly_price_usd": 10,
+        "annual_price_usd": 8,
+        "billing_unit": "per_seat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Limit the AI's search to your trusted sources",
+          "Generate and edit text in any doc",
+          "Autofill databases with summaries & insights",
+          "Chat about anything using GPT-4 & Claude",
+          "Automatically organize your inbox and draft emails"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2025-05-04T06:15:55.000Z",
+      "annotation": {
+        "implication": "Notion introduced a standalone 'Notion AI' add-on tier at $10/mo ($8/mo billed annually), per seat.",
+        "so_what": "Buyers could add AI features without upgrading their base plan, but at extra per-seat cost.",
+        "confidence": "high"
+      }
+    }
+  ],
+  "provenance": {
+    "live": 0,
+    "wayback": 4,
+    "mixed": 4
+  }
+}

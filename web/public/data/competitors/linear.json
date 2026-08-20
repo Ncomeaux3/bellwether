@@ -1,0 +1,310 @@
+{
+  "generated_at": "2026-08-20T01:18:21.112Z",
+  "slug": "linear",
+  "name": "Linear",
+  "homepage": "https://linear.app",
+  "source_url": "https://linear.app/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited members",
+        "2 teams",
+        "250 issues",
+        "Agent platform",
+        "Linear Agent"
+      ]
+    },
+    {
+      "name": "Basic",
+      "monthly_price_usd": 10,
+      "annual_price_usd": 10,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "All Free features",
+        "5 teams",
+        "Unlimited issues",
+        "Unlimited file uploads",
+        "Admin roles"
+      ]
+    },
+    {
+      "name": "Business",
+      "monthly_price_usd": 16,
+      "annual_price_usd": 16,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "All Basic features",
+        "Unlimited teams",
+        "Private teams and guests",
+        "Triage Intelligence",
+        "Loops",
+        "Code Intelligence (beta)",
+        "Linear Insights",
+        "Linear Asks"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "All Business features",
+        "Invoice/PO billing",
+        "SAML and SCIM",
+        "Granular admin controls",
+        "Enterprise-grade security",
+        "Advanced org modeling",
+        "Migration & onboarding support",
+        "Priority support"
+      ]
+    }
+  ],
+  "first_observed_at": "2025-02-19T07:53:31.000Z",
+  "last_observed_at": "2026-08-03T13:02:45.000Z",
+  "series": [
+    {
+      "tier": "Basic",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:53:31.000Z",
+            "price": 8
+          },
+          {
+            "observed_at": "2025-04-08T18:10:41.000Z",
+            "price": 8
+          }
+        ],
+        [
+          {
+            "observed_at": "2025-07-13T10:19:33.000Z",
+            "price": 8
+          },
+          {
+            "observed_at": "2025-09-10T18:30:16.000Z",
+            "price": 8
+          },
+          {
+            "observed_at": "2025-10-07T14:24:18.000Z",
+            "price": 8
+          },
+          {
+            "observed_at": "2025-11-12T01:16:11.000Z",
+            "price": 10
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-02-11T23:55:25.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-04-01T10:47:42.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-05-12T13:38:30.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-06-04T22:50:05.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-07-01T01:06:06.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-08-03T13:02:45.000Z",
+            "price": 10
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Business",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:53:31.000Z",
+            "price": 14
+          },
+          {
+            "observed_at": "2025-04-08T18:10:41.000Z",
+            "price": 14
+          }
+        ],
+        [
+          {
+            "observed_at": "2025-07-13T10:19:33.000Z",
+            "price": 14
+          },
+          {
+            "observed_at": "2025-09-10T18:30:16.000Z",
+            "price": 14
+          },
+          {
+            "observed_at": "2025-10-07T14:24:18.000Z",
+            "price": 14
+          },
+          {
+            "observed_at": "2025-11-12T01:16:11.000Z",
+            "price": 16
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-02-11T23:55:25.000Z",
+            "price": 16
+          },
+          {
+            "observed_at": "2026-04-01T10:47:42.000Z",
+            "price": 16
+          },
+          {
+            "observed_at": "2026-05-12T13:38:30.000Z",
+            "price": 16
+          },
+          {
+            "observed_at": "2026-06-04T22:50:05.000Z",
+            "price": 16
+          },
+          {
+            "observed_at": "2026-07-01T01:06:06.000Z",
+            "price": 16
+          },
+          {
+            "observed_at": "2026-08-03T13:02:45.000Z",
+            "price": 16
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T07:53:31.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-04-08T18:10:41.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2025-07-13T10:19:33.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-09-10T18:30:16.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-10-07T14:24:18.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-11-12T01:16:11.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-02-11T23:55:25.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-01T10:47:42.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-12T13:38:30.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-04T22:50:05.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-01T01:06:06.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-03T13:02:45.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    }
+  ],
+  "markers": [
+    {
+      "observed_at": "2025-11-12T01:16:11.000Z",
+      "label": "Basic 8 to 10"
+    },
+    {
+      "observed_at": "2025-11-12T01:16:11.000Z",
+      "label": "Business 14 to 16"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Linear",
+      "slug": "linear",
+      "change_type": "price_changed",
+      "json_path": "tiers.Business.monthly_price_usd",
+      "before": 14,
+      "after": 16,
+      "materiality": 94,
+      "observed_at": "2025-11-12T01:16:11.000Z",
+      "annotation": {
+        "implication": "Linear's Business tier rose from $14 to $16/mo, a 14% increase, same day as the Basic hike.",
+        "so_what": "Linear raised prices across two tiers simultaneously, suggesting a company-wide pricing update rather than a single-tier adjustment.",
+        "confidence": "high"
+      }
+    },
+    {
+      "competitor": "Linear",
+      "slug": "linear",
+      "change_type": "price_changed",
+      "json_path": "tiers.Basic.monthly_price_usd",
+      "before": 8,
+      "after": 10,
+      "materiality": 100,
+      "observed_at": "2025-11-12T01:16:11.000Z",
+      "annotation": {
+        "implication": "Linear's Basic tier rose from $8 to $10/mo, a 25% increase.",
+        "so_what": "Entry-level Linear customers pay $24/yr more per seat.",
+        "confidence": "high"
+      }
+    }
+  ],
+  "provenance": {
+    "live": 0,
+    "wayback": 2,
+    "mixed": 4
+  }
+}

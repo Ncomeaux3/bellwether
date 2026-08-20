@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T23:28:44.227Z",
+  "generated_at": "2026-08-20T01:18:21.112Z",
   "total_sources": 6,
   "healthy_sources": 6,
   "sources": [
@@ -14,14 +14,14 @@
       "slug": "linear",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-19T23:28:17.074Z",
+      "last_ok_at": "2026-08-18T15:00:52.010Z",
       "degraded_reason": null
     },
     {
       "slug": "notion",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-19T23:28:28.899Z",
+      "last_ok_at": "2026-08-18T15:01:03.831Z",
       "degraded_reason": null
     },
     {
@@ -47,10 +47,10 @@
     }
   ],
   "last_run": {
-    "kind": "synthesize",
-    "started_at": "2026-08-19T23:28:44.226Z",
-    "ended_at": "2026-08-19T23:28:44.227Z",
+    "kind": "backup",
+    "started_at": "2026-08-19T23:27:09.192Z",
+    "ended_at": "2026-08-19T23:27:09.636Z",
     "state": "ok"
   },
-  "cost_micros_month": 113631
+  "cost_micros_month": 110219
 }

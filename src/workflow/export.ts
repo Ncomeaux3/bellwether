@@ -344,6 +344,55 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
     const csvContent = toCsv(datasetRows);
     const csvHeaderLine = toCsv([]).split('\n')[0]!;
 
+    // Built once and reused by timeline.json AND every per-competitor payload
+    // below — ruling R3 (task-4 brief): "reuse buildTimeline's output, do not
+    // re-derive" so a competitor page's chart can never disagree with the
+    // board's.
+    const timeline = buildTimeline(db, generatedAt);
+    const timelineBySlug = new Map(timeline.competitors.map(c => [c.slug, c]));
+
+    // datasetRows are keyed by competitor NAME (buildDatasetRows joins on
+    // c.name, not slug); bySlug already has the name<->slug pairing for every
+    // active competitor, so build the reverse lookup from that instead of
+    // re-querying.
+    const slugByName = new Map(competitors.map(c => [c.name, c.slug]));
+    const provenanceBySlug = new Map<string, { live: number; wayback: number; mixed: number }>();
+    for (const row of datasetRows) {
+      const slug = slugByName.get(row.competitor);
+      if (slug === undefined) continue;
+      const counts = provenanceBySlug.get(slug) ?? { live: 0, wayback: 0, mixed: 0 };
+      counts[row.provenance] += 1;
+      provenanceBySlug.set(slug, counts);
+    }
+
+    // One payload per competitor (ruling R3): a fat single payload would ship
+    // every competitor's history to every page. Each file owns only its own
+    // identity, current tiers, timeline slice, confirmed changes, and
+    // provenance mix.
+    const competitorPayloads = competitors.map(c => {
+      const pricingSource = (c.sources as {
+        kind: string; url: string; current_pricing: { tiers?: unknown[] } | null;
+      }[]).find(s => s.kind === 'pricing');
+      const t = timelineBySlug.get(c.slug);
+      return {
+        generated_at: generatedAt,
+        slug: c.slug,
+        name: c.name,
+        homepage: c.homepage,
+        source_url: pricingSource?.url ?? null,
+        current_tiers: pricingSource?.current_pricing?.tiers ?? [],
+        first_observed_at: t?.first_observed_at ?? null,
+        last_observed_at: t?.last_observed_at ?? null,
+        series: t?.series ?? [],
+        markers: t?.markers ?? [],
+        changes: changeEntries.filter(ch => ch.slug === c.slug),
+        provenance: provenanceBySlug.get(c.slug) ?? { live: 0, wayback: 0, mixed: 0 },
+      };
+    });
+
+    const competitorsDir = join(outDir, 'competitors');
+    mkdirSync(competitorsDir, { recursive: true });
+
     const rssContent = buildRssXml(changeEntries as FeedChange[], generatedAt, SITE_URL);
     const llmsContent = buildLlmsTxt(SITE_URL, competitors.map(c => ({ name: c.name, slug: c.slug })));
 
@@ -358,9 +407,10 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       jsonArtifact(outDir, 'board.json', board),
       jsonArtifact(outDir, 'status.json', status),
       jsonArtifact(outDir, 'changes.json', changesFeed),
-      jsonArtifact(outDir, 'timeline.json', buildTimeline(db, generatedAt)),
+      jsonArtifact(outDir, 'timeline.json', timeline),
       jsonArtifact(outDir, 'digest.json', digestPayload),
       jsonArtifact(outDir, 'dataset.json', datasetPayload),
+      ...competitorPayloads.map(p => jsonArtifact(outDir, `competitors/${p.slug}.json`, p)),
       {
         name: 'dataset.csv', dir: outDir, content: csvContent,
         verify: raw => {

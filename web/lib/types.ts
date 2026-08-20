@@ -122,3 +122,25 @@ export interface ChangesFeed {
   threshold: number;
   changes: ChangeEntry[];
 }
+
+export interface ProvenanceMix {
+  live: number;
+  wayback: number;
+  mixed: number;
+}
+
+/** Shape of public/data/competitors/<slug>.json — see src/workflow/export.ts. */
+export interface CompetitorPayload {
+  generated_at: string;
+  slug: string;
+  name: string;
+  homepage: string;
+  source_url: string | null;
+  current_tiers: Tier[];
+  first_observed_at: string | null;
+  last_observed_at: string | null;
+  series: TimelineSeries[];
+  markers: TimelineMarker[];
+  changes: ChangeEntry[];
+  provenance: ProvenanceMix;
+}

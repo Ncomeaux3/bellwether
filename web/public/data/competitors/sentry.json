@@ -1,0 +1,323 @@
+{
+  "generated_at": "2026-08-20T01:18:21.112Z",
+  "slug": "sentry",
+  "name": "Sentry",
+  "homepage": "https://sentry.io",
+  "source_url": "https://sentry.io/pricing/",
+  "current_tiers": [
+    {
+      "name": "developer",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "flat",
+      "included_seats": 1,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Limited to one user",
+        "Error Monitoring and Tracing",
+        "Alerts and notifications via email",
+        "10 custom dashboards",
+        "MCP access"
+      ]
+    },
+    {
+      "name": "team",
+      "monthly_price_usd": 26,
+      "annual_price_usd": 26,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited users",
+        "Developer features +",
+        "API & third-party integrations",
+        "20 custom dashboards",
+        "Seer: AI debugging agent (subscription required)",
+        "Additional events"
+      ]
+    },
+    {
+      "name": "business",
+      "monthly_price_usd": 80,
+      "annual_price_usd": 80,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Team features +",
+        "Unlimited custom dashboards",
+        "Unlimited metric monitors with anomaly detection",
+        "Advanced quota management",
+        "SAML + SCIM support"
+      ]
+    },
+    {
+      "name": "enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Business features +",
+        "Technical account manager",
+        "Dedicated customer support"
+      ]
+    }
+  ],
+  "first_observed_at": "2025-02-19T05:34:02.000Z",
+  "last_observed_at": "2026-08-11T15:50:53.000Z",
+  "series": [
+    {
+      "tier": "business",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T05:34:02.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-03-04T06:39:29.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-04-02T08:37:29.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-05-06T08:00:31.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-06-11T01:34:59.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-07-15T23:34:39.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-08-07T00:34:28.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-09-03T22:10:42.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-10-04T12:23:30.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-11-04T23:27:41.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2025-12-07T09:43:07.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-01-06T01:15:52.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-02-15T01:08:18.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-03-07T06:11:32.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-04-09T08:16:32.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-05-01T10:12:52.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-06-09T03:09:59.000Z",
+            "price": 80
+          },
+          {
+            "observed_at": "2026-08-11T15:50:53.000Z",
+            "price": 80
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "developer",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T05:34:02.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-03-04T06:39:29.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-04-02T08:37:29.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-05-06T08:00:31.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-06-11T01:34:59.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-07-15T23:34:39.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-08-07T00:34:28.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-09-03T22:10:42.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-10-04T12:23:30.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-11-04T23:27:41.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-12-07T09:43:07.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-01-06T01:15:52.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-02-15T01:08:18.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-03-07T06:11:32.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-09T08:16:32.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-01T10:12:52.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-09T03:09:59.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-11T15:50:53.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "team",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T05:34:02.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-03-04T06:39:29.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-04-02T08:37:29.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-05-06T08:00:31.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-06-11T01:34:59.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-07-15T23:34:39.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-08-07T00:34:28.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-09-03T22:10:42.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-10-04T12:23:30.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-11-04T23:27:41.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2025-12-07T09:43:07.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-01-06T01:15:52.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-02-15T01:08:18.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-03-07T06:11:32.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-04-09T08:16:32.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-05-01T10:12:52.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-06-09T03:09:59.000Z",
+            "price": 26
+          },
+          {
+            "observed_at": "2026-08-11T15:50:53.000Z",
+            "price": 26
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 0,
+    "wayback": 0,
+    "mixed": 4
+  }
+}

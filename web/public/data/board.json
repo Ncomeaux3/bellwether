@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-19T23:28:44.227Z",
+  "generated_at": "2026-08-20T01:18:21.112Z",
   "competitors": [
     {
       "slug": "figma",
@@ -99,9 +99,9 @@
           "kind": "pricing",
           "url": "https://linear.app/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-19T23:28:17.074Z",
-          "last_ok_at": "2026-08-19T23:28:17.074Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-08-18T15:00:52.010Z",
+          "last_ok_at": "2026-08-18T15:00:52.010Z",
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -131,7 +131,7 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "All Free features +",
+                  "All Free features",
                   "5 teams",
                   "Unlimited issues",
                   "Unlimited file uploads",
@@ -147,12 +147,12 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "All Basic features +",
+                  "All Basic features",
                   "Unlimited teams",
                   "Private teams and guests",
                   "Triage Intelligence",
                   "Loops",
-                  "Code Intelligence",
+                  "Code Intelligence (beta)",
                   "Linear Insights",
                   "Linear Asks"
                 ]
@@ -166,7 +166,7 @@
                 "is_free": false,
                 "is_enterprise": true,
                 "headline_features": [
-                  "All Business features +",
+                  "All Business features",
                   "Invoice/PO billing",
                   "SAML and SCIM",
                   "Granular admin controls",
@@ -178,7 +178,7 @@
               }
             ],
             "usage_rates": [],
-            "notes": "Basic and Business tiers show per user/month pricing with annual billing. Enterprise tier shows 'Contact sales' with custom annual billing only.",
+            "notes": "Basic and Business tiers show '$X per user/month' with 'Billed yearly' notation, indicating annual commitment with monthly per-seat rates.",
             "extraction_confidence": "high"
           }
         }
@@ -193,9 +193,9 @@
           "kind": "pricing",
           "url": "https://www.notion.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-19T23:28:28.899Z",
-          "last_ok_at": "2026-08-19T23:28:28.899Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-08-18T15:01:03.831Z",
+          "last_ok_at": "2026-08-18T15:01:03.831Z",
+          "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",

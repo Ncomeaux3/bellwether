@@ -363,12 +363,13 @@ describe('buildRssXml', () => {
     expect(xml).toContain('Solo tier added');
   });
 
-  // Fix round 1, finding 5: /c/<slug> has no route (deferred milestone);
-  // the RSS link must agree with the anchor format llms.txt already uses.
-  it('links to the same anchor format llms.txt uses, not a /c/ route', () => {
+  // M4 fix round 1, finding 5 pinned this to a same-page anchor because
+  // /c/<slug> had no route yet. M6 task 4 ships that route and repoints both
+  // the feed and llms.txt at it — this closes that deferral.
+  it('links to the competitor\'s own page, not the deferred anchor', () => {
     const xml = buildRssXml([makeChange()], '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
-    expect(xml).toContain('<link>https://bellwether.test/#acme</link>');
-    expect(xml).not.toContain('/c/acme');
+    expect(xml).toContain('<link>https://bellwether.test/c/acme/</link>');
+    expect(xml).not.toContain('/#acme');
   });
 
   // Fix round 1, finding 7: defensive — no legitimate row should have an
@@ -395,6 +396,12 @@ describe('buildLlmsTxt', () => {
     }
     expect(txt).toContain('CC BY 4.0');
     expect(txt).not.toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+  });
+
+  it('links each competitor to its own /c/<slug> page, not a same-page anchor', () => {
+    const txt = buildLlmsTxt('https://bellwether.test', [{ name: 'Acme', slug: 'acme' }]);
+    expect(txt).toContain('https://bellwether.test/c/acme/');
+    expect(txt).not.toContain('/#acme');
   });
 
   it('is deterministic across calls', () => {

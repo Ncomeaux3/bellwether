@@ -315,10 +315,10 @@ export function buildRssXml(changes: FeedChange[], generatedAt: string, siteUrl:
 
       const guid = [change.slug, change.json_path, change.observed_at].map(escapeXml).join('|');
       const pubDate = new Date(change.observed_at).toUTCString();
-      // /c/<slug> has no route yet (deferred milestone) — link to the same
-      // anchor llms.txt uses so the feed never points readers at a 404
-      // (M4 fix round 1, finding 5).
-      const link = `${siteUrl}/#${change.slug}`;
+      // M4 fix round 1, finding 5 deferred this to a same-page anchor because
+      // /c/<slug> had no route yet. M6 task 4 ships that route, so the feed
+      // now links to the competitor's own page.
+      const link = `${siteUrl}/c/${change.slug}/`;
 
       return [
         '<item>',
@@ -365,7 +365,7 @@ export function buildLlmsTxt(siteUrl: string, competitors: { name: string; slug:
     `- ${siteUrl}/changes.xml — RSS feed of confirmed changes`,
     '',
     '## Competitors',
-    ...competitors.map(c => `- ${c.name}: ${siteUrl}/#${c.slug}`),
+    ...competitors.map(c => `- ${c.name}: ${siteUrl}/c/${c.slug}/`),
   ];
   return lines.join('\n') + '\n';
 }

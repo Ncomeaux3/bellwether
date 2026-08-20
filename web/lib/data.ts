@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Board, ChangeEntry, ChangesFeed, Digest, Status, Timeline } from './types.js';
+import type { Board, ChangeEntry, ChangesFeed, CompetitorPayload, Digest, Status, Timeline } from './types.js';
 
 const DATA_DIR = join(process.cwd(), 'public', 'data');
 
@@ -37,6 +37,20 @@ export function loadDigest(): Digest {
 
 export function loadChanges(): ChangesFeed {
   return read<ChangesFeed>('changes.json', { generated_at: '', threshold: 0, changes: [] });
+}
+
+/**
+ * One JSON file per competitor (src/workflow/export.ts) so a competitor page
+ * loads only its own history — never every competitor's, spec 14.4's citable
+ * per-company unit. Missing-file fallback matches the pattern above: render
+ * the page's own empty state rather than fail the static build.
+ */
+export function loadCompetitor(slug: string): CompetitorPayload {
+  return read<CompetitorPayload>(`competitors/${slug}.json`, {
+    generated_at: '', slug, name: slug, homepage: '', source_url: null,
+    current_tiers: [], first_observed_at: null, last_observed_at: null,
+    series: [], markers: [], changes: [], provenance: { live: 0, wayback: 0, mixed: 0 },
+  });
 }
 
 export interface DatasetMeta {

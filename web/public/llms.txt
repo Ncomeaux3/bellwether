@@ -11,9 +11,9 @@ Bellwether tracks confirmed SaaS pricing changes and publishes the underlying da
 - https://bellwether-nicholas-projects-cdfeb046.vercel.app/changes.xml — RSS feed of confirmed changes
 
 ## Competitors
-- Figma: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#figma
-- Linear: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#linear
-- Notion: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#notion
-- Postman: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#postman
-- Sentry: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#sentry
-- Supabase: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#supabase
+- Figma: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/figma/
+- Linear: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/linear/
+- Notion: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/notion/
+- Postman: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/postman/
+- Sentry: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/sentry/
+- Supabase: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/supabase/
