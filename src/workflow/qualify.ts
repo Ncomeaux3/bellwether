@@ -184,13 +184,46 @@ export interface VerifyStats { considered: number; admitted: number; rejected: n
 /** ≥2 tiers with a non-null monthly_price_usd. "Contact sales" tiers (null) don't count — they demonstrate nothing about extractable prices. */
 const MIN_PRICED_TIERS = 2;
 
+type Attempt =
+  | { ok: true; pricedTiers: number; confidence: string }
+  | { ok: false; reason: string };
+
+async function runAttempt(
+  text: string,
+  runExtractor: (text: string) => Promise<ExtractResult>,
+): Promise<Attempt> {
+  const result = await runExtractor(text);
+  if (!result.ok) return { ok: false, reason: `${result.reason}: ${result.detail}` };
+  return {
+    ok: true,
+    pricedTiers: result.data.tiers.filter(t => t.monthly_price_usd !== null).length,
+    confidence: result.data.extraction_confidence,
+  };
+}
+
+function describeAttempt(a: Attempt): string {
+  if (!a.ok) return `failed: ${a.reason}`;
+  const low = a.confidence === 'low' ? ' (low confidence)' : '';
+  return `extracted ${a.pricedTiers} priced tier${a.pricedTiers === 1 ? '' : 's'}${low}`;
+}
+
 /**
  * Fix round 1: the pre-filter's job shrank to "could this plausibly be a
- * pricing page" (see qualify.ts). This is the real admission gate — one
- * genuine `extractPricing` call per `pass` candidate, same machinery `extract`
- * uses every night, so a source is admitted because it demonstrably extracts,
- * not because a regex liked it. Re-fetches rather than reusing the pre-filter's
- * fetch: `candidates` never stored the HTML, only the counts.
+ * pricing page" (see qualify.ts). This is the real admission gate — genuine
+ * `extractPricing` calls against a `pass` candidate's normalized text, the
+ * same machinery `extract` uses every night, so a source is admitted because
+ * it demonstrably extracts, not because a regex liked it. Re-fetches rather
+ * than reusing the pre-filter's fetch: `candidates` never stored the HTML.
+ *
+ * Fix round 2: live evidence caught Vercel admitted on one extraction, then
+ * failing outright on a second run against the same page — it extracts
+ * inconsistently. Spec 12.5's two-observation rule ("a real price change
+ * stays changed; a hallucination almost never reproduces") is the exact
+ * principle that catches this, so admission now runs the extraction TWICE
+ * against the same normalized text and admits only when both attempts
+ * succeed, both clear MIN_PRICED_TIERS, both agree on the count, and neither
+ * self-reports low confidence. Any disagreement rejects, naming both
+ * attempts, so the recorded reason shows exactly what didn't reproduce.
  *
  * Gated on the kill switch and the recurring budget exactly like `extract`:
  * skips silently (no rows touched) when LLM_ENABLED isn't 'true', and stops
@@ -250,25 +283,30 @@ export async function verifyCandidates(
     }
 
     const { text } = normalizeAndSlice(fetched.body);
-    const result = await runExtractor(text);
+    const attempt1 = await runAttempt(text, runExtractor);
+    const attempt2 = await runAttempt(text, runExtractor);
 
-    if (!result.ok) {
-      stats.rejected += 1;
+    const reproduced =
+      attempt1.ok && attempt2.ok &&
+      attempt1.confidence !== 'low' && attempt2.confidence !== 'low' &&
+      attempt1.pricedTiers === attempt2.pricedTiers &&
+      attempt1.pricedTiers >= MIN_PRICED_TIERS;
+
+    if (reproduced && attempt1.ok) {
+      stats.admitted += 1;
       update.run({
-        verdict: 'reject', reason: `${result.reason}: ${result.detail}`,
-        pricedTiers: null, verifiedAt, url: row.url,
+        verdict: 'admit',
+        reason: `both attempts agreed on ${attempt1.pricedTiers} priced tier${attempt1.pricedTiers === 1 ? '' : 's'}`,
+        pricedTiers: attempt1.pricedTiers, verifiedAt, url: row.url,
       });
       continue;
     }
 
-    const pricedTiers = result.data.tiers.filter(t => t.monthly_price_usd !== null).length;
-    const admitted = pricedTiers >= MIN_PRICED_TIERS;
-    if (admitted) stats.admitted += 1; else stats.rejected += 1;
-
+    stats.rejected += 1;
     update.run({
-      verdict: admitted ? 'admit' : 'reject',
-      reason: `extracted ${pricedTiers} priced tier${pricedTiers === 1 ? '' : 's'}`,
-      pricedTiers, verifiedAt, url: row.url,
+      verdict: 'reject',
+      reason: `attempt 1 ${describeAttempt(attempt1)}, attempt 2 ${describeAttempt(attempt2)}`,
+      pricedTiers: null, verifiedAt, url: row.url,
     });
   }
 

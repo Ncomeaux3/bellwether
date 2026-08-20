@@ -19,32 +19,31 @@ export interface QualifyVerdict {
  * — which strips <script> along with everything else STRIP_TAGS removes.
  * Measured: Vercel normalized to 55 price matches, not 177.
  *
- * Calibration set (spec 11.1): the six pages in competitors.public.ts
- * (3-4 priced tiers each) plus Vercel (prices present as feature line items,
- * real tier names absent from the HTML entirely). Floors of 2 for each
- * signal separate all six from Vercel on normalized text.
+ * Fix round 2 (2026-08-20). Live evidence: Figma FAILED this pre-filter
+ * (0 tier headings found by the round-1 heuristic) while a direct extraction
+ * against the very same normalized text returned four priced tiers at high
+ * confidence. A pre-filter rejection means `--verify` never runs — silently
+ * excluding a source that works today is the worst failure mode this tool
+ * has, far worse than spending $0.01 verifying a page with no real tiers.
+ * The gate is now price matches ALONE: this pre-filter's only job is to
+ * avoid spending on a page with no prices at all. Tier headings are still
+ * counted and recorded (useful published signal about the boundary — see
+ * spec 11.2) but no longer block a `pass`.
  */
 export const MIN_PRICE_MATCHES = 2;
+/** Recorded, no longer gates — see fix round 2 above. */
 export const MIN_TIER_HEADINGS = 2;
 
 /**
- * ponytail: this is a loose PRE-FILTER, not the admission gate — fix round 1
- * dropped the windowed-proximity discriminator this used to have. Tuning a
- * character-distance window to separate a tier table from a feature matrix
- * kept misclassifying real pages at the edges (a false negative on Figma),
- * and the edges are exactly where the dataset's boundary lives. `qualify
- * --verify` (real extraction via extractPricing) is now the authoritative
- * admission gate; this only decides "could this plausibly be a pricing
- * page", cheaply, before spending anything on that.
- *
- * "Tier heading" here means a short capitalized run with NO characters
- * between it and a following price in the flattened text — e.g. `Basic$10`,
- * which is exactly how node-html-parser's `.text` concatenates two sibling
- * elements (`<h2>Basic</h2><p>$10</p>`) that had no whitespace between them
- * in the source. A feature-matrix line item always has punctuation in
- * between ("SAML SSO — $300/mo") and never matches. A real tier with no
- * visible price ("Enterprise: Contact us") also never matches — an accepted
- * false negative for a pre-filter whose job is now recall, not precision.
+ * ponytail: recorded signal only (fix round 2), not a gate. "Tier heading"
+ * means a short capitalized run with NO characters between it and a
+ * following price in the flattened text — e.g. `Basic$10`, which is exactly
+ * how node-html-parser's `.text` concatenates two sibling elements
+ * (`<h2>Basic</h2><p>$10</p>`) that had no whitespace between them in the
+ * source. A feature-matrix line item always has punctuation in between
+ * ("SAML SSO — $300/mo") and never matches; a real tier with no visible
+ * price ("Enterprise: Contact us") never matches either. Both are expected
+ * undercounts for a signal that is no longer load-bearing.
  */
 const HEADING_ADJACENT_TO_PRICE = /([A-Z][a-zA-Z]{1,24})(?=[$€£]\s?\d)/g;
 
@@ -82,11 +81,14 @@ function pickCanary(headings: string[]): string | null {
 }
 
 /**
- * Spec 11.2 + fix round 1: fetch once, count currency symbols and tier-like
- * headings present in the text `extract` actually consumes, emit a verdict
- * plus a proposed canary. Pure and synchronous — all network/IO lives in the
- * workflow layer. `pass` here means "worth spending a real extraction on"
- * (`qualify --verify`); it is no longer the admission decision itself.
+ * Spec 11.2 + fix rounds 1-2: fetch once, count currency symbols present in
+ * the text `extract` actually consumes, emit a verdict plus a proposed
+ * canary. Pure and synchronous — all network/IO lives in the workflow layer.
+ *
+ * Gates on price matches alone (fix round 2) — recall over precision. A
+ * false negative here is silent and permanent (a working source never gets
+ * screened again); a false positive costs one $0.01 `--verify` call. Tier
+ * headings are still counted and returned as signal but never block a pass.
  */
 export function scoreCandidate(rawHtml: string): QualifyVerdict {
   const { text } = normalizeAndSlice(rawHtml);
@@ -96,20 +98,17 @@ export function scoreCandidate(rawHtml: string): QualifyVerdict {
   const tierHeadings = headings.length;
   const proposedCanary = pickCanary(headings);
 
-  const hasPrices = priceMatches >= MIN_PRICE_MATCHES;
-  const hasHeadings = tierHeadings >= MIN_TIER_HEADINGS;
-
-  if (hasPrices && hasHeadings) {
+  if (priceMatches >= MIN_PRICE_MATCHES) {
     return {
       verdict: 'pass',
-      reason: `${priceMatches} price matches and ${tierHeadings} tier-like headings in the normalized text`,
+      reason: `${priceMatches} price matches in the normalized text (${tierHeadings} tier-like headings)`,
       priceMatches, tierHeadings, proposedCanary,
     };
   }
 
-  const missing: string[] = [];
-  if (!hasPrices) missing.push(`fewer than ${MIN_PRICE_MATCHES} price matches (found ${priceMatches})`);
-  if (!hasHeadings) missing.push(`fewer than ${MIN_TIER_HEADINGS} tier-like headings (found ${tierHeadings})`);
-
-  return { verdict: 'fail', reason: missing.join('; '), priceMatches, tierHeadings, proposedCanary };
+  return {
+    verdict: 'fail',
+    reason: `fewer than ${MIN_PRICE_MATCHES} price matches (found ${priceMatches})`,
+    priceMatches, tierHeadings, proposedCanary,
+  };
 }
