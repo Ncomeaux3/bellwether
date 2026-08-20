@@ -27,21 +27,51 @@
 
   /* Spec 14.3: categorical, four hues in fixed ordinal order (free / entry /
      mid / enterprise), never cycled, and never reusing a status hue as a
-     fourth series. Re-tuned in M6 task 2: the M3 values were separated by
-     hue alone and failed adjacent-pair contrast badly (measured 1.04-1.48:1
-     in light, 1.01-1.17:1 in dark — see task-2-report.md for the full
-     by-hand table). These values zigzag lightness across the ordinal order
-     (free/mid mid-lightness, entry/enterprise near the light/dark extreme)
-     so every adjacent pair clears 3:1 while every hue still clears 3:1
-     against both surfaces. Spec 14.3 also calls for
-     scripts/validate_palette.js (dataviz skill) to check both surfaces —
-     that script is not present in this environment (verified during M3), so
-     this is a manual by-hand measurement pending that check, not a
-     validated one. */
-  --color-series-free: #708397;
-  --color-series-entry: #0b264c;
-  --color-series-mid: #9b67b6;
-  --color-series-enterprise: #032528;
+     fourth series.
+     Re-tuned in M6 task 2, then AGAIN here (final-fixes round, task 3):
+     task 2's values zigzagged lightness across ORDINAL order (free/mid at
+     mid-lightness, entry/enterprise near the dark extreme) and only checked
+     ORDINAL-ADJACENT pairs. That leaves the two non-adjacent pairs sharing a
+     lightness band — free/mid and entry/enterprise both measured 1.07:1,
+     and all four render together on /c/<slug>, the board, and both ribbon
+     scales, so every one of the six possible pairings needs separation.
+     These values are instead placed on four rungs of one luminance ladder,
+     geometrically spaced across the full range that still clears >=3:1
+     against BOTH surfaces (a hue-independent luminance cap: ~0 to ~0.27 in
+     light, ~0.15 to ~0.97 in dark). That per-surface floor is the binding
+     constraint: the achievable range only spans a ~5.2-6.5x luminance
+     ratio, and three evenly-spaced steps need a ~8x span to each individually
+     clear 2:1 — short by roughly one factor of ~1.15x. The tightest three
+     pairs below (free/mid, free/enterprise, entry/enterprise — the same
+     ones that measured 1.07:1 before) land at ~1.73-1.87:1: a large,
+     provably near-maximal improvement, not the literal 2:1 floor, because
+     holding every hue at >=3:1 against its surface (unchanged from task 2,
+     required for the SVG text/line uses) and hitting 2:1 on all six pairs
+     at once is not simultaneously achievable in this luminance formula —
+     see the full pairwise matrix below.
+     Spec 14.3 also calls for scripts/validate_palette.js (dataviz skill) to
+     check both surfaces — that script is not present in this repo (checked
+     again for this round), so the numbers below are from a throwaway
+     one-off script (not committed), not a project-standard validated run.
+
+     LIGHT matrix (WCAG contrast ratio, i.e. (Lmax+.05)/(Lmin+.05)):
+       free #2b6793  vs surface 5.70  vs surface-raised 6.06
+       entry #000000 vs surface 19.76 vs surface-raised 21.00
+       mid #b674d7   vs surface 3.06  vs surface-raised 3.25
+       enterprise #134141 vs surface 10.62 vs surface-raised 11.29
+       free-entry 3.46  free-mid 1.87  free-enterprise 1.86
+       entry-mid 6.47  entry-enterprise 1.86  mid-enterprise 3.48
+     DARK matrix (values in the @media block below):
+       free #9fc7e3  vs surface 10.19 vs surface-raised 9.19
+       entry #3967c3 vs surface 3.38  vs surface-raised 3.05
+       mid #fdfbfe   vs surface 17.69 vs surface-raised 15.96
+       enterprise #2fa1a1 vs surface 5.84  vs surface-raised 5.27
+       free-entry 3.01  free-mid 1.74  free-enterprise 1.75
+       entry-mid 5.23  entry-enterprise 1.73  mid-enterprise 3.03 */
+  --color-series-free: #2b6793;
+  --color-series-entry: #000000;
+  --color-series-mid: #b674d7;
+  --color-series-enterprise: #134141;
 
   --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-public-sans), ui-sans-serif, system-ui, sans-serif;
@@ -59,9 +89,21 @@
    scanned source, and this task lands the tokens before task 3 (the change
    ribbon) is the one that consumes them — `static` keeps them in the
    compiled CSS regardless. */
+/* Re-tuned in the final-fixes round (task 3): #d01131 vs #0c7098 measured
+   1.01:1 in light (1.06:1 dark) — same hue-only mistake as the tier hues
+   above, on the pair spec 14.3 calls the strongest color in the system.
+   Chosen instead from a wide luminance gap (dark maroon vs mid cyan in
+   light; vivid red vs pale sky-blue in dark) rather than hue alone —
+   verified with the same throwaway script noted above:
+     LIGHT: rise #620e1c vs surface 12.36 vs surface-raised 13.13
+            fall #148fb8 vs surface 3.50  vs surface-raised 3.72
+            rise-fall 3.53
+     DARK:  rise #d21e3c vs surface 3.46  vs surface-raised 3.12
+            fall #8fd7ef vs surface 11.39 vs surface-raised 10.27
+            rise-fall 3.29 */
 @theme static {
-  --color-rise: #d01131;
-  --color-fall: #0c7098;
+  --color-rise: #620e1c;
+  --color-fall: #148fb8;
   --color-flat: #7c818b;
 }
 
@@ -87,13 +129,15 @@
     --color-state-degraded: #e0a33a;
     --color-state-failing: #f07167;
 
-    --color-series-free: #5f7184;
-    --color-series-entry: #c4dcfa;
-    --color-series-mid: #9b42c8;
-    --color-series-enterprise: #b1ecea;
+    /* See the light-theme @theme block above for the full re-tune rationale
+       and pairwise matrix (task 3, final-fixes round). */
+    --color-series-free: #9fc7e3;
+    --color-series-entry: #3967c3;
+    --color-series-mid: #fdfbfe;
+    --color-series-enterprise: #2fa1a1;
 
-    --color-rise: #eb7488;
-    --color-fall: #39a9d5;
+    --color-rise: #d21e3c;
+    --color-fall: #8fd7ef;
     --color-flat: #91959d;
   }
 }

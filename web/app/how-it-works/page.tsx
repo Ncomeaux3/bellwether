@@ -70,7 +70,12 @@ export default function HowItWorksPage() {
             <dd className="mt-1 text-2xl text-ink">{filter.total_snapshots}</dd>
           </div>
           <div>
-            <dt className="text-ink-muted">Model calls made</dt>
+            {/* extractions_performed is calls that ran AND succeeded (filter
+                category 4) — the table below discloses a further "called and
+                rejected" category (5) that also spent real money. Labeled
+                precisely rather than "made", which reads as the total
+                (final-fixes round, task 7). */}
+            <dt className="text-ink-muted">Model calls succeeded</dt>
             <dd className="mt-1 text-2xl text-ink">{filter.extractions_performed}</dd>
           </div>
           <div>

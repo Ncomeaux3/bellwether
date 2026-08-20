@@ -170,7 +170,16 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
       slug: source.slug,
       name: source.name,
       first_observed_at: observations[0]?.observedAt ?? null,
-      last_observed_at: observations[observations.length - 1]?.observedAt ?? null,
+      // lastObservedAt, not observedAt: observationsFor collapses a repeat
+      // confirmation of the same state into the representative observation
+      // and moves lastObservedAt forward for exactly this reason (see its
+      // doc comment). Reading .observedAt here reports the date the state
+      // was FIRST seen instead of the date it was last reconfirmed, which
+      // disagreed with dataset.ts's buildDatasetRows (already correct) by
+      // as much as the collapsed run is long — verified live: a 15-day gap
+      // on Linear, whose 2026-08-18 fetch re-confirmed a state first seen
+      // 2026-08-03.
+      last_observed_at: observations[observations.length - 1]?.lastObservedAt ?? null,
       series,
       markers: markerRows
         .filter(m => m.source_id === source.source_id)

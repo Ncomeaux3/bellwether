@@ -125,7 +125,11 @@ export default function HomePage() {
         ) : (
           <article className="mt-6 rounded-lg border border-rule bg-surface-raised p-5">
             <p className="font-mono text-xs text-ink-muted">
-              Published <Stamp iso={digest.digest.created_at} /> · {digest.digest.item_count} change
+              {/* item_count counts digest SECTIONS, not confirmed changes (a
+                  section can roll up several) — labeled for what it actually
+                  is (final-fixes round, task 7) rather than implying it is
+                  the change count. */}
+              Published <Stamp iso={digest.digest.created_at} /> · {digest.digest.item_count} item
               {digest.digest.item_count === 1 ? '' : 's'}
             </p>
             <div

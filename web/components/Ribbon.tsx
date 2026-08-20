@@ -34,19 +34,23 @@ const month = (iso: string) =>
 // { observed_at, label } — a formatted string, not raw before/after numbers.
 // Adding a numeric field is outside this task's touched-files list, so
 // direction is read back out of describeChange()'s own grammar instead:
-// every price_changed label it emits ends in "<number> to <number>"
-// ("Basic 8 to 10"); tier added/removed, seats/billing changes, and a
-// "none" (contact-sales) side don't match, and correctly fall to neutral.
-const PRICE_CHANGE_RE = /(-?\d+(?:\.\d+)?)\s+to\s+(-?\d+(?:\.\d+)?)$/;
+// every numeric price_changed label it emits now ends in "$<number> →
+// $<number>" ("Basic $8 → $10", spec 14.3/14.4's own quoted form — see
+// src/workflow/dataset.ts's describeChange); tier added/removed,
+// seats/billing changes, and a "none" (contact-sales) side keep the plain
+// "none to 299" grammar and correctly fall to neutral below. The label is
+// already in its final display form, so displayLabel is a passthrough —
+// there is no separate re-formatting step left to do here.
+const PRICE_CHANGE_RE = /\$([\d,]+(?:\.\d+)?)\s*→\s*\$([\d,]+(?:\.\d+)?)$/;
 
 function parseMarker(marker: TimelineMarker): { direction: Direction; displayLabel: string } {
   const match = PRICE_CHANGE_RE.exec(marker.label);
   if (!match) return { direction: 'flat', displayLabel: marker.label };
-  const before = Number(match[1]);
-  const after = Number(match[2]);
+  const before = Number(match[1]!.replace(/,/g, ''));
+  const after = Number(match[2]!.replace(/,/g, ''));
   return {
     direction: after > before ? 'rise' : after < before ? 'fall' : 'flat',
-    displayLabel: `${money(before)} → ${money(after)}`,
+    displayLabel: marker.label,
   };
 }
 
@@ -183,11 +187,10 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
           const { direction, displayLabel } = parseMarker(marker);
           const mx = x(marker.observed_at);
           return (
-            <g key={`${marker.observed_at}-${marker.label}`}>
+            <g key={`${marker.observed_at}-${marker.label}`} tabIndex={0}>
               <title>{displayLabel}</title>
               <rect
                 x={mx - 5} y="0" width="10" height={ROW.height} fill="transparent"
-                tabIndex={0}
               />
               <line
                 x1={mx} x2={mx} y1={ROW.bandY - 8} y2={ROW.bandY + 8}
@@ -253,20 +256,23 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
         {groupMarkersByDate(competitor.markers).map(group => {
           const direction = groupDirection(group.markers);
           const mx = x(group.markers[0]!.observed_at);
+          // Spec 14.3/14.4: "$16 → $18", not describeChange's raw "8 to 10" —
+          // parseMarker's displayLabel already produces that form.
+          const displayLabels = group.markers.map(m => parseMarker(m).displayLabel);
           // Cap the visible stack at three lines: past that, the first two
           // entries plus a "+N more" summary — the full list still lives in
           // the <title> below, unabridged, for the accessible name.
-          const overflow = group.markers.length - 2;
-          const lines = group.markers.length > HERO_LABEL_MAX_LINES
-            ? [group.markers[0]!.label, group.markers[1]!.label, `+${overflow} more`]
-            : group.markers.map(m => m.label);
+          const overflow = displayLabels.length - 2;
+          const lines = displayLabels.length > HERO_LABEL_MAX_LINES
+            ? [displayLabels[0]!, displayLabels[1]!, `+${overflow} more`]
+            : displayLabels;
           const dateY = HERO.labelY + (lines.length - 1) * HERO_LABEL_LINE_DY + HERO.dateGap;
           return (
-            <g key={group.date}>
-              <title>{group.markers.map(m => m.label).join('\n')}</title>
+            <g key={group.date} tabIndex={0}>
+              <title>{displayLabels.join('\n')}</title>
               <rect
                 x={mx - 6} y={HERO.chartTop} width="12" height={HERO.bandY - HERO.chartTop + 8}
-                fill="transparent" tabIndex={0}
+                fill="transparent"
               />
               <line
                 x1={mx} x2={mx} y1={HERO.chartTop} y2={HERO.bandY + 6}

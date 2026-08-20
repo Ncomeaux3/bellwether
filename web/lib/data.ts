@@ -101,6 +101,10 @@ export function loadDatasetMeta(): DatasetMeta {
 
 const fmt = (v: unknown): string => (v === null || v === undefined ? 'none' : String(v));
 
+/** Same currency-and-arrow form as describeChange's formatMoney/Ribbon.tsx's
+ * money() — spec 14.3/14.4 both quote "$16 → $18" verbatim. */
+const formatMoney = (n: number): string => (n === 0 ? '$0' : `$${n.toLocaleString('en-US')}`);
+
 /**
  * Same grammar as the exporter's describeChange (src/workflow/dataset.ts),
  * ported rather than imported — that module pulls in better-sqlite3, which
@@ -116,7 +120,12 @@ export function changeLabel(c: Pick<ChangeEntry, 'json_path' | 'change_type' | '
 
   if (c.change_type === 'price_changed') {
     const label = field === 'monthly_price_usd' ? '' : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
-    return `${tier} ${label}${fmt(c.before)} to ${fmt(c.after)}`;
+    // Numeric price changes only — a contact-sales ("none") side keeps the
+    // plain "none to 299" grammar (final-fixes round, task 5).
+    const range = typeof c.before === 'number' && typeof c.after === 'number'
+      ? `${formatMoney(c.before)} → ${formatMoney(c.after)}`
+      : `${fmt(c.before)} to ${fmt(c.after)}`;
+    return `${tier} ${label}${range}`;
   }
   return `${tier} ${c.change_type.replace(/_/g, ' ')}`;
 }

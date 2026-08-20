@@ -54,13 +54,17 @@ if ! git pull --ff-only; then
 fi
 
 # The filename set below is static and copied wholesale — if a future export
-# stops producing one of the nine files, its last published copy is never
+# stops producing one of the files, its last published copy is never
 # removed. Changing the set is a code change, not a data change.
-for f in board.json status.json changes.json timeline.json digest.json dataset.json dataset.csv; do
+for f in board.json status.json changes.json timeline.json digest.json dataset.json mechanics.json dataset.csv; do
   if [ -s "$SRC/$f" ]; then cp "$SRC/$f" web/public/data/; fi
 done
 for f in changes.xml llms.txt; do
   if [ -s "$SRC/$f" ]; then cp "$SRC/$f" web/public/; fi
+done
+mkdir -p web/public/data/competitors
+for f in "$SRC"/competitors/*.json; do
+  if [ -s "$f" ]; then cp "$f" web/public/data/competitors/; fi
 done
 
 if [ -z "$(git status --porcelain web/public)" ]; then
