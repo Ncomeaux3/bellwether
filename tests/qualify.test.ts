@@ -574,3 +574,95 @@ describe('verifyCandidates — fix round 3: spend is real, budgeted, and reusabl
     expect(rowB.verdict).toBe('pass'); // untouched — a future budgeted run retries both attempts fresh
   });
 });
+
+describe('verifyCandidates — fix round 4: a candidate that errors is left unverified, not rejected', () => {
+  it('an extractor that throws on candidate 2 of 3 leaves candidate 2 unverified and still verifies candidate 3', async () => {
+    insertPassCandidate('https://acme.test/a', 'CandA');
+    insertPassCandidate('https://acme.test/b', 'CandB');
+    insertPassCandidate('https://acme.test/c', 'CandC');
+    const tiers = [tier('Free', 0), tier('Pro', 29)];
+    let calls = 0;
+
+    const stats = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      // Distinct bodies so each candidate gets its own content hash — no cache short-circuit.
+      fetcher: async (url: string) => ok(url.endsWith('/a') ? LINEAR : url.endsWith('/b') ? NOTION : FIGMA),
+      extractor: async () => {
+        calls += 1;
+        if (calls === 3) throw new Error('Connection error'); // candidate B's first attempt
+        return extractOk(tiers);
+      },
+    });
+
+    expect(stats.errored).toBe(1);
+    expect(stats.admitted).toBe(2); // A and C both completed normally
+    expect(calls).toBe(5); // A: 2 attempts, B: 1 (throws, aborts), C: 2 attempts
+
+    const rowA = db.prepare('SELECT verdict, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/a') as { verdict: string; verified_at: string | null };
+    const rowB = db.prepare('SELECT verdict, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/b') as { verdict: string; verified_at: string | null };
+    const rowC = db.prepare('SELECT verdict, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/c') as { verdict: string; verified_at: string | null };
+
+    expect(rowA.verdict).toBe('admit');
+    expect(rowB.verdict).toBe('pass');       // untouched: no verdict written
+    expect(rowB.verified_at).toBeNull();     // and no verified_at either
+    expect(rowC.verdict).toBe('admit');
+  });
+
+  it('a subsequent run picks up the candidate that errored, exactly like a fresh candidate', async () => {
+    insertPassCandidate('https://acme.test/a', 'CandA');
+    insertPassCandidate('https://acme.test/b', 'CandB');
+    const tiers = [tier('Free', 0), tier('Pro', 29)];
+    const fetcher = async (url: string) => ok(url.endsWith('/a') ? LINEAR : NOTION);
+
+    let calls = 0;
+    const first = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher,
+      extractor: async () => {
+        calls += 1;
+        if (calls === 3) throw new Error('Connection error'); // candidate B's first attempt
+        return extractOk(tiers);
+      },
+    });
+    expect(first.errored).toBe(1);
+    expect(first.admitted).toBe(1); // just A
+
+    const second = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher,
+      extractor: async () => extractOk(tiers),
+    });
+
+    expect(second.considered).toBe(1); // only B remained at verdict='pass'
+    expect(second.errored).toBe(0);
+    expect(second.admitted).toBe(1);
+
+    const rowB = db.prepare('SELECT verdict, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/b') as { verdict: string; verified_at: string | null };
+    expect(rowB.verdict).toBe('admit');
+    expect(rowB.verified_at).not.toBeNull();
+  });
+
+  it('an ok:false extraction result (not a throw) still records verified_at and a reject — the distinction that must not invert', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = [tier('Free', 0)]; // only 1 priced tier
+
+    const stats = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: sequence(extractFail('ungrounded', 'invented a value not in the text'), extractOk(tiers)),
+    });
+
+    expect(stats.errored).toBe(0);
+    expect(stats.rejected).toBe(1);
+
+    const row = db.prepare('SELECT verdict, verified_at, reason FROM candidates WHERE url = ?')
+      .get('https://acme.test/pricing') as { verdict: string; verified_at: string | null; reason: string };
+    expect(row.verdict).toBe('reject');
+    expect(row.verified_at).not.toBeNull(); // a completed ok:false IS a real signal — unlike a throw
+    expect(row.reason).toMatch(/failed: ungrounded/);
+  });
+});

@@ -217,6 +217,8 @@ export function estimateVerify(db: DB, budgetUsd: number, limit?: number): Verif
 
 export interface VerifyStats {
   considered: number; admitted: number; rejected: number; skipped: number; cached: number;
+  /** Threw rather than completed (e.g. a transient APIError) — left unverified, not rejected. Retry to finish. */
+  errored: number;
   estimate: VerifyEstimate; actualMicros: number;
 }
 
@@ -330,7 +332,7 @@ export async function verifyCandidates(
 
   const estimate = estimateVerify(db, budgetUsd, opts.limit);
   const stats: VerifyStats = {
-    considered: 0, admitted: 0, rejected: 0, skipped: 0, cached: 0,
+    considered: 0, admitted: 0, rejected: 0, skipped: 0, cached: 0, errored: 0,
     estimate, actualMicros: 0,
   };
 
@@ -370,70 +372,86 @@ export async function verifyCandidates(
 
     if (budgetStopped) { stats.skipped += 1; continue; }
 
-    const verifiedAt = now().toISOString();
-    const fetched = await fetcher(row.url);
-    if (!fetched.ok || fetched.body === null) {
+    // Fix round 4: mirrors runPipeline's per-step isolation. A candidate's
+    // extraction can THROW (extractPricing rethrows APIError deliberately —
+    // right for one call, since a transient 429/529/connection reset must
+    // never be mistaken for "this page is unextractable" and marked
+    // permanent) or it can COMPLETE with ok:false (invalid/ungrounded/
+    // oversized — a real qualification signal). Only the throw is caught
+    // here: it leaves the candidate untouched (no verdict, no verified_at)
+    // so the next run picks it up exactly like a fresh candidate. A
+    // completed ok:false still falls through to the normal reject path
+    // below, verified_at and all — that distinction is load-bearing.
+    try {
+      const verifiedAt = now().toISOString();
+      const fetched = await fetcher(row.url);
+      if (!fetched.ok || fetched.body === null) {
+        stats.rejected += 1;
+        update.run({
+          verdict: 'reject', reason: `re-fetch failed: ${fetched.error ?? `HTTP ${fetched.httpStatus}`}`,
+          pricedTiers: null, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
+      const { text, normalizedHash } = normalizeAndSlice(fetched.body);
+
+      const cachedRow = findExtraction.get(normalizedHash, EXTRACT_PROMPT_VERSION) as { data_json: string } | undefined;
+      if (cachedRow) {
+        stats.cached += 1;
+        const pricedTiers = pricedTiersFromDataJson(cachedRow.data_json);
+        const admitted = pricedTiers >= MIN_PRICED_TIERS;
+        if (admitted) stats.admitted += 1; else stats.rejected += 1;
+        update.run({
+          verdict: admitted ? 'admit' : 'reject',
+          reason: `already extracted (cached): ${pricedTiers} priced tier${pricedTiers === 1 ? '' : 's'}`,
+          pricedTiers: admitted ? pricedTiers : null, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
+      if (actualMicros >= budgetMicros) { budgetStopped = true; stats.skipped += 1; continue; }
+      const attempt1 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
+      if (attempt1.ok) actualMicros += attempt1.costMicros;
+
+      if (actualMicros >= budgetMicros) {
+        // Can't afford the second observation — leave this candidate at
+        // 'pass' (unresolved) rather than admit on a single unreplicated
+        // attempt. A future budgeted run starts its two attempts fresh.
+        budgetStopped = true;
+        stats.skipped += 1;
+        continue;
+      }
+      const attempt2 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
+      if (attempt2.ok) actualMicros += attempt2.costMicros;
+
+      const reproduced =
+        attempt1.ok && attempt2.ok &&
+        attempt1.confidence !== 'low' && attempt2.confidence !== 'low' &&
+        attempt1.pricedTiers === attempt2.pricedTiers &&
+        attempt1.pricedTiers >= MIN_PRICED_TIERS;
+
+      if (reproduced && attempt1.ok) {
+        stats.admitted += 1;
+        update.run({
+          verdict: 'admit',
+          reason: `both attempts agreed on ${attempt1.pricedTiers} priced tier${attempt1.pricedTiers === 1 ? '' : 's'}`,
+          pricedTiers: attempt1.pricedTiers, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
       stats.rejected += 1;
       update.run({
-        verdict: 'reject', reason: `re-fetch failed: ${fetched.error ?? `HTTP ${fetched.httpStatus}`}`,
+        verdict: 'reject',
+        reason: `attempt 1 ${describeAttempt(attempt1)}, attempt 2 ${describeAttempt(attempt2)}`,
         pricedTiers: null, verifiedAt, url: row.url,
       });
-      continue;
+    } catch (err) {
+      stats.errored += 1;
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`qualify --verify: ${row.url} errored, left unverified: ${message}`);
     }
-
-    const { text, normalizedHash } = normalizeAndSlice(fetched.body);
-
-    const cachedRow = findExtraction.get(normalizedHash, EXTRACT_PROMPT_VERSION) as { data_json: string } | undefined;
-    if (cachedRow) {
-      stats.cached += 1;
-      const pricedTiers = pricedTiersFromDataJson(cachedRow.data_json);
-      const admitted = pricedTiers >= MIN_PRICED_TIERS;
-      if (admitted) stats.admitted += 1; else stats.rejected += 1;
-      update.run({
-        verdict: admitted ? 'admit' : 'reject',
-        reason: `already extracted (cached): ${pricedTiers} priced tier${pricedTiers === 1 ? '' : 's'}`,
-        pricedTiers: admitted ? pricedTiers : null, verifiedAt, url: row.url,
-      });
-      continue;
-    }
-
-    if (actualMicros >= budgetMicros) { budgetStopped = true; stats.skipped += 1; continue; }
-    const attempt1 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
-    if (attempt1.ok) actualMicros += attempt1.costMicros;
-
-    if (actualMicros >= budgetMicros) {
-      // Can't afford the second observation — leave this candidate at
-      // 'pass' (unresolved) rather than admit on a single unreplicated
-      // attempt. A future budgeted run starts its two attempts fresh.
-      budgetStopped = true;
-      stats.skipped += 1;
-      continue;
-    }
-    const attempt2 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
-    if (attempt2.ok) actualMicros += attempt2.costMicros;
-
-    const reproduced =
-      attempt1.ok && attempt2.ok &&
-      attempt1.confidence !== 'low' && attempt2.confidence !== 'low' &&
-      attempt1.pricedTiers === attempt2.pricedTiers &&
-      attempt1.pricedTiers >= MIN_PRICED_TIERS;
-
-    if (reproduced && attempt1.ok) {
-      stats.admitted += 1;
-      update.run({
-        verdict: 'admit',
-        reason: `both attempts agreed on ${attempt1.pricedTiers} priced tier${attempt1.pricedTiers === 1 ? '' : 's'}`,
-        pricedTiers: attempt1.pricedTiers, verifiedAt, url: row.url,
-      });
-      continue;
-    }
-
-    stats.rejected += 1;
-    update.run({
-      verdict: 'reject',
-      reason: `attempt 1 ${describeAttempt(attempt1)}, attempt 2 ${describeAttempt(attempt2)}`,
-      pricedTiers: null, verifiedAt, url: row.url,
-    });
   }
 
   stats.actualMicros = actualMicros;

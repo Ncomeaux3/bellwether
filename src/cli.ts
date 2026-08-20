@@ -92,7 +92,8 @@ program
       }
       console.log(
         `Verified ${stats.considered}: ${stats.admitted} admit, ${stats.rejected} reject, ` +
-        `${stats.cached} cached, ${stats.skipped} skipped. ` +
+        `${stats.cached} cached, ${stats.errored} errored${stats.errored > 0 ? ' (retry to finish)' : ''}, ` +
+        `${stats.skipped} skipped. ` +
         `Actual spend: ${usd(stats.actualMicros)} (estimated ${usd(stats.estimate.estimateMicros)}).`,
       );
       db.close();
