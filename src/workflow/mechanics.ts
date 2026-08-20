@@ -19,6 +19,12 @@ export interface FilterFunnel {
   byte_identical_repeats: number;
   distinct_normalized_states: number;
   extractions_performed: number;
+  /** Distinct states a real, paid model call ran against and permanently
+   * rejected (failed grounding or schema validation) — spend, not savings. */
+  attempted_and_rejected_states: number;
+  /** Same population, counted as snapshot rows — each is its own paid call;
+   * nothing here is deduplicated the way a cached success is (fix round 1). */
+  attempted_and_rejected_snapshots: number;
   llm_calls_avoided: number;
   /** Omitted (never 0 or Infinity) when total_snapshots is 0 — R4. */
   llm_calls_avoided_pct?: number;
@@ -117,6 +123,32 @@ export function buildMechanics(db: DB, now: Date): MechanicsPayload {
       )
   `).get({ promptVersion: EXTRACT_PROMPT_VERSION }) as { n: number }).n;
 
+  // Fix round 1, finding 1: a call that was made and failed also leaves no
+  // extractions row — extract.ts's markUnextractable records `error =
+  // "extraction ${reason}: ${detail}"` on the snapshot and never inserts an
+  // extraction. Gate 3 originally read "no row" as "no call was made", which
+  // overclaims for these. Split by reason (src/agents/extract_pricing.ts):
+  // 'oversized' and the empty-slice 'invalid' are refused BEFORE any request
+  // is sent (genuinely avoided, gate 3's story is correct for them); a
+  // schema-mismatch 'invalid' or an 'ungrounded' only happens AFTER at least
+  // one real call (spend, not savings). The empty-slice detail is a fixed
+  // string (extract_pricing.ts), so excluding it by exact prefix is precise,
+  // not a heuristic.
+  const rejectedFilterSql = `
+    ok = 1 AND raw_content IS NOT NULL AND normalized_hash IS NOT NULL
+    AND (
+      error LIKE 'extraction ungrounded:%'
+      OR (error LIKE 'extraction invalid:%'
+          AND error NOT LIKE 'extraction invalid: normalized slice is empty%')
+    )
+  `;
+  const attemptedAndRejectedStates = (db.prepare(
+    `SELECT COUNT(DISTINCT normalized_hash) AS n FROM snapshots WHERE ${rejectedFilterSql}`
+  ).get() as { n: number }).n;
+  const attemptedAndRejectedSnapshots = (db.prepare(
+    `SELECT COUNT(*) AS n FROM snapshots WHERE ${rejectedFilterSql}`
+  ).get() as { n: number }).n;
+
   const gates: FilterGate[] = [
     {
       name: 'Repeat fetch, byte-identical',
@@ -131,19 +163,29 @@ export function buildMechanics(db: DB, now: Date): MechanicsPayload {
       note: 'Normalization collapses cosmetic differences (timestamps, ad slots) that changed the bytes but not the priced content.',
     },
     {
-      name: 'Already extracted at this prompt version',
-      eliminated: distinctNormalizedStates - extractionsPerformed,
+      name: 'Already extracted, or not yet due',
+      eliminated: distinctNormalizedStates - extractionsPerformed - attemptedAndRejectedStates,
       remaining: extractionsPerformed,
-      note: 'A normalized state already on file, or not yet due for extraction, needs no fresh model call.',
+      note: 'A normalized state already on file, or refused before any request was sent (oversized, or no extractable text), needs no fresh model call.',
+    },
+    {
+      name: 'Attempted, permanently rejected',
+      eliminated: attemptedAndRejectedStates,
+      remaining: extractionsPerformed,
+      note: `Spend, not savings: a real model call ran and failed grounding or schema validation, so the state was retired. ` +
+        `${attemptedAndRejectedSnapshots} snapshot row${attemptedAndRejectedSnapshots === 1 ? '' : 's'} across these ` +
+        `${attemptedAndRejectedStates} state${attemptedAndRejectedStates === 1 ? '' : 's'} — none of it is deduplicated the way a cached success is.`,
     },
   ];
 
-  const llmCallsAvoided = totalSnapshots - extractionsPerformed;
+  const llmCallsAvoided = totalSnapshots - extractionsPerformed - attemptedAndRejectedStates;
   const filter: FilterFunnel = {
     total_snapshots: totalSnapshots,
     byte_identical_repeats: byteIdenticalRepeats,
     distinct_normalized_states: distinctNormalizedStates,
     extractions_performed: extractionsPerformed,
+    attempted_and_rejected_states: attemptedAndRejectedStates,
+    attempted_and_rejected_snapshots: attemptedAndRejectedSnapshots,
     llm_calls_avoided: llmCallsAvoided,
     ...(totalSnapshots > 0
       ? { llm_calls_avoided_pct: Math.round((llmCallsAvoided / totalSnapshots) * 1000) / 10 }

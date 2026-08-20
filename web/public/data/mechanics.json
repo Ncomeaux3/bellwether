@@ -1,12 +1,14 @@
 {
-  "generated_at": "2026-08-20T01:37:19.170Z",
+  "generated_at": "2026-08-20T01:55:21.782Z",
   "filter": {
     "total_snapshots": 120,
     "byte_identical_repeats": 0,
     "distinct_normalized_states": 87,
     "extractions_performed": 80,
-    "llm_calls_avoided": 40,
-    "llm_calls_avoided_pct": 33.3,
+    "attempted_and_rejected_states": 6,
+    "attempted_and_rejected_snapshots": 9,
+    "llm_calls_avoided": 34,
+    "llm_calls_avoided_pct": 28.3,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
@@ -21,10 +23,16 @@
         "note": "Normalization collapses cosmetic differences (timestamps, ad slots) that changed the bytes but not the priced content."
       },
       {
-        "name": "Already extracted at this prompt version",
-        "eliminated": 7,
+        "name": "Already extracted, or not yet due",
+        "eliminated": 1,
         "remaining": 80,
-        "note": "A normalized state already on file, or not yet due for extraction, needs no fresh model call."
+        "note": "A normalized state already on file, or refused before any request was sent (oversized, or no extractable text), needs no fresh model call."
+      },
+      {
+        "name": "Attempted, permanently rejected",
+        "eliminated": 6,
+        "remaining": 80,
+        "note": "Spend, not savings: a real model call ran and failed grounding or schema validation, so the state was retired. 9 snapshot rows across these 6 states — none of it is deduplicated the way a cached success is."
       }
     ]
   },
@@ -110,7 +118,7 @@
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-08-20T01:18:21.371Z"
+        "ended_at": "2026-08-20T01:37:19.880Z"
       },
       {
         "kind": "extract",

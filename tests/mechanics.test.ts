@@ -33,16 +33,17 @@ afterEach(() => {
 
 function insertSnapshot(row: {
   observedAt: string; fetchedAt?: string; ok?: 0 | 1; rawContent: string | null;
-  rawHash: string | null; normalizedHash: string | null; provenance?: string;
+  rawHash: string | null; normalizedHash: string | null; provenance?: string; error?: string;
 }) {
   db.prepare(`
     INSERT INTO snapshots
-      (source_id, observed_at, fetched_at, ok, http_status, raw_content, raw_hash, normalized_hash, provenance)
-    VALUES (1, @observedAt, @fetchedAt, @ok, 200, @rawContent, @rawHash, @normalizedHash, @provenance)
+      (source_id, observed_at, fetched_at, ok, http_status, error, raw_content, raw_hash, normalized_hash, provenance)
+    VALUES (1, @observedAt, @fetchedAt, @ok, 200, @error, @rawContent, @rawHash, @normalizedHash, @provenance)
   `).run({
     observedAt: row.observedAt,
     fetchedAt: row.fetchedAt ?? row.observedAt,
     ok: row.ok ?? 1,
+    error: row.error ?? null,
     rawContent: row.rawContent,
     rawHash: row.rawHash,
     normalizedHash: row.normalizedHash,
@@ -96,14 +97,68 @@ describe('buildMechanics — filter funnel', () => {
     expect(m.filter.byte_identical_repeats).toBe(2);
     expect(m.filter.distinct_normalized_states).toBe(2);
     expect(m.filter.extractions_performed).toBe(1);
+    expect(m.filter.attempted_and_rejected_states).toBe(0);
+    expect(m.filter.attempted_and_rejected_snapshots).toBe(0);
     expect(m.filter.llm_calls_avoided).toBe(4);
     expect(m.filter.llm_calls_avoided_pct).toBe(80);
 
-    // Arithmetic must reconcile exactly against the candidate pool.
+    // Arithmetic must reconcile exactly against the candidate pool: nothing
+    // was rejected in this fixture, so avoided + performed still spans it.
     expect(m.filter.llm_calls_avoided + m.filter.extractions_performed).toBe(m.filter.total_snapshots);
-    const gateTotal = m.filter.gates.reduce((sum, g) => sum + g.eliminated, 0);
-    expect(gateTotal).toBe(m.filter.llm_calls_avoided);
+    expect(m.filter.gates).toHaveLength(4);
+    // Only the first three gates (dedup) count toward "avoided" — the fourth
+    // (attempted and rejected) is spend, never folded into that sum.
+    const avoidedGateTotal = m.filter.gates.slice(0, 3).reduce((sum, g) => sum + g.eliminated, 0);
+    expect(avoidedGateTotal).toBe(m.filter.llm_calls_avoided);
+    expect(m.filter.gates[3]!.eliminated).toBe(0);
     for (const gate of m.filter.gates) expect(gate.eliminated).toBeGreaterThanOrEqual(0);
+  });
+
+  it('fix round 1: a real call that was rejected is spend, not an avoided call, and a pre-call refusal still is', () => {
+    // n-ok: extracted successfully.
+    insertSnapshot({ observedAt: '2026-08-01T00:00:00.000Z', rawContent: 'ok', rawHash: 'h-ok', normalizedHash: 'n-ok' });
+    insertExtraction('n-ok', 5000);
+
+    // n-rej: one distinct state, two snapshot rows — each independently ran a
+    // real model call and was permanently rejected (no caching saves a
+    // repeat of a state that never successfully extracted). One row fails
+    // grounding, the other fails schema validation post-call — both are real
+    // spend and must land in the same bucket.
+    insertSnapshot({
+      observedAt: '2026-08-02T00:00:00.000Z', rawContent: 'rej1', rawHash: 'h-rej1', normalizedHash: 'n-rej',
+      error: 'extraction ungrounded: tiers.Pro.monthly_price_usd invented a value not in the page text',
+    });
+    insertSnapshot({
+      observedAt: '2026-08-03T00:00:00.000Z', rawContent: 'rej2', rawHash: 'h-rej2', normalizedHash: 'n-rej',
+      error: 'extraction invalid: tiers.0.name: Required',
+    });
+
+    // n-empty: refused BEFORE any request was sent (extract_pricing.ts's
+    // empty-slice guard) — genuinely avoided, must NOT land in the rejected
+    // bucket despite sharing the 'extraction invalid:' prefix.
+    insertSnapshot({
+      observedAt: '2026-08-04T00:00:00.000Z', rawContent: 'x', rawHash: 'h-empty', normalizedHash: 'n-empty',
+      error: 'extraction invalid: normalized slice is empty — the capture carries no extractable text',
+    });
+
+    const m = buildMechanics(db, NOW);
+
+    expect(m.filter.total_snapshots).toBe(4);
+    expect(m.filter.distinct_normalized_states).toBe(3);
+    expect(m.filter.extractions_performed).toBe(1);
+    expect(m.filter.attempted_and_rejected_states).toBe(1);
+    expect(m.filter.attempted_and_rejected_snapshots).toBe(2);
+
+    // The rejected state must be excluded from the avoided total.
+    expect(m.filter.llm_calls_avoided).toBe(4 - 1 - 1);
+
+    const rejectedGate = m.filter.gates.find(g => g.name === 'Attempted, permanently rejected')!;
+    expect(rejectedGate.eliminated).toBe(1);
+    expect(rejectedGate.note).toMatch(/2 snapshot rows/);
+
+    const cacheGate = m.filter.gates.find(g => g.name === 'Already extracted, or not yet due')!;
+    // n-empty (the pre-call refusal) is the one state left in this gate.
+    expect(cacheGate.eliminated).toBe(1);
   });
 
   it('never inflates extractions_performed with a stale row whose snapshot no longer exists', () => {

@@ -60,7 +60,8 @@ export default function HowItWorksPage() {
         <p className="mt-2 max-w-2xl text-ink-secondary">
           Most of what Bellwether observes never reaches a model call. Three gates run in sequence,
           each eliminating candidates the one before it left behind — this is what makes the archive
-          affordable to run.
+          affordable to run. A fourth row accounts for real calls that ran and were rejected: spend,
+          not savings, and excluded from the avoided count above.
         </p>
 
         <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 font-mono text-sm">
@@ -158,8 +159,11 @@ export default function HowItWorksPage() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-medium text-ink">Spend</h2>
         <p className="mt-2 max-w-2xl text-ink-secondary">
-          Money actually spent on model calls, not a projection. Recurring extraction and synthesis
-          costs are separate from the one-time cost of backfilling history.
+          Money actually spent — not a projection — on successful extractions and digests, tracked
+          per call. A call that failed grounding or schema validation still consumed real tokens,
+          and that cost is not yet metered anywhere in this system, so every figure below is a
+          floor, not a total. Recurring extraction and synthesis costs are separate from the
+          one-time cost of backfilling history.
         </p>
         <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 font-mono text-sm">
           <div>
