@@ -1,0 +1,97 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "depot",
+  "name": "Depot",
+  "homepage": "https://depot.dev",
+  "source_url": "https://depot.dev/pricing",
+  "current_tiers": [
+    {
+      "name": "Developer",
+      "monthly_price_usd": 20,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 1,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "1 user",
+        "Community support",
+        "Unlimited concurrency",
+        "Docker builds",
+        "Depot CI",
+        "GitHub Actions builds",
+        "macOS M2 Runners",
+        "Depot Registry"
+      ]
+    },
+    {
+      "name": "Startup",
+      "monthly_price_usd": 200,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited users",
+        "Everything in developer, plus:",
+        "Email support",
+        "User RBAC"
+      ]
+    },
+    {
+      "name": "Business",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Ability to deploy in your AWS account",
+        "Dedicated infrastructure",
+        "GPU enabled builds",
+        "Static outbound IPs",
+        "Network firewall rules",
+        "AWS PrivateLink",
+        "SSO with SAML, SCIM",
+        "Advanced compliance controls"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:47:14.029Z",
+  "last_observed_at": "2026-08-20T17:47:14.029Z",
+  "series": [
+    {
+      "tier": "Developer",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:14.029Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Startup",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:14.029Z",
+            "price": 200
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

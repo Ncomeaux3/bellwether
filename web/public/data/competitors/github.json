@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "github",
+  "name": "GitHub",
+  "homepage": "https://github.com",
+  "source_url": "https://github.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited public/private repositories",
+        "Dependabot security and version updates",
+        "2,000 CI/CD minutes/month",
+        "500MB of Packages storage",
+        "Issues & Projects",
+        "Community support"
+      ]
+    },
+    {
+      "name": "Team",
+      "monthly_price_usd": 4,
+      "annual_price_usd": 4,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Access to GitHub Codespaces",
+        "Repository rules",
+        "Multiple reviewers in pull requests",
+        "Draft pull requests",
+        "Code owners",
+        "3,000 CI/CD minutes/month"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": 21,
+      "annual_price_usd": 21,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Data residency",
+        "Enterprise Managed Users",
+        "User provisioning through SCIM",
+        "Enterprise Account to centrally manage multiple organizations",
+        "Environment protection rules",
+        "50,000 CI/CD minutes/month"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:47:26.539Z",
+  "last_observed_at": "2026-08-20T17:47:26.539Z",
+  "series": [
+    {
+      "tier": "Enterprise",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:26.539Z",
+            "price": 21
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:26.539Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Team",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:26.539Z",
+            "price": 4
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

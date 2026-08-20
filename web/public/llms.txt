@@ -11,9 +11,30 @@ Bellwether tracks confirmed SaaS pricing changes and publishes the underlying da
 - https://bellwether-nicholas-projects-cdfeb046.vercel.app/changes.xml — RSS feed of confirmed changes
 
 ## Competitors
-- Figma: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#figma
-- Linear: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#linear
-- Notion: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#notion
-- Postman: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#postman
-- Sentry: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#sentry
-- Supabase: https://bellwether-nicholas-projects-cdfeb046.vercel.app/#supabase
+- Auth0: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/auth0/
+- Buildkite: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/buildkite/
+- Clerk: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/clerk/
+- Depot: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/depot/
+- Figma: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/figma/
+- Fly.io: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/fly-io/
+- GitHub: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/github/
+- GitLab: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/gitlab/
+- Hasura: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/hasura/
+- Honeycomb: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/honeycomb/
+- Linear: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/linear/
+- Netlify: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/netlify/
+- New Relic: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/new-relic/
+- Notion: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/notion/
+- Pinecone: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/pinecone/
+- PlanetScale: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/planetscale/
+- Postman: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/postman/
+- Postmark: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/postmark/
+- Redis Cloud: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/redis-cloud/
+- Render: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/render/
+- Resend: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/resend/
+- Sentry: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/sentry/
+- Statsig: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/statsig/
+- Supabase: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/supabase/
+- Turso: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/turso/
+- Upstash: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/upstash/
+- Vercel: https://bellwether-nicholas-projects-cdfeb046.vercel.app/c/vercel/

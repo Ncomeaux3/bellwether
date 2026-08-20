@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T03:05:21.651Z",
+  "generated_at": "2026-08-20T18:30:17.655Z",
   "slug": "postman",
   "name": "Postman",
   "homepage": "https://www.postman.com",
@@ -19,7 +19,7 @@
         "Specs & mock servers",
         "Native Git",
         "Collection Runner & Performance Testing runs",
-        "Manual Flows Solo"
+        "Manual Flows"
       ]
     },
     {
@@ -75,7 +75,7 @@
     }
   ],
   "first_observed_at": "2025-02-23T11:47:21.000Z",
-  "last_observed_at": "2026-08-18T15:01:52.314Z",
+  "last_observed_at": "2026-08-20T17:46:12.943Z",
   "series": [
     {
       "tier": "Basic",
@@ -170,6 +170,10 @@
           {
             "observed_at": "2026-08-18T15:01:52.314Z",
             "price": 49
+          },
+          {
+            "observed_at": "2026-08-20T17:46:12.943Z",
+            "price": 49
           }
         ]
       ],
@@ -231,6 +235,10 @@
           },
           {
             "observed_at": "2026-08-18T15:01:52.314Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-20T17:46:12.943Z",
             "price": 0
           }
         ]
@@ -300,6 +308,10 @@
           {
             "observed_at": "2026-08-18T15:01:52.314Z",
             "price": 9
+          },
+          {
+            "observed_at": "2026-08-20T17:46:12.943Z",
+            "price": 9
           }
         ]
       ],
@@ -331,6 +343,10 @@
           },
           {
             "observed_at": "2026-08-18T15:01:52.314Z",
+            "price": 19
+          },
+          {
+            "observed_at": "2026-08-20T17:46:12.943Z",
             "price": 19
           }
         ]

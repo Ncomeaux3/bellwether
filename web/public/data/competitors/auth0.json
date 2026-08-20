@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "auth0",
+  "name": "Auth0",
+  "homepage": "https://auth0.com",
+  "source_url": "https://auth0.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 25,000 monthly active users",
+        "1 Custom Domain",
+        "Secure Agentic AI workflows",
+        "Passwordless Authentication",
+        "Unlimited Social Connections",
+        "5 Organizations",
+        "Brand Customization",
+        "Basic Attack Protection"
+      ]
+    },
+    {
+      "name": "Essentials",
+      "monthly_price_usd": 35,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 500 monthly active users",
+        "Higher Auth, API limits, and Feature limits",
+        "Pro Multi-Factor Authentication",
+        "Role-based Access Control Per Organization",
+        "10 Organizations",
+        "Stream Auth0 Audit Logs to Datadog, Splunk, AWS, Azure, etc.",
+        "Separate Production & Development Environments",
+        "Standard Support"
+      ]
+    },
+    {
+      "name": "Professional",
+      "monthly_price_usd": 240,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 500 monthly active users",
+        "Use your existing User Database for Logins",
+        "Enterprise Multi-Factor Authentication",
+        "Enhanced Attack Protection",
+        "M2M Tokens",
+        "Custom Database Connections",
+        "Cross APP SSO",
+        "Pro Forms"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Custom User & SSO Tiers",
+        "99.99% SLA",
+        "Enterprise Rate Limits",
+        "Enterprise Administration & Support",
+        "Advanced Security Features",
+        "Private Deployment",
+        "Home Realm Discovery",
+        "Long Lived Sessions"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:46:26.024Z",
+  "last_observed_at": "2026-08-20T17:46:26.024Z",
+  "series": [
+    {
+      "tier": "Essentials",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:46:26.024Z",
+            "price": 35
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:46:26.024Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Professional",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:46:26.024Z",
+            "price": 240
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

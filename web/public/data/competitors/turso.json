@@ -1,0 +1,136 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "turso",
+  "name": "Turso",
+  "homepage": "https://turso.tech",
+  "source_url": "https://turso.tech/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "100 Databases",
+        "5GB Storage",
+        "500 Million Monthly Rows Read",
+        "10 Million Monthly Rows Written",
+        "3GB Monthly Syncs",
+        "1 day Point-In-Time Restore"
+      ]
+    },
+    {
+      "name": "Developer",
+      "monthly_price_usd": 4.99,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited Databases",
+        "9GB Storage",
+        "2.5 Billion Monthly Rows Read",
+        "25 Million Monthly Rows Written",
+        "10GB Monthly Syncs",
+        "10 days Point-In-Time Restore"
+      ]
+    },
+    {
+      "name": "Scaler",
+      "monthly_price_usd": 24.92,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited Databases",
+        "24GB Storage",
+        "100 Billion Monthly Rows Read",
+        "100 Million Monthly Rows Written",
+        "24GB Monthly Syncs",
+        "30 days Point-In-Time Restore"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 416.58,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited Databases",
+        "50GB Storage",
+        "250 Billion Monthly Rows Read",
+        "250 Million Monthly Rows Written",
+        "100GB Monthly Syncs",
+        "90 days Point-In-Time Restore"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:48:25.938Z",
+  "last_observed_at": "2026-08-20T17:48:25.938Z",
+  "series": [
+    {
+      "tier": "Developer",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:25.938Z",
+            "price": 4.99
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:25.938Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:25.938Z",
+            "price": 416.58
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Scaler",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:25.938Z",
+            "price": 24.92
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

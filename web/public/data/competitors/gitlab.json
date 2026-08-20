@@ -1,0 +1,128 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "gitlab",
+  "name": "GitLab",
+  "homepage": "https://about.gitlab.com",
+  "source_url": "https://about.gitlab.com/pricing/",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "per_seat",
+      "included_seats": 5,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Source Code Management & CI/CD",
+        "5 licensed users",
+        "400 compute minutes per month",
+        "10 GiB storage"
+      ]
+    },
+    {
+      "name": "Premium",
+      "monthly_price_usd": 29,
+      "annual_price_usd": 29,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited licensed users",
+        "10,000 compute minutes per month",
+        "Advanced CI/CD",
+        "Team Project Management",
+        "SLA Management",
+        "Priority Support",
+        "Includes $12 in GitLab Credits per user per month"
+      ]
+    },
+    {
+      "name": "Ultimate",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Everything from Premium",
+        "Application Security Testing",
+        "Software Supply Chain Security",
+        "Vulnerability Management",
+        "Strategic Portfolio Management",
+        "Value Stream Management",
+        "50,000 compute minutes per month",
+        "Includes $24 in GitLab Credits per user per month"
+      ]
+    },
+    {
+      "name": "GitLab Dedicated",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Includes everything from Ultimate",
+        "Fully managed by GitLab",
+        "Data residency in region of your choice",
+        "Full data and source code isolation",
+        "Bring your own key encryption",
+        "Enterprise grade security"
+      ]
+    },
+    {
+      "name": "GitLab Dedicated for Government",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Includes everything from Ultimate and Dedicated",
+        "Hosted on FedRAMP compliant infrastructure",
+        "Meets FedRAMP Moderate baseline security controls",
+        "Deployed on AWS GovCloud"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:47:38.743Z",
+  "last_observed_at": "2026-08-20T17:47:38.743Z",
+  "series": [
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:38.743Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Premium",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:38.743Z",
+            "price": 29
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 5,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "planetscale",
+  "name": "PlanetScale",
+  "homepage": "https://planetscale.com",
+  "source_url": "https://planetscale.com/pricing",
+  "current_tiers": [
+    {
+      "name": "PlanetScale PostgreSQL - Single Node",
+      "monthly_price_usd": 5,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Development and low-traffic production workloads",
+        "Single node",
+        "Starting at $5/month"
+      ]
+    },
+    {
+      "name": "PlanetScale PostgreSQL - High Availability",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "1 primary + 2 replicas across 3 availability zones",
+        "High Availability",
+        "99.99% SLA"
+      ]
+    },
+    {
+      "name": "PlanetScale PostgreSQL - Metal",
+      "monthly_price_usd": 50,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "High-performance local NVMe storage",
+        "Ultra-fast NVMe drives and unlimited IOPS",
+        "Starting at $50/month"
+      ]
+    },
+    {
+      "name": "Vitess - MySQL at Hyperscale",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "MySQL-compatible with horizontal sharding for massive scale",
+        "Pricing based on cluster size, VTGate configuration, and storage",
+        "Metal also available"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Database expertise with core Vitess maintainers",
+        "Migration assistance with no downtime",
+        "Slack-based support with private shared channel",
+        "Business support included",
+        "Architecture consultation",
+        "Custom pricing",
+        "Multi-tenant or single-tenant deployment options",
+        "Additional regions across AWS or GCP"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:48:01.996Z",
+  "last_observed_at": "2026-08-20T17:48:01.996Z",
+  "series": [
+    {
+      "tier": "PlanetScale PostgreSQL - Metal",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:01.996Z",
+            "price": 50
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "PlanetScale PostgreSQL - Single Node",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:01.996Z",
+            "price": 5
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 5,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

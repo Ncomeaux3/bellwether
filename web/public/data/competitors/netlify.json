@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "netlify",
+  "name": "Netlify",
+  "homepage": "https://www.netlify.com",
+  "source_url": "https://www.netlify.com/pricing/",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Build and deploy free forever",
+        "Deploy any framework",
+        "Private by default until you publish",
+        "Unlimited deploy previews",
+        "Build with Agent Runners",
+        "Add Custom domains with SSL",
+        "Functions & AI models",
+        "Global CDN"
+      ]
+    },
+    {
+      "name": "Personal",
+      "monthly_price_usd": 9,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Everything in Free, plus:",
+        "Smart secret detection",
+        "1-day observability",
+        "Priority email support",
+        "1,000 credits / month"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 20,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Ship faster as a team",
+        "Everything in Personal, plus:",
+        "Private organization repos",
+        "Shared env variables",
+        "3+ concurrent builds",
+        "30-day analytics & metrics",
+        "Unlimited members",
+        "3,000 to 20,000 credits/month"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Scale with confidence",
+        "Everything in Pro, plus:",
+        "99.99% SLA",
+        "Enterprise network tier",
+        "High-performance builds",
+        "SSO & SCIM",
+        "Log drains",
+        "24/7 dedicated support"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:49:47.740Z",
+  "last_observed_at": "2026-08-20T17:49:47.740Z",
+  "series": [
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:47.740Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Personal",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:47.740Z",
+            "price": 9
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:47.740Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}
