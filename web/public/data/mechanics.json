@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T03:04:27.048Z",
+  "generated_at": "2026-08-20T03:05:21.651Z",
   "filter": {
     "total_snapshots": 120,
     "extractions_performed": 80,
@@ -120,7 +120,7 @@
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-08-20T02:04:35.778Z"
+        "ended_at": "2026-08-20T03:04:27.397Z"
       },
       {
         "kind": "extract",
