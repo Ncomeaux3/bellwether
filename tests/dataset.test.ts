@@ -6,7 +6,7 @@ import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import {
-  buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, describeChange,
+  buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, describeChange, stepPoints,
   type FeedChange,
 } from '../src/workflow/dataset.js';
 import { EXTRACT_PROMPT_VERSION } from '../src/schema/pricing.js';
@@ -202,6 +202,44 @@ describe('toCsv', () => {
     );
   });
 
+  // Final-fixes round, task 6: a genuine 0 (a free tier, priced) and a
+  // genuine null (contact-sales, unpriced) must serialize differently — the
+  // CSV's own header row promises "null is an empty field ... and never 0",
+  // and /data documents empty as "contact sales, never free". Measured live
+  // on Notion Free, whose annual_price_usd came out empty (contact sales)
+  // for a tier that is, in fact, free.
+  it('serializes a genuine 0 and a genuine null differently in the same row', () => {
+    observe('2025-01-16T00:00:00.000Z', [
+      { name: 'Free', price: 0, annual: 0 },
+      { name: 'Enterprise', price: null, annual: null },
+    ]);
+    const rows = buildDatasetRows(db);
+    const csv = toCsv(rows);
+    const lines = csv.trim().split('\n').slice(1);
+    const free = lines.find(l => l.startsWith('Acme,Free,'))!;
+    const enterprise = lines.find(l => l.startsWith('Acme,Enterprise,'))!;
+    // column order: competitor,tier,first_observed_at,last_observed_at,
+    // monthly_price_usd,annual_price_usd,...
+    expect(free.split(',')[5]).toBe('0');
+    expect(enterprise.split(',')[5]).toBe('');
+  });
+
+  // Regression: sameRunState's zeroNullAnnual branch merges a 0/null annual
+  // jitter into one run (see the "jitters 0/null" test above) but used to
+  // freeze on whichever value the FIRST observation in the run happened to
+  // carry — order-dependent, so when the noisy null landed first the row,
+  // and therefore the CSV, kept reporting "contact sales" for a tier whose
+  // monthly price was 0 the entire time.
+  it('prefers a genuine 0 over a null that arrived first in the same run', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Free', price: 0, annual: null }], { hash: 'a' });
+    observe('2025-02-16T00:00:00.000Z', [{ name: 'Free', price: 0, annual: 0 }], { hash: 'b' });
+
+    const rows = buildDatasetRows(db);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.annual_price_usd).toBe(0);
+    expect(toCsv(rows).trim().split('\n')[1]!.split(',')[5]).toBe('0');
+  });
+
   // Fix round 1, finding 2: tier/competitor names come from third-party
   // pages via the model, so an attacker-controlled page can inject a
   // formula into the CSV we tell people to open in Excel.
@@ -216,21 +254,84 @@ describe('toCsv', () => {
 });
 
 describe('describeChange', () => {
-  it('keeps the dotted-tier-name and annual-field grammar, and "none" for null', () => {
+  it('formats a numeric price change as spec 14.3/14.4\'s "$16 → $18" form', () => {
     expect(describeChange({
       json_path: 'tiers.Team 2.0.monthly_price_usd', change_type: 'price_changed',
       before_json: '50', after_json: '60',
-    })).toBe('Team 2.0 50 to 60');
+    })).toBe('Team 2.0 $50 → $60');
 
     expect(describeChange({
       json_path: 'tiers.Pro.annual_price_usd', change_type: 'price_changed',
       before_json: '96', after_json: '120',
-    })).toBe('Pro annual price 96 to 120');
+    })).toBe('Pro annual price $96 → $120');
+  });
 
+  it('keeps the dotted-tier-name grammar and "none" for null (final-fixes round: not a numeric change on both sides)', () => {
     expect(describeChange({
       json_path: 'tiers.Enterprise.monthly_price_usd', change_type: 'price_changed',
       before_json: null, after_json: '299',
     })).toBe('Enterprise none to 299');
+  });
+
+  it('leaves non-price labels alone', () => {
+    expect(describeChange({
+      json_path: 'tiers.Solo', change_type: 'tier_added',
+      before_json: null, after_json: '{"name":"Solo"}',
+    })).toBe('Solo tier added');
+  });
+});
+
+describe('stepPoints', () => {
+  it('expands three points ($8/$8/$10) to five, with the step landing on the next date', () => {
+    const points = [
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+    ];
+    expect(stepPoints(points)).toEqual([
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 }, // step to next date, current price
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 8 }, // step to next date, current price
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+    ]);
+  });
+
+  it('leaves a one-point segment unchanged', () => {
+    const points = [{ observed_at: '2025-01-16T00:00:00.000Z', price: 8 }];
+    expect(stepPoints(points)).toEqual(points);
+  });
+
+  it('leaves an empty segment unchanged', () => {
+    expect(stepPoints([])).toEqual([]);
+  });
+
+  it('never reorders or drops an original point', () => {
+    const points = [
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+    ];
+    const result = stepPoints(points);
+    // Every original point object survives, by identity, as a subsequence
+    // of the output in its original order — searching forward from the
+    // last match found guards against reordering, not just presence.
+    let searchFrom = 0;
+    for (const original of points) {
+      const foundAt = result.indexOf(original, searchFrom);
+      expect(foundAt).toBeGreaterThanOrEqual(searchFrom);
+      searchFrom = foundAt + 1;
+    }
+  });
+
+  it('does not mutate the input array or its points', () => {
+    const points = [
+      { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+      { observed_at: '2025-02-16T00:00:00.000Z', price: 10 },
+    ];
+    const snapshot = JSON.parse(JSON.stringify(points));
+    stepPoints(points);
+    expect(points).toEqual(snapshot);
   });
 });
 
@@ -309,12 +410,13 @@ describe('buildRssXml', () => {
     expect(xml).toContain('Solo tier added');
   });
 
-  // Fix round 1, finding 5: /c/<slug> has no route (deferred milestone);
-  // the RSS link must agree with the anchor format llms.txt already uses.
-  it('links to the same anchor format llms.txt uses, not a /c/ route', () => {
+  // M4 fix round 1, finding 5 pinned this to a same-page anchor because
+  // /c/<slug> had no route yet. M6 task 4 ships that route and repoints both
+  // the feed and llms.txt at it — this closes that deferral.
+  it('links to the competitor\'s own page, not the deferred anchor', () => {
     const xml = buildRssXml([makeChange()], '2026-08-19T00:00:00.000Z', 'https://bellwether.test');
-    expect(xml).toContain('<link>https://bellwether.test/#acme</link>');
-    expect(xml).not.toContain('/c/acme');
+    expect(xml).toContain('<link>https://bellwether.test/c/acme/</link>');
+    expect(xml).not.toContain('/#acme');
   });
 
   // Fix round 1, finding 7: defensive — no legitimate row should have an
@@ -341,6 +443,12 @@ describe('buildLlmsTxt', () => {
     }
     expect(txt).toContain('CC BY 4.0');
     expect(txt).not.toMatch(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+  });
+
+  it('links each competitor to its own /c/<slug> page, not a same-page anchor', () => {
+    const txt = buildLlmsTxt('https://bellwether.test', [{ name: 'Acme', slug: 'acme' }]);
+    expect(txt).toContain('https://bellwether.test/c/acme/');
+    expect(txt).not.toContain('/#acme');
   });
 
   it('is deterministic across calls', () => {
@@ -371,6 +479,29 @@ describe('the web changeLabel stays pinned to describeChange', () => {
         after: c.after_json === null ? null : JSON.parse(c.after_json),
       });
       expect(web, `${c.change_type} ${c.json_path}`).toBe(describeChange(c));
+    }
+  });
+});
+
+describe('the web stepPoints stays pinned to src stepPoints', () => {
+  // web/ cannot import from src/, so Timeline.tsx's step-after interpolation
+  // is an intentional reimplementation of stepPoints's expansion. Nothing
+  // else guards against drift — the web package has no test runner — so
+  // this pins the two together the same way changeLabel is pinned above.
+  it('agrees on a multi-point series, a one-point segment, and an empty segment', async () => {
+    const { stepPoints: webStepPoints } = await import('../web/lib/data.js');
+
+    const cases: { observed_at: string; price: number }[][] = [
+      [
+        { observed_at: '2025-01-16T00:00:00.000Z', price: 8 },
+        { observed_at: '2025-02-16T00:00:00.000Z', price: 8 },
+        { observed_at: '2025-03-16T00:00:00.000Z', price: 10 },
+      ],
+      [{ observed_at: '2025-01-16T00:00:00.000Z', price: 8 }],
+      [],
+    ];
+    for (const points of cases) {
+      expect(webStepPoints(points)).toEqual(stepPoints(points));
     }
   });
 });

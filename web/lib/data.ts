@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Board, ChangeEntry, ChangesFeed, Digest, Status, Timeline } from './types.js';
+import type { Board, ChangeEntry, ChangesFeed, CompetitorPayload, Digest, Mechanics, Status, Timeline } from './types.js';
 
 const DATA_DIR = join(process.cwd(), 'public', 'data');
 
@@ -39,6 +39,49 @@ export function loadChanges(): ChangesFeed {
   return read<ChangesFeed>('changes.json', { generated_at: '', threshold: 0, changes: [] });
 }
 
+export function loadMechanics(): Mechanics {
+  return read<Mechanics>('mechanics.json', {
+    generated_at: '',
+    filter: {
+      total_snapshots: 0, byte_identical_repeats: 0, distinct_normalized_states: 0,
+      extractions_performed: 0, llm_calls_avoided: 0, gates: [],
+    },
+    coverage: {
+      first_observed_at: null, last_observed_at: null, months_covered: 0,
+      live_snapshots: 0, backfilled_snapshots: 0,
+    },
+    health: { sources: [], runs: [] },
+    cost: { cumulative_micros: 0, month_micros: 0, backfill_micros: 0 },
+  });
+}
+
+/**
+ * One JSON file per competitor (src/workflow/export.ts) so a competitor page
+ * loads only its own history — never every competitor's, spec 14.4's citable
+ * per-company unit.
+ *
+ * Fix round 1, finding 2: the fallback's `name` is deliberately empty, NOT
+ * the slug — a missing/corrupt payload must be visibly distinguishable from
+ * a competitor that legitimately has a payload but no history yet (that
+ * payload always carries a real `name`, written unconditionally for every
+ * active competitor by export.ts). generateStaticParams
+ * (web/app/c/[slug]/page.tsx) checks exactly this and fails the build rather
+ * than publish a citable page titled after a raw slug.
+ */
+export function loadCompetitor(slug: string): CompetitorPayload {
+  return read<CompetitorPayload>(`competitors/${slug}.json`, {
+    generated_at: '', slug, name: '', homepage: '', source_url: null,
+    current_tiers: [], first_observed_at: null, last_observed_at: null,
+    series: [], markers: [], changes: [], provenance: { live: 0, wayback: 0, mixed: 0 },
+  });
+}
+
+/** Absolute path a competitor's payload is expected to live at — named in
+ * generateStaticParams' missing-payload build error. */
+export function competitorPayloadPath(slug: string): string {
+  return join(DATA_DIR, `competitors/${slug}.json`);
+}
+
 export interface DatasetMeta {
   generatedAt: string;
   rowCount: number;
@@ -58,6 +101,10 @@ export function loadDatasetMeta(): DatasetMeta {
 
 const fmt = (v: unknown): string => (v === null || v === undefined ? 'none' : String(v));
 
+/** Same currency-and-arrow form as describeChange's formatMoney/Ribbon.tsx's
+ * money() — spec 14.3/14.4 both quote "$16 → $18" verbatim. */
+const formatMoney = (n: number): string => (n === 0 ? '$0' : `$${n.toLocaleString('en-US')}`);
+
 /**
  * Same grammar as the exporter's describeChange (src/workflow/dataset.ts),
  * ported rather than imported — that module pulls in better-sqlite3, which
@@ -73,7 +120,41 @@ export function changeLabel(c: Pick<ChangeEntry, 'json_path' | 'change_type' | '
 
   if (c.change_type === 'price_changed') {
     const label = field === 'monthly_price_usd' ? '' : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
-    return `${tier} ${label}${fmt(c.before)} to ${fmt(c.after)}`;
+    // Numeric price changes only — a contact-sales ("none") side keeps the
+    // plain "none to 299" grammar (final-fixes round, task 5).
+    const range = typeof c.before === 'number' && typeof c.after === 'number'
+      ? `${formatMoney(c.before)} → ${formatMoney(c.after)}`
+      : `${fmt(c.before)} to ${fmt(c.after)}`;
+    return `${tier} ${label}${range}`;
   }
   return `${tier} ${c.change_type.replace(/_/g, ' ')}`;
+}
+
+/**
+ * Same rule as the exporter's stepPoints (src/workflow/dataset.ts), ported
+ * rather than imported — web/ cannot import from src/. Spec 14.3: "Step-after
+ * interpolation, never smooth lines. Prices are piecewise constant. A line
+ * sloping from $16 to $18 between two monthly observations asserts a
+ * continuous change that did not happen. This is a correctness rule, not a
+ * stylistic one, and it is the most common way a pricing chart lies."
+ * Inserting a point at the next date holding the CURRENT price makes the
+ * segment horizontal-then-vertical instead of diagonal.
+ *
+ * Pinned to describeChange's sibling by the cross-check test in the root
+ * suite (tests/dataset.test.ts) — nothing else guards against the two
+ * copies drifting apart.
+ */
+export function stepPoints(
+  points: { observed_at: string; price: number }[],
+): { observed_at: string; price: number }[] {
+  if (points.length < 2) return [...points];
+
+  const out: { observed_at: string; price: number }[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const current = points[i]!;
+    const next = points[i + 1]!;
+    out.push(current, { observed_at: next.observed_at, price: current.price });
+  }
+  out.push(points[points.length - 1]!);
+  return out;
 }

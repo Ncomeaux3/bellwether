@@ -122,3 +122,86 @@ export interface ChangesFeed {
   threshold: number;
   changes: ChangeEntry[];
 }
+
+export interface ProvenanceMix {
+  live: number;
+  wayback: number;
+  mixed: number;
+}
+
+export interface FilterGate {
+  name: string;
+  eliminated: number;
+  remaining: number;
+  note: string;
+}
+
+export interface FilterFunnel {
+  total_snapshots: number;
+  byte_identical_repeats: number;
+  distinct_normalized_states: number;
+  extractions_performed: number;
+  llm_calls_avoided: number;
+  llm_calls_avoided_pct?: number;
+  gates: FilterGate[];
+}
+
+export interface MechanicsCoverage {
+  first_observed_at: string | null;
+  last_observed_at: string | null;
+  months_covered: number;
+  live_snapshots: number;
+  backfilled_snapshots: number;
+}
+
+export interface MechanicsSourceHealth {
+  slug: string;
+  kind: string;
+  url: string;
+  state: SourceState;
+  last_ok_at: string | null;
+  degraded_reason: string | null;
+}
+
+export interface MechanicsRunHealth {
+  kind: string;
+  state: string;
+  ended_at: string | null;
+}
+
+export interface MechanicsHealth {
+  sources: MechanicsSourceHealth[];
+  runs: MechanicsRunHealth[];
+}
+
+export interface MechanicsCost {
+  cumulative_micros: number;
+  month_micros: number;
+  backfill_micros: number;
+  per_confirmed_change_micros?: number;
+}
+
+/** Shape of public/data/mechanics.json — see src/workflow/mechanics.ts. */
+export interface Mechanics {
+  generated_at: string;
+  filter: FilterFunnel;
+  coverage: MechanicsCoverage;
+  health: MechanicsHealth;
+  cost: MechanicsCost;
+}
+
+/** Shape of public/data/competitors/<slug>.json — see src/workflow/export.ts. */
+export interface CompetitorPayload {
+  generated_at: string;
+  slug: string;
+  name: string;
+  homepage: string;
+  source_url: string | null;
+  current_tiers: Tier[];
+  first_observed_at: string | null;
+  last_observed_at: string | null;
+  series: TimelineSeries[];
+  markers: TimelineMarker[];
+  changes: ChangeEntry[];
+  provenance: ProvenanceMix;
+}

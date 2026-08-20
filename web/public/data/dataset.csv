@@ -5,18 +5,18 @@ Figma,Organization,2026-04-09T02:32:27.000Z,2026-08-18T15:01:15.439Z,55,,per_sea
 Figma,Enterprise,2026-04-09T02:32:27.000Z,2026-08-18T15:01:15.439Z,90,,per_seat,,false,true,USD,mixed
 Linear,Basic,2025-02-19T07:53:31.000Z,2025-10-07T14:24:18.000Z,8,,per_seat,,false,false,USD,wayback
 Linear,Business,2025-02-19T07:53:31.000Z,2025-10-07T14:24:18.000Z,14,,per_seat,,false,false,USD,wayback
-Linear,Free,2025-02-19T07:53:31.000Z,2026-08-19T23:28:17.074Z,0,0,flat,,true,false,USD,mixed
-Linear,Basic,2025-11-12T01:16:11.000Z,2026-08-19T23:28:17.074Z,10,10,per_seat,,false,false,USD,mixed
-Linear,Business,2025-11-12T01:16:11.000Z,2026-08-19T23:28:17.074Z,16,16,per_seat,,false,false,USD,mixed
-Linear,Enterprise,2025-02-19T07:53:31.000Z,2026-08-19T23:28:17.074Z,,,unknown,,false,true,USD,mixed
+Linear,Free,2025-02-19T07:53:31.000Z,2026-08-18T15:00:52.010Z,0,0,flat,,true,false,USD,mixed
+Linear,Basic,2025-11-12T01:16:11.000Z,2026-08-18T15:00:52.010Z,10,10,per_seat,,false,false,USD,mixed
+Linear,Business,2025-11-12T01:16:11.000Z,2026-08-18T15:00:52.010Z,16,16,per_seat,,false,false,USD,mixed
+Linear,Enterprise,2025-02-19T07:53:31.000Z,2026-08-18T15:00:52.010Z,,,unknown,,false,true,USD,mixed
 Notion,Notion AI,2025-02-19T07:54:17.000Z,2025-03-02T21:53:58.000Z,10,8,per_seat,,false,false,USD,wayback
 Notion,Business,2025-02-19T07:54:17.000Z,2025-05-04T06:15:55.000Z,15,,per_seat,,false,false,USD,wayback
 Notion,Free,2025-02-19T07:54:17.000Z,2025-07-01T13:46:53.000Z,0,0,flat,,true,false,USD,wayback
 Notion,Notion AI,2025-05-04T06:15:55.000Z,2025-07-01T13:46:53.000Z,10,8,per_seat,,false,false,USD,wayback
-Notion,Free,2025-09-01T07:52:45.000Z,2026-08-19T23:28:28.899Z,0,,per_seat,,true,false,USD,mixed
-Notion,Plus,2025-02-19T07:54:17.000Z,2026-08-19T23:28:28.899Z,10,,per_seat,,false,false,USD,mixed
-Notion,Business,2025-06-03T01:07:05.000Z,2026-08-19T23:28:28.899Z,20,,per_seat,,false,false,USD,mixed
-Notion,Enterprise,2025-02-19T07:54:17.000Z,2026-08-19T23:28:28.899Z,,,unknown,,false,true,USD,mixed
+Notion,Free,2025-09-01T07:52:45.000Z,2026-08-18T15:01:03.831Z,0,0,per_seat,,true,false,USD,mixed
+Notion,Plus,2025-02-19T07:54:17.000Z,2026-08-18T15:01:03.831Z,10,,per_seat,,false,false,USD,mixed
+Notion,Business,2025-06-03T01:07:05.000Z,2026-08-18T15:01:03.831Z,20,,per_seat,,false,false,USD,mixed
+Notion,Enterprise,2025-02-19T07:54:17.000Z,2026-08-18T15:01:03.831Z,,,unknown,,false,true,USD,mixed
 Postman,Free,2025-02-23T11:47:21.000Z,2025-07-01T07:56:07.000Z,0,0,flat,,true,false,USD,wayback
 Postman,Free,2025-08-16T02:16:20.000Z,2025-11-01T23:00:26.000Z,0,0,flat,3,true,false,USD,wayback
 Postman,Enterprise,2025-02-23T11:47:21.000Z,2025-11-01T23:00:26.000Z,49,49,per_seat,,false,true,USD,wayback

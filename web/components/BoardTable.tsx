@@ -37,7 +37,12 @@ export function BoardTable({ competitors }: { competitors: BoardCompetitor[] }) 
             c.sources.map(s => (
               <tr key={`${c.slug}-${s.kind}`} className="border-b border-rule align-top">
                 <th scope="row" className="py-4 pr-4 font-display text-lg font-medium text-ink">
-                  {c.name}
+                  <a
+                    href={`/c/${c.slug}/`}
+                    className="underline decoration-rule-strong underline-offset-4 hover:text-ink-secondary"
+                  >
+                    {c.name}
+                  </a>
                 </th>
                 <td className="py-4 pr-4">
                   <a

@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { DB } from '../ops/db.js';
@@ -8,6 +8,7 @@ import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
 import { SYNTH_PROMPT_VERSION } from '../schema/synthesis.js';
 import { monthlySpendMicros } from '../agents/_client.js';
 import { observationsFor } from './detect.js';
+import { buildMechanics } from './mechanics.js';
 import { describeChange, buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, type FeedChange } from './dataset.js';
 import { acquireRun, finishRun } from '../ops/runs.js';
 
@@ -50,7 +51,15 @@ interface SourceRow {
   current_pricing_json: string | null;
 }
 
-function stateOf(row: SourceRow): SourceState {
+/** The fields stateOf actually reads — mechanics.ts's health query reuses this
+ * so its own source rows don't have to carry board.json's full SourceRow shape. */
+export interface SourceStateFields {
+  last_checked_at: string | null;
+  last_ok_flag: number | null;
+  degraded_reason: string | null;
+}
+
+export function stateOf(row: SourceStateFields): SourceState {
   if (row.last_checked_at === null) return 'pending';
   if (row.last_ok_flag === 0) return 'failing';
   if (row.degraded_reason !== null) return 'degraded';
@@ -161,7 +170,16 @@ export function buildTimeline(db: DB, generatedAt: string): TimelinePayload {
       slug: source.slug,
       name: source.name,
       first_observed_at: observations[0]?.observedAt ?? null,
-      last_observed_at: observations[observations.length - 1]?.observedAt ?? null,
+      // lastObservedAt, not observedAt: observationsFor collapses a repeat
+      // confirmation of the same state into the representative observation
+      // and moves lastObservedAt forward for exactly this reason (see its
+      // doc comment). Reading .observedAt here reports the date the state
+      // was FIRST seen instead of the date it was last reconfirmed, which
+      // disagreed with dataset.ts's buildDatasetRows (already correct) by
+      // as much as the collapsed run is long — verified live: a 15-day gap
+      // on Linear, whose 2026-08-18 fetch re-confirmed a state first seen
+      // 2026-08-03.
+      last_observed_at: observations[observations.length - 1]?.lastObservedAt ?? null,
       series,
       markers: markerRows
         .filter(m => m.source_id === source.source_id)
@@ -334,6 +352,8 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       },
     };
 
+    const mechanics = buildMechanics(db, now);
+
     const datasetRows = buildDatasetRows(db);
     const datasetPayload = {
       generated_at: generatedAt,
@@ -343,6 +363,55 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
     };
     const csvContent = toCsv(datasetRows);
     const csvHeaderLine = toCsv([]).split('\n')[0]!;
+
+    // Built once and reused by timeline.json AND every per-competitor payload
+    // below — ruling R3 (task-4 brief): "reuse buildTimeline's output, do not
+    // re-derive" so a competitor page's chart can never disagree with the
+    // board's.
+    const timeline = buildTimeline(db, generatedAt);
+    const timelineBySlug = new Map(timeline.competitors.map(c => [c.slug, c]));
+
+    // datasetRows are keyed by competitor NAME (buildDatasetRows joins on
+    // c.name, not slug); bySlug already has the name<->slug pairing for every
+    // active competitor, so build the reverse lookup from that instead of
+    // re-querying.
+    const slugByName = new Map(competitors.map(c => [c.name, c.slug]));
+    const provenanceBySlug = new Map<string, { live: number; wayback: number; mixed: number }>();
+    for (const row of datasetRows) {
+      const slug = slugByName.get(row.competitor);
+      if (slug === undefined) continue;
+      const counts = provenanceBySlug.get(slug) ?? { live: 0, wayback: 0, mixed: 0 };
+      counts[row.provenance] += 1;
+      provenanceBySlug.set(slug, counts);
+    }
+
+    // One payload per competitor (ruling R3): a fat single payload would ship
+    // every competitor's history to every page. Each file owns only its own
+    // identity, current tiers, timeline slice, confirmed changes, and
+    // provenance mix.
+    const competitorPayloads = competitors.map(c => {
+      const pricingSource = (c.sources as {
+        kind: string; url: string; current_pricing: { tiers?: unknown[] } | null;
+      }[]).find(s => s.kind === 'pricing');
+      const t = timelineBySlug.get(c.slug);
+      return {
+        generated_at: generatedAt,
+        slug: c.slug,
+        name: c.name,
+        homepage: c.homepage,
+        source_url: pricingSource?.url ?? null,
+        current_tiers: pricingSource?.current_pricing?.tiers ?? [],
+        first_observed_at: t?.first_observed_at ?? null,
+        last_observed_at: t?.last_observed_at ?? null,
+        series: t?.series ?? [],
+        markers: t?.markers ?? [],
+        changes: changeEntries.filter(ch => ch.slug === c.slug),
+        provenance: provenanceBySlug.get(c.slug) ?? { live: 0, wayback: 0, mixed: 0 },
+      };
+    });
+
+    const competitorsDir = join(outDir, 'competitors');
+    mkdirSync(competitorsDir, { recursive: true });
 
     const rssContent = buildRssXml(changeEntries as FeedChange[], generatedAt, SITE_URL);
     const llmsContent = buildLlmsTxt(SITE_URL, competitors.map(c => ({ name: c.name, slug: c.slug })));
@@ -358,9 +427,11 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       jsonArtifact(outDir, 'board.json', board),
       jsonArtifact(outDir, 'status.json', status),
       jsonArtifact(outDir, 'changes.json', changesFeed),
-      jsonArtifact(outDir, 'timeline.json', buildTimeline(db, generatedAt)),
+      jsonArtifact(outDir, 'timeline.json', timeline),
       jsonArtifact(outDir, 'digest.json', digestPayload),
       jsonArtifact(outDir, 'dataset.json', datasetPayload),
+      jsonArtifact(outDir, 'mechanics.json', mechanics),
+      ...competitorPayloads.map(p => jsonArtifact(outDir, `competitors/${p.slug}.json`, p)),
       {
         name: 'dataset.csv', dir: outDir, content: csvContent,
         verify: raw => {
@@ -420,7 +491,9 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
           if (previousSize > 0 && content.length < previousSize * 0.5) {
             throw new ExportGuardError(
               `Refusing to publish: ${name} shrank from ${previousSize} to ${content.length} bytes. ` +
-              `A file losing more than half its content usually means a query broke.`
+              `A file losing more than half its content usually means a query broke. ` +
+              `If this shrink is intentional (a curated source, a removed competitor), ` +
+              `delete ${resolve(finalPath)} and export again.`
             );
           }
         }

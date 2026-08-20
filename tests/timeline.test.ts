@@ -6,6 +6,7 @@ import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { seedCompetitors } from '../src/config/seed.js';
 import { buildTimeline, TIMELINE_GAP_DAYS } from '../src/workflow/export.js';
+import { buildDatasetRows } from '../src/workflow/dataset.js';
 import { EXTRACT_PROMPT_VERSION } from '../src/schema/pricing.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
@@ -70,6 +71,24 @@ describe('buildTimeline', () => {
     expect(acme.first_observed_at).toBe('2025-01-16T00:00:00.000Z');
     expect(acme.last_observed_at).toBe('2025-03-16T00:00:00.000Z');
     expect(payload.observation_count).toBe(3);
+  });
+
+  // Regression (final-fixes round, task 2): a repeat confirmation of an
+  // unchanged state collapses into one Observation in observationsFor(), and
+  // buildTimeline once read the collapsed representative's observedAt (the
+  // date the state was FIRST seen) instead of its lastObservedAt (the date
+  // it was last reconfirmed) — a real 15-day disagreement between
+  // timeline.json/competitors/<slug>.json and dataset.csv/board.json for the
+  // same competitor. Pins the two builders together so it cannot recur.
+  it('agrees with the dataset on the last-observed date when a state is reconfirmed unchanged', () => {
+    observe('2025-01-16T00:00:00.000Z', [{ name: 'Pro', price: 8 }], 'held');
+    observe('2025-01-31T00:00:00.000Z', [{ name: 'Pro', price: 8 }], 'held');
+
+    const timelineLast = buildTimeline(db, GENERATED).competitors[0]!.last_observed_at;
+    const datasetLast = buildDatasetRows(db).find(r => r.tier === 'Pro')!.last_observed_at;
+
+    expect(timelineLast).toBe('2025-01-31T00:00:00.000Z');
+    expect(timelineLast).toBe(datasetLast);
   });
 
   it('breaks the series where the archive has no captures — never interpolates (spec 14.3)', () => {
@@ -144,7 +163,7 @@ describe('buildTimeline', () => {
     // diff.ts writes the real change_type, 'price_changed' (past tense) — a
     // stale 'price_change' fixture would make this fall through to the
     // generic label and never catch the field disappearing.
-    expect(markers[0]!.label).toBe('Pro 8 to 10');
+    expect(markers[0]!.label).toBe('Pro $8 → $10');
   });
 
   it('names a non-monthly field so an annual move is not mistaken for a monthly one', () => {
@@ -161,7 +180,7 @@ describe('buildTimeline', () => {
 
     const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
     expect(markers).toHaveLength(1);
-    expect(markers[0]!.label).toBe('Pro annual price 96 to 120');
+    expect(markers[0]!.label).toBe('Pro annual price $96 → $120');
   });
 
   it('extracts a tier name containing a dot from the json_path unmangled', () => {
@@ -178,7 +197,7 @@ describe('buildTimeline', () => {
 
     const markers = buildTimeline(db, GENERATED).competitors[0]!.markers;
     expect(markers).toHaveLength(1);
-    expect(markers[0]!.label).toBe('Team 2.0 50 to 60');
+    expect(markers[0]!.label).toBe('Team 2.0 $50 → $60');
   });
 
   it('never emits a "null" origin for a contact-sales tier moving to a real price', () => {

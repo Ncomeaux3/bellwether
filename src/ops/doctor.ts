@@ -217,7 +217,7 @@ export async function runDoctor(deps: DoctorDeps): Promise<CheckResult[]> {
           detail: siteDir
             ? `BELLWETHER_SITE_EXPORT_DIR (${siteDir}) does not match BELLWETHER_EXPORT_DIR (${exportDir})`
             : 'BELLWETHER_SITE_EXPORT_DIR is unset',
-          fix: 'Set BELLWETHER_SITE_EXPORT_DIR to the same value as BELLWETHER_EXPORT_DIR in docker-compose.yml, so all nine export artifacts land in one directory.',
+          fix: 'Set BELLWETHER_SITE_EXPORT_DIR to the same value as BELLWETHER_EXPORT_DIR in docker-compose.yml, so every export artifact lands in one directory.',
         });
   }
 

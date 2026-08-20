@@ -1,0 +1,330 @@
+{
+  "generated_at": "2026-08-20T03:04:27.048Z",
+  "slug": "supabase",
+  "name": "Supabase",
+  "homepage": "https://supabase.com",
+  "source_url": "https://supabase.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited API requests",
+        "50,000 monthly active users",
+        "500 MB database size",
+        "Shared CPU • 500 MB RAM",
+        "5 GB egress",
+        "5 GB cached egress",
+        "1 GB file storage",
+        "Community support"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 25,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "100,000 monthly active users",
+        "8 GB disk size per project",
+        "250 GB egress",
+        "250 GB cached egress",
+        "100 GB file storage",
+        "Email support",
+        "Daily backups stored for 7 days",
+        "7-day log retention"
+      ]
+    },
+    {
+      "name": "Team",
+      "monthly_price_usd": 599,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "SOC2 & ISO 27001",
+        "Project-scoped and read-only access",
+        "HIPAA available as paid add-on",
+        "SSO for Supabase Dashboard",
+        "Priority email support & SLAs",
+        "Daily backups stored for 14 days",
+        "28-day log retention",
+        "Everything in the Pro Plan"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Designated Support manager",
+        "Uptime SLAs",
+        "BYO Cloud supported",
+        "24×7×365 premium enterprise support",
+        "Private Slack channel",
+        "Custom Security Questionnaires",
+        "Custom pricing",
+        "Custom features"
+      ]
+    }
+  ],
+  "first_observed_at": "2025-02-19T03:41:25.000Z",
+  "last_observed_at": "2026-08-18T15:01:28.444Z",
+  "series": [
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T03:41:25.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-03-01T21:12:34.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-04-02T10:02:48.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-05-03T06:11:17.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-06-11T16:46:21.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-07-05T18:55:29.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-08-01T05:10:15.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-09-11T22:52:30.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-11-05T16:33:22.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-12-02T14:57:10.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-01-02T02:42:21.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-02-01T11:14:33.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-05-07T00:28:17.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-02T07:33:02.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-09T18:31:36.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-02T04:26:09.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-18T15:01:28.444Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T03:41:25.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-03-01T21:12:34.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-04-02T10:02:48.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-05-03T06:11:17.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-06-11T16:46:21.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-07-05T18:55:29.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-08-01T05:10:15.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-09-11T22:52:30.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-11-05T16:33:22.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-12-02T14:57:10.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-01-02T02:42:21.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-02-01T11:14:33.000Z",
+            "price": 25
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-05-07T00:28:17.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-06-02T07:33:02.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-07-09T18:31:36.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-08-02T04:26:09.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-08-18T15:01:28.444Z",
+            "price": 25
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Team",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-02-19T03:41:25.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-03-01T21:12:34.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-04-02T10:02:48.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-05-03T06:11:17.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-06-11T16:46:21.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-07-05T18:55:29.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-08-01T05:10:15.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-09-11T22:52:30.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-11-05T16:33:22.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2025-12-02T14:57:10.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-01-02T02:42:21.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-02-01T11:14:33.000Z",
+            "price": 599
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-05-07T00:28:17.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-06-02T07:33:02.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-07-09T18:31:36.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-08-02T04:26:09.000Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-08-18T15:01:28.444Z",
+            "price": 599
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 1,
+    "wayback": 1,
+    "mixed": 3
+  }
+}

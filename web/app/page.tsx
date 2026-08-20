@@ -1,6 +1,6 @@
 import { BoardTable } from '@/components/BoardTable';
+import { Ribbon } from '@/components/Ribbon';
 import { Stamp } from '@/components/Stamp';
-import { Timeline } from '@/components/Timeline';
 import { changeLabel, loadBoard, loadChanges, loadDigest, loadStatus, loadTimeline } from '@/lib/data';
 import { renderMarkdown } from '@/lib/markdown';
 
@@ -11,6 +11,13 @@ export default function HomePage() {
   const digest = loadDigest();
   const changes = loadChanges();
   const recentChanges = changes.changes.slice(0, 10);
+  // Real datum for the "no confirmed changes" empty state below: the
+  // earliest observation on file across every competitor, already loaded
+  // via loadTimeline() — no new payload field needed.
+  const earliestObservedAt = timeline.competitors
+    .map(c => c.first_observed_at)
+    .filter((d): d is string => d !== null)
+    .sort()[0] ?? null;
 
   return (
     <main>
@@ -65,15 +72,25 @@ export default function HomePage() {
 
         {timeline.observation_count === 0 ? (
           <p className="mt-6 text-sm text-ink-muted">
-            No history yet. Run <span className="font-mono">bellwether backfill</span> to seed it.
+            No observations recorded yet across {status.total_sources} watched source
+            {status.total_sources === 1 ? '' : 's'}. Run{' '}
+            <span className="font-mono">bellwether backfill</span> to seed history, or{' '}
+            <span className="font-mono">bellwether collect</span> for the first live observation.
           </p>
         ) : (
           <div className="mt-8 grid gap-10">
             {timeline.competitors.map((competitor, index) => (
               <article key={`${competitor.slug}-${index}`} className="rounded-lg border border-rule bg-surface-raised p-5">
-                <h3 className="font-display text-lg font-medium text-ink">{competitor.name}</h3>
+                <h3 className="font-display text-lg font-medium text-ink">
+                  <a
+                    href={`/c/${competitor.slug}/`}
+                    className="underline decoration-rule-strong underline-offset-4 hover:text-ink-secondary"
+                  >
+                    {competitor.name}
+                  </a>
+                </h3>
                 <div className="mt-4">
-                  <Timeline competitor={competitor} />
+                  <Ribbon competitor={competitor} scale="hero" />
                 </div>
               </article>
             ))}
@@ -90,12 +107,29 @@ export default function HomePage() {
 
         {digest.digest === null ? (
           <p className="mt-6 text-sm text-ink-muted">
-            No digest yet — the first one fires after three confirmed changes.
+            {/* digest.digest === null means no digest has ever fired, so every
+                confirmed change on file is still pending — changes.changes.length
+                is exactly that count, no separate datum required. */}
+            {changes.changes.length >= 3 ? (
+              <>
+                {changes.changes.length} confirmed changes are pending — the next digest fires
+                the following Monday.
+              </>
+            ) : (
+              <>
+                {changes.changes.length} of 3 confirmed changes recorded — the first digest fires
+                once a third arrives, or after 30 days, whichever comes first.
+              </>
+            )}
           </p>
         ) : (
           <article className="mt-6 rounded-lg border border-rule bg-surface-raised p-5">
             <p className="font-mono text-xs text-ink-muted">
-              Published <Stamp iso={digest.digest.created_at} /> · {digest.digest.item_count} change
+              {/* item_count counts digest SECTIONS, not confirmed changes (a
+                  section can roll up several) — labeled for what it actually
+                  is (final-fixes round, task 7) rather than implying it is
+                  the change count. */}
+              Published <Stamp iso={digest.digest.created_at} /> · {digest.digest.item_count} item
               {digest.digest.item_count === 1 ? '' : 's'}
             </p>
             <div
@@ -117,7 +151,11 @@ export default function HomePage() {
         </p>
 
         {recentChanges.length === 0 ? (
-          <p className="mt-6 text-sm text-ink-muted">No confirmed changes yet.</p>
+          <p className="mt-6 text-sm text-ink-muted">
+            No confirmed changes
+            {earliestObservedAt && <> since <Stamp iso={earliestObservedAt} /></>}. Last checked{' '}
+            <Stamp iso={status.generated_at || null} empty="not yet" />.
+          </p>
         ) : (
           <ul className="mt-6 divide-y divide-rule">
             {recentChanges.map(c => (
@@ -141,6 +179,15 @@ export default function HomePage() {
             <> Last <span className="font-mono">{status.last_run.kind}</span> run finished{' '}
               <Stamp iso={status.last_run.ended_at} empty="still running" />.</>
           )}
+        </p>
+        <p className="mt-2 text-sm text-ink-muted">
+          <a href="/how-it-works/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+            How it works
+          </a>
+          {' — the pipeline, the live filter rates, source health, and cumulative spend. See also '}
+          <a href="/data/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+            the dataset
+          </a>.
         </p>
       </section>
     </main>

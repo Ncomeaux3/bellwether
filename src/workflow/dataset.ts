@@ -44,6 +44,26 @@ export const value = (raw: string | null): string => {
   }
 };
 
+/** JSON-decodes a raw column value and returns it only if it is a number — not
+ * a string, not null. Used to gate the "$16 → $18" form on two genuinely
+ * numeric sides; a null (contact-sales) side keeps the plain "none to 299"
+ * grammar below instead of half-formatting one side of it. */
+function numericValue(raw: string | null): number | null {
+  if (raw === null) return null;
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    return typeof parsed === 'number' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Same currency-and-arrow form as Ribbon.tsx's money()/parseMarker — spec
+ * 14.3/14.4 both quote "$16 → $18" verbatim. */
+function formatMoney(n: number): string {
+  return n === 0 ? '$0' : `$${n.toLocaleString('en-US')}`;
+}
+
 /** Short, literal marker text. No adjectives — the number is the story. */
 export function describeChange(row: {
   json_path: string; change_type: string; before_json: string | null; after_json: string | null;
@@ -59,13 +79,50 @@ export function describeChange(row: {
   // stay in the label or an annual move reads as a monthly one.
   if (row.change_type === 'price_changed') {
     // The chart's axis is already dollars, so "usd" is noise in a marker
-    // label: "Pro annual price 96 to 120", not "Pro annual price usd 96 to 120".
+    // label: "Pro annual price $96 → $120", not "Pro annual price usd 96 to 120".
     const label = field === 'monthly_price_usd'
       ? ''
       : `${field.replace(/_usd$/, '').replace(/_/g, ' ')} `;
-    return `${tier} ${label}${value(row.before_json)} to ${value(row.after_json)}`;
+    const before = numericValue(row.before_json);
+    const after = numericValue(row.after_json);
+    // Numeric price changes only (final-fixes round, task 5): a contact-sales
+    // side (null, rendered "none") has no dollar figure to arrow-format, so
+    // it keeps the plain "none to 299" grammar instead.
+    const range = before !== null && after !== null
+      ? `${formatMoney(before)} → ${formatMoney(after)}`
+      : `${value(row.before_json)} to ${value(row.after_json)}`;
+    return `${tier} ${label}${range}`;
   }
   return `${tier} ${row.change_type.replace(/_/g, ' ')}`;
+}
+
+/**
+ * Spec 14.3: "Step-after interpolation, never smooth lines. Prices are
+ * piecewise constant. A line sloping from $16 to $18 between two monthly
+ * observations asserts a continuous change that did not happen. This is a
+ * correctness rule, not a stylistic one, and it is the most common way a
+ * pricing chart lies." A straight polyline between observations draws that
+ * lie; inserting a point at the next date holding the CURRENT price makes
+ * the segment horizontal-then-vertical (the vertical leg is implicit once
+ * the next original point is drawn), matching what actually happened: the
+ * price held, then jumped.
+ *
+ * Pinned to web/lib/data.ts's copy of this function by the cross-check test
+ * in tests/dataset.test.ts (web/ cannot import from src/).
+ */
+export function stepPoints(
+  points: { observed_at: string; price: number }[],
+): { observed_at: string; price: number }[] {
+  if (points.length < 2) return [...points];
+
+  const out: { observed_at: string; price: number }[] = [];
+  for (let i = 0; i < points.length - 1; i++) {
+    const current = points[i]!;
+    const next = points[i + 1]!;
+    out.push(current, { observed_at: next.observed_at, price: current.price });
+  }
+  out.push(points[points.length - 1]!);
+  return out;
 }
 
 const classifyProvenance = (p: string): 'live' | 'wayback' => (p.startsWith('wayback:') ? 'wayback' : 'live');
@@ -157,6 +214,16 @@ export function buildDatasetRows(db: DB): DatasetRow[] {
         if (existing !== undefined && sameRunState(existing.tier, tier)) {
           existing.row.last_observed_at = observation.lastObservedAt;
           for (const kind of obsProvKinds) existing.provKinds.add(kind);
+          // sameRunState's zeroNullAnnual branch treats a 0/null annual jitter
+          // as the same run and otherwise freezes on whichever value the
+          // FIRST observation happened to land on — order-dependent, and
+          // when the first is the noisy null, the CSV ends up reporting
+          // "contact sales" for a tier that is free (final-fixes round,
+          // task 6; measured live on Notion Free). 0 is never ambiguous —
+          // prefer it over null whenever the two disagree within a run.
+          if (existing.row.annual_price_usd === null && tier.annual_price_usd === 0) {
+            existing.row.annual_price_usd = 0;
+          }
           continue;
         }
 
@@ -286,10 +353,10 @@ export function buildRssXml(changes: FeedChange[], generatedAt: string, siteUrl:
 
       const guid = [change.slug, change.json_path, change.observed_at].map(escapeXml).join('|');
       const pubDate = new Date(change.observed_at).toUTCString();
-      // /c/<slug> has no route yet (deferred milestone) — link to the same
-      // anchor llms.txt uses so the feed never points readers at a 404
-      // (M4 fix round 1, finding 5).
-      const link = `${siteUrl}/#${change.slug}`;
+      // M4 fix round 1, finding 5 deferred this to a same-page anchor because
+      // /c/<slug> had no route yet. M6 task 4 ships that route, so the feed
+      // now links to the competitor's own page.
+      const link = `${siteUrl}/c/${change.slug}/`;
 
       return [
         '<item>',
@@ -336,7 +403,7 @@ export function buildLlmsTxt(siteUrl: string, competitors: { name: string; slug:
     `- ${siteUrl}/changes.xml — RSS feed of confirmed changes`,
     '',
     '## Competitors',
-    ...competitors.map(c => `- ${c.name}: ${siteUrl}/#${c.slug}`),
+    ...competitors.map(c => `- ${c.name}: ${siteUrl}/c/${c.slug}/`),
   ];
   return lines.join('\n') + '\n';
 }

@@ -8,6 +8,7 @@ import { seedCompetitors } from '../src/config/seed.js';
 import { collect } from '../src/workflow/collect.js';
 import { ExportGuardError, exportData } from '../src/workflow/export.js';
 import { SYNTH_PROMPT_VERSION } from '../src/schema/synthesis.js';
+import { EXTRACT_PROMPT_VERSION } from '../src/schema/pricing.js';
 import type { CompetitorConfig } from '../src/config/types.js';
 
 let dir: string;
@@ -54,8 +55,8 @@ describe('exportData', () => {
     const stats = exportData(db, out);
 
     expect(stats.files.sort()).toEqual([
-      'board.json', 'changes.json', 'changes.xml', 'dataset.csv', 'dataset.json',
-      'digest.json', 'llms.txt', 'status.json', 'timeline.json',
+      'board.json', 'changes.json', 'changes.xml', 'competitors/acme.json', 'competitors/beta.json',
+      'dataset.csv', 'dataset.json', 'digest.json', 'llms.txt', 'mechanics.json', 'status.json', 'timeline.json',
     ]);
     expect(stats.competitors).toBe(2);
   });
@@ -127,7 +128,17 @@ describe('exportData', () => {
     const boardBefore = readFileSync(join(out, 'board.json'), 'utf8');
     writeFileSync(join(out, 'status.json'), JSON.stringify({ padding: 'x'.repeat(20_000) }));
 
+    // Fix round 1, finding 1: the message must name the offending file's
+    // absolute path so a wedged export is discoverable, matching the
+    // competitor-count guard's escape-hatch wording.
     expect(() => exportData(db, out)).toThrow(/shrank/i);
+    try {
+      exportData(db, out);
+      throw new Error('expected exportData to throw');
+    } catch (err) {
+      expect((err as Error).message).toContain(join(out, 'status.json'));
+      expect((err as Error).message).toMatch(/delete .* and export again/i);
+    }
 
     // Spec 15.7: a guard trip mid-loop must leave no `.tmp` litter behind, and
     // any file staged before the trip (board.json here, written before the
@@ -151,7 +162,8 @@ describe('exportData', () => {
 
     for (const name of [
       'board.json', 'status.json', 'changes.json', 'timeline.json',
-      'digest.json', 'dataset.json', 'dataset.csv',
+      'digest.json', 'dataset.json', 'dataset.csv', 'mechanics.json',
+      'competitors/acme.json', 'competitors/beta.json',
     ]) {
       expect(existsSync(join(out, `${name}.tmp`))).toBe(false);
     }
@@ -419,5 +431,72 @@ describe('exportData — distribution artifacts', () => {
     exportData(db, out);
     const llms = readFileSync(join(dir, 'llms.txt'), 'utf8');
     expect(llms).toContain('/data/dataset.json');
+  });
+});
+
+describe('exportData — per-competitor payloads', () => {
+  it('emits one payload per active competitor, listed in stats.files', async () => {
+    await populate();
+    const stats = exportData(db, out);
+
+    expect(stats.files).toContain('competitors/acme.json');
+    expect(stats.files).toContain('competitors/beta.json');
+    const acme = read('competitors/acme.json');
+    expect(acme.slug).toBe('acme');
+    expect(acme.name).toBe('Acme');
+    expect(acme.homepage).toBe('https://acme.test');
+    expect(acme.source_url).toBe('https://acme.test/pricing');
+  });
+
+  it('scopes each competitor\'s payload to only that competitor\'s data', async () => {
+    await populate();
+    exportData(db, out);
+
+    const acmeRaw = readFileSync(join(out, 'competitors', 'acme.json'), 'utf8');
+    expect(acmeRaw).not.toContain('beta');
+
+    const betaRaw = readFileSync(join(out, 'competitors', 'beta.json'), 'utf8');
+    expect(betaRaw).not.toContain('acme');
+  });
+
+  it('carries that competitor\'s current tiers, timeline series, and confirmed changes', () => {
+    // source_id 1 is acme's sole pricing source (config order: acme, then
+    // beta, one source each — matches source_id 1 used the same way by the
+    // 'exportData — pricing' describe above).
+    const observedAt = '2026-08-18T12:00:00.000Z';
+    db.prepare(`INSERT INTO snapshots
+      (source_id, observed_at, fetched_at, ok, http_status, raw_content, raw_hash, normalized_hash, provenance)
+      VALUES (1, ?, ?, 1, 200, 'x', 'r-h1', 'h1', 'live')`).run(observedAt, observedAt);
+    db.prepare(`INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, cost_micros, created_at)
+      VALUES ('h1', 'pricing', ?, 'high', 'USD', 1, 0, 'm', ?, 9000, ?)`)
+      .run(JSON.stringify({
+        currency: 'USD',
+        tiers: [{
+          name: 'Pro', monthly_price_usd: 20, annual_price_usd: null,
+          billing_unit: 'per_seat', included_seats: null,
+          is_free: false, is_enterprise: false, headline_features: [],
+        }],
+        usage_rates: [], notes: null, extraction_confidence: 'high',
+      }), EXTRACT_PROMPT_VERSION, observedAt);
+    db.prepare(`INSERT INTO changes
+      (source_id, from_snapshot_id, to_snapshot_id, change_type, json_path,
+       before_json, after_json, materiality, state, observed_at)
+      VALUES (1, 1, 1, 'price_changed', 'tiers.Pro.monthly_price_usd', '20', '24', 100, 'confirmed', ?)`).run(observedAt);
+
+    exportData(db, out);
+    const acme = read('competitors/acme.json');
+
+    expect(acme.current_tiers[0].name).toBe('Pro');
+    expect(acme.current_tiers[0].monthly_price_usd).toBe(20);
+    expect(acme.changes).toHaveLength(1);
+    expect(acme.changes[0].competitor).toBe('Acme');
+    expect(acme.first_observed_at).not.toBeNull();
+    expect(acme.provenance).toEqual({ live: 1, wayback: 0, mixed: 0 });
+
+    const beta = read('competitors/beta.json');
+    expect(beta.current_tiers).toEqual([]);
+    expect(beta.changes).toEqual([]);
   });
 });

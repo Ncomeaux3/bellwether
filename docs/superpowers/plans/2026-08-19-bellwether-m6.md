@@ -127,4 +127,22 @@ Every number derived at export time (ruling R4). `buildMechanics(db, now)` retur
 
 - The citation badge snippet (spec §14.4) — belongs with a share/embed pass, not this one.
 - Crosshair-with-readout on the hero ribbon (spec §14.3 asks for crosshair *and* tooltip); `<title>` tooltips ship now, a true crosshair needs client JS and the site is a no-JS static export. Revisit only if the constraint is relaxed.
+- **The `row` and `spark` ribbon scales ship unused** (plan R1 said the board would use them). At
+  six competitors the hero scale reads well and `BoardTable` would need restructuring to host a
+  chart column; the two scales exist and are correct but have no call site. Wire them when the
+  watch list expands — that is the scale at which the spec's argument for them applies.
+- **Notch labels can still collide between two DIFFERENT dates close in time** (Notion's May/June
+  2025). The same-date case is fixed by merging; there is no x-collision detection for near-date
+  notches. First follow-up on this component.
+- **Chart labels are legible but small at 375px** — a pre-existing consequence of the fixed
+  viewBox, not introduced here. Fixing it properly is a responsive-layout task.
+- **The $5/month budget guard undercounts.** `monthlySpendMicros` sums `extractions` + `digests`,
+  but a rejected extraction (`invalid`/`ungrounded`) is billed and writes no extractions row — 9
+  such calls in the current archive. Harmless today ($0.11 against $5) but the ceiling can be
+  exceeded. Fixing it means threading usage through `extractPricing`'s failure paths and finding a
+  home for cost with no extraction row to attach it to.
+- **Six tier hues cannot all separate by 2:1 while each also holds 3:1 against both surfaces** —
+  a real luminance-range limit, proven during execution. Adjacent pairs clear 3:1; the
+  worst non-adjacent pair is 1.86:1 (up from 1.07:1). Mitigated by the spec's own rule that four
+  or fewer series carry direct labels, so hue is never the sole identifier.
 - Small-multiple index at 50 companies — the spark scale is built here; the index layout that uses it belongs with M3.5's expansion.
