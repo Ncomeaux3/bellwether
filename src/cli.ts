@@ -72,7 +72,14 @@ program
     const usd = (micros: number) => `$${(micros / 1e6).toFixed(2)}`;
 
     if (options.emitConfig) {
-      console.log(emitConfig(db));
+      const { config, noCanary } = emitConfig(db);
+      console.log(config);
+      if (noCanary.length > 0) {
+        console.error(
+          `\nRefused to emit ${noCanary.length} candidate(s) with no verified canary: ${noCanary.join(', ')}. ` +
+          `Run --recanary or investigate before adding these to competitors.public.ts.`,
+        );
+      }
       db.close();
       return;
     }
@@ -80,6 +87,9 @@ program
     if (options.recanary) {
       const stats = await recanaryCandidates(db, { limit: options.limit });
       console.log(`Re-derived ${stats.considered}: ${stats.changed} changed, ${stats.unchanged} unchanged, ${stats.errored} errored.`);
+      if (stats.noCanary.length > 0) {
+        console.error(`No canary at all for ${stats.noCanary.length}: ${stats.noCanary.join(', ')} — no redesign detection until this is resolved.`);
+      }
       db.close();
       return;
     }

@@ -137,14 +137,26 @@ function slugify(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
+export interface EmitConfigResult {
+  /** TypeScript entries for every candidate with a real, verified canary. */
+  config: string;
+  /** Names of candidates skipped for having no canary — surfaced loudly (spec 15.6), never silently defaulted. */
+  noCanary: string[];
+}
+
 /**
  * Spec 11.2: "screening results are themselves publishable" and feed Task 2.
- * Prints one `competitors.public.ts`-shaped entry per `pass` row, with the
- * proposed canary (falling back to the existing conservative "Enterprise"
- * when a page passed but produced no digit-free heading). Task 2 decides
- * whether to adopt any of it.
+ * Prints one `competitors.public.ts`-shaped entry per `pass`/`admit` row.
+ *
+ * Fix round 8: a candidate with `proposed_canary = null` is REFUSED, not
+ * defaulted — this used to fall back to a hardcoded "Enterprise", which is
+ * exactly the failure fix round 8 exists to prevent: a canary never checked
+ * against that candidate's own raw body is a guess, and a guessed canary
+ * that happens not to match degrades the source on its first fetch (fix
+ * round 7), while one that happens to match by coincidence proves nothing.
+ * Skipped candidates are returned by name so the gap is loud, not silent.
  */
-export function emitConfig(db: DB): string {
+export function emitConfig(db: DB): EmitConfigResult {
   const rows = db.prepare(`
     SELECT url, name, category, proposed_canary
     FROM candidates
@@ -152,8 +164,15 @@ export function emitConfig(db: DB): string {
     ORDER BY name
   `).all() as { url: string; name: string; category: string; proposed_canary: string | null }[];
 
-  return rows.map(r => {
-    const canary = r.proposed_canary ?? 'Enterprise';
+  const noCanary: string[] = [];
+
+  const config = rows.filter(r => {
+    if (r.proposed_canary === null || r.proposed_canary === '') {
+      noCanary.push(r.name);
+      return false;
+    }
+    return true;
+  }).map(r => {
     const homepage = new URL(r.url).origin;
     return [
       '  {',
@@ -161,10 +180,12 @@ export function emitConfig(db: DB): string {
       `    name: '${r.name}',`,
       `    homepage: '${homepage}',`,
       `    // category: ${r.category}`,
-      `    sources: [{ kind: 'pricing', url: '${r.url}', canaryString: '${canary}', cadenceHours: 24 }],`,
+      `    sources: [{ kind: 'pricing', url: '${r.url}', canaryString: '${r.proposed_canary}', cadenceHours: 24 }],`,
       '  },',
     ].join('\n');
   }).join('\n');
+
+  return { config, noCanary };
 }
 
 
@@ -487,7 +508,11 @@ export async function verifyCandidates(
 export interface RecanaryOptions { limit?: number }
 export interface RecanaryDeps { fetcher?: (url: string) => Promise<FetchResult> }
 
-export interface RecanaryStats { considered: number; changed: number; unchanged: number; errored: number }
+export interface RecanaryStats {
+  considered: number; changed: number; unchanged: number; errored: number;
+  /** Names of candidates that recomputed to no canary at all — must be reported, never silently dropped (spec 15.6). */
+  noCanary: string[];
+}
 
 /**
  * Fix round 7: re-derives `proposed_canary` for the admitted set under the
@@ -497,6 +522,10 @@ export interface RecanaryStats { considered: number; changed: number; unchanged:
  * is safe to re-run any number of times. Per-candidate try/catch mirrors
  * verifyCandidates' isolation (fix round 4): one blocked or failing fetch
  * costs one candidate, not the run.
+ *
+ * Fix round 8: a candidate that recomputes to `null` is named in
+ * `noCanary`, not just silently written — a canary that never fires is
+ * indistinguishable from no canary at all, and that must fail loud.
  */
 export async function recanaryCandidates(
   db: DB,
@@ -504,12 +533,12 @@ export async function recanaryCandidates(
   deps: RecanaryDeps = {},
 ): Promise<RecanaryStats> {
   const fetcher = deps.fetcher ?? qualifyFetcher();
-  const stats: RecanaryStats = { considered: 0, changed: 0, unchanged: 0, errored: 0 };
+  const stats: RecanaryStats = { considered: 0, changed: 0, unchanged: 0, errored: 0, noCanary: [] };
 
   const rows = db.prepare(`
-    SELECT url, proposed_canary FROM candidates WHERE verdict = 'admit' ORDER BY name
+    SELECT url, name, proposed_canary FROM candidates WHERE verdict = 'admit' ORDER BY name
     ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
-  `).all() as { url: string; proposed_canary: string | null }[];
+  `).all() as { url: string; name: string; proposed_canary: string | null }[];
 
   const update = db.prepare('UPDATE candidates SET proposed_canary = ? WHERE url = ?');
 
@@ -524,6 +553,8 @@ export async function recanaryCandidates(
       }
 
       const { proposedCanary } = scoreCandidate(fetched.body);
+      if (proposedCanary === null) stats.noCanary.push(row.name);
+
       if (proposedCanary !== row.proposed_canary) {
         stats.changed += 1;
         update.run(proposedCanary, row.url);

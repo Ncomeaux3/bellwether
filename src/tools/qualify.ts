@@ -95,10 +95,35 @@ function countOccurrences(haystack: string, needle: string): number {
  * still between the words — 9 of 27 admitted sources degraded on their very
  * first collection this way.
  *
- * Longest qualifying heading, preferring one that occurs 1-2 times in the
- * raw body (specific enough to prove nothing changed) over one that occurs
- * many times (boilerplate/nav chrome present on every page, which would
- * still be present after a redesign and so would never catch one).
+ * Fix round 8 live evidence: round 7's raw-body check was correct, but its
+ * rarity-only preference produced Pinecone -> "Unlimited", Redis Cloud ->
+ * "From", Upstash -> "Free", Render -> "Sites", Vercel -> "GB" — genuine raw
+ * substrings, but generic fragments that would survive almost any redesign
+ * and so can never detect one. And Clerk/Hasura/Resend fell all the way
+ * through to null. Rare plus short is meaningless; the missing criterion is
+ * SIGNIFICANCE. Selection order below is deliberate: significance first,
+ * rarity second — reversing it is how "GB" won.
+ */
+const PLAN_NAMES = [
+  'Enterprise', 'Business', 'Professional', 'Team', 'Starter', 'Growth',
+  'Scale', 'Premium', 'Standard', 'Individual', 'Organization', 'Developer',
+  'Hobby', 'Solo', 'Basic', 'Plus', 'Pro',
+];
+const PLAN_NAME_SET = new Set(PLAN_NAMES.map(n => n.toLowerCase()));
+
+/** A fragment shorter than this ("GB", "From") is meaningless as a canary even when rare. */
+const MIN_CANARY_LENGTH = 8;
+
+/**
+ * 1. A recognized plan/tier name (longest match wins — less likely
+ *    incidental) — a page that stops containing "Enterprise" or
+ *    "Professional" has genuinely been rebuilt.
+ * 2. Otherwise the round-7 rare-heading rule (prefer occurring 1-2 times in
+ *    the raw body; fall back to a more common one only if nothing rare
+ *    qualifies), restricted to candidates at least MIN_CANARY_LENGTH long.
+ * 3. Otherwise null — and null must stay a LOUD result: callers report it
+ *    by name (never silently substitute a default, and never emit `''`,
+ *    which is a canary that always passes and is worse than no canary).
  */
 function pickCanary(headings: string[], rawHtml: string): string | null {
   const candidates = headings
@@ -106,12 +131,19 @@ function pickCanary(headings: string[], rawHtml: string): string | null {
     .map(text => ({ text, count: countOccurrences(rawHtml, text) }))
     .filter(({ count }) => count >= 1); // must actually occur in the raw body collect() will check against
 
-  if (candidates.length === 0) return null;
+  const planNames = candidates.filter(c => PLAN_NAME_SET.has(c.text.toLowerCase()));
+  if (planNames.length > 0) {
+    return planNames.reduce((longest, c) => c.text.length > longest.text.length ? c : longest).text;
+  }
 
-  const rare = candidates.filter(c => c.count <= 2);
-  const pool = rare.length > 0 ? rare : candidates;
+  const longEnough = candidates.filter(c => c.text.length >= MIN_CANARY_LENGTH);
+  if (longEnough.length === 0) return null;
 
-  return pool.reduce((longest, c) => c.text.length > longest.text.length ? c : longest).text;
+  const rare = longEnough.filter(c => c.count <= 2);
+  const pool = rare.length > 0 ? rare : longEnough;
+
+  const chosen = pool.reduce((longest, c) => c.text.length > longest.text.length ? c : longest).text;
+  return chosen === '' ? null : chosen; // defensive: pickCanary must never return an empty string
 }
 
 /**

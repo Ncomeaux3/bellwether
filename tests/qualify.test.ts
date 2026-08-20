@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
 import { scoreCandidate } from '../src/tools/qualify.js';
-import { qualifyCandidates, verifyCandidates, recanaryCandidates } from '../src/workflow/qualify.js';
+import { qualifyCandidates, verifyCandidates, recanaryCandidates, emitConfig } from '../src/workflow/qualify.js';
 import type { FetchResult } from '../src/tools/fetch.js';
 import type { ExtractResult } from '../src/agents/extract_pricing.js';
 import type { TierData } from '../src/schema/pricing.js';
@@ -331,6 +331,13 @@ function insertPassCandidate(url: string, name = 'Acme'): void {
     INSERT INTO candidates (url, name, category, verdict, reason, price_matches, tier_headings, proposed_canary, http_status, screened_at)
     VALUES (?, ?, 'hosting', 'pass', 'test fixture', 3, 0, NULL, 200, '2026-08-20T00:00:00.000Z')
   `).run(url, name);
+}
+
+function insertAdmitCandidate(url: string, proposedCanary: string | null, name = 'Acme'): void {
+  db.prepare(`
+    INSERT INTO candidates (url, name, category, verdict, reason, price_matches, tier_headings, proposed_canary, http_status, screened_at)
+    VALUES (?, ?, 'hosting', 'admit', 'test fixture', 3, 3, ?, 200, '2026-08-20T00:00:00.000Z')
+  `).run(url, name, proposedCanary);
 }
 
 function tier(name: string, monthlyPriceUsd: number | null): TierData {
@@ -842,17 +849,21 @@ describe('scoreCandidate — fix round 7: a proposed canary must be verified aga
   });
 
   it('a heading occurring 50 times in the raw body is skipped in favour of a rarer one', () => {
-    const filler = Array.from({ length: 50 }, () => '<li>Enterprise</li>').join('');
+    // Neither word is a recognized plan name (fix round 8 step 1 would
+    // otherwise short-circuit straight to it regardless of frequency) — both
+    // are >= MIN_CANARY_LENGTH so this exercises the round-7 rarity
+    // fallback (step 2) specifically.
+    const filler = Array.from({ length: 50 }, () => '<li>Foundation</li>').join('');
     const html =
       `<html><body>${filler}<main>` +
-      '<div class="pricing-tier"><h2>Enterprise</h2><p>$199/mo</p></div>' +
-      '<div class="pricing-tier"><h2>Growth</h2><p>$49/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Foundation</h2><p>$199/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Signature</h2><p>$49/mo</p></div>' +
       '</main></body></html>';
 
     const result = scoreCandidate(html);
-    // "Enterprise" occurs 51 times (boilerplate nav chrome) — too common to
-    // detect a redesign. "Growth" occurs once and is preferred.
-    expect(result.proposedCanary).toBe('Growth');
+    // "Foundation" occurs 51 times (boilerplate nav chrome) — too common to
+    // detect a redesign. "Signature" occurs once and is preferred.
+    expect(result.proposedCanary).toBe('Signature');
   });
 
   it('is null when nothing qualifies (every candidate heading is a raw-HTML-unmatchable merge)', () => {
@@ -869,13 +880,6 @@ describe('scoreCandidate — fix round 7: a proposed canary must be verified aga
 });
 
 describe('recanaryCandidates — fix round 7: re-derive canaries for the admitted set', () => {
-  function insertAdmitCandidate(url: string, proposedCanary: string | null, name = 'Acme'): void {
-    db.prepare(`
-      INSERT INTO candidates (url, name, category, verdict, reason, price_matches, tier_headings, proposed_canary, http_status, screened_at)
-      VALUES (?, ?, 'hosting', 'admit', 'test fixture', 3, 3, ?, 200, '2026-08-20T00:00:00.000Z')
-    `).run(url, name, proposedCanary);
-  }
-
   it('re-fetches, recomputes under the fixed rule, and updates only what changed — no LLM involved', async () => {
     // A: stored canary was the old bug's merged fragment; re-deriving against
     // the same page's raw HTML now correctly falls through to "Enterprise".
@@ -910,5 +914,80 @@ describe('recanaryCandidates — fix round 7: re-derive canaries for the admitte
     expect(stats.changed).toBe(0);
     const row = db.prepare('SELECT proposed_canary FROM candidates WHERE url = ?').get('https://acme.test/gone') as { proposed_canary: string | null };
     expect(row.proposed_canary).toBe('Enterprise'); // untouched
+  });
+});
+
+describe('scoreCandidate — fix round 8: significance before rarity in canary selection', () => {
+  it('a page containing both Enterprise and a rare 20-character heading proposes Enterprise', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Enterprise</h2><p>$199/mo</p></div>' +
+      '<div class="pricing-tier"><h2>PlatformIntegrations</h2><p>$77/mo</p></div>' + // 20 chars, rare, NOT a plan name
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBe('Enterprise');
+  });
+
+  it('a page with no plan name falls back to the rare heading', () => {
+    // Two tiers, not one — normalizeAndSlice's density-descent narrows to a
+    // single child when only one price exists on the page, which would
+    // slice the heading text away entirely before it's ever a candidate.
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Signature</h2><p>$49/mo</p></div>' + // not a plan name, 9 chars, occurs once
+      '<div class="pricing-tier"><h2>Elevate</h2><p>$19/mo</p></div>' +   // 7 chars — excluded by the length floor
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBe('Signature');
+  });
+
+  it('a page whose only candidates are under 8 characters proposes null', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Metrics</h2><p>$19/mo</p></div>' + // 7 chars
+      '<div class="pricing-tier"><h2>Insight</h2><p>$39/mo</p></div>' +  // 7 chars
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBeNull();
+  });
+
+  it('null is never emitted as an empty string', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Metrics</h2><p>$19/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBeNull();
+    expect(result.proposedCanary).not.toBe('');
+  });
+
+  it('the round-7 raw-body validation still holds: a heading split by tags in the raw HTML is still rejected', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).not.toBe('BusinessMonthlyAnnual');
+    expect(result.proposedCanary).toBeNull(); // "Business" alone (a plan name) is never captured — the merge ate it
+  });
+});
+
+describe('emitConfig — fix round 8: refuses to emit an entry with no verified canary', () => {
+  it('skips a candidate with no canary, reports it by name, and never emits an empty canaryString', () => {
+    insertAdmitCandidate('https://acme.test/a', 'Enterprise', 'HasCanary');
+    insertAdmitCandidate('https://acme.test/b', null, 'NoCanary');
+
+    const { config, noCanary } = emitConfig(db);
+
+    expect(config).toContain("slug: 'hascanary'");
+    expect(config).toContain("canaryString: 'Enterprise'");
+    expect(config).not.toContain('nocanary');       // the null-canary candidate's entry was never emitted
+    expect(config).not.toContain("canaryString: ''"); // and never as an empty string either
+    expect(noCanary).toEqual(['NoCanary']);
   });
 });
