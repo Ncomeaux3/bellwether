@@ -1,0 +1,109 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "fly-io",
+  "name": "Fly.io",
+  "homepage": "https://fly.io",
+  "source_url": "https://fly.io/pricing",
+  "current_tiers": [
+    {
+      "name": "Pay-as-You-Go",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Micro VMs",
+        "Persistent storage"
+      ]
+    },
+    {
+      "name": "Serious Support",
+      "monthly_price_usd": 29,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Access to dedicated team of engineers"
+      ]
+    },
+    {
+      "name": "Pay up Front and Save",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "40% off with machine reservation"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Custom resource configurations",
+        "SLA requirements",
+        "Emergency support"
+      ]
+    },
+    {
+      "name": "Compliance Made Easy",
+      "monthly_price_usd": 99,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "HIPAA-compliant workloads",
+        "BAAs",
+        "SOC2"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:49:35.045Z",
+  "last_observed_at": "2026-08-20T17:49:35.045Z",
+  "series": [
+    {
+      "tier": "Compliance Made Easy",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:35.045Z",
+            "price": 99
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Serious Support",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:35.045Z",
+            "price": 29
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 5,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

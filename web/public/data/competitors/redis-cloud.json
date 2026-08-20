@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "redis-cloud",
+  "name": "Redis Cloud",
+  "homepage": "https://redis.io",
+  "source_url": "https://redis.io/pricing/",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 30 MB",
+        "Shared cloud deployment",
+        "30 MB single DB",
+        "Best-effort SLA, community support"
+      ]
+    },
+    {
+      "name": "Essentials",
+      "monthly_price_usd": 0.007,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "250 MB-100 GB RAM & SSD, single DB",
+        "SAML SSO, RBAC, encryption in transit, encryption at rest",
+        "Up to 99.99% uptime, basic support",
+        "Shared deployment"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 0.014,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Dedicated cloud deployment",
+        "Unlimited RAM, multiple DBs",
+        "Everything in Essentials, plus active-active (multi-region), private connectivity",
+        "Up to 99.999% uptime"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:48:13.359Z",
+  "last_observed_at": "2026-08-20T17:48:13.359Z",
+  "series": [
+    {
+      "tier": "Essentials",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:13.359Z",
+            "price": 0.007
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:13.359Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:13.359Z",
+            "price": 0.014
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

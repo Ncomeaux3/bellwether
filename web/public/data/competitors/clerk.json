@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "clerk",
+  "name": "Clerk",
+  "homepage": "https://clerk.com",
+  "source_url": "https://clerk.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Hobby",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "flat",
+      "included_seats": 3,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 3 dashboard seats",
+        "Unlimited applications",
+        "50,000 MRU limit per app",
+        "Up to 5 user impersonations",
+        "APIs and prebuilt UIs for sign-up, sign-in, and user profile",
+        "Custom domain",
+        "Application Logs",
+        "Machine Authentication"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 20,
+      "annual_price_usd": 20,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "50,000 MRU included per app",
+        "1 Enterprise connection included",
+        "Remove Clerk branding",
+        "Multi-factor authentication (MFA)",
+        "Satellite domains",
+        "Custom session lifetime",
+        "Application Logs 7 day retention",
+        "SMS Authentication available"
+      ]
+    },
+    {
+      "name": "Business",
+      "monthly_price_usd": 250,
+      "annual_price_usd": 250,
+      "billing_unit": "flat",
+      "included_seats": 10,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "10 dashboard seats included",
+        "SOC2 Report",
+        "Enhanced dashboard roles",
+        "Priority support",
+        "Application Logs 30 day retention"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Annual committed use discounts",
+        "99.99% Uptime SLA",
+        "Enterprise SSO for workspace",
+        "Premium support SLA + dedicated slack channel",
+        "Custom Application Logs retention",
+        "Log sink destinations",
+        "HIPAA compliance available with BAA",
+        "Onboarding & migration support"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:46:39.206Z",
+  "last_observed_at": "2026-08-20T17:46:39.206Z",
+  "series": [
+    {
+      "tier": "Business",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:46:39.206Z",
+            "price": 250
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Hobby",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:46:39.206Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:46:39.206Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

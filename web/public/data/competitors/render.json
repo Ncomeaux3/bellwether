@@ -1,0 +1,128 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "render",
+  "name": "Render",
+  "homepage": "https://render.com",
+  "source_url": "https://render.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Hobby",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 1,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Deploy up to 25 services",
+        "5 GB of bandwidth included",
+        "Single-service previews",
+        "Global regions & CDN",
+        "Custom domains",
+        "Firewall & DDoS mitigation",
+        "Database PITR",
+        "Chat support"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 25,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited seats & services",
+        "25 GB bandwidth included",
+        "Full-stack previews",
+        "Horizontal autoscaling",
+        "Isolated environments",
+        "OIDC authentication",
+        "AWS Private Links",
+        "Workspace audit logs"
+      ]
+    },
+    {
+      "name": "Scale",
+      "monthly_price_usd": 499,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Multiple workspaces",
+        "1 TB of bandwidth included",
+        "Extended metrics retention",
+        "Inbound IP rules",
+        "HIPAA-compliant workspaces",
+        "SAML SSO & SCIM",
+        "Advanced RBAC roles",
+        "Organization audit logs"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Contractual uptime SLAs",
+        "Technical account manager",
+        "Support Slack channel",
+        "Support response SLAs"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:49:58.536Z",
+  "last_observed_at": "2026-08-20T17:49:58.536Z",
+  "series": [
+    {
+      "tier": "Hobby",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:58.536Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:58.536Z",
+            "price": 25
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Scale",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:58.536Z",
+            "price": 499
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

@@ -26,13 +26,17 @@ export const PricingSnapshot = z.object({
   usage_rates: z.array(z.object({
     metric: z.string(),
     unit_price_usd: z.number(),
-    // Raised from 12 after a real archived Supabase capture exceeded it. The
-    // cap exists to bound output tokens, not to model reality, and a
-    // consumption-priced page legitimately lists dozens of metered rates.
-    // Loosening is backward compatible — everything valid under the old cap
-    // is valid under this one — so EXTRACT_PROMPT_VERSION is deliberately NOT
-    // bumped, which would have forced a full re-extraction of the archive.
-  })).max(40),
+    // 12 -> 40 (a real archived Supabase capture exceeded 12) -> 100.
+    // The 100 came from M3.5 qualification: Datadog, Cloudflare and Fastly
+    // were all rejected with `too_big, maximum: 40`, which measured OUR cap,
+    // not their pages — an infrastructure vendor with per-product metering
+    // legitimately publishes far more than forty rates. The cap exists to
+    // bound output tokens; a response that overruns max_tokens still fails
+    // as `invalid`, so raising the ceiling cannot regress a page that
+    // already worked. Loosening stays backward compatible — everything valid
+    // under the old cap is valid under this one — so EXTRACT_PROMPT_VERSION
+    // is deliberately NOT bumped, which would force a full re-extraction.
+  })).max(100),
   notes: z.string().nullable(),
   /** Self-reported. A useful signal, never a validator — see ground.ts. */
   extraction_confidence: z.enum(['high', 'medium', 'low']),

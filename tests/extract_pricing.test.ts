@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { extractPricing, SYSTEM } from '../src/agents/extract_pricing.js';
 import { TOKEN_BUDGET } from '../src/agents/_client.js';
-import type { PricingSnapshotData } from '../src/schema/pricing.js';
+import { PricingSnapshot, type PricingSnapshotData } from '../src/schema/pricing.js';
 
 const SOURCE = 'Free $0/mo. Pro $20/mo. Enterprise contact sales.';
 
@@ -193,5 +193,34 @@ describe('extractPricing', () => {
     expect(SYSTEM).toContain('annual_price_usd');
     expect(SYSTEM).toMatch(/annual/i);
     expect(SYSTEM).toMatch(/Never leave\s+both null/);
+  });
+});
+
+describe('the usage_rates ceiling', () => {
+  // Raised 40 -> 100 during M3.5 qualification: Datadog, Cloudflare and Fastly
+  // were all rejected with `too_big, maximum: 40`, which measured OUR cap
+  // rather than their pages. A vendor with per-product metering legitimately
+  // publishes far more than forty rates.
+  const rates = (n: number) =>
+    Array.from({ length: n }, (_, i) => ({ metric: `metric ${i}`, unit_price_usd: i / 100 }));
+
+  it('accepts a page with far more than forty metered rates', () => {
+    const parsed = PricingSnapshot.safeParse({
+      currency: 'USD', notes: null, extraction_confidence: 'high',
+      tiers: [{
+        name: 'Pro', monthly_price_usd: 20, annual_price_usd: null, billing_unit: 'per_seat',
+        included_seats: null, is_free: false, is_enterprise: false, headline_features: [],
+      }],
+      usage_rates: rates(80),
+    });
+    expect(parsed.success).toBe(true);
+  });
+
+  it('still refuses an implausible list, so the ceiling remains a ceiling', () => {
+    const parsed = PricingSnapshot.safeParse({
+      currency: 'USD', notes: null, extraction_confidence: 'high',
+      tiers: [], usage_rates: rates(101),
+    });
+    expect(parsed.success).toBe(false);
   });
 });

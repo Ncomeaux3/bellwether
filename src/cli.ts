@@ -57,6 +57,76 @@ program
   });
 
 program
+  .command('qualify')
+  .description('screen candidate pricing pages for currency symbols and tier-like headings')
+  .option('--url <u>', 'screen this URL (repeatable); explicit URLs are always re-screened', (v: string, prev: string[]) => [...prev, v], [] as string[])
+  .option('--all', 'screen every unscreened candidate in src/config/candidates.public.ts')
+  .option('--limit <n>', 'screen at most n candidates this run', v => Number(v))
+  .option('--emit-config', 'print TypeScript competitor entries for every pass/admit verdict and exit')
+  .option('--verify', 'run two real extractions against every pass verdict, admitting only on reproducible agreement')
+  .option('--budget <usd>', 'one-time spend ceiling for --verify (default 3.00)', v => Number(v))
+  .option('--recanary', 're-fetch every admitted candidate and re-derive proposed_canary under the fixed rule (no LLM)')
+  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean; verify?: boolean; budget?: number; recanary?: boolean }) => {
+    const { qualifyCandidates, verifyCandidates, recanaryCandidates, emitConfig } = await import('./workflow/qualify.js');
+    const db = openDb(dbPath());
+    const usd = (micros: number) => `$${(micros / 1e6).toFixed(2)}`;
+
+    if (options.emitConfig) {
+      const { config, noCanary } = emitConfig(db);
+      console.log(config);
+      if (noCanary.length > 0) {
+        console.error(
+          `\nRefused to emit ${noCanary.length} candidate(s) with no verified canary: ${noCanary.join(', ')}. ` +
+          `Run --recanary or investigate before adding these to competitors.public.ts.`,
+        );
+      }
+      db.close();
+      return;
+    }
+
+    if (options.recanary) {
+      const stats = await recanaryCandidates(db, { limit: options.limit });
+      console.log(`Re-derived ${stats.considered}: ${stats.changed} changed, ${stats.unchanged} unchanged, ${stats.errored} errored.`);
+      if (stats.noCanary.length > 0) {
+        console.error(`No canary at all for ${stats.noCanary.length}: ${stats.noCanary.join(', ')} — no redesign detection until this is resolved.`);
+      }
+      db.close();
+      return;
+    }
+
+    if (options.verify) {
+      const stats = await verifyCandidates(db, { limit: options.limit, budgetUsd: options.budget });
+      console.log(
+        `Estimate: ${stats.estimate.pending} pending x 2 attempts x ${usd(stats.estimate.meanCostMicros)} = ` +
+        `${usd(stats.estimate.estimateMicros)} against a ${usd(stats.estimate.budgetMicros)} budget.`,
+      );
+      if (!stats.estimate.withinBudget) {
+        console.log(
+          `\nRefusing to start: the pool would cost more than the budget allows.\n` +
+          `Re-run with a higher --budget or a smaller --limit.`,
+        );
+        db.close();
+        return;
+      }
+      console.log(
+        `Verified ${stats.considered}: ${stats.admitted} admit, ${stats.rejected} reject, ` +
+        `${stats.errored} errored${stats.errored > 0 ? ' (retry to finish)' : ''}, ${stats.skipped} skipped. ` +
+        `Actual spend: ${usd(stats.actualMicros)} (estimated ${usd(stats.estimate.estimateMicros)}).`,
+      );
+      db.close();
+      return;
+    }
+
+    const stats = await qualifyCandidates(db, {
+      urls: options.url.length ? options.url : undefined,
+      all: options.all,
+      limit: options.limit,
+    });
+    console.log(`Screened ${stats.attempted}: ${stats.pass} pass, ${stats.fail} fail, ${stats.error} error.`);
+    db.close();
+  });
+
+program
   .command('extract')
   .description('extract structured pricing from snapshots that lack it')
   .option('--limit <n>', 'process at most n snapshots', v => Number(v))

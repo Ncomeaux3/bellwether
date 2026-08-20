@@ -1,0 +1,101 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "statsig",
+  "name": "Statsig",
+  "homepage": "https://statsig.com",
+  "source_url": "https://statsig.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Developer",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "2M events per month",
+        "Unlimited flag & config checks",
+        "50,000 session replays per month",
+        "A/B tests & experimentation",
+        "Feature flags & config management",
+        "Product and web analytics",
+        "1-year analytics retention",
+        "Session replays"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 150,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "5M events included, then $0.05 per 1K events",
+        "Unlimited flag & config checks",
+        "100,000 session replays per month",
+        "Advanced experimentation",
+        "Advanced product analytics",
+        "Unlimited analytics retention",
+        "Change reviews & approvals",
+        "API controls"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Custom Event or Experiment based contracts",
+        "Large volume discounts",
+        "Warehouse native deployment",
+        "Warehouse native deployment",
+        "Outgoing data integrations",
+        "Data warehouse imports",
+        "SSO, role-based access controls, & teams",
+        "Priority support"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:49:23.798Z",
+  "last_observed_at": "2026-08-20T17:49:23.798Z",
+  "series": [
+    {
+      "tier": "Developer",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:23.798Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:23.798Z",
+            "price": 150
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

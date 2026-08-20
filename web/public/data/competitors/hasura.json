@@ -1,0 +1,107 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "hasura",
+  "name": "Hasura",
+  "homepage": "https://hasura.io",
+  "source_url": "https://hasura.io/pricing",
+  "current_tiers": [
+    {
+      "name": "DDN Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 1,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited models, at any scale",
+        "1 supergraph developer",
+        "Observability: 15-minute retention",
+        "GraphQL API with filtering, pagination, sorting, aggregations",
+        "Global Edge network",
+        "SOC2 Type 2 & GDPR Compliance"
+      ]
+    },
+    {
+      "name": "DDN Base",
+      "monthly_price_usd": 5,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Starting at $5/active model/month",
+        "Unlimited supergraph developers",
+        "Observability: 30-day retention",
+        "Model and field usage metrics",
+        "Dedicated VPC",
+        "Single sign-on (SSO)"
+      ]
+    },
+    {
+      "name": "DDN Advanced",
+      "monthly_price_usd": 30,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Starting at $30/active model/month",
+        "Federated collaboration",
+        "Multi-team, multi-repo CI/CD",
+        "Team-based access controls",
+        "Dedicated VPC",
+        "HIPAA Compliance"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:47:50.334Z",
+  "last_observed_at": "2026-08-20T17:47:50.334Z",
+  "series": [
+    {
+      "tier": "DDN Advanced",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:50.334Z",
+            "price": 30
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "DDN Base",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:50.334Z",
+            "price": 5
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "DDN Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:50.334Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

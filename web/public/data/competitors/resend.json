@@ -1,0 +1,132 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "resend",
+  "name": "Resend",
+  "homepage": "https://resend.com",
+  "source_url": "https://resend.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "3,000 emails / mo",
+        "Sending & receiving",
+        "Ticket support",
+        "10,000 automation runs",
+        "30-day data retention",
+        "3 domains",
+        "5 AI credits / mo",
+        "100 emails a day"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 20,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "50,000 emails / mo",
+        "Extra emails: $0.90 / 1,000",
+        "Sending & receiving",
+        "Ticket support",
+        "10,000 automation runs",
+        "30-day data retention",
+        "10 domains",
+        "100 AI credits / mo"
+      ]
+    },
+    {
+      "name": "Scale",
+      "monthly_price_usd": 90,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "100,000 emails / mo",
+        "Extra emails: $0.90 / 1,000",
+        "Sending & receiving",
+        "Slack & ticket support",
+        "10,000 automation runs",
+        "30-day data retention",
+        "1,000 domains",
+        "500 AI credits / mo"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "A plan based on your specific needs",
+        "Sending & receiving",
+        "Priority support",
+        "Flexible automation runs",
+        "Flexible data retention",
+        "Flexible domains",
+        "Flexible AI credits",
+        "No daily limit"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:49:10.462Z",
+  "last_observed_at": "2026-08-20T17:49:10.462Z",
+  "series": [
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:10.462Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:10.462Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Scale",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:49:10.462Z",
+            "price": 90
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

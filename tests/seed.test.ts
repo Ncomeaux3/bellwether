@@ -75,11 +75,11 @@ describe('seedCompetitors', () => {
 });
 
 describe('COMPETITORS', () => {
-  it('contains the six sources verified server-rendered in spec 11.1', () => {
-    expect(COMPETITORS).toHaveLength(6);
-    expect(COMPETITORS.map(c => c.slug).sort()).toEqual(
-      ['figma', 'linear', 'notion', 'postman', 'sentry', 'supabase']
-    );
+  it('contains the original six plus the 21 admitted by qualify on 2026-08-20', () => {
+    expect(COMPETITORS).toHaveLength(27);
+    for (const slug of ['figma', 'linear', 'notion', 'postman', 'sentry', 'supabase']) {
+      expect(COMPETITORS.map(c => c.slug)).toContain(slug);
+    }
   });
 
   it('gives every source an https url and a non-empty canary', () => {
@@ -89,5 +89,38 @@ describe('COMPETITORS', () => {
         expect(s.canaryString.length).toBeGreaterThan(0);
       }
     }
+  });
+
+  it('has no duplicate slugs', () => {
+    const slugs = COMPETITORS.map(c => c.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it('gives every source a digit-free canary, kind "pricing", and 24h cadence', () => {
+    for (const c of COMPETITORS) {
+      for (const s of c.sources) {
+        expect(s.canaryString).not.toMatch(/\d/);
+        expect(s.kind).toBe('pricing');
+        expect(s.cadenceHours).toBe(24);
+      }
+    }
+  });
+
+  it('rejects canary fragments shorter than a real plan name (e.g. "GB", "From")', () => {
+    for (const c of COMPETITORS) {
+      for (const s of c.sources) {
+        expect(s.canaryString.length).toBeGreaterThanOrEqual(4);
+      }
+    }
+  });
+
+  it('is idempotent to reseed at full size — running twice does not duplicate rows', () => {
+    seedCompetitors(db, COMPETITORS);
+    seedCompetitors(db, COMPETITORS);
+
+    const c = db.prepare('SELECT COUNT(*) AS n FROM competitors').get() as { n: number };
+    const s = db.prepare('SELECT COUNT(*) AS n FROM sources').get() as { n: number };
+    expect(c.n).toBe(COMPETITORS.length);
+    expect(s.n).toBe(COMPETITORS.reduce((n, comp) => n + comp.sources.length, 0));
   });
 });

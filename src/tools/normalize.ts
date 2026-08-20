@@ -109,10 +109,20 @@ export interface SliceResult { text: string; normalizedHash: string }
  */
 const WHITESPACE_CLOSER = /<\/(script|style|pre|noscript|textarea|template|title)\s+>/gi;
 
+/**
+ * Rewrites a block-text closer with whitespace before the `>` (e.g.
+ * `</style\n\t>`) to the exact literal node-html-parser scans for. Exported
+ * so any other raw-HTML consumer (qualify) gets the same fix instead of
+ * re-deriving it and risking a second, subtly different regex.
+ */
+export function normalizeCloseTags(html: string): string {
+  return html.replace(WHITESPACE_CLOSER, '</$1>');
+}
+
 export function normalizeAndSlice(html: string, opts: { widen?: boolean } = {}): SliceResult {
   // Comments are removed at parse time; `comment: false` is the default but is
   // stated explicitly because the noisy fixture asserts on it.
-  const root = parse(html.replace(WHITESPACE_CLOSER, '</$1>'), { comment: false });
+  const root = parse(normalizeCloseTags(html), { comment: false });
   stripNoise(root);
 
   const body = root.querySelector('body') ?? root;

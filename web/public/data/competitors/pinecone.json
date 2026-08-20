@@ -1,0 +1,151 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "pinecone",
+  "name": "Pinecone",
+  "homepage": "https://www.pinecone.io",
+  "source_url": "https://www.pinecone.io/pricing/",
+  "current_tiers": [
+    {
+      "name": "Starter",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Pinecone Database On-Demand",
+        "Pinecone Inference",
+        "Pinecone Assistant",
+        "Dense, Sparse, and Full-Text Indexes",
+        "Console Metrics",
+        "Community Support via Discord"
+      ]
+    },
+    {
+      "name": "Builder",
+      "monthly_price_usd": 20,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Everything in Starter",
+        "Increased usage limits",
+        "Choose your cloud and region",
+        "Multiple projects and users",
+        "Prometheus and Datadog monitoring",
+        "Includes Free support"
+      ]
+    },
+    {
+      "name": "Standard",
+      "monthly_price_usd": 50,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Pay-as-you-go for Database On-Demand, Inference, and Assistant Usage",
+        "Dedicated Read Nodes (DRN)",
+        "Import from object storage",
+        "Backup and Restore",
+        "RBAC",
+        "SSO (SAML 2.0)"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": 500,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "99.95% Uptime SLA",
+        "Bring Your Own Cloud (BYOC)",
+        "Private Endpoints",
+        "Customer Managed Encryption Keys",
+        "Audit Logs",
+        "Service Accounts"
+      ]
+    },
+    {
+      "name": "Bring your own cloud",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Pinecone in your cloud account",
+        "Zero-access operations – no SSH, VPN, or inbound access required",
+        "Outbound-only operations with an auditable trail",
+        "Pro support included"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:50:44.865Z",
+  "last_observed_at": "2026-08-20T17:50:44.865Z",
+  "series": [
+    {
+      "tier": "Builder",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:44.865Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Enterprise",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:44.865Z",
+            "price": 500
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Standard",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:44.865Z",
+            "price": 50
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Starter",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:44.865Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 5,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

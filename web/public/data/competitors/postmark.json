@@ -1,0 +1,150 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "postmark",
+  "name": "Postmark",
+  "homepage": "https://postmarkapp.com",
+  "source_url": "https://postmarkapp.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 6,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "100 emails/month",
+        "No overages allowed",
+        "REST API",
+        "SMTP",
+        "Sandbox Mode",
+        "Event Webhooks"
+      ]
+    },
+    {
+      "name": "Basic",
+      "monthly_price_usd": 15,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 4,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Starting at 10,000 emails/month",
+        "Extra emails @ $1.80 / 1,000",
+        "Industry-leading deliverability rates & speed",
+        "45-day data retention",
+        "5 Custom sending domains",
+        "Unlimited emails/day"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 16.5,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 6,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Starting at 10,000 emails/month",
+        "Extra emails @ $1.30 / 1,000",
+        "Customizable data retention up to 365 days",
+        "10 Custom sending domains",
+        "Inbound email processing",
+        "Unlimited emails/day"
+      ]
+    },
+    {
+      "name": "Platform",
+      "monthly_price_usd": 18,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Starting at 10,000 emails/month",
+        "Extra emails @ $1.20 / 1,000",
+        "Unlimited Custom sending domains",
+        "Customizable data retention up to 365 days",
+        "Inbound email processing",
+        "Unlimited emails/day"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Custom pricing options",
+        "For agencies and larger teams",
+        "Support for high volume senders"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:48:59.554Z",
+  "last_observed_at": "2026-08-20T17:48:59.554Z",
+  "series": [
+    {
+      "tier": "Basic",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:59.554Z",
+            "price": 15
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:59.554Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Platform",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:59.554Z",
+            "price": 18
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:48:59.554Z",
+            "price": 16.5
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 5,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "buildkite",
+  "name": "Buildkite",
+  "homepage": "https://buildkite.com",
+  "source_url": "https://buildkite.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free Plan",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 5,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 5 users",
+        "Up to 10 concurrent jobs",
+        "Up to 2,000 Linux vCPU minutes per month",
+        "Up to 250k test executions per month",
+        "Dynamic pipelines",
+        "Community support"
+      ]
+    },
+    {
+      "name": "Pro Plan",
+      "monthly_price_usd": 30,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": 50,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Up to 50 users",
+        "Up to 250 concurrent agents",
+        "4,000 Linux vCPU minutes per month",
+        "1M test executions per month",
+        "Dynamic pipelines",
+        "Priority email support",
+        "GitHub Enterprise support",
+        "Single sign on"
+      ]
+    },
+    {
+      "name": "Enterprise Plan",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Custom usage and rate limits",
+        "Full access to Buildkite's testing platform",
+        "99.95% platform uptime commitment",
+        "SCIM, custom SAML & ADFS",
+        "Private log and artifact storage",
+        "Enterprise support with SLA credits"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:47:01.940Z",
+  "last_observed_at": "2026-08-20T17:47:01.940Z",
+  "series": [
+    {
+      "tier": "Free Plan",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:01.940Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro Plan",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:47:01.940Z",
+            "price": 30
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

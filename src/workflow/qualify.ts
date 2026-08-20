@@ -1,0 +1,571 @@
+import type { DB } from '../ops/db.js';
+import { politeFetch, RobotsCache, type FetchResult } from '../tools/fetch.js';
+import { HostRateLimiter } from '../tools/ratelimit.js';
+import { normalizeAndSlice } from '../tools/normalize.js';
+import { scoreCandidate } from '../tools/qualify.js';
+import { CANDIDATES } from '../config/candidates.public.js';
+import { anthropic, EXTRACT_MODEL, llmEnabled } from '../agents/_client.js';
+import { extractPricing, type ExtractResult } from '../agents/extract_pricing.js';
+import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
+import { FALLBACK_COST_MICROS_PER_EXTRACTION } from './backfill.js';
+
+export interface QualifyOptions {
+  urls?: string[];
+  all?: boolean;
+  limit?: number;
+}
+
+export interface QualifyDeps {
+  fetcher?: (url: string) => Promise<FetchResult>;
+  now?: () => Date;
+}
+
+export interface QualifyStats {
+  attempted: number;
+  pass: number;
+  fail: number;
+  error: number;
+}
+
+/**
+ * One limiter and one robots cache for the whole run — the mistake `collect`
+ * still has (see backfill.ts's waybackFetcher). Screening the ~50-candidate
+ * pool is many hosts, but politeFetch() with no deps builds a fresh limiter
+ * per call and throttles nothing across calls, so a single host repeated
+ * across the pool would still be hammered.
+ */
+export function qualifyFetcher(): (url: string) => Promise<FetchResult> {
+  const limiter = new HostRateLimiter();
+  const robots = new RobotsCache({ limiter });
+  return (url: string) => politeFetch(url, { limiter, robots });
+}
+
+interface CandidateEntry { url: string; name: string; category: string }
+
+/**
+ * Spec 11.2. Fetches each unscreened candidate, scores it with the pure
+ * `scoreCandidate`, and upserts the result into `candidates`. A fetch
+ * failure is recorded as `verdict='error'` — an unreachable site is not a
+ * qualification failure and must stay distinguishable from one.
+ *
+ * `opts.urls` is always (re-)screened — an explicit request overrides the
+ * "unscreened only" default. `opts.all` draws from the full public pool but
+ * skips any URL that already has a `candidates` row, so a routine re-run of
+ * `--all` doesn't re-hit sites this run has no reason to re-screen.
+ */
+export async function qualifyCandidates(
+  db: DB,
+  opts: QualifyOptions = {},
+  deps: QualifyDeps = {},
+): Promise<QualifyStats> {
+  const now = deps.now ?? (() => new Date());
+  const fetcher = deps.fetcher ?? qualifyFetcher();
+  const stats: QualifyStats = { attempted: 0, pass: 0, fail: 0, error: 0 };
+
+  const pool = new Map(CANDIDATES.map(c => [c.url, c] as const));
+  const explicitUrls = opts.urls ?? [];
+  const explicitSet = new Set(explicitUrls);
+
+  const alreadyScreened = new Set(
+    (db.prepare('SELECT url FROM candidates').all() as { url: string }[]).map(r => r.url),
+  );
+
+  let entries: CandidateEntry[] = explicitUrls.map(url => {
+    const known = pool.get(url);
+    return { url, name: known?.name ?? url, category: known?.category ?? 'uncategorized' };
+  });
+
+  if (opts.all) {
+    for (const c of CANDIDATES) {
+      if (explicitSet.has(c.url) || alreadyScreened.has(c.url)) continue;
+      entries.push({ url: c.url, name: c.name, category: c.category });
+    }
+  }
+
+  if (opts.limit !== undefined) entries = entries.slice(0, opts.limit);
+
+  const upsert = db.prepare(`
+    INSERT INTO candidates
+      (url, name, category, verdict, reason, price_matches, tier_headings,
+       proposed_canary, http_status, screened_at)
+    VALUES (@url, @name, @category, @verdict, @reason, @priceMatches, @tierHeadings,
+            @proposedCanary, @httpStatus, @screenedAt)
+    ON CONFLICT(url) DO UPDATE SET
+      name = excluded.name,
+      category = excluded.category,
+      verdict = excluded.verdict,
+      reason = excluded.reason,
+      price_matches = excluded.price_matches,
+      tier_headings = excluded.tier_headings,
+      proposed_canary = excluded.proposed_canary,
+      http_status = excluded.http_status,
+      screened_at = excluded.screened_at
+  `);
+
+  for (const entry of entries) {
+    stats.attempted += 1;
+    const result = await fetcher(entry.url);
+    const screenedAt = now().toISOString();
+
+    if (!result.ok || result.body === null) {
+      stats.error += 1;
+      upsert.run({
+        url: entry.url, name: entry.name, category: entry.category,
+        verdict: 'error', reason: result.error ?? `HTTP ${result.httpStatus}`,
+        priceMatches: 0, tierHeadings: 0, proposedCanary: null,
+        httpStatus: result.httpStatus, screenedAt,
+      });
+      continue;
+    }
+
+    const score = scoreCandidate(result.body);
+    if (score.verdict === 'pass') stats.pass += 1; else stats.fail += 1;
+
+    upsert.run({
+      url: entry.url, name: entry.name, category: entry.category,
+      verdict: score.verdict, reason: score.reason,
+      priceMatches: score.priceMatches, tierHeadings: score.tierHeadings,
+      proposedCanary: score.proposedCanary,
+      httpStatus: result.httpStatus, screenedAt,
+    });
+  }
+
+  return stats;
+}
+
+function slugify(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+export interface EmitConfigResult {
+  /** TypeScript entries for every candidate with a real, verified canary. */
+  config: string;
+  /** Names of candidates skipped for having no canary — surfaced loudly (spec 15.6), never silently defaulted. */
+  noCanary: string[];
+}
+
+/**
+ * Spec 11.2: "screening results are themselves publishable" and feed Task 2.
+ * Prints one `competitors.public.ts`-shaped entry per `pass`/`admit` row.
+ *
+ * Fix round 8: a candidate with `proposed_canary = null` is REFUSED, not
+ * defaulted — this used to fall back to a hardcoded "Enterprise", which is
+ * exactly the failure fix round 8 exists to prevent: a canary never checked
+ * against that candidate's own raw body is a guess, and a guessed canary
+ * that happens not to match degrades the source on its first fetch (fix
+ * round 7), while one that happens to match by coincidence proves nothing.
+ * Skipped candidates are returned by name so the gap is loud, not silent.
+ */
+export function emitConfig(db: DB): EmitConfigResult {
+  const rows = db.prepare(`
+    SELECT url, name, category, proposed_canary
+    FROM candidates
+    WHERE verdict IN ('pass', 'admit')
+    ORDER BY name
+  `).all() as { url: string; name: string; category: string; proposed_canary: string | null }[];
+
+  const noCanary: string[] = [];
+
+  const config = rows.filter(r => {
+    if (r.proposed_canary === null || r.proposed_canary === '') {
+      noCanary.push(r.name);
+      return false;
+    }
+    return true;
+  }).map(r => {
+    const homepage = new URL(r.url).origin;
+    return [
+      '  {',
+      `    slug: '${slugify(r.name)}',`,
+      `    name: '${r.name}',`,
+      `    homepage: '${homepage}',`,
+      `    // category: ${r.category}`,
+      `    sources: [{ kind: 'pricing', url: '${r.url}', canaryString: '${r.proposed_canary}', cadenceHours: 24 }],`,
+      '  },',
+    ].join('\n');
+  }).join('\n');
+
+  return { config, noCanary };
+}
+
+
+// --- verify --------------------------------------------------------------
+
+export interface VerifyOptions { limit?: number; budgetUsd?: number }
+
+export interface VerifyDeps {
+  fetcher?: (url: string) => Promise<FetchResult>;
+  extractor?: (text: string) => Promise<ExtractResult>;
+  now?: () => Date;
+  env?: NodeJS.ProcessEnv;
+}
+
+/** ≥2 tiers with a non-null monthly_price_usd. "Contact sales" tiers (null) don't count — they demonstrate nothing about extractable prices. */
+const MIN_PRICED_TIERS = 2;
+
+/**
+ * Fix round 6: a genuine plan table is small — every correctly-extracted
+ * source in the pool landed at 2-4 tiers (Vercel: Hobby/Pro/Enterprise = 3).
+ * Live evidence of the failure mode this catches: Datadog extracted 27
+ * "tiers" that BOTH attempts agreed on (Event Management=$0.10, Workflow
+ * Automation=$10, Error Tracking=$25, Product Analytics=$0.80...) — those
+ * are per-PRODUCT prices, not plan tiers; Datadog sells about four plans.
+ * Upstash extracted 9 (Free=$0, Fixed 250MB=$10, Fixed 1GB=$20, Fixed
+ * 5GB=$100...) — storage-size variants of one plan, same shape, milder. The
+ * two-observation gate (fix round 2) catches instability, not a
+ * systematically wrong answer both attempts agree on. 8 is deliberately
+ * generous against an observed correct-extraction max of 4.
+ */
+const MAX_ADMIT_TIERS = 8;
+
+/** Mirrors backfill.ts's DEFAULT_BACKFILL_BUDGET_USD shape: verification is deliberate one-time operator spend, budgeted separately from the recurring cap. */
+export const DEFAULT_VERIFY_BUDGET_USD = 3.0;
+
+export interface VerifyEstimate {
+  pending: number;
+  meanCostMicros: number;
+  estimateMicros: number;
+  budgetMicros: number;
+  withinBudget: boolean;
+}
+
+/**
+ * Fix round 3: mirrors backfill.ts's estimateBackfill exactly — same mean-cost
+ * measurement, same shape — except the multiplier is x2 attempts (fix round
+ * 2's two-observation admission), not x1.
+ */
+export function estimateVerify(db: DB, budgetUsd: number, limit?: number): VerifyEstimate {
+  const pendingCount = (
+    db.prepare("SELECT COUNT(*) AS n FROM candidates WHERE verdict = 'pass'").get() as { n: number }
+  ).n;
+  const pending = limit === undefined ? pendingCount : Math.min(pendingCount, limit);
+
+  const measured = (db.prepare(
+    'SELECT AVG(cost_micros) AS mean FROM extractions WHERE cost_micros IS NOT NULL',
+  ).get() as { mean: number | null }).mean;
+  const meanCostMicros = measured && measured > 0 ? Math.round(measured) : FALLBACK_COST_MICROS_PER_EXTRACTION;
+
+  const budgetMicros = Math.round(budgetUsd * 1e6);
+  const estimateMicros = pending * meanCostMicros * 2;
+
+  return { pending, meanCostMicros, estimateMicros, budgetMicros, withinBudget: estimateMicros <= budgetMicros };
+}
+
+export interface VerifyStats {
+  considered: number; admitted: number; rejected: number; skipped: number;
+  /** Threw rather than completed (e.g. a transient APIError) — left unverified, not rejected. Retry to finish. */
+  errored: number;
+  estimate: VerifyEstimate; actualMicros: number;
+}
+
+type Attempt =
+  | { ok: true; pricedTiers: number; confidence: string; costMicros: number }
+  | { ok: false; reason: string };
+
+/**
+ * Runs one extraction and, on success, persists it exactly as extract.ts
+ * does — content-addressed by (normalized_hash, prompt_version) — so a
+ * future collect()+extract() of this now-admitted source is a free cache hit
+ * if the page hasn't changed. `is_backfill = 1`: verification is deliberate
+ * one-time operator spend (spec 15.2), never the recurring allowance.
+ *
+ * `ON CONFLICT DO NOTHING`, unlike extract.ts's insert: extract.ts only ever
+ * inserts after its own cache check finds nothing, so it never collides. This
+ * function is deliberately called twice against the SAME hash (the
+ * reproducibility check), so the second successful attempt's insert must
+ * no-op rather than violate the UNIQUE constraint extract.ts relies on.
+ */
+async function runAttempt(
+  text: string,
+  normalizedHash: string,
+  runExtractor: (text: string) => Promise<ExtractResult>,
+  insertExtraction: ReturnType<DB['prepare']>,
+  now: () => Date,
+): Promise<Attempt> {
+  const result = await runExtractor(text);
+  if (!result.ok) return { ok: false, reason: `${result.reason}: ${result.detail}` };
+
+  insertExtraction.run({
+    hash: normalizedHash,
+    data: JSON.stringify(result.data),
+    confidence: result.data.extraction_confidence,
+    currency: result.data.currency,
+    model: EXTRACT_MODEL,
+    promptVersion: EXTRACT_PROMPT_VERSION,
+    inputTokens: result.inputTokens,
+    outputTokens: result.outputTokens,
+    costMicros: result.costMicros,
+    createdAt: now().toISOString(),
+  });
+
+  return {
+    ok: true,
+    pricedTiers: result.data.tiers.filter(t => t.monthly_price_usd !== null).length,
+    confidence: result.data.extraction_confidence,
+    costMicros: result.costMicros,
+  };
+}
+
+function describeAttempt(a: Attempt): string {
+  if (!a.ok) return `failed: ${a.reason}`;
+  const low = a.confidence === 'low' ? ' (low confidence)' : '';
+  return `extracted ${a.pricedTiers} priced tier${a.pricedTiers === 1 ? '' : 's'}${low}`;
+}
+
+/**
+ * Fix round 1: the pre-filter's job shrank to "could this plausibly be a
+ * pricing page" (see qualify.ts). This is the real admission gate — genuine
+ * `extractPricing` calls against a `pass` candidate's normalized text, the
+ * same machinery `extract` uses every night, so a source is admitted because
+ * it demonstrably extracts, not because a regex liked it. Re-fetches rather
+ * than reusing the pre-filter's fetch: `candidates` never stored the HTML.
+ *
+ * Fix round 2: live evidence caught Vercel admitted on one extraction, then
+ * failing outright on a second run against the same page — it extracts
+ * inconsistently. Spec 12.5's two-observation rule ("a real price change
+ * stays changed; a hallucination almost never reproduces") is the exact
+ * principle that catches this, so admission runs the extraction TWICE
+ * against the same normalized text and admits only when both attempts
+ * succeed, both clear MIN_PRICED_TIERS, both agree on the count, and neither
+ * self-reports low confidence. Any disagreement rejects, naming both
+ * attempts, so the recorded reason shows exactly what didn't reproduce.
+ *
+ * Fix round 3: `--verify` now gets its own budget (`DEFAULT_VERIFY_BUDGET_USD`,
+ * mirroring backfill's own one-time budget), estimated up front exactly as
+ * `estimateBackfill` does and refused before any spend if the pool would
+ * exceed it, then re-checked against accumulating actual spend before every
+ * individual attempt so a run stops cleanly at the ceiling instead of
+ * overshooting it. The recurring `assertWithinBudget` check is dropped from
+ * this path entirely — every row this function writes is `is_backfill = 1`,
+ * which is already invisible to `monthlySpendMicros` (see extract.ts), so
+ * gating on it too would just be a second, unrelated budget system able to
+ * block a run its own spend can never trip.
+ *
+ * Fix round 5: the extraction cache is deliberately NOT consulted here, even
+ * though the rows this function writes could satisfy it. A cache hit is ONE
+ * prior observation, recorded earlier — using it to skip straight to a
+ * verdict silently reopens the single-observation hole fix round 2 closed.
+ * Live evidence: Better Stack was correctly rejected ("attempt 1 extracted 24
+ * priced tiers [a feature matrix misread as tiers], attempt 2 failed"), then
+ * admitted on the NEXT run off that same stale attempt-1 row via the cache
+ * branch that used to live here — the single worst extraction in the pool,
+ * admitted by the exact mechanism meant to catch it. `--verify` always makes
+ * two fresh calls, full stop. Do not re-add a cache check as an optimization
+ * — it looks like free money and it is not; the persisted rows still do
+ * their real job at ordinary `collect`+`extract` time once a source is
+ * admitted, which is the only place a cache hit is a valid substitute for a
+ * fresh call.
+ *
+ * Fix round 6: admission has a range, not just a floor. MAX_ADMIT_TIERS caps
+ * the agreed-upon count — two attempts reproducing the same systematically
+ * wrong answer (a product/unit price matrix, not a plan table) is a distinct
+ * failure the two-observation gate alone cannot catch (see MAX_ADMIT_TIERS
+ * above for the Datadog/Upstash evidence).
+ *
+ * Gated on the kill switch: skips silently (no rows touched) when
+ * LLM_ENABLED isn't 'true'.
+ *
+ * Idempotent: only `verdict = 'pass'` rows are selected, and a verified row
+ * moves to 'admit'/'reject', so a second run finds nothing left to redo.
+ */
+export async function verifyCandidates(
+  db: DB,
+  opts: VerifyOptions = {},
+  deps: VerifyDeps = {},
+): Promise<VerifyStats> {
+  const env = deps.env ?? process.env;
+  const now = deps.now ?? (() => new Date());
+  const budgetUsd = opts.budgetUsd ?? DEFAULT_VERIFY_BUDGET_USD;
+
+  const estimate = estimateVerify(db, budgetUsd, opts.limit);
+  const stats: VerifyStats = {
+    considered: 0, admitted: 0, rejected: 0, skipped: 0, errored: 0,
+    estimate, actualMicros: 0,
+  };
+
+  if (!llmEnabled(env)) return stats;
+  if (!estimate.withinBudget) return stats;
+
+  const fetcher = deps.fetcher ?? qualifyFetcher();
+  const runExtractor = deps.extractor ?? ((text: string) => extractPricing(text, { client: anthropic() as never }));
+
+  const pending = db.prepare(`
+    SELECT url FROM candidates WHERE verdict = 'pass' ORDER BY name
+    ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
+  `).all() as { url: string }[];
+
+  const insertExtraction = db.prepare(`
+    INSERT INTO extractions
+      (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+       is_backfill, model, prompt_version, input_tokens, output_tokens, cost_micros, created_at)
+    VALUES (@hash, 'pricing', @data, @confidence, @currency, 1,
+            1, @model, @promptVersion, @inputTokens, @outputTokens, @costMicros, @createdAt)
+    ON CONFLICT (normalized_hash, prompt_version) DO NOTHING
+  `);
+  const update = db.prepare(`
+    UPDATE candidates SET verdict = @verdict, reason = @reason, priced_tiers = @pricedTiers, verified_at = @verifiedAt
+    WHERE url = @url
+  `);
+
+  const budgetMicros = estimate.budgetMicros;
+  let actualMicros = 0;
+  let budgetStopped = false;
+
+  for (const row of pending) {
+    stats.considered += 1;
+
+    if (budgetStopped) { stats.skipped += 1; continue; }
+
+    // Fix round 4: mirrors runPipeline's per-step isolation. A candidate's
+    // extraction can THROW (extractPricing rethrows APIError deliberately —
+    // right for one call, since a transient 429/529/connection reset must
+    // never be mistaken for "this page is unextractable" and marked
+    // permanent) or it can COMPLETE with ok:false (invalid/ungrounded/
+    // oversized — a real qualification signal). Only the throw is caught
+    // here: it leaves the candidate untouched (no verdict, no verified_at)
+    // so the next run picks it up exactly like a fresh candidate. A
+    // completed ok:false still falls through to the normal reject path
+    // below, verified_at and all — that distinction is load-bearing.
+    try {
+      const verifiedAt = now().toISOString();
+      const fetched = await fetcher(row.url);
+      if (!fetched.ok || fetched.body === null) {
+        stats.rejected += 1;
+        update.run({
+          verdict: 'reject', reason: `re-fetch failed: ${fetched.error ?? `HTTP ${fetched.httpStatus}`}`,
+          pricedTiers: null, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
+      const { text, normalizedHash } = normalizeAndSlice(fetched.body);
+
+      if (actualMicros >= budgetMicros) { budgetStopped = true; stats.skipped += 1; continue; }
+      const attempt1 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
+      if (attempt1.ok) actualMicros += attempt1.costMicros;
+
+      if (actualMicros >= budgetMicros) {
+        // Can't afford the second observation — leave this candidate at
+        // 'pass' (unresolved) rather than admit on a single unreplicated
+        // attempt. A future budgeted run starts its two attempts fresh.
+        budgetStopped = true;
+        stats.skipped += 1;
+        continue;
+      }
+      const attempt2 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
+      if (attempt2.ok) actualMicros += attempt2.costMicros;
+
+      const agreed =
+        attempt1.ok && attempt2.ok &&
+        attempt1.confidence !== 'low' && attempt2.confidence !== 'low' &&
+        attempt1.pricedTiers === attempt2.pricedTiers;
+
+      if (agreed && attempt1.ok && attempt1.pricedTiers >= MIN_PRICED_TIERS && attempt1.pricedTiers <= MAX_ADMIT_TIERS) {
+        stats.admitted += 1;
+        update.run({
+          verdict: 'admit',
+          reason: `both attempts agreed on ${attempt1.pricedTiers} priced tier${attempt1.pricedTiers === 1 ? '' : 's'}`,
+          pricedTiers: attempt1.pricedTiers, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
+      // Fix round 6: two attempts CAN agree on the same systematically wrong
+      // answer — the two-observation gate above catches instability, not a
+      // consistent misread. A count over MAX_ADMIT_TIERS states that finding
+      // directly (a product/unit matrix, not a plan table) rather than
+      // reusing the generic disagreement wording, which would misdescribe a
+      // case where the attempts actually agreed.
+      if (agreed && attempt1.ok && attempt1.pricedTiers > MAX_ADMIT_TIERS) {
+        stats.rejected += 1;
+        update.run({
+          verdict: 'reject',
+          reason: `prices per product or unit rather than per plan (${attempt1.pricedTiers} priced entries)`,
+          pricedTiers: null, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
+      stats.rejected += 1;
+      update.run({
+        verdict: 'reject',
+        reason: `attempt 1 ${describeAttempt(attempt1)}, attempt 2 ${describeAttempt(attempt2)}`,
+        pricedTiers: null, verifiedAt, url: row.url,
+      });
+    } catch (err) {
+      stats.errored += 1;
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`qualify --verify: ${row.url} errored, left unverified: ${message}`);
+    }
+  }
+
+  stats.actualMicros = actualMicros;
+  return stats;
+}
+
+// --- recanary --------------------------------------------------------------
+
+export interface RecanaryOptions { limit?: number }
+export interface RecanaryDeps { fetcher?: (url: string) => Promise<FetchResult> }
+
+export interface RecanaryStats {
+  considered: number; changed: number; unchanged: number; errored: number;
+  /** Names of candidates that recomputed to no canary at all — must be reported, never silently dropped (spec 15.6). */
+  noCanary: string[];
+}
+
+/**
+ * Fix round 7: re-derives `proposed_canary` for the admitted set under the
+ * fixed rule (a canary must occur in the raw body — see pickCanary's own
+ * invariant comment in tools/qualify.ts). Pre-filter scoring only, same as
+ * `qualifyCandidates` — no LLM, so it costs nothing but polite fetches, and
+ * is safe to re-run any number of times. Per-candidate try/catch mirrors
+ * verifyCandidates' isolation (fix round 4): one blocked or failing fetch
+ * costs one candidate, not the run.
+ *
+ * Fix round 8: a candidate that recomputes to `null` is named in
+ * `noCanary`, not just silently written — a canary that never fires is
+ * indistinguishable from no canary at all, and that must fail loud.
+ */
+export async function recanaryCandidates(
+  db: DB,
+  opts: RecanaryOptions = {},
+  deps: RecanaryDeps = {},
+): Promise<RecanaryStats> {
+  const fetcher = deps.fetcher ?? qualifyFetcher();
+  const stats: RecanaryStats = { considered: 0, changed: 0, unchanged: 0, errored: 0, noCanary: [] };
+
+  const rows = db.prepare(`
+    SELECT url, name, proposed_canary FROM candidates WHERE verdict = 'admit' ORDER BY name
+    ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
+  `).all() as { url: string; name: string; proposed_canary: string | null }[];
+
+  const update = db.prepare('UPDATE candidates SET proposed_canary = ? WHERE url = ?');
+
+  for (const row of rows) {
+    stats.considered += 1;
+    try {
+      const fetched = await fetcher(row.url);
+      if (!fetched.ok || fetched.body === null) {
+        stats.errored += 1;
+        console.error(`qualify --recanary: ${row.url} fetch failed: ${fetched.error ?? `HTTP ${fetched.httpStatus}`}`);
+        continue;
+      }
+
+      const { proposedCanary } = scoreCandidate(fetched.body);
+      if (proposedCanary === null) stats.noCanary.push(row.name);
+
+      if (proposedCanary !== row.proposed_canary) {
+        stats.changed += 1;
+        update.run(proposedCanary, row.url);
+      } else {
+        stats.unchanged += 1;
+      }
+    } catch (err) {
+      stats.errored += 1;
+      console.error(`qualify --recanary: ${row.url} errored: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  }
+
+  return stats;
+}

@@ -1,0 +1,89 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "vercel",
+  "name": "Vercel",
+  "homepage": "https://vercel.com",
+  "source_url": "https://vercel.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Hobby",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "1M Edge Requests/month included",
+        "100 GB/month data transfer included",
+        "Zero-config CDN cache",
+        "Unlimited deployments"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 20,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": 1,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "10M Edge Requests/month included",
+        "1TB/month data transfer included",
+        "Advanced security features",
+        "Team collaboration tools"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Custom Edge Requests",
+        "Custom data transfer",
+        "Advanced DDoS protection",
+        "SAML SSO and Directory Sync"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:50:08.832Z",
+  "last_observed_at": "2026-08-20T17:50:08.832Z",
+  "series": [
+    {
+      "tier": "Hobby",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:08.832Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:08.832Z",
+            "price": 20
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 3,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

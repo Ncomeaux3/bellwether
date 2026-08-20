@@ -1,0 +1,118 @@
+{
+  "generated_at": "2026-08-20T18:30:17.655Z",
+  "slug": "new-relic",
+  "name": "New Relic",
+  "homepage": "https://newrelic.com",
+  "source_url": "https://newrelic.com/pricing",
+  "current_tiers": [
+    {
+      "name": "Free",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "flat",
+      "included_seats": 1,
+      "is_free": true,
+      "is_enterprise": false,
+      "headline_features": [
+        "100 GB data ingest/month",
+        "Unlimited basic users",
+        "One free full platform user",
+        "Access to 50+ capabilities",
+        "Automatic logs obfuscation",
+        "No credit card required"
+      ]
+    },
+    {
+      "name": "Standard",
+      "monthly_price_usd": 10,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": 1,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Limited to 5 full platform users",
+        "Ticketed support",
+        "2 business days support response SLA",
+        "SAML single sign-on"
+      ]
+    },
+    {
+      "name": "Pro",
+      "monthly_price_usd": 349,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Unlimited full platform users",
+        "2-hour critical initial support response SLA",
+        "Data Plus eligibility",
+        "Optional full consumption pricing with no user licenses"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "FedRAMP Moderate and HIPAA eligibility",
+        "Priority ticket routing",
+        "1-hour critical initial support response SLA",
+        "Optional full consumption pricing with no user licenses"
+      ]
+    }
+  ],
+  "first_observed_at": "2026-08-20T17:50:33.497Z",
+  "last_observed_at": "2026-08-20T17:50:33.497Z",
+  "series": [
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:33.497Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:33.497Z",
+            "price": 349
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Standard",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-08-20T17:50:33.497Z",
+            "price": 10
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    }
+  ],
+  "markers": [],
+  "changes": [],
+  "provenance": {
+    "live": 4,
+    "wayback": 0,
+    "mixed": 0
+  }
+}

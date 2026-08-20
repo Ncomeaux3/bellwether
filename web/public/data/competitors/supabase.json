@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T03:05:21.651Z",
+  "generated_at": "2026-08-20T18:30:17.655Z",
   "slug": "supabase",
   "name": "Supabase",
   "homepage": "https://supabase.com",
@@ -83,7 +83,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T03:41:25.000Z",
-  "last_observed_at": "2026-08-18T15:01:28.444Z",
+  "last_observed_at": "2026-08-20T17:45:49.164Z",
   "series": [
     {
       "tier": "Free",
@@ -320,8 +320,25 @@
       "tier_class": "enterprise"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2026-08-18T15:01:28.444Z",
+      "label": "Pro billing unit changed"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Supabase",
+      "slug": "supabase",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "flat",
+      "after": "usage",
+      "materiality": 70,
+      "observed_at": "2026-08-18T15:01:28.444Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
     "live": 1,
     "wayback": 1,
