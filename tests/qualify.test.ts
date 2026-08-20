@@ -353,29 +353,40 @@ function extractFail(reason: 'oversized' | 'invalid' | 'ungrounded', detail: str
   return { ok: false, reason, detail };
 }
 
-/** Returns a different ExtractResult on each successive call — models the two `--verify` attempts. */
-function sequence(...results: ExtractResult[]): () => Promise<ExtractResult> {
+/**
+ * Returns a different ExtractResult on each successive call — models the two
+ * `--verify` attempts. Carries a `.calls` counter so tests can assert on the
+ * extractor's actual invocation count, not just the resulting verdict —
+ * fix round 5's whole point is that a verdict-only assertion is what let a
+ * single-observation admission slip through the cache.
+ */
+function sequence(...results: ExtractResult[]): { (): Promise<ExtractResult>; calls: number } {
   let i = 0;
-  return async () => {
+  const fn = (async () => {
     const r = results[Math.min(i, results.length - 1)]!;
     i += 1;
+    fn.calls = i;
     return r;
-  };
+  }) as { (): Promise<ExtractResult>; calls: number };
+  fn.calls = 0;
+  return fn;
 }
 
 const ENABLED = { LLM_ENABLED: 'true' } as NodeJS.ProcessEnv;
 
 describe('verifyCandidates — workflow (two-observation admission, spec 12.5)', () => {
-  it('admits when both attempts agree on >=2 priced tiers', async () => {
+  it('admits when both attempts agree on >=2 priced tiers, having made exactly two extractor calls', async () => {
     insertPassCandidate('https://acme.test/pricing');
     const tiers = [tier('Free', 0), tier('Pro', 29), tier('Enterprise', null)];
+    const extractor = sequence(extractOk(tiers), extractOk(tiers));
 
     const stats = await verifyCandidates(db, {}, {
       env: ENABLED,
       fetcher: async () => ok(LINEAR),
-      extractor: sequence(extractOk(tiers), extractOk(tiers)),
+      extractor,
     });
 
+    expect(extractor.calls).toBe(2);
     expect(stats.admitted).toBe(1);
     expect(stats.rejected).toBe(0);
 
@@ -387,16 +398,18 @@ describe('verifyCandidates — workflow (two-observation admission, spec 12.5)',
     expect(row.reason).toMatch(/both attempts agreed on 2/);
   });
 
-  it('rejects when attempt 2 fails, naming it', async () => {
+  it('rejects when attempt 2 fails, naming it, having made exactly two extractor calls', async () => {
     insertPassCandidate('https://acme.test/pricing');
     const tiers = [tier('Free', 0), tier('Pro', 29)];
+    const extractor = sequence(extractOk(tiers), extractFail('invalid', 'schema parse error'));
 
     const stats = await verifyCandidates(db, {}, {
       env: ENABLED,
       fetcher: async () => ok(LINEAR),
-      extractor: sequence(extractOk(tiers), extractFail('invalid', 'schema parse error')),
+      extractor,
     });
 
+    expect(extractor.calls).toBe(2);
     expect(stats.rejected).toBe(1);
     expect(stats.admitted).toBe(0);
 
@@ -408,17 +421,19 @@ describe('verifyCandidates — workflow (two-observation admission, spec 12.5)',
     expect(row.reason).toMatch(/attempt 2 failed: invalid: schema parse error/);
   });
 
-  it('rejects when the two attempts disagree on the priced-tier count, naming both', async () => {
+  it('rejects when the two attempts disagree on the priced-tier count, naming both, having made exactly two extractor calls', async () => {
     insertPassCandidate('https://acme.test/pricing');
     const four = [tier('Free', 0), tier('Basic', 8), tier('Team', 14), tier('Business', 26)];
     const two = [tier('Free', 0), tier('Basic', 8)];
+    const extractor = sequence(extractOk(four), extractOk(two));
 
     const stats = await verifyCandidates(db, {}, {
       env: ENABLED,
       fetcher: async () => ok(LINEAR),
-      extractor: sequence(extractOk(four), extractOk(two)),
+      extractor,
     });
 
+    expect(extractor.calls).toBe(2);
     expect(stats.rejected).toBe(1);
 
     const row = db.prepare('SELECT verdict, reason FROM candidates WHERE url = ?')
@@ -428,16 +443,18 @@ describe('verifyCandidates — workflow (two-observation admission, spec 12.5)',
     expect(row.reason).toMatch(/attempt 2 extracted 2 priced tiers/);
   });
 
-  it('rejects when either attempt self-reports low confidence, even if the counts agree', async () => {
+  it('rejects when either attempt self-reports low confidence, even if the counts agree, having made exactly two extractor calls', async () => {
     insertPassCandidate('https://acme.test/pricing');
     const tiers = [tier('Free', 0), tier('Pro', 29)];
+    const extractor = sequence(extractOk(tiers, 'low'), extractOk(tiers, 'high'));
 
     const stats = await verifyCandidates(db, {}, {
       env: ENABLED,
       fetcher: async () => ok(LINEAR),
-      extractor: sequence(extractOk(tiers, 'low'), extractOk(tiers, 'high')),
+      extractor,
     });
 
+    expect(extractor.calls).toBe(2);
     expect(stats.rejected).toBe(1);
     expect(stats.admitted).toBe(0);
 
@@ -506,29 +523,38 @@ describe('verifyCandidates — fix round 3: spend is real, budgeted, and reusabl
     expect(row!.prompt_version).toBe(EXTRACT_PROMPT_VERSION);
   });
 
-  it('a second candidate with the same content hash hits the cache instead of re-calling the extractor', async () => {
+  it('a candidate whose content hash already has a cached extraction still gets two fresh calls (fix round 5)', async () => {
+    // Fix round 5: the extraction cache must never substitute for a fresh
+    // observation at admission time — that hole let a hallucinated Better
+    // Stack extraction (24 "priced tiers") get admitted on its second run
+    // off a single stale cached row. Pre-seed the cache exactly as a prior
+    // successful attempt would have left it, then confirm a second
+    // candidate sharing that hash still pays for two real calls rather
+    // than resolving straight from the cache.
     insertPassCandidate('https://acme.test/a', 'Acme A');
     insertPassCandidate('https://acme.test/b', 'Acme B');
     const tiers = [tier('Free', 0), tier('Pro', 29)];
-    let calls = 0;
+    const { normalizedHash } = normalizeAndSlice(LINEAR);
 
+    db.prepare(`
+      INSERT INTO extractions
+        (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
+         is_backfill, model, prompt_version, input_tokens, output_tokens, cost_micros, created_at)
+      VALUES (?, 'pricing', ?, 'high', 'USD', 1, 1, 'claude-haiku-4-5', ?, 100, 50, 350, '2026-08-20T00:00:00.000Z')
+    `).run(normalizedHash, JSON.stringify({ tiers, usage_rates: [], notes: null, currency: 'USD', extraction_confidence: 'high' }), EXTRACT_PROMPT_VERSION);
+
+    let calls = 0;
     const stats = await verifyCandidates(db, {}, {
       env: ENABLED,
-      // Both URLs resolve to byte-identical content, so both normalize to the same hash.
+      // Both URLs resolve to byte-identical content, so both normalize to the same (now pre-cached) hash.
       fetcher: async () => ok(LINEAR),
       extractor: async () => { calls += 1; return extractOk(tiers); },
     });
 
-    // Candidate A: two fresh attempts. Candidate B: same hash already
-    // extracted by A, resolved from cache — zero further calls.
-    expect(calls).toBe(2);
-    expect(stats.cached).toBe(1);
+    // Both candidates pay for two fresh calls each — the pre-existing cached
+    // row for A's hash is never consulted as a shortcut for either one.
+    expect(calls).toBe(4);
     expect(stats.admitted).toBe(2);
-
-    const rowB = db.prepare('SELECT verdict, reason FROM candidates WHERE url = ?')
-      .get('https://acme.test/b') as { verdict: string; reason: string };
-    expect(rowB.verdict).toBe('admit');
-    expect(rowB.reason).toMatch(/cached/);
   });
 
   it('the pre-flight estimate refuses when over budget and verifies nothing', async () => {
@@ -664,5 +690,57 @@ describe('verifyCandidates — fix round 4: a candidate that errors is left unve
     expect(row.verdict).toBe('reject');
     expect(row.verified_at).not.toBeNull(); // a completed ok:false IS a real signal — unlike a throw
     expect(row.reason).toMatch(/failed: ungrounded/);
+  });
+});
+
+describe('verifyCandidates — fix round 5: the cache must never substitute for a fresh observation', () => {
+  it('attempt 1 succeeds and persists, attempt 2 throws: the next run makes two fresh extractor calls and decides on those', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = [tier('Free', 0), tier('Pro', 29)];
+
+    // Run 1: attempt 1 succeeds (and persists an extractions row — the hole
+    // this round closes), attempt 2 throws. Candidate must be left
+    // unverified, not admitted off the single persisted observation.
+    let firstCalls = 0;
+    const first = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => {
+        firstCalls += 1;
+        if (firstCalls === 1) return extractOk(tiers);
+        throw new Error('Connection error');
+      },
+    });
+
+    expect(firstCalls).toBe(2);
+    expect(first.errored).toBe(1);
+    expect(first.admitted).toBe(0);
+
+    const midRow = db.prepare('SELECT verdict, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/pricing') as { verdict: string; verified_at: string | null };
+    expect(midRow.verdict).toBe('pass'); // untouched
+    expect(midRow.verified_at).toBeNull();
+
+    // Sanity: attempt 1 really did persist — this is the row a cache branch would have used.
+    const { normalizedHash } = normalizeAndSlice(LINEAR);
+    const cachedRow = db.prepare('SELECT id FROM extractions WHERE normalized_hash = ? AND prompt_version = ?')
+      .get(normalizedHash, EXTRACT_PROMPT_VERSION);
+    expect(cachedRow).toBeDefined();
+
+    // Run 2: must make two FRESH calls — not zero, not one — and decide on those.
+    const secondExtractor = sequence(extractOk(tiers), extractOk(tiers));
+    const second = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: secondExtractor,
+    });
+
+    expect(secondExtractor.calls).toBe(2);
+    expect(second.admitted).toBe(1);
+
+    const finalRow = db.prepare('SELECT verdict, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/pricing') as { verdict: string; verified_at: string | null };
+    expect(finalRow.verdict).toBe('admit');
+    expect(finalRow.verified_at).not.toBeNull();
   });
 });

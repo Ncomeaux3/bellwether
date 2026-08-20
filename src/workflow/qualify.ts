@@ -216,7 +216,7 @@ export function estimateVerify(db: DB, budgetUsd: number, limit?: number): Verif
 }
 
 export interface VerifyStats {
-  considered: number; admitted: number; rejected: number; skipped: number; cached: number;
+  considered: number; admitted: number; rejected: number; skipped: number;
   /** Threw rather than completed (e.g. a transient APIError) — left unverified, not rejected. Retry to finish. */
   errored: number;
   estimate: VerifyEstimate; actualMicros: number;
@@ -276,11 +276,6 @@ function describeAttempt(a: Attempt): string {
   return `extracted ${a.pricedTiers} priced tier${a.pricedTiers === 1 ? '' : 's'}${low}`;
 }
 
-function pricedTiersFromDataJson(dataJson: string): number {
-  const data = JSON.parse(dataJson) as { tiers: { monthly_price_usd: number | null }[] };
-  return data.tiers.filter(t => t.monthly_price_usd !== null).length;
-}
-
 /**
  * Fix round 1: the pre-filter's job shrank to "could this plausibly be a
  * pricing page" (see qualify.ts). This is the real admission gate — genuine
@@ -310,10 +305,20 @@ function pricedTiersFromDataJson(dataJson: string): number {
  * gating on it too would just be a second, unrelated budget system able to
  * block a run its own spend can never trip.
  *
- * A candidate whose content hash already has a cached extraction (from a
- * prior verify, or from ordinary `extract`) is resolved straight from that
- * cache — zero further LLM calls — since a successful cached extraction is
- * already proof the content extracts.
+ * Fix round 5: the extraction cache is deliberately NOT consulted here, even
+ * though the rows this function writes could satisfy it. A cache hit is ONE
+ * prior observation, recorded earlier — using it to skip straight to a
+ * verdict silently reopens the single-observation hole fix round 2 closed.
+ * Live evidence: Better Stack was correctly rejected ("attempt 1 extracted 24
+ * priced tiers [a feature matrix misread as tiers], attempt 2 failed"), then
+ * admitted on the NEXT run off that same stale attempt-1 row via the cache
+ * branch that used to live here — the single worst extraction in the pool,
+ * admitted by the exact mechanism meant to catch it. `--verify` always makes
+ * two fresh calls, full stop. Do not re-add a cache check as an optimization
+ * — it looks like free money and it is not; the persisted rows still do
+ * their real job at ordinary `collect`+`extract` time once a source is
+ * admitted, which is the only place a cache hit is a valid substitute for a
+ * fresh call.
  *
  * Gated on the kill switch: skips silently (no rows touched) when
  * LLM_ENABLED isn't 'true'.
@@ -332,7 +337,7 @@ export async function verifyCandidates(
 
   const estimate = estimateVerify(db, budgetUsd, opts.limit);
   const stats: VerifyStats = {
-    considered: 0, admitted: 0, rejected: 0, skipped: 0, cached: 0, errored: 0,
+    considered: 0, admitted: 0, rejected: 0, skipped: 0, errored: 0,
     estimate, actualMicros: 0,
   };
 
@@ -347,9 +352,6 @@ export async function verifyCandidates(
     ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
   `).all() as { url: string }[];
 
-  const findExtraction = db.prepare(
-    'SELECT data_json FROM extractions WHERE normalized_hash = ? AND prompt_version = ?',
-  );
   const insertExtraction = db.prepare(`
     INSERT INTO extractions
       (normalized_hash, source_kind, data_json, extraction_confidence, currency, grounded,
@@ -395,20 +397,6 @@ export async function verifyCandidates(
       }
 
       const { text, normalizedHash } = normalizeAndSlice(fetched.body);
-
-      const cachedRow = findExtraction.get(normalizedHash, EXTRACT_PROMPT_VERSION) as { data_json: string } | undefined;
-      if (cachedRow) {
-        stats.cached += 1;
-        const pricedTiers = pricedTiersFromDataJson(cachedRow.data_json);
-        const admitted = pricedTiers >= MIN_PRICED_TIERS;
-        if (admitted) stats.admitted += 1; else stats.rejected += 1;
-        update.run({
-          verdict: admitted ? 'admit' : 'reject',
-          reason: `already extracted (cached): ${pricedTiers} priced tier${pricedTiers === 1 ? '' : 's'}`,
-          pricedTiers: admitted ? pricedTiers : null, verifiedAt, url: row.url,
-        });
-        continue;
-      }
 
       if (actualMicros >= budgetMicros) { budgetStopped = true; stats.skipped += 1; continue; }
       const attempt1 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
