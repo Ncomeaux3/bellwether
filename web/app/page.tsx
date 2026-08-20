@@ -1,6 +1,6 @@
 import { BoardTable } from '@/components/BoardTable';
+import { Ribbon } from '@/components/Ribbon';
 import { Stamp } from '@/components/Stamp';
-import { Timeline } from '@/components/Timeline';
 import { changeLabel, loadBoard, loadChanges, loadDigest, loadStatus, loadTimeline } from '@/lib/data';
 import { renderMarkdown } from '@/lib/markdown';
 
@@ -73,7 +73,7 @@ export default function HomePage() {
               <article key={`${competitor.slug}-${index}`} className="rounded-lg border border-rule bg-surface-raised p-5">
                 <h3 className="font-display text-lg font-medium text-ink">{competitor.name}</h3>
                 <div className="mt-4">
-                  <Timeline competitor={competitor} />
+                  <Ribbon competitor={competitor} scale="hero" />
                 </div>
               </article>
             ))}
