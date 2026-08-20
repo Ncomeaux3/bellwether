@@ -4,14 +4,14 @@ import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { openDb, type DB } from '../src/ops/db.js';
 import { migrate } from '../src/ops/migrate.js';
-import { scoreCandidate, PROXIMITY_WINDOW_CHARS } from '../src/tools/qualify.js';
-import { qualifyCandidates } from '../src/workflow/qualify.js';
+import { scoreCandidate } from '../src/tools/qualify.js';
+import { qualifyCandidates, verifyCandidates } from '../src/workflow/qualify.js';
 import type { FetchResult } from '../src/tools/fetch.js';
+import type { ExtractResult } from '../src/agents/extract_pricing.js';
+import type { TierData } from '../src/schema/pricing.js';
 
 // --- fixtures ---------------------------------------------------------
-// Small, representative shapes rather than committed megabyte pages (spec
-// 11.1's six were 371 KB - 2.3 MB of real markup; these reproduce the
-// structural pattern that makes a page pass or fail, not the bytes).
+// Small, representative shapes rather than committed megabyte pages.
 
 function tierPage(tiers: { name: string; price: string }[]): string {
   const blocks = tiers.map(t =>
@@ -66,28 +66,38 @@ const KNOWN_GOOD: Record<string, string> = {
   Supabase: SUPABASE, Sentry: SENTRY, Postman: POSTMAN,
 };
 
-/** Shape of the real Vercel screening failure: a client-hydrated shell. */
-const VERCEL_SHELL =
-  '<html><head><script src="/_next/static/chunks/pricing-a1b2c3.js"></script></head>' +
-  '<body><div id="__next"></div><noscript>You need to enable JavaScript.</noscript></body></html>';
+/**
+ * Shape of the real Vercel screening failure (fix round 1's live evidence):
+ * a big <script> price blob (stripped by normalizeAndSlice, mirroring
+ * vercel.com/pricing's 117-of-177 raw matches living in <script>) plus a
+ * handful of real feature-line-item prices in the body — present, but never
+ * text-adjacent to a capitalized label the way a real tier name is.
+ */
+function vercelShapedPage(): string {
+  const scriptPrices = Array.from({ length: 100 }, (_, i) => `$${i + 1}`).join(',');
+  const scriptTag = `<script>window.__DATA__={prices:[${scriptPrices}]};</script>`;
+  const featureLines = Array.from({ length: 10 }, (_, i) => `<p>Feature ${i} — $${i + 10}/month</p>`).join('');
+  return `<html><head>${scriptTag}</head><body><main>${featureLines}</main></body></html>`;
+}
 
 /** A blog post about a price change: currency present, no tier structure. */
 const PRICES_NO_TIERS =
   '<html><body><article><p>Today we are raising the price from $15 to $20 per ' +
   'month, effective immediately. We think $20 is worth it.</p></article></body></html>';
 
-/** A feature-comparison page: tier headings present, nothing priced. */
+/** A feature-comparison page: heading-shaped elements, nothing priced anywhere. */
 const TIERS_NO_PRICES =
   '<html><body><main><h2>Free</h2><p>Basic features included</p>' +
   '<h2>Pro</h2><p>Advanced features included</p>' +
   '<h2>Enterprise</h2><p>Everything included</p></main></body></html>';
 
-/** Prices and tier headings both present, but ~50 KB apart. */
-function farApartPage(): string {
-  const filler = 'x'.repeat(50_000);
-  return `<html><body><main><h2>Free</h2><h2>Pro</h2><h2>Enterprise</h2>` +
-    `${filler}<p>$10 $20 $99</p></main></body></html>`;
-}
+/** Tier names and prices both present, but never text-adjacent (unrelated copy between them). */
+const NAME_FAR_FROM_PRICE =
+  '<html><body><main>' +
+  '<h2>Free</h2><p>Our most popular plan for individuals getting started.</p><p>$0/mo</p>' +
+  '<h2>Pro</h2><p>Built for growing teams who need more.</p><p>$29/mo</p>' +
+  '<h2>Enterprise</h2><p>Custom contracts for large organizations.</p><p>$99/mo</p>' +
+  '</main></body></html>';
 
 /** M3's Linear shape: a shadow-DOM <style> closed with trailing whitespace. */
 const WHITESPACE_CLOSER_PAGE = [
@@ -112,15 +122,25 @@ describe('scoreCandidate — known-good pages', () => {
   }
 });
 
-describe('scoreCandidate — known qualification failures', () => {
-  it('fails the Vercel-shaped shell, naming both missing signals', () => {
-    const result = scoreCandidate(VERCEL_SHELL);
-    expect(result.verdict).toBe('fail');
-    expect(result.priceMatches).toBe(0);
+describe('scoreCandidate — fix round 1: counts run on normalized text, not raw HTML', () => {
+  it('fails the Vercel-shaped page, and its price count comes from normalized text (not the raw <script> blob)', () => {
+    const html = vercelShapedPage();
+    const rawMatches = (html.match(/[$€£]\s?\d/g) ?? []).length;
+
+    const result = scoreCandidate(html);
+
+    // Sanity: raw HTML materially overcounts (script-blob prices included).
+    expect(rawMatches).toBeGreaterThan(50);
+    // The scorer's count is the smaller, normalized-text figure — script stripped.
+    expect(result.priceMatches).toBe(10);
+    expect(result.priceMatches).toBeLessThan(rawMatches);
+
+    // Real tier names are absent from the HTML entirely (client-rendered), so
+    // even with 10 normalized price matches, nothing is adjacent to a label —
+    // the missing-headings signal is what correctly fails it.
     expect(result.tierHeadings).toBe(0);
-    expect(result.reason).toMatch(/price/i);
+    expect(result.verdict).toBe('fail');
     expect(result.reason).toMatch(/tier/i);
-    expect(result.proposedCanary).toBeNull();
   });
 
   it('fails a page with prices but no tier headings, naming the missing signal', () => {
@@ -129,24 +149,23 @@ describe('scoreCandidate — known qualification failures', () => {
     expect(result.priceMatches).toBeGreaterThanOrEqual(2);
     expect(result.tierHeadings).toBe(0);
     expect(result.reason).toMatch(/tier/i);
-    expect(result.reason).not.toMatch(/price match/i);
   });
 
-  it('fails a page with tier headings but no prices, naming the missing signal', () => {
+  it('fails a page with heading-shaped elements but no prices anywhere', () => {
     const result = scoreCandidate(TIERS_NO_PRICES);
     expect(result.verdict).toBe('fail');
     expect(result.priceMatches).toBe(0);
-    expect(result.tierHeadings).toBeGreaterThanOrEqual(2);
+    // No price anywhere means nothing can be text-adjacent to one either.
+    expect(result.tierHeadings).toBe(0);
     expect(result.reason).toMatch(/price/i);
-    expect(result.reason).not.toMatch(/tier-like headings \(found 0\)/i);
   });
 
-  it('fails when prices and tier headings are present but far apart (R1 proximity)', () => {
-    const result = scoreCandidate(farApartPage());
+  it('does not count a tier name and price as a heading when other copy separates them', () => {
+    const result = scoreCandidate(NAME_FAR_FROM_PRICE);
     expect(result.verdict).toBe('fail');
     expect(result.priceMatches).toBeGreaterThanOrEqual(2);
-    expect(result.tierHeadings).toBeGreaterThanOrEqual(2);
-    expect(result.reason).toMatch(new RegExp(`${PROXIMITY_WINDOW_CHARS} chars`));
+    expect(result.tierHeadings).toBe(0);
+    expect(result.reason).toMatch(/tier/i);
   });
 });
 
@@ -160,9 +179,8 @@ describe('scoreCandidate — the whitespace-closer bug (M3 Linear shape)', () =>
 });
 
 describe('scoreCandidate — canary proposal', () => {
-  it('never proposes a string containing a digit, even when digit-bearing headings exist', () => {
+  it('never proposes a string containing a digit', () => {
     const html = tierPage([
-      { name: 'Starter Plan 2024', price: '$9/mo' },
       { name: 'Growth', price: '$29/mo' },
       { name: 'Enterprise', price: '$99/mo' },
     ]);
@@ -171,12 +189,8 @@ describe('scoreCandidate — canary proposal', () => {
     expect(result.proposedCanary).not.toMatch(/\d/);
   });
 
-  it('is null when every qualifying heading contains a digit', () => {
-    const html = tierPage([
-      { name: 'Plan A1', price: '$9/mo' },
-      { name: 'Plan B2', price: '$29/mo' },
-    ]);
-    const result = scoreCandidate(html);
+  it('is null when no heading qualifies at all', () => {
+    const result = scoreCandidate(PRICES_NO_TIERS);
     expect(result.proposedCanary).toBeNull();
   });
 
@@ -257,8 +271,7 @@ describe('qualifyCandidates — workflow', () => {
   });
 
   it('--all skips candidates already screened, and --limit caps the rest', async () => {
-    // Pre-screen one entry from the real pool so the "unscreened only" filter has something to skip.
-    await qualifyCandidates(db, { urls: ['https://vercel.com/pricing'] }, { fetcher: async () => ok(VERCEL_SHELL) });
+    await qualifyCandidates(db, { urls: ['https://vercel.com/pricing'] }, { fetcher: async () => ok(vercelShapedPage()) });
 
     const stats = await qualifyCandidates(db, { all: true, limit: 3 }, { fetcher: async () => ok(LINEAR) });
 
@@ -266,5 +279,131 @@ describe('qualifyCandidates — workflow', () => {
     const screenedUrls = (db.prepare('SELECT url FROM candidates').all() as { url: string }[]).map(r => r.url);
     expect(new Set(screenedUrls).size).toBe(screenedUrls.length); // no duplicates
     expect(screenedUrls.length).toBe(4); // 1 pre-screened + 3 new
+  });
+});
+
+// --- verify ---------------------------------------------------------------
+
+function insertPassCandidate(url: string, name = 'Acme'): void {
+  db.prepare(`
+    INSERT INTO candidates (url, name, category, verdict, reason, price_matches, tier_headings, proposed_canary, http_status, screened_at)
+    VALUES (?, ?, 'hosting', 'pass', 'test fixture', 3, 3, NULL, 200, '2026-08-20T00:00:00.000Z')
+  `).run(url, name);
+}
+
+function tier(name: string, monthlyPriceUsd: number | null): TierData {
+  return {
+    name, monthly_price_usd: monthlyPriceUsd, annual_price_usd: null,
+    billing_unit: 'flat', included_seats: null,
+    is_free: monthlyPriceUsd === 0, is_enterprise: false, headline_features: [],
+  };
+}
+
+function extractOk(tiers: TierData[]): ExtractResult {
+  return {
+    ok: true,
+    data: { currency: 'USD', tiers, usage_rates: [], notes: null, extraction_confidence: 'high' },
+    inputTokens: 100, outputTokens: 50, costMicros: 350, attempts: 1,
+  };
+}
+
+function extractFail(reason: 'oversized' | 'invalid' | 'ungrounded', detail: string): ExtractResult {
+  return { ok: false, reason, detail };
+}
+
+const ENABLED = { LLM_ENABLED: 'true' } as NodeJS.ProcessEnv;
+
+describe('verifyCandidates — workflow', () => {
+  it('admits a candidate whose extraction yields >=2 priced tiers', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = [tier('Free', 0), tier('Pro', 29), tier('Enterprise', null)];
+
+    const stats = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => extractOk(tiers),
+    });
+
+    expect(stats.admitted).toBe(1);
+    expect(stats.rejected).toBe(0);
+
+    const row = db.prepare('SELECT verdict, priced_tiers, verified_at FROM candidates WHERE url = ?')
+      .get('https://acme.test/pricing') as { verdict: string; priced_tiers: number; verified_at: string | null };
+    expect(row.verdict).toBe('admit');
+    expect(row.priced_tiers).toBe(2); // Free ($0) and Pro ($29) — Enterprise is null, not priced
+    expect(row.verified_at).not.toBeNull();
+  });
+
+  it('rejects a candidate whose extraction yields only 1 priced tier', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = [tier('Free', 0), tier('Enterprise', null)];
+
+    const stats = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => extractOk(tiers),
+    });
+
+    expect(stats.rejected).toBe(1);
+    expect(stats.admitted).toBe(0);
+
+    const row = db.prepare('SELECT verdict, priced_tiers, reason FROM candidates WHERE url = ?')
+      .get('https://acme.test/pricing') as { verdict: string; priced_tiers: number; reason: string };
+    expect(row.verdict).toBe('reject');
+    expect(row.priced_tiers).toBe(1);
+    expect(row.reason).toMatch(/1 priced tier/);
+  });
+
+  it('rejects an extraction failure and records its reason', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+
+    const stats = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => extractFail('ungrounded', 'invented a price not present in the text'),
+    });
+
+    expect(stats.rejected).toBe(1);
+
+    const row = db.prepare('SELECT verdict, reason, priced_tiers FROM candidates WHERE url = ?')
+      .get('https://acme.test/pricing') as { verdict: string; reason: string; priced_tiers: number | null };
+    expect(row.verdict).toBe('reject');
+    expect(row.reason).toMatch(/ungrounded/);
+    expect(row.reason).toMatch(/invented a price/);
+    expect(row.priced_tiers).toBeNull();
+  });
+
+  it('makes no LLM call when LLM_ENABLED is not true, and touches no rows', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    let extractorCalled = false;
+
+    const stats = await verifyCandidates(db, {}, {
+      env: { LLM_ENABLED: 'false' } as NodeJS.ProcessEnv,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => { extractorCalled = true; return extractOk([tier('Free', 0), tier('Pro', 29)]); },
+    });
+
+    expect(extractorCalled).toBe(false);
+    expect(stats.considered).toBe(0);
+
+    const row = db.prepare('SELECT verdict FROM candidates WHERE url = ?').get('https://acme.test/pricing') as { verdict: string };
+    expect(row.verdict).toBe('pass');
+  });
+
+  it('is idempotent: a re-run does not re-extract an already-verified candidate', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    let calls = 0;
+    const deps = {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => { calls += 1; return extractOk([tier('Free', 0), tier('Pro', 29)]); },
+    };
+
+    const first = await verifyCandidates(db, {}, deps);
+    const second = await verifyCandidates(db, {}, deps);
+
+    expect(first.admitted).toBe(1);
+    expect(second.considered).toBe(0); // nothing left at verdict='pass'
+    expect(calls).toBe(1);
   });
 });

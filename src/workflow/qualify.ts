@@ -1,8 +1,13 @@
 import type { DB } from '../ops/db.js';
 import { politeFetch, RobotsCache, type FetchResult } from '../tools/fetch.js';
 import { HostRateLimiter } from '../tools/ratelimit.js';
+import { normalizeAndSlice } from '../tools/normalize.js';
 import { scoreCandidate } from '../tools/qualify.js';
 import { CANDIDATES } from '../config/candidates.public.js';
+import {
+  BudgetExceededError, anthropic, assertWithinBudget, llmEnabled,
+} from '../agents/_client.js';
+import { extractPricing, type ExtractResult } from '../agents/extract_pricing.js';
 
 export interface QualifyOptions {
   urls?: string[];
@@ -143,7 +148,7 @@ export function emitConfig(db: DB): string {
   const rows = db.prepare(`
     SELECT url, name, category, proposed_canary
     FROM candidates
-    WHERE verdict = 'pass'
+    WHERE verdict IN ('pass', 'admit')
     ORDER BY name
   `).all() as { url: string; name: string; category: string; proposed_canary: string | null }[];
 
@@ -160,4 +165,112 @@ export function emitConfig(db: DB): string {
       '  },',
     ].join('\n');
   }).join('\n');
+}
+
+
+// --- verify --------------------------------------------------------------
+
+export interface VerifyOptions { limit?: number }
+
+export interface VerifyDeps {
+  fetcher?: (url: string) => Promise<FetchResult>;
+  extractor?: (text: string) => Promise<ExtractResult>;
+  now?: () => Date;
+  env?: NodeJS.ProcessEnv;
+}
+
+export interface VerifyStats { considered: number; admitted: number; rejected: number; skipped: number }
+
+/** ≥2 tiers with a non-null monthly_price_usd. "Contact sales" tiers (null) don't count — they demonstrate nothing about extractable prices. */
+const MIN_PRICED_TIERS = 2;
+
+/**
+ * Fix round 1: the pre-filter's job shrank to "could this plausibly be a
+ * pricing page" (see qualify.ts). This is the real admission gate — one
+ * genuine `extractPricing` call per `pass` candidate, same machinery `extract`
+ * uses every night, so a source is admitted because it demonstrably extracts,
+ * not because a regex liked it. Re-fetches rather than reusing the pre-filter's
+ * fetch: `candidates` never stored the HTML, only the counts.
+ *
+ * Gated on the kill switch and the recurring budget exactly like `extract`:
+ * skips silently (no rows touched) when LLM_ENABLED isn't 'true', and stops
+ * admitting new spend once the monthly cap is hit, same as extract.ts.
+ *
+ * Idempotent: only `verdict = 'pass'` rows are selected, and a verified row
+ * moves to 'admit'/'reject', so a second run finds nothing left to redo.
+ */
+export async function verifyCandidates(
+  db: DB,
+  opts: VerifyOptions = {},
+  deps: VerifyDeps = {},
+): Promise<VerifyStats> {
+  const env = deps.env ?? process.env;
+  const now = deps.now ?? (() => new Date());
+  const stats: VerifyStats = { considered: 0, admitted: 0, rejected: 0, skipped: 0 };
+
+  if (!llmEnabled(env)) return stats;
+
+  const fetcher = deps.fetcher ?? qualifyFetcher();
+  const runExtractor = deps.extractor ?? ((text: string) => extractPricing(text, { client: anthropic() as never }));
+
+  const pending = db.prepare(`
+    SELECT url FROM candidates WHERE verdict = 'pass' ORDER BY name
+    ${opts.limit ? 'LIMIT ' + Number(opts.limit) : ''}
+  `).all() as { url: string }[];
+
+  const update = db.prepare(`
+    UPDATE candidates SET verdict = @verdict, reason = @reason, priced_tiers = @pricedTiers, verified_at = @verifiedAt
+    WHERE url = @url
+  `);
+
+  let budgetExhausted = false;
+
+  for (const row of pending) {
+    stats.considered += 1;
+
+    if (!budgetExhausted) {
+      try {
+        assertWithinBudget(db, { now, env });
+      } catch (err) {
+        if (!(err instanceof BudgetExceededError)) throw err;
+        budgetExhausted = true;
+      }
+    }
+    if (budgetExhausted) { stats.skipped += 1; continue; }
+
+    const verifiedAt = now().toISOString();
+    const fetched = await fetcher(row.url);
+    if (!fetched.ok || fetched.body === null) {
+      stats.rejected += 1;
+      update.run({
+        verdict: 'reject', reason: `re-fetch failed: ${fetched.error ?? `HTTP ${fetched.httpStatus}`}`,
+        pricedTiers: null, verifiedAt, url: row.url,
+      });
+      continue;
+    }
+
+    const { text } = normalizeAndSlice(fetched.body);
+    const result = await runExtractor(text);
+
+    if (!result.ok) {
+      stats.rejected += 1;
+      update.run({
+        verdict: 'reject', reason: `${result.reason}: ${result.detail}`,
+        pricedTiers: null, verifiedAt, url: row.url,
+      });
+      continue;
+    }
+
+    const pricedTiers = result.data.tiers.filter(t => t.monthly_price_usd !== null).length;
+    const admitted = pricedTiers >= MIN_PRICED_TIERS;
+    if (admitted) stats.admitted += 1; else stats.rejected += 1;
+
+    update.run({
+      verdict: admitted ? 'admit' : 'reject',
+      reason: `extracted ${pricedTiers} priced tier${pricedTiers === 1 ? '' : 's'}`,
+      pricedTiers, verifiedAt, url: row.url,
+    });
+  }
+
+  return stats;
 }

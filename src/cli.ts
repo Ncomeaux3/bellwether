@@ -62,13 +62,21 @@ program
   .option('--url <u>', 'screen this URL (repeatable); explicit URLs are always re-screened', (v: string, prev: string[]) => [...prev, v], [] as string[])
   .option('--all', 'screen every unscreened candidate in src/config/candidates.public.ts')
   .option('--limit <n>', 'screen at most n candidates this run', v => Number(v))
-  .option('--emit-config', 'print TypeScript competitor entries for every pass verdict and exit')
-  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean }) => {
-    const { qualifyCandidates, emitConfig } = await import('./workflow/qualify.js');
+  .option('--emit-config', 'print TypeScript competitor entries for every pass/admit verdict and exit')
+  .option('--verify', 'run one real extraction against every pass verdict, admitting or rejecting it')
+  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean; verify?: boolean }) => {
+    const { qualifyCandidates, verifyCandidates, emitConfig } = await import('./workflow/qualify.js');
     const db = openDb(dbPath());
 
     if (options.emitConfig) {
       console.log(emitConfig(db));
+      db.close();
+      return;
+    }
+
+    if (options.verify) {
+      const stats = await verifyCandidates(db, { limit: options.limit });
+      console.log(`Verified ${stats.considered}: ${stats.admitted} admit, ${stats.rejected} reject, ${stats.skipped} skipped.`);
       db.close();
       return;
     }
