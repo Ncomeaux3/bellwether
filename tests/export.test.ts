@@ -128,7 +128,17 @@ describe('exportData', () => {
     const boardBefore = readFileSync(join(out, 'board.json'), 'utf8');
     writeFileSync(join(out, 'status.json'), JSON.stringify({ padding: 'x'.repeat(20_000) }));
 
+    // Fix round 1, finding 1: the message must name the offending file's
+    // absolute path so a wedged export is discoverable, matching the
+    // competitor-count guard's escape-hatch wording.
     expect(() => exportData(db, out)).toThrow(/shrank/i);
+    try {
+      exportData(db, out);
+      throw new Error('expected exportData to throw');
+    } catch (err) {
+      expect((err as Error).message).toContain(join(out, 'status.json'));
+      expect((err as Error).message).toMatch(/delete .* and export again/i);
+    }
 
     // Spec 15.7: a guard trip mid-loop must leave no `.tmp` litter behind, and
     // any file staged before the trip (board.json here, written before the

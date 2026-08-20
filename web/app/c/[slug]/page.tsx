@@ -1,15 +1,35 @@
 import type { Metadata } from 'next';
 import { Ribbon } from '@/components/Ribbon';
 import { Stamp } from '@/components/Stamp';
-import { changeLabel, loadBoard, loadCompetitor } from '@/lib/data';
+import { changeLabel, competitorPayloadPath, loadBoard, loadCompetitor } from '@/lib/data';
 
 // Same value layout.tsx's metadataBase and src/workflow/export.ts's SITE_URL
 // use — not imported (web/ cannot import from src/, and Next has no clean
 // way to read metadataBase back out at render time), so it is restated here.
 const SITE_URL = 'https://bellwether-nicholas-projects-cdfeb046.vercel.app';
 
+/**
+ * Fix round 1, finding 2: a slug board.json lists but whose
+ * competitors/<slug>.json never got exported (or is corrupt) used to build
+ * silently, publishing a citable page whose title and JSON-LD read the raw
+ * slug as the company name and an empty temporalCoverage. Fail the build
+ * loudly instead — naming the slug and the exact file the pipeline was
+ * supposed to write — since that is strictly better than shipping a wrong
+ * citation. A competitor with a real payload but zero observed history is a
+ * different, legitimate case and is unaffected (its `name` is never empty).
+ */
 export function generateStaticParams() {
-  return loadBoard().competitors.map(c => ({ slug: c.slug }));
+  const slugs = loadBoard().competitors.map(c => c.slug);
+  for (const slug of slugs) {
+    if (loadCompetitor(slug).name === '') {
+      throw new Error(
+        `Missing competitor payload for "${slug}": expected ${competitorPayloadPath(slug)} ` +
+        `to exist (board.json lists this competitor but export never wrote its JSON, or it ` +
+        `failed to parse). Run \`bellwether export\` before building.`
+      );
+    }
+  }
+  return slugs.map(slug => ({ slug }));
 }
 
 /** The exact framing spec 14.4 names: "Linear pricing history — every change since 2025". */

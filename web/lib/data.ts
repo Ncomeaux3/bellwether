@@ -42,15 +42,28 @@ export function loadChanges(): ChangesFeed {
 /**
  * One JSON file per competitor (src/workflow/export.ts) so a competitor page
  * loads only its own history — never every competitor's, spec 14.4's citable
- * per-company unit. Missing-file fallback matches the pattern above: render
- * the page's own empty state rather than fail the static build.
+ * per-company unit.
+ *
+ * Fix round 1, finding 2: the fallback's `name` is deliberately empty, NOT
+ * the slug — a missing/corrupt payload must be visibly distinguishable from
+ * a competitor that legitimately has a payload but no history yet (that
+ * payload always carries a real `name`, written unconditionally for every
+ * active competitor by export.ts). generateStaticParams
+ * (web/app/c/[slug]/page.tsx) checks exactly this and fails the build rather
+ * than publish a citable page titled after a raw slug.
  */
 export function loadCompetitor(slug: string): CompetitorPayload {
   return read<CompetitorPayload>(`competitors/${slug}.json`, {
-    generated_at: '', slug, name: slug, homepage: '', source_url: null,
+    generated_at: '', slug, name: '', homepage: '', source_url: null,
     current_tiers: [], first_observed_at: null, last_observed_at: null,
     series: [], markers: [], changes: [], provenance: { live: 0, wayback: 0, mixed: 0 },
   });
+}
+
+/** Absolute path a competitor's payload is expected to live at — named in
+ * generateStaticParams' missing-payload build error. */
+export function competitorPayloadPath(slug: string): string {
+  return join(DATA_DIR, `competitors/${slug}.json`);
 }
 
 export interface DatasetMeta {

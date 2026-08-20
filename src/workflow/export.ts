@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import type { DB } from '../ops/db.js';
@@ -470,7 +470,9 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
           if (previousSize > 0 && content.length < previousSize * 0.5) {
             throw new ExportGuardError(
               `Refusing to publish: ${name} shrank from ${previousSize} to ${content.length} bytes. ` +
-              `A file losing more than half its content usually means a query broke.`
+              `A file losing more than half its content usually means a query broke. ` +
+              `If this shrink is intentional (a curated source, a removed competitor), ` +
+              `delete ${resolve(finalPath)} and export again.`
             );
           }
         }
