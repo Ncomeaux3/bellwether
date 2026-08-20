@@ -182,6 +182,21 @@ export interface VerifyDeps {
 /** ≥2 tiers with a non-null monthly_price_usd. "Contact sales" tiers (null) don't count — they demonstrate nothing about extractable prices. */
 const MIN_PRICED_TIERS = 2;
 
+/**
+ * Fix round 6: a genuine plan table is small — every correctly-extracted
+ * source in the pool landed at 2-4 tiers (Vercel: Hobby/Pro/Enterprise = 3).
+ * Live evidence of the failure mode this catches: Datadog extracted 27
+ * "tiers" that BOTH attempts agreed on (Event Management=$0.10, Workflow
+ * Automation=$10, Error Tracking=$25, Product Analytics=$0.80...) — those
+ * are per-PRODUCT prices, not plan tiers; Datadog sells about four plans.
+ * Upstash extracted 9 (Free=$0, Fixed 250MB=$10, Fixed 1GB=$20, Fixed
+ * 5GB=$100...) — storage-size variants of one plan, same shape, milder. The
+ * two-observation gate (fix round 2) catches instability, not a
+ * systematically wrong answer both attempts agree on. 8 is deliberately
+ * generous against an observed correct-extraction max of 4.
+ */
+const MAX_ADMIT_TIERS = 8;
+
 /** Mirrors backfill.ts's DEFAULT_BACKFILL_BUDGET_USD shape: verification is deliberate one-time operator spend, budgeted separately from the recurring cap. */
 export const DEFAULT_VERIFY_BUDGET_USD = 3.0;
 
@@ -320,6 +335,12 @@ function describeAttempt(a: Attempt): string {
  * admitted, which is the only place a cache hit is a valid substitute for a
  * fresh call.
  *
+ * Fix round 6: admission has a range, not just a floor. MAX_ADMIT_TIERS caps
+ * the agreed-upon count — two attempts reproducing the same systematically
+ * wrong answer (a product/unit price matrix, not a plan table) is a distinct
+ * failure the two-observation gate alone cannot catch (see MAX_ADMIT_TIERS
+ * above for the Datadog/Upstash evidence).
+ *
  * Gated on the kill switch: skips silently (no rows touched) when
  * LLM_ENABLED isn't 'true'.
  *
@@ -413,18 +434,33 @@ export async function verifyCandidates(
       const attempt2 = await runAttempt(text, normalizedHash, runExtractor, insertExtraction, now);
       if (attempt2.ok) actualMicros += attempt2.costMicros;
 
-      const reproduced =
+      const agreed =
         attempt1.ok && attempt2.ok &&
         attempt1.confidence !== 'low' && attempt2.confidence !== 'low' &&
-        attempt1.pricedTiers === attempt2.pricedTiers &&
-        attempt1.pricedTiers >= MIN_PRICED_TIERS;
+        attempt1.pricedTiers === attempt2.pricedTiers;
 
-      if (reproduced && attempt1.ok) {
+      if (agreed && attempt1.ok && attempt1.pricedTiers >= MIN_PRICED_TIERS && attempt1.pricedTiers <= MAX_ADMIT_TIERS) {
         stats.admitted += 1;
         update.run({
           verdict: 'admit',
           reason: `both attempts agreed on ${attempt1.pricedTiers} priced tier${attempt1.pricedTiers === 1 ? '' : 's'}`,
           pricedTiers: attempt1.pricedTiers, verifiedAt, url: row.url,
+        });
+        continue;
+      }
+
+      // Fix round 6: two attempts CAN agree on the same systematically wrong
+      // answer — the two-observation gate above catches instability, not a
+      // consistent misread. A count over MAX_ADMIT_TIERS states that finding
+      // directly (a product/unit matrix, not a plan table) rather than
+      // reusing the generic disagreement wording, which would misdescribe a
+      // case where the attempts actually agreed.
+      if (agreed && attempt1.ok && attempt1.pricedTiers > MAX_ADMIT_TIERS) {
+        stats.rejected += 1;
+        update.run({
+          verdict: 'reject',
+          reason: `prices per product or unit rather than per plan (${attempt1.pricedTiers} priced entries)`,
+          pricedTiers: null, verifiedAt, url: row.url,
         });
         continue;
       }

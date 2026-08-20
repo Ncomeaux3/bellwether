@@ -744,3 +744,67 @@ describe('verifyCandidates — fix round 5: the cache must never substitute for 
     expect(finalRow.verified_at).not.toBeNull();
   });
 });
+
+describe('verifyCandidates — fix round 6: admission is a range (MIN_PRICED_TIERS..MAX_ADMIT_TIERS)', () => {
+  function manyTiers(n: number): TierData[] {
+    return Array.from({ length: n }, (_, i) => tier(`Item ${i}`, (i + 1) * 5));
+  }
+
+  it('3 priced tiers admits (well within range)', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = manyTiers(3);
+    const extractor = sequence(extractOk(tiers), extractOk(tiers));
+
+    const stats = await verifyCandidates(db, {}, { env: ENABLED, fetcher: async () => ok(LINEAR), extractor });
+
+    expect(extractor.calls).toBe(2);
+    expect(stats.admitted).toBe(1);
+  });
+
+  it('exactly 8 admits (the boundary)', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = manyTiers(8);
+    const extractor = sequence(extractOk(tiers), extractOk(tiers));
+
+    const stats = await verifyCandidates(db, {}, { env: ENABLED, fetcher: async () => ok(LINEAR), extractor });
+
+    expect(extractor.calls).toBe(2);
+    expect(stats.admitted).toBe(1);
+
+    const row = db.prepare('SELECT priced_tiers FROM candidates WHERE url = ?').get('https://acme.test/pricing') as { priced_tiers: number };
+    expect(row.priced_tiers).toBe(8);
+  });
+
+  it('9 rejects, one over the boundary', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = manyTiers(9);
+    const extractor = sequence(extractOk(tiers), extractOk(tiers));
+
+    const stats = await verifyCandidates(db, {}, { env: ENABLED, fetcher: async () => ok(LINEAR), extractor });
+
+    expect(extractor.calls).toBe(2);
+    expect(stats.rejected).toBe(1);
+    expect(stats.admitted).toBe(0);
+
+    const row = db.prepare('SELECT verdict, reason FROM candidates WHERE url = ?').get('https://acme.test/pricing') as { verdict: string; reason: string };
+    expect(row.verdict).toBe('reject');
+    expect(row.reason).toBe('prices per product or unit rather than per plan (9 priced entries)');
+  });
+
+  it('27 rejects with the per-product reason (the Datadog case)', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = manyTiers(27);
+    const extractor = sequence(extractOk(tiers), extractOk(tiers));
+
+    const stats = await verifyCandidates(db, {}, { env: ENABLED, fetcher: async () => ok(LINEAR), extractor });
+
+    expect(extractor.calls).toBe(2);
+    expect(stats.rejected).toBe(1);
+
+    const row = db.prepare('SELECT verdict, reason, priced_tiers FROM candidates WHERE url = ?').get('https://acme.test/pricing') as
+      { verdict: string; reason: string; priced_tiers: number | null };
+    expect(row.verdict).toBe('reject');
+    expect(row.reason).toBe('prices per product or unit rather than per plan (27 priced entries)');
+    expect(row.priced_tiers).toBeNull();
+  });
+});
