@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import type { Board, ChangeEntry, ChangesFeed, CompetitorPayload, Digest, Status, Timeline } from './types.js';
+import type { Board, ChangeEntry, ChangesFeed, CompetitorPayload, Digest, Mechanics, Status, Timeline } from './types.js';
 
 const DATA_DIR = join(process.cwd(), 'public', 'data');
 
@@ -37,6 +37,22 @@ export function loadDigest(): Digest {
 
 export function loadChanges(): ChangesFeed {
   return read<ChangesFeed>('changes.json', { generated_at: '', threshold: 0, changes: [] });
+}
+
+export function loadMechanics(): Mechanics {
+  return read<Mechanics>('mechanics.json', {
+    generated_at: '',
+    filter: {
+      total_snapshots: 0, byte_identical_repeats: 0, distinct_normalized_states: 0,
+      extractions_performed: 0, llm_calls_avoided: 0, gates: [],
+    },
+    coverage: {
+      first_observed_at: null, last_observed_at: null, months_covered: 0,
+      live_snapshots: 0, backfilled_snapshots: 0,
+    },
+    health: { sources: [], runs: [] },
+    cost: { cumulative_micros: 0, month_micros: 0, backfill_micros: 0 },
+  });
 }
 
 /**

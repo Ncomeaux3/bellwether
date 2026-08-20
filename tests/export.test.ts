@@ -56,7 +56,7 @@ describe('exportData', () => {
 
     expect(stats.files.sort()).toEqual([
       'board.json', 'changes.json', 'changes.xml', 'competitors/acme.json', 'competitors/beta.json',
-      'dataset.csv', 'dataset.json', 'digest.json', 'llms.txt', 'status.json', 'timeline.json',
+      'dataset.csv', 'dataset.json', 'digest.json', 'llms.txt', 'mechanics.json', 'status.json', 'timeline.json',
     ]);
     expect(stats.competitors).toBe(2);
   });
@@ -162,7 +162,7 @@ describe('exportData', () => {
 
     for (const name of [
       'board.json', 'status.json', 'changes.json', 'timeline.json',
-      'digest.json', 'dataset.json', 'dataset.csv',
+      'digest.json', 'dataset.json', 'dataset.csv', 'mechanics.json',
       'competitors/acme.json', 'competitors/beta.json',
     ]) {
       expect(existsSync(join(out, `${name}.tmp`))).toBe(false);

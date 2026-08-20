@@ -149,6 +149,15 @@ export default function HomePage() {
               <Stamp iso={status.last_run.ended_at} empty="still running" />.</>
           )}
         </p>
+        <p className="mt-2 text-sm text-ink-muted">
+          <a href="/how-it-works/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+            How it works
+          </a>
+          {' — the pipeline, the live filter rates, source health, and cumulative spend. See also '}
+          <a href="/data/" className="text-ink-secondary underline decoration-rule-strong underline-offset-4 hover:text-ink">
+            the dataset
+          </a>.
+        </p>
       </section>
     </main>
   );

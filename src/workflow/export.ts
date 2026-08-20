@@ -8,6 +8,7 @@ import { EXTRACT_PROMPT_VERSION } from '../schema/pricing.js';
 import { SYNTH_PROMPT_VERSION } from '../schema/synthesis.js';
 import { monthlySpendMicros } from '../agents/_client.js';
 import { observationsFor } from './detect.js';
+import { buildMechanics } from './mechanics.js';
 import { describeChange, buildDatasetRows, toCsv, buildRssXml, buildLlmsTxt, type FeedChange } from './dataset.js';
 import { acquireRun, finishRun } from '../ops/runs.js';
 
@@ -50,7 +51,15 @@ interface SourceRow {
   current_pricing_json: string | null;
 }
 
-function stateOf(row: SourceRow): SourceState {
+/** The fields stateOf actually reads — mechanics.ts's health query reuses this
+ * so its own source rows don't have to carry board.json's full SourceRow shape. */
+export interface SourceStateFields {
+  last_checked_at: string | null;
+  last_ok_flag: number | null;
+  degraded_reason: string | null;
+}
+
+export function stateOf(row: SourceStateFields): SourceState {
   if (row.last_checked_at === null) return 'pending';
   if (row.last_ok_flag === 0) return 'failing';
   if (row.degraded_reason !== null) return 'degraded';
@@ -334,6 +343,8 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       },
     };
 
+    const mechanics = buildMechanics(db, now);
+
     const datasetRows = buildDatasetRows(db);
     const datasetPayload = {
       generated_at: generatedAt,
@@ -410,6 +421,7 @@ export function exportData(db: DB, outDir: string, deps: ExportDeps = {}): Expor
       jsonArtifact(outDir, 'timeline.json', timeline),
       jsonArtifact(outDir, 'digest.json', digestPayload),
       jsonArtifact(outDir, 'dataset.json', datasetPayload),
+      jsonArtifact(outDir, 'mechanics.json', mechanics),
       ...competitorPayloads.map(p => jsonArtifact(outDir, `competitors/${p.slug}.json`, p)),
       {
         name: 'dataset.csv', dir: outDir, content: csvContent,
