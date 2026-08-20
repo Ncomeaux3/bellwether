@@ -57,6 +57,32 @@ program
   });
 
 program
+  .command('qualify')
+  .description('screen candidate pricing pages for currency symbols and tier-like headings')
+  .option('--url <u>', 'screen this URL (repeatable); explicit URLs are always re-screened', (v: string, prev: string[]) => [...prev, v], [] as string[])
+  .option('--all', 'screen every unscreened candidate in src/config/candidates.public.ts')
+  .option('--limit <n>', 'screen at most n candidates this run', v => Number(v))
+  .option('--emit-config', 'print TypeScript competitor entries for every pass verdict and exit')
+  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean }) => {
+    const { qualifyCandidates, emitConfig } = await import('./workflow/qualify.js');
+    const db = openDb(dbPath());
+
+    if (options.emitConfig) {
+      console.log(emitConfig(db));
+      db.close();
+      return;
+    }
+
+    const stats = await qualifyCandidates(db, {
+      urls: options.url.length ? options.url : undefined,
+      all: options.all,
+      limit: options.limit,
+    });
+    console.log(`Screened ${stats.attempted}: ${stats.pass} pass, ${stats.fail} fail, ${stats.error} error.`);
+    db.close();
+  });
+
+program
   .command('extract')
   .description('extract structured pricing from snapshots that lack it')
   .option('--limit <n>', 'process at most n snapshots', v => Number(v))
