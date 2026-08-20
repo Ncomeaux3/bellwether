@@ -106,6 +106,14 @@ describe('COMPETITORS', () => {
     }
   });
 
+  it('rejects canary fragments shorter than a real plan name (e.g. "GB", "From")', () => {
+    for (const c of COMPETITORS) {
+      for (const s of c.sources) {
+        expect(s.canaryString.length).toBeGreaterThanOrEqual(4);
+      }
+    }
+  });
+
   it('is idempotent to reseed at full size — running twice does not duplicate rows', () => {
     seedCompetitors(db, COMPETITORS);
     seedCompetitors(db, COMPETITORS);
