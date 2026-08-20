@@ -9,6 +9,8 @@ import { qualifyCandidates, verifyCandidates } from '../src/workflow/qualify.js'
 import type { FetchResult } from '../src/tools/fetch.js';
 import type { ExtractResult } from '../src/agents/extract_pricing.js';
 import type { TierData } from '../src/schema/pricing.js';
+import { EXTRACT_PROMPT_VERSION } from '../src/schema/pricing.js';
+import { normalizeAndSlice } from '../src/tools/normalize.js';
 
 // --- fixtures ---------------------------------------------------------
 // Small, representative shapes rather than committed megabyte pages.
@@ -339,11 +341,11 @@ function tier(name: string, monthlyPriceUsd: number | null): TierData {
   };
 }
 
-function extractOk(tiers: TierData[], confidence: 'high' | 'medium' | 'low' = 'high'): ExtractResult {
+function extractOk(tiers: TierData[], confidence: 'high' | 'medium' | 'low' = 'high', costMicros = 350): ExtractResult {
   return {
     ok: true,
     data: { currency: 'USD', tiers, usage_rates: [], notes: null, extraction_confidence: confidence },
-    inputTokens: 100, outputTokens: 50, costMicros: 350, attempts: 1,
+    inputTokens: 100, outputTokens: 50, costMicros, attempts: 1,
   };
 }
 
@@ -478,5 +480,97 @@ describe('verifyCandidates — workflow (two-observation admission, spec 12.5)',
     expect(first.admitted).toBe(1);
     expect(second.considered).toBe(0); // nothing left at verdict='pass'
     expect(calls).toBe(2); // one candidate, two attempts, zero on the second run
+  });
+});
+
+describe('verifyCandidates — fix round 3: spend is real, budgeted, and reusable', () => {
+  it('persists a successful attempt as a real extractions row, is_backfill=1, with the right cost', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    const tiers = [tier('Free', 0), tier('Pro', 29)];
+
+    await verifyCandidates(db, {}, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: sequence(extractOk(tiers, 'high', 777), extractOk(tiers, 'high', 777)),
+    });
+
+    const { normalizedHash } = normalizeAndSlice(LINEAR);
+    const row = db.prepare(
+      'SELECT is_backfill, cost_micros, model, prompt_version FROM extractions WHERE normalized_hash = ? AND prompt_version = ?',
+    ).get(normalizedHash, EXTRACT_PROMPT_VERSION) as
+      { is_backfill: number; cost_micros: number; model: string; prompt_version: string } | undefined;
+
+    expect(row).toBeDefined();
+    expect(row!.is_backfill).toBe(1);
+    expect(row!.cost_micros).toBe(777);
+    expect(row!.prompt_version).toBe(EXTRACT_PROMPT_VERSION);
+  });
+
+  it('a second candidate with the same content hash hits the cache instead of re-calling the extractor', async () => {
+    insertPassCandidate('https://acme.test/a', 'Acme A');
+    insertPassCandidate('https://acme.test/b', 'Acme B');
+    const tiers = [tier('Free', 0), tier('Pro', 29)];
+    let calls = 0;
+
+    const stats = await verifyCandidates(db, {}, {
+      env: ENABLED,
+      // Both URLs resolve to byte-identical content, so both normalize to the same hash.
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => { calls += 1; return extractOk(tiers); },
+    });
+
+    // Candidate A: two fresh attempts. Candidate B: same hash already
+    // extracted by A, resolved from cache — zero further calls.
+    expect(calls).toBe(2);
+    expect(stats.cached).toBe(1);
+    expect(stats.admitted).toBe(2);
+
+    const rowB = db.prepare('SELECT verdict, reason FROM candidates WHERE url = ?')
+      .get('https://acme.test/b') as { verdict: string; reason: string };
+    expect(rowB.verdict).toBe('admit');
+    expect(rowB.reason).toMatch(/cached/);
+  });
+
+  it('the pre-flight estimate refuses when over budget and verifies nothing', async () => {
+    insertPassCandidate('https://acme.test/pricing');
+    let calls = 0;
+
+    const stats = await verifyCandidates(db, { budgetUsd: 0.001 }, {
+      env: ENABLED,
+      fetcher: async () => ok(LINEAR),
+      extractor: async () => { calls += 1; return extractOk([tier('Free', 0), tier('Pro', 29)]); },
+    });
+
+    expect(stats.estimate.withinBudget).toBe(false);
+    expect(calls).toBe(0);
+    expect(stats.considered).toBe(0);
+
+    const row = db.prepare('SELECT verdict FROM candidates WHERE url = ?').get('https://acme.test/pricing') as { verdict: string };
+    expect(row.verdict).toBe('pass');
+  });
+
+  it('the per-attempt check stops mid-run at the ceiling, leaving the unaffordable candidate untouched', async () => {
+    insertPassCandidate('https://acme.test/a', 'Acme A');
+    insertPassCandidate('https://acme.test/b', 'Acme B');
+    const tiersA = [tier('Free', 0), tier('Pro', 29)];
+    let callCount = 0;
+
+    // $1.50/attempt, $2.00 budget: candidate A's two attempts cost $3.00
+    // total (checked only BEFORE each attempt, so A completes), leaving
+    // nothing for candidate B's first attempt.
+    const stats = await verifyCandidates(db, { budgetUsd: 2.0 }, {
+      env: ENABLED,
+      fetcher: async (url: string) => ok(url.endsWith('/a') ? LINEAR : NOTION),
+      extractor: async () => { callCount += 1; return extractOk(tiersA, 'high', 1_500_000); },
+    });
+
+    expect(callCount).toBe(2); // only candidate A's two attempts ran
+    expect(stats.admitted).toBe(1);
+    expect(stats.skipped).toBe(1);
+
+    const rowA = db.prepare('SELECT verdict FROM candidates WHERE url = ?').get('https://acme.test/a') as { verdict: string };
+    const rowB = db.prepare('SELECT verdict FROM candidates WHERE url = ?').get('https://acme.test/b') as { verdict: string };
+    expect(rowA.verdict).toBe('admit');
+    expect(rowB.verdict).toBe('pass'); // untouched — a future budgeted run retries both attempts fresh
   });
 });

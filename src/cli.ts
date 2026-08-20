@@ -63,10 +63,12 @@ program
   .option('--all', 'screen every unscreened candidate in src/config/candidates.public.ts')
   .option('--limit <n>', 'screen at most n candidates this run', v => Number(v))
   .option('--emit-config', 'print TypeScript competitor entries for every pass/admit verdict and exit')
-  .option('--verify', 'run one real extraction against every pass verdict, admitting or rejecting it')
-  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean; verify?: boolean }) => {
+  .option('--verify', 'run two real extractions against every pass verdict, admitting only on reproducible agreement')
+  .option('--budget <usd>', 'one-time spend ceiling for --verify (default 3.00)', v => Number(v))
+  .action(async (options: { url: string[]; all?: boolean; limit?: number; emitConfig?: boolean; verify?: boolean; budget?: number }) => {
     const { qualifyCandidates, verifyCandidates, emitConfig } = await import('./workflow/qualify.js');
     const db = openDb(dbPath());
+    const usd = (micros: number) => `$${(micros / 1e6).toFixed(2)}`;
 
     if (options.emitConfig) {
       console.log(emitConfig(db));
@@ -75,8 +77,24 @@ program
     }
 
     if (options.verify) {
-      const stats = await verifyCandidates(db, { limit: options.limit });
-      console.log(`Verified ${stats.considered}: ${stats.admitted} admit, ${stats.rejected} reject, ${stats.skipped} skipped.`);
+      const stats = await verifyCandidates(db, { limit: options.limit, budgetUsd: options.budget });
+      console.log(
+        `Estimate: ${stats.estimate.pending} pending x 2 attempts x ${usd(stats.estimate.meanCostMicros)} = ` +
+        `${usd(stats.estimate.estimateMicros)} against a ${usd(stats.estimate.budgetMicros)} budget.`,
+      );
+      if (!stats.estimate.withinBudget) {
+        console.log(
+          `\nRefusing to start: the pool would cost more than the budget allows.\n` +
+          `Re-run with a higher --budget or a smaller --limit.`,
+        );
+        db.close();
+        return;
+      }
+      console.log(
+        `Verified ${stats.considered}: ${stats.admitted} admit, ${stats.rejected} reject, ` +
+        `${stats.cached} cached, ${stats.skipped} skipped. ` +
+        `Actual spend: ${usd(stats.actualMicros)} (estimated ${usd(stats.estimate.estimateMicros)}).`,
+      );
       db.close();
       return;
     }
