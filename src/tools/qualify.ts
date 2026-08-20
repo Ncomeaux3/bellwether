@@ -103,38 +103,59 @@ function countOccurrences(haystack: string, needle: string): number {
  * through to null. Rare plus short is meaningless; the missing criterion is
  * SIGNIFICANCE. Selection order below is deliberate: significance first,
  * rarity second — reversing it is how "GB" won.
+ *
+ * Fix round 9 live evidence: round 8 only considered a plan name if it had
+ * ALSO been detected as a heading in the normalized text first — so a plan
+ * name present in the raw body but missed by the heading scan (an
+ * attribute, a construct HEADING_ADJACENT_TO_PRICE doesn't match) was
+ * invisible to it. GitHub, Netlify, and Clerk all had abundant plan names in
+ * their raw bodies (GitHub: Enterprise 33x, Professional 1x, Business 2x,
+ * Premium 22x, Standard 2x) that never surfaced because of this. Step 1 now
+ * scans the raw body directly for every name in PLAN_NAMES, independent of
+ * heading detection, and — among the ones present — prefers the FEWEST
+ * occurrences: GitHub's Professional(1x) is a far better canary than
+ * Enterprise(33x), equally significant and rare enough that losing it is a
+ * real signal, not noise. This is the rule fix rounds 7-8 were reaching for:
+ * significant AND rare — a plan name, chosen for scarcity.
  */
 const PLAN_NAMES = [
   'Enterprise', 'Business', 'Professional', 'Team', 'Starter', 'Growth',
   'Scale', 'Premium', 'Standard', 'Individual', 'Organization', 'Developer',
   'Hobby', 'Solo', 'Basic', 'Plus', 'Pro',
 ];
-const PLAN_NAME_SET = new Set(PLAN_NAMES.map(n => n.toLowerCase()));
 
 /** A fragment shorter than this ("GB", "From") is meaningless as a canary even when rare. */
 const MIN_CANARY_LENGTH = 8;
 
 /**
- * 1. A recognized plan/tier name (longest match wins — less likely
- *    incidental) — a page that stops containing "Enterprise" or
- *    "Professional" has genuinely been rebuilt.
+ * 1. Every PLAN_NAMES entry that occurs at least once in the raw body,
+ *    scanned directly (not filtered through heading detection — see fix
+ *    round 9 above). Among those present, the fewest occurrences wins
+ *    (rarer = a more meaningful signal when it disappears); ties break to
+ *    the longer name (less likely incidental).
  * 2. Otherwise the round-7 rare-heading rule (prefer occurring 1-2 times in
  *    the raw body; fall back to a more common one only if nothing rare
- *    qualifies), restricted to candidates at least MIN_CANARY_LENGTH long.
+ *    qualifies), restricted to detected headings at least MIN_CANARY_LENGTH
+ *    long.
  * 3. Otherwise null — and null must stay a LOUD result: callers report it
  *    by name (never silently substitute a default, and never emit `''`,
  *    which is a canary that always passes and is worse than no canary).
  */
 function pickCanary(headings: string[], rawHtml: string): string | null {
+  const plansPresent = PLAN_NAMES
+    .map(text => ({ text, count: countOccurrences(rawHtml, text) }))
+    .filter(({ count }) => count >= 1);
+
+  if (plansPresent.length > 0) {
+    return plansPresent.reduce((best, c) =>
+      c.count < best.count || (c.count === best.count && c.text.length > best.text.length) ? c : best
+    ).text;
+  }
+
   const candidates = headings
     .filter(h => !/\d/.test(h))
     .map(text => ({ text, count: countOccurrences(rawHtml, text) }))
     .filter(({ count }) => count >= 1); // must actually occur in the raw body collect() will check against
-
-  const planNames = candidates.filter(c => PLAN_NAME_SET.has(c.text.toLowerCase()));
-  if (planNames.length > 0) {
-    return planNames.reduce((longest, c) => c.text.length > longest.text.length ? c : longest).text;
-  }
 
   const longEnough = candidates.filter(c => c.text.length >= MIN_CANARY_LENGTH);
   if (longEnough.length === 0) return null;

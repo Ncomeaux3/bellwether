@@ -821,7 +821,10 @@ describe('scoreCandidate — fix round 7: a proposed canary must be verified aga
     // <h2>Business</h2><span>Monthly</span><span>Annual</span> flattens to the
     // single normalized-text token "BusinessMonthlyAnnual" (no whitespace
     // between the source elements) — a string that can never occur in the
-    // raw HTML, where the tags still sit between the words.
+    // raw HTML, where the tags still sit between the words. "Business" alone
+    // still legitimately occurs in the raw HTML (fix round 9's step 1 scans
+    // the raw body directly for recognized plan names, independent of
+    // heading detection) and is correctly recovered as the canary instead.
     const html =
       '<html><body><main>' +
       '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
@@ -830,8 +833,7 @@ describe('scoreCandidate — fix round 7: a proposed canary must be verified aga
 
     const result = scoreCandidate(html);
     expect(result.proposedCanary).not.toBe('BusinessMonthlyAnnual');
-    // Nothing else qualifies in this fixture either — see the null test below.
-    expect(result.proposedCanary).toBeNull();
+    expect(result.proposedCanary).toBe('Business');
   });
 
   it('a heading present in both the normalized text and the raw HTML is proposed', () => {
@@ -866,11 +868,11 @@ describe('scoreCandidate — fix round 7: a proposed canary must be verified aga
     expect(result.proposedCanary).toBe('Signature');
   });
 
-  it('is null when nothing qualifies (every candidate heading is a raw-HTML-unmatchable merge)', () => {
+  it('is null when nothing qualifies (every candidate heading is a raw-HTML-unmatchable merge, and neither tag word is a plan name)', () => {
     const html =
       '<html><body><main>' +
-      '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
-      '<div class="pricing-tier"><h2>Team</h2><span>Yearly</span><p>$199/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Velocity</h2><span>Monthly</span><p>$99/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Momentum</h2><span>Annual</span><p>$199/mo</p></div>' +
       '</main></body></html>';
 
     const result = scoreCandidate(html);
@@ -965,18 +967,17 @@ describe('scoreCandidate — fix round 8: significance before rarity in canary s
     expect(result.proposedCanary).not.toBe('');
   });
 
-  it('the round-7 raw-body validation still holds: a heading split by tags in the raw HTML is still rejected', () => {
+  it('the round-7 raw-body validation still holds: a tag-split heading fragment is still rejected (the plan name itself is separately recovered)', () => {
     const html =
       '<html><body><main>' +
       '<div class="pricing-tier"><h2>Business</h2><span>Monthly</span><span>Annual</span><p>$99/mo</p></div>' +
       '</main></body></html>';
 
     const result = scoreCandidate(html);
-    expect(result.proposedCanary).not.toBe('BusinessMonthlyAnnual');
-    expect(result.proposedCanary).toBeNull(); // "Business" alone (a plan name) is never captured — the merge ate it
+    expect(result.proposedCanary).not.toBe('BusinessMonthlyAnnual'); // the merged fragment is never proposed
+    expect(result.proposedCanary).toBe('Business'); // fix round 9: the plan name itself is found via a direct raw-body scan
   });
 });
-
 describe('emitConfig — fix round 8: refuses to emit an entry with no verified canary', () => {
   it('skips a candidate with no canary, reports it by name, and never emits an empty canaryString', () => {
     insertAdmitCandidate('https://acme.test/a', 'Enterprise', 'HasCanary');
@@ -989,5 +990,61 @@ describe('emitConfig — fix round 8: refuses to emit an entry with no verified 
     expect(config).not.toContain('nocanary');       // the null-canary candidate's entry was never emitted
     expect(config).not.toContain("canaryString: ''"); // and never as an empty string either
     expect(noCanary).toEqual(['NoCanary']);
+  });
+});
+
+describe('scoreCandidate — fix round 9: search the raw body directly for plan names, prefer the rarest', () => {
+  it('a raw body containing Enterprise 30 times and Professional once proposes Professional', () => {
+    const filler = Array.from({ length: 30 }, () => '<li>Enterprise</li>').join('');
+    const html = `<html><body>${filler}<main><p>Professional support included.</p><p>$49/mo</p></main></body></html>`;
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBe('Professional');
+  });
+
+  it('a plan name present in the raw body but never detected as a heading is still proposed (the round-9 regression)', () => {
+    // "Enterprise" lives only inside an attribute value. node-html-parser's
+    // .text getter never includes attribute values (see normalize.ts's own
+    // note on this), so this string can never reach the normalized text or
+    // be detected as a heading — round 8's heading-first approach would
+    // have missed it entirely. Round 9 scans the raw HTML directly.
+    const html =
+      '<html><body><main>' +
+      '<div data-plan="Enterprise" class="pricing-info"><p>Plans start at $9/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.tierHeadings).toBe(0); // confirms it was genuinely never a detected heading
+    expect(result.proposedCanary).toBe('Enterprise');
+  });
+
+  it('ties on occurrence count break to the longer plan name', () => {
+    const html = '<html><body><main><p>Team Team</p><p>Growth Growth</p></main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBe('Growth'); // both occur twice; "Growth" (6) beats "Team" (4)
+  });
+
+  it('a body with no plan name still falls through to the rare-heading rule', () => {
+    const html =
+      '<html><body><main>' +
+      '<div class="pricing-tier"><h2>Signature</h2><p>$49/mo</p></div>' +
+      '<div class="pricing-tier"><h2>Elevate</h2><p>$19/mo</p></div>' +
+      '</main></body></html>';
+
+    const result = scoreCandidate(html);
+    expect(result.proposedCanary).toBe('Signature');
+  });
+
+  it('never proposes an empty string, across every selection path', () => {
+    const fixtures = [
+      `<html><body>${Array.from({ length: 30 }, () => '<li>Enterprise</li>').join('')}<main><p>Professional. $49/mo</p></main></body></html>`,
+      '<html><body><main><div data-plan="Enterprise"><p>$9/mo</p></div></main></body></html>',
+      '<html><body><main><h2>Signature</h2><p>$49/mo</p><h2>Elevate</h2><p>$19/mo</p></main></body></html>',
+      '<html><body><main><h2>GB</h2><p>$9/mo</p></main></body></html>', // too short, no plan name
+    ];
+    for (const html of fixtures) {
+      expect(scoreCandidate(html).proposedCanary).not.toBe('');
+    }
   });
 });
