@@ -80,7 +80,8 @@ describe('buildMechanics — filter funnel', () => {
   it('derives the dedup rate exactly from a fixture with a known number of repeat snapshots', () => {
     // 5 successful snapshots: 2 byte-identical repeats (#2 of h1, #5 of h3),
     // 3 content-bearing (#1 h1/n1, #3 h2/n1 — same normalized state as #1
-    // despite different raw bytes, #4 h3/n2 — a genuinely distinct state).
+    // despite different raw bytes, #4 h3/n2 — a genuinely distinct state,
+    // never extracted).
     insertSnapshot({ observedAt: '2026-08-01T00:00:00.000Z', rawContent: 'A', rawHash: 'h1', normalizedHash: 'n1' });
     insertSnapshot({ observedAt: '2026-08-02T00:00:00.000Z', rawContent: null, rawHash: 'h1', normalizedHash: 'n1' });
     insertSnapshot({ observedAt: '2026-08-03T00:00:00.000Z', rawContent: 'B', rawHash: 'h2', normalizedHash: 'n1' });
@@ -94,36 +95,40 @@ describe('buildMechanics — filter funnel', () => {
     const m = buildMechanics(db, NOW);
 
     expect(m.filter.total_snapshots).toBe(5);
-    expect(m.filter.byte_identical_repeats).toBe(2);
-    expect(m.filter.distinct_normalized_states).toBe(2);
     expect(m.filter.extractions_performed).toBe(1);
-    expect(m.filter.attempted_and_rejected_states).toBe(0);
-    expect(m.filter.attempted_and_rejected_snapshots).toBe(0);
     expect(m.filter.llm_calls_avoided).toBe(4);
     expect(m.filter.llm_calls_avoided_pct).toBe(80);
 
-    // Arithmetic must reconcile exactly against the candidate pool: nothing
-    // was rejected in this fixture, so avoided + performed still spans it.
-    expect(m.filter.llm_calls_avoided + m.filter.extractions_performed).toBe(m.filter.total_snapshots);
-    expect(m.filter.gates).toHaveLength(4);
-    // Only the first three gates (dedup) count toward "avoided" — the fourth
-    // (attempted and rejected) is spend, never folded into that sum.
-    const avoidedGateTotal = m.filter.gates.slice(0, 3).reduce((sum, g) => sum + g.eliminated, 0);
-    expect(avoidedGateTotal).toBe(m.filter.llm_calls_avoided);
-    expect(m.filter.gates[3]!.eliminated).toBe(0);
-    for (const gate of m.filter.gates) expect(gate.eliminated).toBeGreaterThanOrEqual(0);
+    // Fix round 2: the five categories are a true partition — they must sum
+    // to total_snapshots exactly, and the running "remaining" column must
+    // reach zero. If either failed, the model would be wrong and this page
+    // would have no business publishing a number.
+    expect(m.filter.gates).toHaveLength(5);
+    expect(m.filter.gates.reduce((sum, g) => sum + g.eliminated, 0)).toBe(m.filter.total_snapshots);
+    expect(m.filter.gates.at(-1)!.remaining).toBe(0);
+    for (const g of m.filter.gates) expect(g.eliminated).toBeGreaterThanOrEqual(0);
+
+    const byName = Object.fromEntries(m.filter.gates.map(g => [g.name, g.eliminated]));
+    expect(byName['Repeat fetch, byte-identical']).toBe(2);
+    expect(byName['Repeat page state, already extracted']).toBe(1); // row #3
+    expect(byName['Short-circuited before any request']).toBe(1);   // row #4, never yet due
+    expect(byName['Called and succeeded']).toBe(1);                 // row #1 (or #3 — one call, either way)
+    expect(byName['Called and rejected']).toBe(0);
+
+    // Only categories 1-3 are genuine savings.
+    expect(byName['Repeat fetch, byte-identical']! + byName['Repeat page state, already extracted']! + byName['Short-circuited before any request']!)
+      .toBe(m.filter.llm_calls_avoided);
   });
 
-  it('fix round 1: a real call that was rejected is spend, not an avoided call, and a pre-call refusal still is', () => {
-    // n-ok: extracted successfully.
+  it('fix round 2: a repeat of a REJECTED state lands in "called and rejected" every time, never in "already extracted"', () => {
+    // n-ok: extracted successfully — one billed call.
     insertSnapshot({ observedAt: '2026-08-01T00:00:00.000Z', rawContent: 'ok', rawHash: 'h-ok', normalizedHash: 'n-ok' });
     insertExtraction('n-ok', 5000);
 
-    // n-rej: one distinct state, two snapshot rows — each independently ran a
-    // real model call and was permanently rejected (no caching saves a
-    // repeat of a state that never successfully extracted). One row fails
-    // grounding, the other fails schema validation post-call — both are real
-    // spend and must land in the same bucket.
+    // n-rej: one distinct state, two snapshot rows. There is no cache for a
+    // failure, so BOTH rows were independently billed and BOTH must count
+    // as "called and rejected" — not one state collapsed the way a cached
+    // success would be.
     insertSnapshot({
       observedAt: '2026-08-02T00:00:00.000Z', rawContent: 'rej1', rawHash: 'h-rej1', normalizedHash: 'n-rej',
       error: 'extraction ungrounded: tiers.Pro.monthly_price_usd invented a value not in the page text',
@@ -134,8 +139,8 @@ describe('buildMechanics — filter funnel', () => {
     });
 
     // n-empty: refused BEFORE any request was sent (extract_pricing.ts's
-    // empty-slice guard) — genuinely avoided, must NOT land in the rejected
-    // bucket despite sharing the 'extraction invalid:' prefix.
+    // empty-slice guard) — genuinely free, must NOT land in "called and
+    // rejected" despite sharing the 'extraction invalid:' prefix.
     insertSnapshot({
       observedAt: '2026-08-04T00:00:00.000Z', rawContent: 'x', rawHash: 'h-empty', normalizedHash: 'n-empty',
       error: 'extraction invalid: normalized slice is empty — the capture carries no extractable text',
@@ -144,21 +149,21 @@ describe('buildMechanics — filter funnel', () => {
     const m = buildMechanics(db, NOW);
 
     expect(m.filter.total_snapshots).toBe(4);
-    expect(m.filter.distinct_normalized_states).toBe(3);
     expect(m.filter.extractions_performed).toBe(1);
-    expect(m.filter.attempted_and_rejected_states).toBe(1);
-    expect(m.filter.attempted_and_rejected_snapshots).toBe(2);
+    expect(m.filter.gates.reduce((sum, g) => sum + g.eliminated, 0)).toBe(m.filter.total_snapshots);
+    expect(m.filter.gates.at(-1)!.remaining).toBe(0);
 
-    // The rejected state must be excluded from the avoided total.
-    expect(m.filter.llm_calls_avoided).toBe(4 - 1 - 1);
+    const rejectedGate = m.filter.gates.find(g => g.name === 'Called and rejected')!;
+    expect(rejectedGate.eliminated).toBe(2); // both n-rej rows, not 1 state
 
-    const rejectedGate = m.filter.gates.find(g => g.name === 'Attempted, permanently rejected')!;
-    expect(rejectedGate.eliminated).toBe(1);
-    expect(rejectedGate.note).toMatch(/2 snapshot rows/);
+    const cacheGate = m.filter.gates.find(g => g.name === 'Repeat page state, already extracted')!;
+    expect(cacheGate.eliminated).toBe(0); // n-rej's repeat did NOT land here
 
-    const cacheGate = m.filter.gates.find(g => g.name === 'Already extracted, or not yet due')!;
-    // n-empty (the pre-call refusal) is the one state left in this gate.
-    expect(cacheGate.eliminated).toBe(1);
+    const shortCircuitGate = m.filter.gates.find(g => g.name === 'Short-circuited before any request')!;
+    expect(shortCircuitGate.eliminated).toBe(1); // n-empty only
+
+    // The rejected rows are excluded from the avoided total.
+    expect(m.filter.llm_calls_avoided).toBe(1); // n-empty only (n-ok was a real call, not avoided)
   });
 
   it('never inflates extractions_performed with a stale row whose snapshot no longer exists', () => {
@@ -169,8 +174,8 @@ describe('buildMechanics — filter funnel', () => {
 
     const m = buildMechanics(db, NOW);
     expect(m.filter.extractions_performed).toBe(1);
-    expect(m.filter.distinct_normalized_states).toBe(1);
     expect(m.filter.llm_calls_avoided).toBeGreaterThanOrEqual(0);
+    expect(m.filter.gates.reduce((sum, g) => sum + g.eliminated, 0)).toBe(m.filter.total_snapshots);
   });
 
   it('omits the percentage rather than dividing by zero when the archive is empty', () => {
@@ -178,9 +183,9 @@ describe('buildMechanics — filter funnel', () => {
     expect(m.filter.total_snapshots).toBe(0);
     expect(m.filter.llm_calls_avoided_pct).toBeUndefined();
     expect('llm_calls_avoided_pct' in m.filter).toBe(false);
+    expect(m.filter.gates.reduce((sum, g) => sum + g.eliminated, 0)).toBe(0);
   });
 });
-
 describe('buildMechanics — coverage', () => {
   it('splits live vs backfilled snapshot counts and spans the archive', () => {
     insertSnapshot({ observedAt: '2026-01-15T00:00:00.000Z', rawContent: 'A', rawHash: 'h1', normalizedHash: 'n1', provenance: 'wayback:20260115000000' });

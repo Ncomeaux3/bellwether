@@ -5,29 +5,29 @@ import { monthlySpendMicros } from '../agents/_client.js';
 import { stateOf, type SourceState, type SourceStateFields } from './export.js';
 
 export interface FilterGate {
-  /** What this gate filters out. */
+  /** This terminal category's name — every snapshot row lands in exactly one. */
   name: string;
-  /** How many candidates this gate removed from the funnel. */
+  /** Rows classified into this category. */
   eliminated: number;
-  /** How many candidates survive to the next gate. */
+  /** Rows not yet classified after this row of the table — 0 after the last one. */
   remaining: number;
   note: string;
 }
 
 export interface FilterFunnel {
   total_snapshots: number;
-  byte_identical_repeats: number;
-  distinct_normalized_states: number;
+  /** Real, billed model calls whose answer was recorded (category 4 below). */
   extractions_performed: number;
-  /** Distinct states a real, paid model call ran against and permanently
-   * rejected (failed grounding or schema validation) — spend, not savings. */
-  attempted_and_rejected_states: number;
-  /** Same population, counted as snapshot rows — each is its own paid call;
-   * nothing here is deduplicated the way a cached success is (fix round 1). */
-  attempted_and_rejected_snapshots: number;
   llm_calls_avoided: number;
   /** Omitted (never 0 or Infinity) when total_snapshots is 0 — R4. */
   llm_calls_avoided_pct?: number;
+  /**
+   * Fix round 2: five mutually exclusive, collectively exhaustive terminal
+   * states — every ok=1 snapshot row lands in exactly one, never two, never
+   * zero. gates[].eliminated sums to total_snapshots exactly (asserted in
+   * tests/mechanics.test.ts) — a page that publishes its own numbers has no
+   * business showing a total that does not add up.
+   */
   gates: FilterGate[];
 }
 
@@ -84,108 +84,116 @@ export function buildMechanics(db: DB, now: Date): MechanicsPayload {
   const generatedAt = now.toISOString();
 
   // ---- Filter hit rates ---------------------------------------------------
-  // The funnel candidate pool is every successful fetch (ok = 1). A failed
-  // fetch never had content to filter, so it never entered the cost-filter
-  // story at all.
+  // Fix round 2: every ok=1 snapshot row is classified into exactly one of
+  // five terminal categories below — a true partition, not a funnel with
+  // gates that quietly double-count or drop rows. This replaces round 1's
+  // fix, which corrected the headline number but left round 1's own
+  // "repeat page state" count still crediting a cache saving to rows that
+  // were, in fact, independently billed (see category 5).
   const totalSnapshots = (db.prepare(
     'SELECT COUNT(*) AS n FROM snapshots WHERE ok = 1'
   ).get() as { n: number }).n;
 
-  // Gate 1: content-addressed dedup at fetch time (collect.ts) — a byte-
-  // identical repeat of a prior fetch is stored with raw_content = NULL and
-  // never reaches extract.ts's candidate query at all.
+  // Category 1 — byte-identical repeat. Content-addressed dedup at fetch
+  // time (collect.ts): a page identical to the last fetch is stored as a
+  // pointer (raw_content = NULL) and never reaches extract.ts's candidate
+  // query at all.
   const byteIdenticalRepeats = (db.prepare(
     'SELECT COUNT(*) AS n FROM snapshots WHERE ok = 1 AND raw_content IS NULL'
   ).get() as { n: number }).n;
-  const snapshotsWithContent = totalSnapshots - byteIdenticalRepeats;
 
-  // Gate 2: normalization (tools/normalize.ts) collapses page noise — two
-  // fetches with different raw bytes (a timestamp, an ad slot) but the same
-  // priced content share a normalized_hash. Counted over content-bearing
-  // snapshots only, so it is exactly gate 1's remainder.
-  const distinctNormalizedStates = (db.prepare(`
-    SELECT COUNT(DISTINCT normalized_hash) AS n FROM snapshots
-    WHERE ok = 1 AND raw_content IS NOT NULL AND normalized_hash IS NOT NULL
-  `).get() as { n: number }).n;
-
-  // Gate 3: the extraction cache (extract.ts's findExtraction check) — a
-  // normalized state already extracted at this prompt version needs no
-  // second LLM call. Bounded to normalized_hash values a snapshot in today's
-  // archive actually carries, so a stale extraction row left behind by a
-  // long-since-superseded snapshot can never inflate this above what gate 2
-  // produced.
-  const extractionsPerformed = (db.prepare(`
-    SELECT COUNT(*) AS n FROM extractions e
-    WHERE e.prompt_version = @promptVersion
-      AND EXISTS (
-        SELECT 1 FROM snapshots s
-        WHERE s.ok = 1 AND s.raw_content IS NOT NULL AND s.normalized_hash = e.normalized_hash
-      )
-  `).get({ promptVersion: EXTRACT_PROMPT_VERSION }) as { n: number }).n;
-
-  // Fix round 1, finding 1: a call that was made and failed also leaves no
-  // extractions row — extract.ts's markUnextractable records `error =
-  // "extraction ${reason}: ${detail}"` on the snapshot and never inserts an
-  // extraction. Gate 3 originally read "no row" as "no call was made", which
-  // overclaims for these. Split by reason (src/agents/extract_pricing.ts):
-  // 'oversized' and the empty-slice 'invalid' are refused BEFORE any request
-  // is sent (genuinely avoided, gate 3's story is correct for them); a
-  // schema-mismatch 'invalid' or an 'ungrounded' only happens AFTER at least
-  // one real call (spend, not savings). The empty-slice detail is a fixed
-  // string (extract_pricing.ts), so excluding it by exact prefix is precise,
-  // not a heuristic.
-  const rejectedFilterSql = `
-    ok = 1 AND raw_content IS NOT NULL AND normalized_hash IS NOT NULL
-    AND (
+  // Category 5 — called and permanently rejected. extract.ts's
+  // markUnextractable records `error = "extraction ${reason}: ${detail}"`
+  // on the snapshot and never inserts an extractions row — the same trace
+  // a call that was never made would leave (round 1's overclaim). There is
+  // no cache for a failure (findExtraction only ever caches a success), so
+  // unlike every other category this one is NOT collapsed by normalized
+  // state: every row here, even a repeat of the same state, was its own
+  // independently billed call, and must be counted as snapshot rows, never
+  // distinct states. Split by reason (src/agents/extract_pricing.ts): a
+  // schema-mismatch 'invalid' and 'ungrounded' only happen AFTER at least
+  // one real request; the empty-slice 'invalid' is refused BEFORE any
+  // request and belongs in category 3 instead. Its detail is a fixed
+  // string, so excluding it by exact prefix is precise, not a heuristic.
+  // error IS NOT NULL is explicit and load-bearing: `error LIKE ...` on a
+  // NULL error evaluates to SQL NULL, not FALSE, and NOT (NULL) is NULL
+  // too — a bare NOT REJECTED_CONDITION would then silently exclude
+  // every untouched row instead of keeping it, understating every category
+  // downstream of this one.
+  const REJECTED_CONDITION = `(
+    error IS NOT NULL AND (
       error LIKE 'extraction ungrounded:%'
       OR (error LIKE 'extraction invalid:%'
           AND error NOT LIKE 'extraction invalid: normalized slice is empty%')
     )
-  `;
-  const attemptedAndRejectedStates = (db.prepare(
-    `SELECT COUNT(DISTINCT normalized_hash) AS n FROM snapshots WHERE ${rejectedFilterSql}`
+  )`;
+  const calledAndRejected = (db.prepare(
+    `SELECT COUNT(*) AS n FROM snapshots WHERE ok = 1 AND raw_content IS NOT NULL AND ${REJECTED_CONDITION}`
   ).get() as { n: number }).n;
-  const attemptedAndRejectedSnapshots = (db.prepare(
-    `SELECT COUNT(*) AS n FROM snapshots WHERE ${rejectedFilterSql}`
-  ).get() as { n: number }).n;
+
+  // Categories 2 and 4 — every remaining content-bearing row either shares
+  // a normalized state with a successful extraction at the current prompt
+  // version (a cache hit: category 2, genuinely free) or IS one of the rows
+  // that state's one real, billed call ran against (category 4). Manual
+  // curation (`error = 'curated: ...'`, a data-quality exclusion from the
+  // published timeline, unrelated to cost) does not change which of these
+  // a row is, so it is deliberately not filtered out here.
+  const extracted = db.prepare(`
+    SELECT COUNT(*) AS rows, COUNT(DISTINCT normalized_hash) AS states
+    FROM snapshots s
+    WHERE s.ok = 1 AND s.raw_content IS NOT NULL AND NOT ${REJECTED_CONDITION}
+      AND EXISTS (
+        SELECT 1 FROM extractions e
+        WHERE e.prompt_version = @promptVersion AND e.normalized_hash = s.normalized_hash
+      )
+  `).get({ promptVersion: EXTRACT_PROMPT_VERSION }) as { rows: number; states: number };
+  const calledAndSucceeded = extracted.states;                    // category 4
+  const repeatAlreadyExtracted = extracted.rows - extracted.states; // category 2
+
+  // Category 3 — short-circuited before any request, or not yet due.
+  // Everything left over once the other four are accounted for: refused
+  // pre-call (token budget exceeded, or no extractable text) or a state
+  // extract.ts has not reached yet. Both spent nothing.
+  const shortCircuitedOrPending =
+    totalSnapshots - byteIdenticalRepeats - calledAndRejected - extracted.rows;
+
+  let remainingAfter = totalSnapshots;
+  const gate = (name: string, eliminated: number, note: string): FilterGate => {
+    remainingAfter -= eliminated;
+    return { name, eliminated, remaining: remainingAfter, note };
+  };
 
   const gates: FilterGate[] = [
-    {
-      name: 'Repeat fetch, byte-identical',
-      eliminated: byteIdenticalRepeats,
-      remaining: snapshotsWithContent,
-      note: 'Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined.',
-    },
-    {
-      name: 'Repeat page state after noise removed',
-      eliminated: snapshotsWithContent - distinctNormalizedStates,
-      remaining: distinctNormalizedStates,
-      note: 'Normalization collapses cosmetic differences (timestamps, ad slots) that changed the bytes but not the priced content.',
-    },
-    {
-      name: 'Already extracted, or not yet due',
-      eliminated: distinctNormalizedStates - extractionsPerformed - attemptedAndRejectedStates,
-      remaining: extractionsPerformed,
-      note: 'A normalized state already on file, or refused before any request was sent (oversized, or no extractable text), needs no fresh model call.',
-    },
-    {
-      name: 'Attempted, permanently rejected',
-      eliminated: attemptedAndRejectedStates,
-      remaining: extractionsPerformed,
-      note: `Spend, not savings: a real model call ran and failed grounding or schema validation, so the state was retired. ` +
-        `${attemptedAndRejectedSnapshots} snapshot row${attemptedAndRejectedSnapshots === 1 ? '' : 's'} across these ` +
-        `${attemptedAndRejectedStates} state${attemptedAndRejectedStates === 1 ? '' : 's'} — none of it is deduplicated the way a cached success is.`,
-    },
+    gate(
+      'Repeat fetch, byte-identical', byteIdenticalRepeats,
+      'Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined.',
+    ),
+    gate(
+      'Repeat page state, already extracted', repeatAlreadyExtracted,
+      "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call.",
+    ),
+    gate(
+      'Short-circuited before any request', shortCircuitedOrPending,
+      'Refused before a request was sent (token budget exceeded, or no extractable text), or not yet due for extraction — zero spend either way.',
+    ),
+    gate(
+      'Called and succeeded', calledAndSucceeded,
+      "A real model call ran and its answer was recorded — the archive's actual, billed extractions.",
+    ),
+    gate(
+      'Called and rejected', calledAndRejected,
+      'A real model call ran and failed grounding or schema validation, so the state was retired. There is no cache for a failure, so every row here — even a repeat of the same state — was its own separate paid call. Spend, not savings.',
+    ),
   ];
 
-  const llmCallsAvoided = totalSnapshots - extractionsPerformed - attemptedAndRejectedStates;
+  // Categories 1-3 are the only genuine savings — 4 and 5 are both real,
+  // billed calls (one recorded, one not). remainingAfter is 0 here by
+  // construction (asserted in tests/mechanics.test.ts): the five categories
+  // partition every row exactly once.
+  const llmCallsAvoided = byteIdenticalRepeats + repeatAlreadyExtracted + shortCircuitedOrPending;
   const filter: FilterFunnel = {
     total_snapshots: totalSnapshots,
-    byte_identical_repeats: byteIdenticalRepeats,
-    distinct_normalized_states: distinctNormalizedStates,
-    extractions_performed: extractionsPerformed,
-    attempted_and_rejected_states: attemptedAndRejectedStates,
-    attempted_and_rejected_snapshots: attemptedAndRejectedSnapshots,
+    extractions_performed: calledAndSucceeded,
     llm_calls_avoided: llmCallsAvoided,
     ...(totalSnapshots > 0
       ? { llm_calls_avoided_pct: Math.round((llmCallsAvoided / totalSnapshots) * 1000) / 10 }

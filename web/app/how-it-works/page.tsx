@@ -58,10 +58,10 @@ export default function HowItWorksPage() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-medium text-ink">The filter</h2>
         <p className="mt-2 max-w-2xl text-ink-secondary">
-          Most of what Bellwether observes never reaches a model call. Three gates run in sequence,
-          each eliminating candidates the one before it left behind — this is what makes the archive
-          affordable to run. A fourth row accounts for real calls that ran and were rejected: spend,
-          not savings, and excluded from the avoided count above.
+          Every observation ends in exactly one of five states below, and the five always sum to
+          the total — nothing is counted twice, nothing is left out. Only the first three are
+          genuine savings; the last two are real, billed model calls (one recorded, one not) and are
+          excluded from the avoided count above.
         </p>
 
         <dl className="mt-6 flex flex-wrap gap-x-10 gap-y-4 font-mono text-sm">
