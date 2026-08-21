@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "license": "CC BY 4.0",
   "schema_version": 1,
   "rows": [
@@ -58,6 +58,34 @@
       "is_enterprise": true,
       "currency": "USD",
       "provenance": "live"
+    },
+    {
+      "competitor": "Buildkite",
+      "tier": "Pro",
+      "first_observed_at": "2025-08-29T11:09:15.000Z",
+      "last_observed_at": "2025-10-11T07:39:52.000Z",
+      "monthly_price_usd": 30,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Buildkite",
+      "tier": "Enterprise",
+      "first_observed_at": "2025-08-29T11:09:15.000Z",
+      "last_observed_at": "2025-10-11T07:39:52.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "currency": "USD",
+      "provenance": "wayback"
     },
     {
       "competitor": "Buildkite",
@@ -201,8 +229,50 @@
     },
     {
       "competitor": "Figma",
+      "tier": "Professional",
+      "first_observed_at": "2025-08-23T16:00:35.000Z",
+      "last_observed_at": "2025-08-23T16:00:35.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Figma",
+      "tier": "Organization",
+      "first_observed_at": "2025-08-23T16:00:35.000Z",
+      "last_observed_at": "2025-08-23T16:00:35.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Figma",
+      "tier": "Enterprise",
+      "first_observed_at": "2025-08-23T16:00:35.000Z",
+      "last_observed_at": "2025-08-23T16:00:35.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Figma",
       "tier": "Starter",
-      "first_observed_at": "2026-04-09T02:32:27.000Z",
+      "first_observed_at": "2025-08-23T16:00:35.000Z",
       "last_observed_at": "2026-08-21T12:02:13.402Z",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
@@ -257,8 +327,22 @@
     },
     {
       "competitor": "Fly.io",
+      "tier": "Compliance Made Easy",
+      "first_observed_at": "2025-08-28T15:30:44.000Z",
+      "last_observed_at": "2026-05-03T00:29:34.000Z",
+      "monthly_price_usd": 99,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Fly.io",
       "tier": "Pay-as-You-Go",
-      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "first_observed_at": "2025-08-28T15:30:44.000Z",
       "last_observed_at": "2026-08-21T12:06:09.099Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -267,12 +351,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Fly.io",
       "tier": "Serious Support",
-      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "first_observed_at": "2025-08-28T15:30:44.000Z",
       "last_observed_at": "2026-08-21T12:06:09.099Z",
       "monthly_price_usd": 29,
       "annual_price_usd": null,
@@ -281,12 +365,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Fly.io",
       "tier": "Pay up Front and Save",
-      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "first_observed_at": "2025-08-28T15:30:44.000Z",
       "last_observed_at": "2026-08-21T12:06:09.099Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -295,12 +379,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Fly.io",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "first_observed_at": "2025-08-28T15:30:44.000Z",
       "last_observed_at": "2026-08-21T12:06:09.099Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -309,12 +393,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Fly.io",
       "tier": "Compliance",
-      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "first_observed_at": "2026-06-12T14:27:07.000Z",
       "last_observed_at": "2026-08-21T12:06:09.099Z",
       "monthly_price_usd": 99,
       "annual_price_usd": null,
@@ -323,12 +407,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitHub",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:04:01.599Z",
+      "first_observed_at": "2025-08-21T03:03:43.000Z",
       "last_observed_at": "2026-08-21T12:04:01.599Z",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
@@ -337,12 +421,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitHub",
       "tier": "Team",
-      "first_observed_at": "2026-08-21T12:04:01.599Z",
+      "first_observed_at": "2025-08-21T03:03:43.000Z",
       "last_observed_at": "2026-08-21T12:04:01.599Z",
       "monthly_price_usd": 4,
       "annual_price_usd": 4,
@@ -351,12 +435,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitHub",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:04:01.599Z",
+      "first_observed_at": "2025-08-21T03:03:43.000Z",
       "last_observed_at": "2026-08-21T12:04:01.599Z",
       "monthly_price_usd": 21,
       "annual_price_usd": 21,
@@ -365,12 +449,40 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitLab",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "first_observed_at": "2025-08-23T14:46:59.000Z",
+      "last_observed_at": "2025-09-01T09:47:23.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": 0,
+      "billing_unit": "per_seat",
+      "included_seats": 5,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "GitLab",
+      "tier": "Ultimate",
+      "first_observed_at": "2025-08-23T14:46:59.000Z",
+      "last_observed_at": "2025-09-01T09:47:23.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "per_seat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "GitLab",
+      "tier": "Free",
+      "first_observed_at": "2026-08-01T16:05:35.000Z",
       "last_observed_at": "2026-08-21T12:04:12.654Z",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
@@ -379,12 +491,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitLab",
       "tier": "Premium",
-      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "first_observed_at": "2025-08-23T14:46:59.000Z",
       "last_observed_at": "2026-08-21T12:04:12.654Z",
       "monthly_price_usd": 29,
       "annual_price_usd": 29,
@@ -393,12 +505,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitLab",
       "tier": "Ultimate",
-      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "first_observed_at": "2026-08-01T16:05:35.000Z",
       "last_observed_at": "2026-08-21T12:04:12.654Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -407,12 +519,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitLab",
       "tier": "GitLab Dedicated",
-      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "first_observed_at": "2025-08-23T14:46:59.000Z",
       "last_observed_at": "2026-08-21T12:04:12.654Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -421,12 +533,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "GitLab",
       "tier": "GitLab Dedicated for Government",
-      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "first_observed_at": "2025-08-23T14:46:59.000Z",
       "last_observed_at": "2026-08-21T12:04:12.654Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -435,12 +547,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Hasura",
       "tier": "DDN Free",
-      "first_observed_at": "2026-08-21T12:04:25.562Z",
+      "first_observed_at": "2026-03-17T05:03:08.000Z",
       "last_observed_at": "2026-08-21T12:04:25.562Z",
       "monthly_price_usd": 0,
       "annual_price_usd": null,
@@ -449,12 +561,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Hasura",
       "tier": "DDN Base",
-      "first_observed_at": "2026-08-21T12:04:25.562Z",
+      "first_observed_at": "2026-03-17T05:03:08.000Z",
       "last_observed_at": "2026-08-21T12:04:25.562Z",
       "monthly_price_usd": 5,
       "annual_price_usd": null,
@@ -463,12 +575,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Hasura",
       "tier": "DDN Advanced",
-      "first_observed_at": "2026-08-21T12:04:25.562Z",
+      "first_observed_at": "2026-03-17T05:03:08.000Z",
       "last_observed_at": "2026-08-21T12:04:25.562Z",
       "monthly_price_usd": 30,
       "annual_price_usd": null,
@@ -477,12 +589,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Hasura",
       "tier": "Private DDN",
-      "first_observed_at": "2026-08-21T12:04:25.562Z",
+      "first_observed_at": "2026-03-17T05:03:08.000Z",
       "last_observed_at": "2026-08-21T12:04:25.562Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -491,12 +603,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Honeycomb",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:06:56.888Z",
+      "first_observed_at": "2026-08-12T02:33:08.000Z",
       "last_observed_at": "2026-08-21T12:06:56.888Z",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
@@ -505,12 +617,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Honeycomb",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:06:56.888Z",
+      "first_observed_at": "2026-08-12T02:33:08.000Z",
       "last_observed_at": "2026-08-21T12:06:56.888Z",
       "monthly_price_usd": 150,
       "annual_price_usd": null,
@@ -519,12 +631,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Honeycomb",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:06:56.888Z",
+      "first_observed_at": "2026-08-12T02:33:08.000Z",
       "last_observed_at": "2026-08-21T12:06:56.888Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -533,7 +645,7 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Linear",
@@ -621,36 +733,36 @@
     },
     {
       "competitor": "Netlify",
-      "tier": "Free",
-      "first_observed_at": "2026-08-21T12:06:20.056Z",
-      "last_observed_at": "2026-08-21T12:06:20.056Z",
-      "monthly_price_usd": 0,
+      "tier": "Pro",
+      "first_observed_at": "2025-08-26T21:29:12.000Z",
+      "last_observed_at": "2025-08-26T21:29:12.000Z",
+      "monthly_price_usd": 19,
       "annual_price_usd": null,
-      "billing_unit": "flat",
-      "included_seats": null,
-      "is_free": true,
-      "is_enterprise": false,
-      "currency": "USD",
-      "provenance": "live"
-    },
-    {
-      "competitor": "Netlify",
-      "tier": "Personal",
-      "first_observed_at": "2026-08-21T12:06:20.056Z",
-      "last_observed_at": "2026-08-21T12:06:20.056Z",
-      "monthly_price_usd": 9,
-      "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "per_seat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Netlify",
+      "tier": "Free & Starter",
+      "first_observed_at": "2025-08-26T21:29:12.000Z",
+      "last_observed_at": "2025-08-26T21:29:12.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": 1,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
     },
     {
       "competitor": "Netlify",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:06:20.056Z",
+      "first_observed_at": "2026-08-04T12:47:39.000Z",
       "last_observed_at": "2026-08-21T12:06:20.056Z",
       "monthly_price_usd": 20,
       "annual_price_usd": null,
@@ -659,21 +771,49 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Netlify",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:06:20.056Z",
+      "first_observed_at": "2025-08-26T21:29:12.000Z",
       "last_observed_at": "2026-08-21T12:06:20.056Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
+    },
+    {
+      "competitor": "Netlify",
+      "tier": "Free",
+      "first_observed_at": "2026-08-04T12:47:39.000Z",
+      "last_observed_at": "2026-08-21T12:06:20.056Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "mixed"
+    },
+    {
+      "competitor": "Netlify",
+      "tier": "Personal",
+      "first_observed_at": "2026-08-04T12:47:39.000Z",
+      "last_observed_at": "2026-08-21T12:06:20.056Z",
+      "monthly_price_usd": 9,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "mixed"
     },
     {
       "competitor": "New Relic",
@@ -790,7 +930,7 @@
     {
       "competitor": "Notion",
       "tier": "Free",
-      "first_observed_at": "2025-09-01T07:52:45.000Z",
+      "first_observed_at": "2025-08-23T14:52:36.000Z",
       "last_observed_at": "2026-08-21T07:00:27.481Z",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
@@ -846,7 +986,7 @@
     {
       "competitor": "Pinecone",
       "tier": "Starter",
-      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-08-02T02:12:13.000Z",
       "last_observed_at": "2026-08-21T12:07:19.148Z",
       "monthly_price_usd": 0,
       "annual_price_usd": null,
@@ -855,12 +995,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Pinecone",
       "tier": "Builder",
-      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-08-02T02:12:13.000Z",
       "last_observed_at": "2026-08-21T12:07:19.148Z",
       "monthly_price_usd": 20,
       "annual_price_usd": null,
@@ -869,12 +1009,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Pinecone",
       "tier": "Standard",
-      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-08-02T02:12:13.000Z",
       "last_observed_at": "2026-08-21T12:07:19.148Z",
       "monthly_price_usd": 50,
       "annual_price_usd": null,
@@ -883,12 +1023,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Pinecone",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-08-02T02:12:13.000Z",
       "last_observed_at": "2026-08-21T12:07:19.148Z",
       "monthly_price_usd": 500,
       "annual_price_usd": null,
@@ -897,12 +1037,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Pinecone",
       "tier": "Bring your own cloud",
-      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-08-02T02:12:13.000Z",
       "last_observed_at": "2026-08-21T12:07:19.148Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -911,12 +1051,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "PlanetScale",
       "tier": "Base Plan - PlanetScale PostgreSQL Single Node",
-      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "first_observed_at": "2026-08-09T05:57:07.000Z",
       "last_observed_at": "2026-08-21T12:04:36.440Z",
       "monthly_price_usd": 5,
       "annual_price_usd": null,
@@ -925,12 +1065,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "PlanetScale",
       "tier": "Base Plan - PlanetScale PostgreSQL High Availability",
-      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "first_observed_at": "2026-08-09T05:57:07.000Z",
       "last_observed_at": "2026-08-21T12:04:36.440Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -939,12 +1079,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "PlanetScale",
       "tier": "Base Plan - PlanetScale PostgreSQL Metal",
-      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "first_observed_at": "2026-08-09T05:57:07.000Z",
       "last_observed_at": "2026-08-21T12:04:36.440Z",
       "monthly_price_usd": 50,
       "annual_price_usd": null,
@@ -953,12 +1093,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "PlanetScale",
       "tier": "Base Plan - Vitess MySQL",
-      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "first_observed_at": "2026-08-09T05:57:07.000Z",
       "last_observed_at": "2026-08-21T12:04:36.440Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -967,12 +1107,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "PlanetScale",
       "tier": "Enterprise Plan",
-      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "first_observed_at": "2026-08-09T05:57:07.000Z",
       "last_observed_at": "2026-08-21T12:04:36.440Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -981,7 +1121,7 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Postman",
@@ -1196,7 +1336,7 @@
     {
       "competitor": "Postmark",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "first_observed_at": "2026-05-18T10:14:43.000Z",
       "last_observed_at": "2026-08-21T12:05:34.900Z",
       "monthly_price_usd": 0,
       "annual_price_usd": null,
@@ -1205,12 +1345,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Postmark",
       "tier": "Basic",
-      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "first_observed_at": "2026-05-18T10:14:43.000Z",
       "last_observed_at": "2026-08-21T12:05:34.900Z",
       "monthly_price_usd": 15,
       "annual_price_usd": null,
@@ -1219,12 +1359,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Postmark",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "first_observed_at": "2026-05-18T10:14:43.000Z",
       "last_observed_at": "2026-08-21T12:05:34.900Z",
       "monthly_price_usd": 16.5,
       "annual_price_usd": null,
@@ -1233,12 +1373,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Postmark",
       "tier": "Platform",
-      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "first_observed_at": "2026-05-18T10:14:43.000Z",
       "last_observed_at": "2026-08-21T12:05:34.900Z",
       "monthly_price_usd": 18,
       "annual_price_usd": null,
@@ -1247,12 +1387,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Postmark",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "first_observed_at": "2026-05-18T10:14:43.000Z",
       "last_observed_at": "2026-08-21T12:05:34.900Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -1261,12 +1401,12 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Redis Cloud",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:04:49.100Z",
+      "first_observed_at": "2026-08-13T18:11:24.000Z",
       "last_observed_at": "2026-08-21T12:04:49.100Z",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
@@ -1275,12 +1415,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Redis Cloud",
       "tier": "Essentials",
-      "first_observed_at": "2026-08-21T12:04:49.100Z",
+      "first_observed_at": "2026-08-13T18:11:24.000Z",
       "last_observed_at": "2026-08-21T12:04:49.100Z",
       "monthly_price_usd": 5,
       "annual_price_usd": null,
@@ -1289,12 +1429,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Redis Cloud",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:04:49.100Z",
+      "first_observed_at": "2026-08-13T18:11:24.000Z",
       "last_observed_at": "2026-08-21T12:04:49.100Z",
       "monthly_price_usd": 200,
       "annual_price_usd": null,
@@ -1303,12 +1443,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Redis Cloud",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:04:49.100Z",
+      "first_observed_at": "2026-08-13T18:11:24.000Z",
       "last_observed_at": "2026-08-21T12:04:49.100Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -1317,7 +1457,567 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Static Sites",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Free",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Starter",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 7,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Standard",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 25,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Pro",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 85,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Pro Plus",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 175,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Pro Max",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 225,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Pro Ultra",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 450,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Web Services Custom",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Free",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Basic-256mb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 6,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Basic-1gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 19,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Basic-4gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 75,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-4gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 55,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-8gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 100,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-16gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 200,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-32gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 400,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-64gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 800,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-128gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 1700,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-192gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 2500,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-256gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 3000,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-384gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 4600,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Pro-512gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 6200,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-16gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 160,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-32gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 350,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-64gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 750,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-128gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 1500,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-256gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 2500,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-384gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 4500,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-512gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 6000,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-768gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 9000,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Postgres Accelerated-1024gb",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 11000,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Key Value Free",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 0,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": true,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Key Value Starter",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 10,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Key Value Standard",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 32,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Key Value Pro",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 135,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Key Value Pro Plus",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 250,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Render Key Value Custom",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "currency": "USD",
+      "provenance": "wayback"
+    },
+    {
+      "competitor": "Render",
+      "tier": "Cron Jobs",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
+      "last_observed_at": "2025-10-04T06:24:44.000Z",
+      "monthly_price_usd": 1,
+      "annual_price_usd": null,
+      "billing_unit": "usage",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "currency": "USD",
+      "provenance": "wayback"
     },
     {
       "competitor": "Render",
@@ -1378,7 +2078,7 @@
     {
       "competitor": "Resend",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:05:46.321Z",
+      "first_observed_at": "2025-08-28T01:29:48.000Z",
       "last_observed_at": "2026-08-21T12:05:46.321Z",
       "monthly_price_usd": 0,
       "annual_price_usd": null,
@@ -1387,12 +2087,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Resend",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:05:46.321Z",
+      "first_observed_at": "2025-08-28T01:29:48.000Z",
       "last_observed_at": "2026-08-21T12:05:46.321Z",
       "monthly_price_usd": 20,
       "annual_price_usd": null,
@@ -1401,12 +2101,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Resend",
       "tier": "Scale",
-      "first_observed_at": "2026-08-21T12:05:46.321Z",
+      "first_observed_at": "2025-08-28T01:29:48.000Z",
       "last_observed_at": "2026-08-21T12:05:46.321Z",
       "monthly_price_usd": 90,
       "annual_price_usd": null,
@@ -1415,12 +2115,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Resend",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:05:46.321Z",
+      "first_observed_at": "2025-08-28T01:29:48.000Z",
       "last_observed_at": "2026-08-21T12:05:46.321Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -1429,7 +2129,7 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Sentry",
@@ -1490,7 +2190,7 @@
     {
       "competitor": "Statsig",
       "tier": "Developer",
-      "first_observed_at": "2026-08-21T12:05:56.671Z",
+      "first_observed_at": "2026-07-22T15:24:25.000Z",
       "last_observed_at": "2026-08-21T12:05:56.671Z",
       "monthly_price_usd": 0,
       "annual_price_usd": null,
@@ -1499,12 +2199,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Statsig",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:05:56.671Z",
+      "first_observed_at": "2026-07-22T15:24:25.000Z",
       "last_observed_at": "2026-08-21T12:05:56.671Z",
       "monthly_price_usd": 150,
       "annual_price_usd": null,
@@ -1513,12 +2213,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Statsig",
       "tier": "Enterprise",
-      "first_observed_at": "2026-08-21T12:05:56.671Z",
+      "first_observed_at": "2026-07-22T15:24:25.000Z",
       "last_observed_at": "2026-08-21T12:05:56.671Z",
       "monthly_price_usd": null,
       "annual_price_usd": null,
@@ -1527,7 +2227,7 @@
       "is_free": false,
       "is_enterprise": true,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Supabase",
@@ -1616,7 +2316,7 @@
     {
       "competitor": "Turso",
       "tier": "Free",
-      "first_observed_at": "2026-08-21T12:05:01.568Z",
+      "first_observed_at": "2025-08-22T07:43:32.000Z",
       "last_observed_at": "2026-08-21T12:05:01.568Z",
       "monthly_price_usd": 0,
       "annual_price_usd": null,
@@ -1625,12 +2325,12 @@
       "is_free": true,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Turso",
       "tier": "Developer",
-      "first_observed_at": "2026-08-21T12:05:01.568Z",
+      "first_observed_at": "2025-08-22T07:43:32.000Z",
       "last_observed_at": "2026-08-21T12:05:01.568Z",
       "monthly_price_usd": 4.99,
       "annual_price_usd": null,
@@ -1639,12 +2339,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Turso",
       "tier": "Scaler",
-      "first_observed_at": "2026-08-21T12:05:01.568Z",
+      "first_observed_at": "2025-08-22T07:43:32.000Z",
       "last_observed_at": "2026-08-21T12:05:01.568Z",
       "monthly_price_usd": 24.92,
       "annual_price_usd": null,
@@ -1653,12 +2353,12 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Turso",
       "tier": "Pro",
-      "first_observed_at": "2026-08-21T12:05:01.568Z",
+      "first_observed_at": "2025-08-22T07:43:32.000Z",
       "last_observed_at": "2026-08-21T12:05:01.568Z",
       "monthly_price_usd": 416.58,
       "annual_price_usd": null,
@@ -1667,7 +2367,7 @@
       "is_free": false,
       "is_enterprise": false,
       "currency": "USD",
-      "provenance": "live"
+      "provenance": "mixed"
     },
     {
       "competitor": "Upstash",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "statsig",
   "name": "Statsig",
   "homepage": "https://statsig.com",
@@ -61,7 +61,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:05:56.671Z",
+  "first_observed_at": "2026-07-22T15:24:25.000Z",
   "last_observed_at": "2026-08-21T12:05:56.671Z",
   "series": [
     {
@@ -69,7 +69,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:56.671Z",
+            "observed_at": "2026-07-22T15:24:25.000Z",
             "price": 0
           }
         ]
@@ -81,7 +81,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:56.671Z",
+            "observed_at": "2026-07-22T15:24:25.000Z",
             "price": 150
           }
         ]
@@ -92,8 +92,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 3,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 3
   }
 }

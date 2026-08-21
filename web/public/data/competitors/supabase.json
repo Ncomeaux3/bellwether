@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "supabase",
   "name": "Supabase",
   "homepage": "https://supabase.com",
@@ -111,9 +111,11 @@
             "price": 0
           },
           {
-            "observed_at": "2025-09-11T22:52:30.000Z",
+            "observed_at": "2025-08-21T19:24:38.000Z",
             "price": 0
-          },
+          }
+        ],
+        [
           {
             "observed_at": "2025-11-05T16:33:22.000Z",
             "price": 0
@@ -193,9 +195,11 @@
             "price": 25
           },
           {
-            "observed_at": "2025-09-11T22:52:30.000Z",
+            "observed_at": "2025-08-21T19:24:38.000Z",
             "price": 25
-          },
+          }
+        ],
+        [
           {
             "observed_at": "2025-11-05T16:33:22.000Z",
             "price": 25
@@ -275,9 +279,11 @@
             "price": 599
           },
           {
-            "observed_at": "2025-09-11T22:52:30.000Z",
+            "observed_at": "2025-08-21T19:24:38.000Z",
             "price": 599
-          },
+          }
+        ],
+        [
           {
             "observed_at": "2025-11-05T16:33:22.000Z",
             "price": 599

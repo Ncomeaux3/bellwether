@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "threshold": 40,
   "changes": [
     {
@@ -11,6 +11,140 @@
       "after": "usage",
       "materiality": 70,
       "observed_at": "2026-08-18T15:01:28.444Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Netlify",
+      "slug": "netlify",
+      "change_type": "tier_added",
+      "json_path": "tiers.Personal",
+      "before": null,
+      "after": {
+        "name": "Personal",
+        "monthly_price_usd": 9,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Everything in Free, plus",
+          "Smart secret detection",
+          "1-day observability",
+          "Priority email support",
+          "1,000 credits / month"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-04T12:47:39.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Netlify",
+      "slug": "netlify",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Free.included_seats",
+      "before": 1,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2026-08-04T12:47:39.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Netlify",
+      "slug": "netlify",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "per_seat",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-04T12:47:39.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Netlify",
+      "slug": "netlify",
+      "change_type": "price_changed",
+      "json_path": "tiers.Pro.monthly_price_usd",
+      "before": 19,
+      "after": 20,
+      "materiality": 85,
+      "observed_at": "2026-08-04T12:47:39.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "flag_changed",
+      "json_path": "tiers.Ultimate.flags",
+      "before": {
+        "is_free": false,
+        "is_enterprise": false
+      },
+      "after": {
+        "is_free": false,
+        "is_enterprise": true
+      },
+      "materiality": 60,
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Free.billing_unit",
+      "before": "per_seat",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Fly.io",
+      "slug": "fly-io",
+      "change_type": "tier_added",
+      "json_path": "tiers.Compliance",
+      "before": null,
+      "after": {
+        "name": "Compliance",
+        "monthly_price_usd": 99,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "HIPAA-compliant workloads",
+          "BAAs to SOC2s"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-06-12T14:27:07.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Fly.io",
+      "slug": "fly-io",
+      "change_type": "tier_removed",
+      "json_path": "tiers.Compliance Made Easy",
+      "before": {
+        "name": "Compliance Made Easy",
+        "monthly_price_usd": 99,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "HIPAA-compliant workloads",
+          "BAAs",
+          "SOC2"
+        ]
+      },
+      "after": null,
+      "materiality": 100,
+      "observed_at": "2026-06-12T14:27:07.000Z",
       "annotation": null
     },
     {
@@ -204,12 +338,8 @@
       },
       "after": null,
       "materiality": 100,
-      "observed_at": "2025-09-01T07:52:45.000Z",
-      "annotation": {
-        "implication": "The Notion AI add-on tier (added in May) was removed four months later.",
-        "so_what": "AI capability was likely folded into other paid plans rather than sold separately; buyers should check if AI is now bundled or gone.",
-        "confidence": "low"
-      }
+      "observed_at": "2025-08-23T14:52:36.000Z",
+      "annotation": null
     },
     {
       "competitor": "Notion",
@@ -219,12 +349,8 @@
       "before": "flat",
       "after": "per_seat",
       "materiality": 70,
-      "observed_at": "2025-09-01T07:52:45.000Z",
-      "annotation": {
-        "implication": "Notion's Free tier switched from flat pricing to per-seat billing.",
-        "so_what": "Free tier cost now scales with team size rather than being a single flat allowance.",
-        "confidence": "medium"
-      }
+      "observed_at": "2025-08-23T14:52:36.000Z",
+      "annotation": null
     },
     {
       "competitor": "Postman",

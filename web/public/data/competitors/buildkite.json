@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "buildkite",
   "name": "Buildkite",
   "homepage": "https://buildkite.com",
@@ -58,7 +58,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:03:36.618Z",
+  "first_observed_at": "2025-08-29T11:09:15.000Z",
   "last_observed_at": "2026-08-21T12:03:36.618Z",
   "series": [
     {
@@ -74,6 +74,18 @@
       "tier_class": "free"
     },
     {
+      "tier": "Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-29T11:09:15.000Z",
+            "price": 30
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
+    {
       "tier": "Pro Plan",
       "segments": [
         [
@@ -83,14 +95,14 @@
           }
         ]
       ],
-      "tier_class": "entry"
+      "tier_class": "enterprise"
     }
   ],
   "markers": [],
   "changes": [],
   "provenance": {
     "live": 3,
-    "wayback": 0,
+    "wayback": 2,
     "mixed": 0
   }
 }

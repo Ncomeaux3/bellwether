@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "pinecone",
   "name": "Pinecone",
   "homepage": "https://www.pinecone.io",
@@ -89,7 +89,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:07:19.148Z",
+  "first_observed_at": "2026-08-02T02:12:13.000Z",
   "last_observed_at": "2026-08-21T12:07:19.148Z",
   "series": [
     {
@@ -97,7 +97,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:07:19.148Z",
+            "observed_at": "2026-08-02T02:12:13.000Z",
             "price": 20
           }
         ]
@@ -109,7 +109,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:07:19.148Z",
+            "observed_at": "2026-08-02T02:12:13.000Z",
             "price": 500
           }
         ]
@@ -121,7 +121,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:07:19.148Z",
+            "observed_at": "2026-08-02T02:12:13.000Z",
             "price": 50
           }
         ]
@@ -133,7 +133,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:07:19.148Z",
+            "observed_at": "2026-08-02T02:12:13.000Z",
             "price": 0
           }
         ]
@@ -144,8 +144,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 5,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 5
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "postmark",
   "name": "Postmark",
   "homepage": "https://postmarkapp.com",
@@ -88,7 +88,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:05:34.900Z",
+  "first_observed_at": "2026-05-18T10:14:43.000Z",
   "last_observed_at": "2026-08-21T12:05:34.900Z",
   "series": [
     {
@@ -96,7 +96,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:34.900Z",
+            "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 15
           }
         ]
@@ -108,7 +108,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:34.900Z",
+            "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 0
           }
         ]
@@ -120,7 +120,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:34.900Z",
+            "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 18
           }
         ]
@@ -132,7 +132,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:34.900Z",
+            "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 16.5
           }
         ]
@@ -143,8 +143,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 5,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 5
   }
 }

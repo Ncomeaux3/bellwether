@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "resend",
   "name": "Resend",
   "homepage": "https://resend.com",
@@ -74,12 +74,18 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:05:46.321Z",
+  "first_observed_at": "2025-08-28T01:29:48.000Z",
   "last_observed_at": "2026-08-21T12:05:46.321Z",
   "series": [
     {
       "tier": "Free",
       "segments": [
+        [
+          {
+            "observed_at": "2025-08-28T01:29:48.000Z",
+            "price": 0
+          }
+        ],
         [
           {
             "observed_at": "2026-08-21T12:05:46.321Z",
@@ -94,6 +100,12 @@
       "segments": [
         [
           {
+            "observed_at": "2025-08-28T01:29:48.000Z",
+            "price": 20
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:05:46.321Z",
             "price": 20
           }
@@ -104,6 +116,12 @@
     {
       "tier": "Scale",
       "segments": [
+        [
+          {
+            "observed_at": "2025-08-28T01:29:48.000Z",
+            "price": 90
+          }
+        ],
         [
           {
             "observed_at": "2026-08-21T12:05:46.321Z",
@@ -117,8 +135,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 4,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 4
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "sentry",
   "name": "Sentry",
   "homepage": "https://sentry.io",
@@ -105,7 +105,7 @@
             "price": 80
           },
           {
-            "observed_at": "2025-09-03T22:10:42.000Z",
+            "observed_at": "2025-08-29T07:21:29.000Z",
             "price": 80
           },
           {
@@ -185,7 +185,7 @@
             "price": 0
           },
           {
-            "observed_at": "2025-09-03T22:10:42.000Z",
+            "observed_at": "2025-08-29T07:21:29.000Z",
             "price": 0
           },
           {
@@ -265,7 +265,7 @@
             "price": 26
           },
           {
-            "observed_at": "2025-09-03T22:10:42.000Z",
+            "observed_at": "2025-08-29T07:21:29.000Z",
             "price": 26
           },
           {

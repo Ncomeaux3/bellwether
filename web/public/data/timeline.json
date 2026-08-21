@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
-  "observation_count": 98,
+  "generated_at": "2026-08-21T13:47:13.551Z",
+  "observation_count": 108,
   "competitors": [
     {
       "slug": "auth0",
@@ -50,7 +50,7 @@
     {
       "slug": "buildkite",
       "name": "Buildkite",
-      "first_observed_at": "2026-08-21T12:03:36.618Z",
+      "first_observed_at": "2025-08-29T11:09:15.000Z",
       "last_observed_at": "2026-08-21T12:03:36.618Z",
       "series": [
         {
@@ -66,6 +66,18 @@
           "tier_class": "free"
         },
         {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-29T11:09:15.000Z",
+                "price": 30
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
           "tier": "Pro Plan",
           "segments": [
             [
@@ -75,7 +87,7 @@
               }
             ]
           ],
-          "tier_class": "entry"
+          "tier_class": "enterprise"
         }
       ],
       "markers": []
@@ -161,7 +173,7 @@
     {
       "slug": "figma",
       "name": "Figma",
-      "first_observed_at": "2026-04-09T02:32:27.000Z",
+      "first_observed_at": "2025-08-23T16:00:35.000Z",
       "last_observed_at": "2026-08-21T12:02:13.402Z",
       "series": [
         {
@@ -223,6 +235,12 @@
           "segments": [
             [
               {
+                "observed_at": "2025-08-23T16:00:35.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
                 "observed_at": "2026-04-09T02:32:27.000Z",
                 "price": 0
               }
@@ -242,7 +260,7 @@
     {
       "slug": "fly-io",
       "name": "Fly.io",
-      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "first_observed_at": "2025-08-28T15:30:44.000Z",
       "last_observed_at": "2026-08-21T12:06:09.099Z",
       "series": [
         {
@@ -250,7 +268,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:09.099Z",
+                "observed_at": "2026-06-12T14:27:07.000Z",
                 "price": 99
               }
             ]
@@ -258,11 +276,29 @@
           "tier_class": "enterprise"
         },
         {
+          "tier": "Compliance Made Easy",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-28T15:30:44.000Z",
+                "price": 99
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
           "tier": "Serious Support",
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:09.099Z",
+                "observed_at": "2025-08-28T15:30:44.000Z",
+                "price": 29
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-06-12T14:27:07.000Z",
                 "price": 29
               }
             ]
@@ -270,17 +306,32 @@
           "tier_class": "entry"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-06-12T14:27:07.000Z",
+          "label": "Compliance Made Easy tier removed"
+        },
+        {
+          "observed_at": "2026-06-12T14:27:07.000Z",
+          "label": "Compliance tier added"
+        }
+      ]
     },
     {
       "slug": "github",
       "name": "GitHub",
-      "first_observed_at": "2026-08-21T12:04:01.599Z",
+      "first_observed_at": "2025-08-21T03:03:43.000Z",
       "last_observed_at": "2026-08-21T12:04:01.599Z",
       "series": [
         {
           "tier": "Enterprise",
           "segments": [
+            [
+              {
+                "observed_at": "2025-08-21T03:03:43.000Z",
+                "price": 21
+              }
+            ],
             [
               {
                 "observed_at": "2026-08-21T12:04:01.599Z",
@@ -295,6 +346,12 @@
           "segments": [
             [
               {
+                "observed_at": "2025-08-21T03:03:43.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
                 "observed_at": "2026-08-21T12:04:01.599Z",
                 "price": 0
               }
@@ -305,6 +362,12 @@
         {
           "tier": "Team",
           "segments": [
+            [
+              {
+                "observed_at": "2025-08-21T03:03:43.000Z",
+                "price": 4
+              }
+            ],
             [
               {
                 "observed_at": "2026-08-21T12:04:01.599Z",
@@ -320,7 +383,7 @@
     {
       "slug": "gitlab",
       "name": "GitLab",
-      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "first_observed_at": "2025-08-23T14:46:59.000Z",
       "last_observed_at": "2026-08-21T12:04:12.654Z",
       "series": [
         {
@@ -328,7 +391,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:12.654Z",
+                "observed_at": "2025-08-23T14:46:59.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-01T16:05:35.000Z",
                 "price": 0
               }
             ]
@@ -340,7 +409,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:12.654Z",
+                "observed_at": "2025-08-23T14:46:59.000Z",
+                "price": 29
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-01T16:05:35.000Z",
                 "price": 29
               }
             ]
@@ -348,12 +423,21 @@
           "tier_class": "entry"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-08-01T16:05:35.000Z",
+          "label": "Free billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-01T16:05:35.000Z",
+          "label": "Ultimate flag changed"
+        }
+      ]
     },
     {
       "slug": "hasura",
       "name": "Hasura",
-      "first_observed_at": "2026-08-21T12:04:25.562Z",
+      "first_observed_at": "2026-03-17T05:03:08.000Z",
       "last_observed_at": "2026-08-21T12:04:25.562Z",
       "series": [
         {
@@ -361,7 +445,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:25.562Z",
+                "observed_at": "2026-03-17T05:03:08.000Z",
                 "price": 30
               }
             ]
@@ -373,7 +457,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:25.562Z",
+                "observed_at": "2026-03-17T05:03:08.000Z",
                 "price": 5
               }
             ]
@@ -385,7 +469,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:25.562Z",
+                "observed_at": "2026-03-17T05:03:08.000Z",
                 "price": 0
               }
             ]
@@ -398,7 +482,7 @@
     {
       "slug": "honeycomb",
       "name": "Honeycomb",
-      "first_observed_at": "2026-08-21T12:06:56.888Z",
+      "first_observed_at": "2026-08-12T02:33:08.000Z",
       "last_observed_at": "2026-08-21T12:06:56.888Z",
       "series": [
         {
@@ -406,7 +490,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:56.888Z",
+                "observed_at": "2026-08-12T02:33:08.000Z",
                 "price": 0
               }
             ]
@@ -418,7 +502,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:56.888Z",
+                "observed_at": "2026-08-12T02:33:08.000Z",
                 "price": 150
               }
             ]
@@ -641,7 +725,7 @@
     {
       "slug": "netlify",
       "name": "Netlify",
-      "first_observed_at": "2026-08-21T12:06:20.056Z",
+      "first_observed_at": "2025-08-26T21:29:12.000Z",
       "last_observed_at": "2026-08-21T12:06:20.056Z",
       "series": [
         {
@@ -649,7 +733,19 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:20.056Z",
+                "observed_at": "2026-08-04T12:47:39.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Free & Starter",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T21:29:12.000Z",
                 "price": 0
               }
             ]
@@ -661,7 +757,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:20.056Z",
+                "observed_at": "2026-08-04T12:47:39.000Z",
                 "price": 9
               }
             ]
@@ -673,7 +769,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:06:20.056Z",
+                "observed_at": "2025-08-26T21:29:12.000Z",
+                "price": 19
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-04T12:47:39.000Z",
                 "price": 20
               }
             ]
@@ -681,7 +783,24 @@
           "tier_class": "enterprise"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Pro $19 → $20"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Personal tier added"
+        }
+      ]
     },
     {
       "slug": "new-relic",
@@ -763,6 +882,10 @@
                 "price": 20
               },
               {
+                "observed_at": "2025-08-23T14:52:36.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2025-09-01T07:52:45.000Z",
                 "price": 20
               },
@@ -824,6 +947,10 @@
               },
               {
                 "observed_at": "2025-07-01T13:46:53.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2025-08-23T14:52:36.000Z",
                 "price": 0
               },
               {
@@ -921,6 +1048,10 @@
                 "price": 10
               },
               {
+                "observed_at": "2025-08-23T14:52:36.000Z",
+                "price": 10
+              },
+              {
                 "observed_at": "2025-09-01T07:52:45.000Z",
                 "price": 10
               },
@@ -967,11 +1098,11 @@
           "label": "Business $15 → $20"
         },
         {
-          "observed_at": "2025-09-01T07:52:45.000Z",
+          "observed_at": "2025-08-23T14:52:36.000Z",
           "label": "Free billing unit changed"
         },
         {
-          "observed_at": "2025-09-01T07:52:45.000Z",
+          "observed_at": "2025-08-23T14:52:36.000Z",
           "label": "Notion AI tier removed"
         }
       ]
@@ -979,7 +1110,7 @@
     {
       "slug": "pinecone",
       "name": "Pinecone",
-      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-08-02T02:12:13.000Z",
       "last_observed_at": "2026-08-21T12:07:19.148Z",
       "series": [
         {
@@ -987,7 +1118,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:07:19.148Z",
+                "observed_at": "2026-08-02T02:12:13.000Z",
                 "price": 20
               }
             ]
@@ -999,7 +1130,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:07:19.148Z",
+                "observed_at": "2026-08-02T02:12:13.000Z",
                 "price": 500
               }
             ]
@@ -1011,7 +1142,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:07:19.148Z",
+                "observed_at": "2026-08-02T02:12:13.000Z",
                 "price": 50
               }
             ]
@@ -1023,7 +1154,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:07:19.148Z",
+                "observed_at": "2026-08-02T02:12:13.000Z",
                 "price": 0
               }
             ]
@@ -1036,7 +1167,7 @@
     {
       "slug": "planetscale",
       "name": "PlanetScale",
-      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "first_observed_at": "2026-08-09T05:57:07.000Z",
       "last_observed_at": "2026-08-21T12:04:36.440Z",
       "series": [
         {
@@ -1044,7 +1175,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:36.440Z",
+                "observed_at": "2026-08-09T05:57:07.000Z",
                 "price": 50
               }
             ]
@@ -1056,7 +1187,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:36.440Z",
+                "observed_at": "2026-08-09T05:57:07.000Z",
                 "price": 5
               }
             ]
@@ -1379,7 +1510,7 @@
     {
       "slug": "postmark",
       "name": "Postmark",
-      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "first_observed_at": "2026-05-18T10:14:43.000Z",
       "last_observed_at": "2026-08-21T12:05:34.900Z",
       "series": [
         {
@@ -1387,7 +1518,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:34.900Z",
+                "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 15
               }
             ]
@@ -1399,7 +1530,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:34.900Z",
+                "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 0
               }
             ]
@@ -1411,7 +1542,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:34.900Z",
+                "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 18
               }
             ]
@@ -1423,7 +1554,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:34.900Z",
+                "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 16.5
               }
             ]
@@ -1436,7 +1567,7 @@
     {
       "slug": "redis-cloud",
       "name": "Redis Cloud",
-      "first_observed_at": "2026-08-21T12:04:49.100Z",
+      "first_observed_at": "2026-08-13T18:11:24.000Z",
       "last_observed_at": "2026-08-21T12:04:49.100Z",
       "series": [
         {
@@ -1444,7 +1575,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:49.100Z",
+                "observed_at": "2026-08-13T18:11:24.000Z",
                 "price": 5
               }
             ]
@@ -1456,7 +1587,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:49.100Z",
+                "observed_at": "2026-08-13T18:11:24.000Z",
                 "price": 0
               }
             ]
@@ -1468,7 +1599,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:04:49.100Z",
+                "observed_at": "2026-08-13T18:11:24.000Z",
                 "price": 200
               }
             ]
@@ -1481,9 +1612,21 @@
     {
       "slug": "render",
       "name": "Render",
-      "first_observed_at": "2026-08-21T12:06:32.338Z",
+      "first_observed_at": "2025-08-26T13:34:23.000Z",
       "last_observed_at": "2026-08-21T12:06:32.338Z",
       "series": [
+        {
+          "tier": "Cron Jobs",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 1
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
         {
           "tier": "Hobby",
           "segments": [
@@ -1506,7 +1649,343 @@
               }
             ]
           ],
-          "tier_class": "entry"
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Key Value Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Render Key Value Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 135
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Key Value Pro Plus",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 250
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Key Value Standard",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 32
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Key Value Starter",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 10
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-1024gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 11000
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Render Postgres Accelerated-128gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 1500
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-16gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 160
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-256gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 2500
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-32gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 350
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-384gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 4500
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-512gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 6000
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-64gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 750
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Accelerated-768gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 9000
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Basic-1gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 19
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Basic-256mb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 6
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Basic-4gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 75
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Render Postgres Pro-128gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 1700
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-16gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 200
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-192gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 2500
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-256gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 3000
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-32gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 400
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-384gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 4600
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-4gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 55
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-512gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 6200
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-64gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 800
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Render Postgres Pro-8gb",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 100
+              }
+            ]
+          ],
+          "tier_class": "mid"
         },
         {
           "tier": "Scale",
@@ -1518,7 +1997,115 @@
               }
             ]
           ],
-          "tier_class": "enterprise"
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Static Sites",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Web Services",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Web Services Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Web Services Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 85
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Web Services Pro Max",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 225
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Web Services Pro Plus",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 175
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Web Services Pro Ultra",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 450
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Web Services Standard",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 25
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Web Services Starter",
+          "segments": [
+            [
+              {
+                "observed_at": "2025-08-26T13:34:23.000Z",
+                "price": 7
+              }
+            ]
+          ],
+          "tier_class": "mid"
         }
       ],
       "markers": []
@@ -1526,12 +2113,18 @@
     {
       "slug": "resend",
       "name": "Resend",
-      "first_observed_at": "2026-08-21T12:05:46.321Z",
+      "first_observed_at": "2025-08-28T01:29:48.000Z",
       "last_observed_at": "2026-08-21T12:05:46.321Z",
       "series": [
         {
           "tier": "Free",
           "segments": [
+            [
+              {
+                "observed_at": "2025-08-28T01:29:48.000Z",
+                "price": 0
+              }
+            ],
             [
               {
                 "observed_at": "2026-08-21T12:05:46.321Z",
@@ -1546,6 +2139,12 @@
           "segments": [
             [
               {
+                "observed_at": "2025-08-28T01:29:48.000Z",
+                "price": 20
+              }
+            ],
+            [
+              {
                 "observed_at": "2026-08-21T12:05:46.321Z",
                 "price": 20
               }
@@ -1556,6 +2155,12 @@
         {
           "tier": "Scale",
           "segments": [
+            [
+              {
+                "observed_at": "2025-08-28T01:29:48.000Z",
+                "price": 90
+              }
+            ],
             [
               {
                 "observed_at": "2026-08-21T12:05:46.321Z",
@@ -1607,7 +2212,7 @@
                 "price": 80
               },
               {
-                "observed_at": "2025-09-03T22:10:42.000Z",
+                "observed_at": "2025-08-29T07:21:29.000Z",
                 "price": 80
               },
               {
@@ -1687,7 +2292,7 @@
                 "price": 0
               },
               {
-                "observed_at": "2025-09-03T22:10:42.000Z",
+                "observed_at": "2025-08-29T07:21:29.000Z",
                 "price": 0
               },
               {
@@ -1767,7 +2372,7 @@
                 "price": 26
               },
               {
-                "observed_at": "2025-09-03T22:10:42.000Z",
+                "observed_at": "2025-08-29T07:21:29.000Z",
                 "price": 26
               },
               {
@@ -1820,7 +2425,7 @@
     {
       "slug": "statsig",
       "name": "Statsig",
-      "first_observed_at": "2026-08-21T12:05:56.671Z",
+      "first_observed_at": "2026-07-22T15:24:25.000Z",
       "last_observed_at": "2026-08-21T12:05:56.671Z",
       "series": [
         {
@@ -1828,7 +2433,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:56.671Z",
+                "observed_at": "2026-07-22T15:24:25.000Z",
                 "price": 0
               }
             ]
@@ -1840,7 +2445,7 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:56.671Z",
+                "observed_at": "2026-07-22T15:24:25.000Z",
                 "price": 150
               }
             ]
@@ -1889,9 +2494,11 @@
                 "price": 0
               },
               {
-                "observed_at": "2025-09-11T22:52:30.000Z",
+                "observed_at": "2025-08-21T19:24:38.000Z",
                 "price": 0
-              },
+              }
+            ],
+            [
               {
                 "observed_at": "2025-11-05T16:33:22.000Z",
                 "price": 0
@@ -1971,9 +2578,11 @@
                 "price": 25
               },
               {
-                "observed_at": "2025-09-11T22:52:30.000Z",
+                "observed_at": "2025-08-21T19:24:38.000Z",
                 "price": 25
-              },
+              }
+            ],
+            [
               {
                 "observed_at": "2025-11-05T16:33:22.000Z",
                 "price": 25
@@ -2053,9 +2662,11 @@
                 "price": 599
               },
               {
-                "observed_at": "2025-09-11T22:52:30.000Z",
+                "observed_at": "2025-08-21T19:24:38.000Z",
                 "price": 599
-              },
+              }
+            ],
+            [
               {
                 "observed_at": "2025-11-05T16:33:22.000Z",
                 "price": 599
@@ -2113,7 +2724,7 @@
     {
       "slug": "turso",
       "name": "Turso",
-      "first_observed_at": "2026-08-21T12:05:01.568Z",
+      "first_observed_at": "2025-08-22T07:43:32.000Z",
       "last_observed_at": "2026-08-21T12:05:01.568Z",
       "series": [
         {
@@ -2121,7 +2732,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:01.568Z",
+                "observed_at": "2025-08-22T07:43:32.000Z",
+                "price": 4.99
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 4.99
               }
             ]
@@ -2133,7 +2750,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:01.568Z",
+                "observed_at": "2025-08-22T07:43:32.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 0
               }
             ]
@@ -2145,7 +2768,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:01.568Z",
+                "observed_at": "2025-08-22T07:43:32.000Z",
+                "price": 416.58
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 416.58
               }
             ]
@@ -2157,7 +2786,13 @@
           "segments": [
             [
               {
-                "observed_at": "2026-08-21T12:05:01.568Z",
+                "observed_at": "2025-08-22T07:43:32.000Z",
+                "price": 24.92
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 24.92
               }
             ]

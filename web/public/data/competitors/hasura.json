@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "hasura",
   "name": "Hasura",
   "homepage": "https://hasura.io",
@@ -73,7 +73,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:04:25.562Z",
+  "first_observed_at": "2026-03-17T05:03:08.000Z",
   "last_observed_at": "2026-08-21T12:04:25.562Z",
   "series": [
     {
@@ -81,7 +81,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:25.562Z",
+            "observed_at": "2026-03-17T05:03:08.000Z",
             "price": 30
           }
         ]
@@ -93,7 +93,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:25.562Z",
+            "observed_at": "2026-03-17T05:03:08.000Z",
             "price": 5
           }
         ]
@@ -105,7 +105,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:25.562Z",
+            "observed_at": "2026-03-17T05:03:08.000Z",
             "price": 0
           }
         ]
@@ -116,8 +116,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 4,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 4
   }
 }

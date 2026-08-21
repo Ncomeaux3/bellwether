@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "gitlab",
   "name": "GitLab",
   "homepage": "https://about.gitlab.com",
@@ -88,7 +88,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:04:12.654Z",
+  "first_observed_at": "2025-08-23T14:46:59.000Z",
   "last_observed_at": "2026-08-21T12:04:12.654Z",
   "series": [
     {
@@ -96,7 +96,13 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:12.654Z",
+            "observed_at": "2025-08-23T14:46:59.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-08-01T16:05:35.000Z",
             "price": 0
           }
         ]
@@ -108,7 +114,13 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:12.654Z",
+            "observed_at": "2025-08-23T14:46:59.000Z",
+            "price": 29
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-08-01T16:05:35.000Z",
             "price": 29
           }
         ]
@@ -116,11 +128,49 @@
       "tier_class": "entry"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "label": "Free billing unit changed"
+    },
+    {
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "label": "Ultimate flag changed"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "flag_changed",
+      "json_path": "tiers.Ultimate.flags",
+      "before": {
+        "is_free": false,
+        "is_enterprise": false
+      },
+      "after": {
+        "is_free": false,
+        "is_enterprise": true
+      },
+      "materiality": 60,
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Free.billing_unit",
+      "before": "per_seat",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
-    "live": 5,
-    "wayback": 0,
-    "mixed": 0
+    "live": 0,
+    "wayback": 2,
+    "mixed": 5
   }
 }

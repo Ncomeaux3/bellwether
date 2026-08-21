@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "turso",
   "name": "Turso",
   "homepage": "https://turso.tech",
@@ -74,7 +74,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:05:01.568Z",
+  "first_observed_at": "2025-08-22T07:43:32.000Z",
   "last_observed_at": "2026-08-21T12:05:01.568Z",
   "series": [
     {
@@ -82,7 +82,13 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:01.568Z",
+            "observed_at": "2025-08-22T07:43:32.000Z",
+            "price": 4.99
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-07-20T00:59:22.000Z",
             "price": 4.99
           }
         ]
@@ -94,7 +100,13 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:01.568Z",
+            "observed_at": "2025-08-22T07:43:32.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-07-20T00:59:22.000Z",
             "price": 0
           }
         ]
@@ -106,7 +118,13 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:01.568Z",
+            "observed_at": "2025-08-22T07:43:32.000Z",
+            "price": 416.58
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-07-20T00:59:22.000Z",
             "price": 416.58
           }
         ]
@@ -118,7 +136,13 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:05:01.568Z",
+            "observed_at": "2025-08-22T07:43:32.000Z",
+            "price": 24.92
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-07-20T00:59:22.000Z",
             "price": 24.92
           }
         ]
@@ -129,8 +153,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 4,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 4
   }
 }

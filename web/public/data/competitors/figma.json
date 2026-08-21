@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "figma",
   "name": "Figma",
   "homepage": "https://www.figma.com",
@@ -71,7 +71,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-04-09T02:32:27.000Z",
+  "first_observed_at": "2025-08-23T16:00:35.000Z",
   "last_observed_at": "2026-08-21T12:02:13.402Z",
   "series": [
     {
@@ -133,6 +133,12 @@
       "segments": [
         [
           {
+            "observed_at": "2025-08-23T16:00:35.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
             "observed_at": "2026-04-09T02:32:27.000Z",
             "price": 0
           }
@@ -151,7 +157,7 @@
   "changes": [],
   "provenance": {
     "live": 0,
-    "wayback": 0,
+    "wayback": 3,
     "mixed": 4
   }
 }

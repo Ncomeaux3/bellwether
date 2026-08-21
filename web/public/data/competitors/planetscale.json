@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "planetscale",
   "name": "PlanetScale",
   "homepage": "https://planetscale.com",
@@ -82,7 +82,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:04:36.440Z",
+  "first_observed_at": "2026-08-09T05:57:07.000Z",
   "last_observed_at": "2026-08-21T12:04:36.440Z",
   "series": [
     {
@@ -90,7 +90,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:36.440Z",
+            "observed_at": "2026-08-09T05:57:07.000Z",
             "price": 50
           }
         ]
@@ -102,7 +102,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-21T12:04:36.440Z",
+            "observed_at": "2026-08-09T05:57:07.000Z",
             "price": 5
           }
         ]
@@ -113,8 +113,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 5,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 5
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "notion",
   "name": "Notion",
   "homepage": "https://www.notion.com",
@@ -110,6 +110,10 @@
             "price": 20
           },
           {
+            "observed_at": "2025-08-23T14:52:36.000Z",
+            "price": 20
+          },
+          {
             "observed_at": "2025-09-01T07:52:45.000Z",
             "price": 20
           },
@@ -171,6 +175,10 @@
           },
           {
             "observed_at": "2025-07-01T13:46:53.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-08-23T14:52:36.000Z",
             "price": 0
           },
           {
@@ -268,6 +276,10 @@
             "price": 10
           },
           {
+            "observed_at": "2025-08-23T14:52:36.000Z",
+            "price": 10
+          },
+          {
             "observed_at": "2025-09-01T07:52:45.000Z",
             "price": 10
           },
@@ -314,11 +326,11 @@
       "label": "Business $15 → $20"
     },
     {
-      "observed_at": "2025-09-01T07:52:45.000Z",
+      "observed_at": "2025-08-23T14:52:36.000Z",
       "label": "Free billing unit changed"
     },
     {
-      "observed_at": "2025-09-01T07:52:45.000Z",
+      "observed_at": "2025-08-23T14:52:36.000Z",
       "label": "Notion AI tier removed"
     }
   ],
@@ -346,12 +358,8 @@
       },
       "after": null,
       "materiality": 100,
-      "observed_at": "2025-09-01T07:52:45.000Z",
-      "annotation": {
-        "implication": "The Notion AI add-on tier (added in May) was removed four months later.",
-        "so_what": "AI capability was likely folded into other paid plans rather than sold separately; buyers should check if AI is now bundled or gone.",
-        "confidence": "low"
-      }
+      "observed_at": "2025-08-23T14:52:36.000Z",
+      "annotation": null
     },
     {
       "competitor": "Notion",
@@ -361,12 +369,8 @@
       "before": "flat",
       "after": "per_seat",
       "materiality": 70,
-      "observed_at": "2025-09-01T07:52:45.000Z",
-      "annotation": {
-        "implication": "Notion's Free tier switched from flat pricing to per-seat billing.",
-        "so_what": "Free tier cost now scales with team size rather than being a single flat allowance.",
-        "confidence": "medium"
-      }
+      "observed_at": "2025-08-23T14:52:36.000Z",
+      "annotation": null
     },
     {
       "competitor": "Notion",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-21T12:10:11.481Z",
+  "generated_at": "2026-08-21T13:47:13.551Z",
   "slug": "render",
   "name": "Render",
   "homepage": "https://render.com",
@@ -76,9 +76,21 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:06:32.338Z",
+  "first_observed_at": "2025-08-26T13:34:23.000Z",
   "last_observed_at": "2026-08-21T12:06:32.338Z",
   "series": [
+    {
+      "tier": "Cron Jobs",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 1
+          }
+        ]
+      ],
+      "tier_class": "entry"
+    },
     {
       "tier": "Hobby",
       "segments": [
@@ -101,7 +113,343 @@
           }
         ]
       ],
-      "tier_class": "entry"
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Key Value Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Render Key Value Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 135
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Key Value Pro Plus",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 250
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Key Value Standard",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 32
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Key Value Starter",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 10
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-1024gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 11000
+          }
+        ]
+      ],
+      "tier_class": "enterprise"
+    },
+    {
+      "tier": "Render Postgres Accelerated-128gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 1500
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-16gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 160
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-256gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 2500
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-32gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 350
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-384gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 4500
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-512gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 6000
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-64gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 750
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Accelerated-768gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 9000
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Basic-1gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 19
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Basic-256mb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 6
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Basic-4gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 75
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Render Postgres Pro-128gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 1700
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-16gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 200
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-192gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 2500
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-256gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 3000
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-32gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 400
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-384gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 4600
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-4gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 55
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-512gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 6200
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-64gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 800
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Render Postgres Pro-8gb",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 100
+          }
+        ]
+      ],
+      "tier_class": "mid"
     },
     {
       "tier": "Scale",
@@ -113,14 +461,122 @@
           }
         ]
       ],
-      "tier_class": "enterprise"
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Static Sites",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Web Services",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Web Services Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Web Services Pro",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 85
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Web Services Pro Max",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 225
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Web Services Pro Plus",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 175
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Web Services Pro Ultra",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 450
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Web Services Standard",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 25
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Web Services Starter",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-08-26T13:34:23.000Z",
+            "price": 7
+          }
+        ]
+      ],
+      "tier_class": "mid"
     }
   ],
   "markers": [],
   "changes": [],
   "provenance": {
     "live": 4,
-    "wayback": 0,
+    "wayback": 40,
     "mixed": 0
   }
 }
