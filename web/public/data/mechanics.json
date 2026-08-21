@@ -317,5 +317,264 @@
     "month_micros": 304139,
     "backfill_micros": 880685,
     "per_confirmed_change_micros": 91140
+  },
+  "screening": {
+    "total_screened": 51,
+    "admitted": 21,
+    "rejected": 27,
+    "failed": 3,
+    "errored": 0,
+    "pass_rate_pct": 41.2,
+    "admitted_by_category": [
+      {
+        "category": "auth",
+        "count": 2,
+        "companies": [
+          "Auth0",
+          "Clerk"
+        ]
+      },
+      {
+        "category": "ci-and-build",
+        "count": 4,
+        "companies": [
+          "Buildkite",
+          "Depot",
+          "GitHub",
+          "GitLab"
+        ]
+      },
+      {
+        "category": "data-tooling",
+        "count": 1,
+        "companies": [
+          "Hasura"
+        ]
+      },
+      {
+        "category": "databases",
+        "count": 4,
+        "companies": [
+          "PlanetScale",
+          "Redis Cloud",
+          "Turso",
+          "Upstash"
+        ]
+      },
+      {
+        "category": "email",
+        "count": 2,
+        "companies": [
+          "Postmark",
+          "Resend"
+        ]
+      },
+      {
+        "category": "feature-flags",
+        "count": 1,
+        "companies": [
+          "Statsig"
+        ]
+      },
+      {
+        "category": "hosting",
+        "count": 4,
+        "companies": [
+          "Fly.io",
+          "Netlify",
+          "Render",
+          "Vercel"
+        ]
+      },
+      {
+        "category": "observability",
+        "count": 2,
+        "companies": [
+          "Honeycomb",
+          "New Relic"
+        ]
+      },
+      {
+        "category": "vector-stores",
+        "count": 1,
+        "companies": [
+          "Pinecone"
+        ]
+      }
+    ],
+    "rejected_by_kind": [
+      {
+        "kind": "Prices per product or unit, not per plan",
+        "note": "Two attempts agreed, but on a count above a plausible plan table — a usage or per-product price list, not tiers.",
+        "count": 0,
+        "companies": []
+      },
+      {
+        "kind": "Extraction failed grounding or schema",
+        "note": "At least one attempt returned a price the page text did not contain, or output that failed schema validation.",
+        "count": 16,
+        "companies": [
+          {
+            "name": "CircleCI",
+            "category": "ci-and-build",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.IP ranges per GB of data used.unit_price_usd = 0.27 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.credits per minute (Linux Medium).unit_price_usd = 0.06 does not appear in the page text; usage_rates.credits per GB (IP ranges).unit_price_usd = 0.27 does not appear in the page text"
+          },
+          {
+            "name": "Cloudflare",
+            "category": "edge-and-cdn",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.vCPU-second.unit_price_usd = 0.00002 does not appear in the page text; usage_rates.GB-second.unit_price_usd = 7e-8 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.CPU.unit_price_usd = 0.00002 does not appear in the page text; usage_rates.Disk.unit_price_usd = 7e-8 does not appear in the page text"
+          },
+          {
+            "name": "Convex",
+            "category": "databases",
+            "reason": "attempt 1 failed: ungrounded: tiers.Free.monthly_price_usd = 0 does not appear in the page text, attempt 2 failed: ungrounded: tiers.Free.monthly_price_usd = 0 does not appear in the page text"
+          },
+          {
+            "name": "Doppler",
+            "category": "secrets",
+            "reason": "attempt 1 failed: ungrounded: tiers.Developer.monthly_price_usd = 0 does not appear in the page text, attempt 2 failed: ungrounded: tiers.Developer.monthly_price_usd = 0 does not appear in the page text"
+          },
+          {
+            "name": "Fastly",
+            "category": "edge-and-cdn",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.Image Requests (10 Million - 50 Million, per 10,000).unit_price_usd = 0.15 does not appear in the page text; usage_rates.Image Requests (50 Million - 150 Million, per 10,000).unit_price_usd = 0.07 does not appear in the page text; usage_rates.AI Accelerator (20,000 - 2 Million, per 1,000 requests).unit_price_usd = 0.4 does not appear in the page text; usage_rates.Compute Requests (500 Million - 5 Billion, per 1 Million).unit_price_usd = 0.49 does not appear in the page text; usage_rates.Compute Requests (5 Billion - 20 Billion, per 1 Million).unit_price_usd = 0.48 does not appear in the page text; usage_rates.Compute Requests (50 Billion - 125 Billion, per 1 Million).unit_price_usd = 0.4 does not appear in the page text; usage_rates.Compute vCPU Milliseconds (5 Billion - 50 Billion, per 1 Million).unit_price_usd = 0.0495 does not appear in the page text; usage_rates.Compute vCPU Milliseconds (50 Billion - 200 Billion, per 1 Million).unit_price_usd = 0.048 does not appear in the page text; usage_rates.Compute vCPU Milliseconds (200 Billion - 500 Billion, per 1 Million).unit_price_usd = 0.045 does not appear in the page text; usage_rates.Compute vCPU Milliseconds (500 Billion - 1 Trillion, per 1 Million).unit_price_usd = 0.04 does not appear in the page text; usage_rates.Fanout Messages (500 Million - 3 Billion, per 1 Million).unit_price_usd = 0.8 does not appear in the page text; usage_rates.DDoS Protection (500 Million - 3 Billion, per 10,000 requests).unit_price_usd = 0.1 does not appear in the page text; usage_rates.DDoS Protection (3 Billion - 15 Billion, per 10,000 requests).unit_price_usd = 0.04 does not appear in the page text; usage_rates.Key Value Store Class A Operations (100,000 - 1 Million, per 100,000).unit_price_usd = 0.65 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.Image Requests per 10,000 (10 Million - 50 Million).unit_price_usd = 0.15 does not appear in the page text; usage_rates.Image Requests per 10,000 (50 Million - 150 Million).unit_price_usd = 0.07 does not appear in the page text; usage_rates.AI Accelerator per 1,000 Requests (20,000 - 2 Million).unit_price_usd = 0.4 does not appear in the page text; usage_rates.Compute Requests per 1 Million (500 Million - 5 Billion).unit_price_usd = 0.49 does not appear in the page text; usage_rates.Compute Requests per 1 Million (5 Billion - 20 Billion).unit_price_usd = 0.48 does not appear in the page text; usage_rates.Compute Requests per 1 Million (50 Billion - 125 Billion).unit_price_usd = 0.4 does not appear in the page text; usage_rates.Compute vCPU Milliseconds per 1 Million (5 Billion - 50 Billion).unit_price_usd = 0.0495 does not appear in the page text; usage_rates.Compute vCPU Milliseconds per 1 Million (50 Billion - 200 Billion).unit_price_usd = 0.048 does not appear in the page text; usage_rates.Compute vCPU Milliseconds per 1 Million (200 Billion - 500 Billion).unit_price_usd = 0.045 does not appear in the page text; usage_rates.Compute vCPU Milliseconds per 1 Million (500 Billion - 1 Trillion).unit_price_usd = 0.04 does not appear in the page text; usage_rates.Fanout Messages per 1 Million (500 Million - 3 Billion).unit_price_usd = 0.8 does not appear in the page text; usage_rates.DDoS Protection Requests per 10,000 (500 Million - 3 Billion).unit_price_usd = 0.1 does not appear in the page text; usage_rates.DDoS Protection Requests per 10,000 (3 Billion - 15 Billion).unit_price_usd = 0.04 does not appear in the page text; usage_rates.Key Value Store Class A Operations per 100,000 (100,000 - 1 Million).unit_price_usd = 0.65 does not appear in the page text"
+          },
+          {
+            "name": "Grafana Cloud",
+            "category": "observability",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.per GB Process (Logs).unit_price_usd = 0.05 does not appear in the page text; usage_rates.per GB Write (Logs).unit_price_usd = 0.4 does not appear in the page text; usage_rates.per GB Retain (Logs).unit_price_usd = 0.1 does not appear in the page text; usage_rates.per GB Process (Traces).unit_price_usd = 0.05 does not appear in the page text; usage_rates.per GB Write (Traces).unit_price_usd = 0.4 does not appear in the page text; usage_rates.per GB Retain (Traces).unit_price_usd = 0.1 does not appear in the page text; usage_rates.per GB Process (Profiles).unit_price_usd = 0.05 does not appear in the page text; usage_rates.per GB Write (Profiles).unit_price_usd = 0.4 does not appear in the page text; usage_rates.per GB Retain (Profiles).unit_price_usd = 0.1 does not appear in the page text; usage_rates.per host hour (Kubernetes Monitoring).unit_price_usd = 0.01 does not appear in the page text; usage_rates.per 1k sessions (Frontend Observability).unit_price_usd = 0.75 does not appear in the page text; usage_rates.per host hour (Database Observability).unit_price_usd = 0.07 does not appear in the page text; usage_rates.per virtual user hour (Performance Testing k6).unit_price_usd = 0.15 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.GB Process (Logs).unit_price_usd = 0.05 does not appear in the page text; usage_rates.GB Write (Logs).unit_price_usd = 0.4 does not appear in the page text; usage_rates.GB Retain (Logs).unit_price_usd = 0.1 does not appear in the page text; usage_rates.GB Process (Traces).unit_price_usd = 0.05 does not appear in the page text; usage_rates.GB Write (Traces).unit_price_usd = 0.4 does not appear in the page text; usage_rates.GB Retain (Traces).unit_price_usd = 0.1 does not appear in the page text; usage_rates.GB Process (Profiles).unit_price_usd = 0.05 does not appear in the page text; usage_rates.GB Write (Profiles).unit_price_usd = 0.4 does not appear in the page text; usage_rates.GB Retain (Profiles).unit_price_usd = 0.1 does not appear in the page text; usage_rates.per host hour (Kubernetes Monitoring).unit_price_usd = 0.01 does not appear in the page text; usage_rates.1k sessions (Frontend Observability).unit_price_usd = 0.75 does not appear in the page text; usage_rates.per host hour (Database Observability).unit_price_usd = 0.07 does not appear in the page text; usage_rates.virtual user hour (Performance Testing k6).unit_price_usd = 0.15 does not appear in the page text"
+          },
+          {
+            "name": "Heroku",
+            "category": "hosting",
+            "reason": "attempt 1 failed: invalid: Failed to parse structured output: Error: Failed to parse structured output as JSON: Expected ',' or '}' after property value in JSON at position 14730 (line 1 column 14731), attempt 2 failed: invalid: Failed to parse structured output: Error: Failed to parse structured output as JSON: Expected ',' or '}' after property value in JSON at position 14608 (line 1 column 14609)"
+          },
+          {
+            "name": "Infisical",
+            "category": "secrets",
+            "reason": "attempt 1 failed: ungrounded: tiers.Pro.annual_price_usd = 264 does not appear in the page text; tiers.Advanced.annual_price_usd = 528 does not appear in the page text, attempt 2 failed: ungrounded: tiers.Pro.annual_price_usd = 240 does not appear in the page text; tiers.Advanced.annual_price_usd = 480 does not appear in the page text"
+          },
+          {
+            "name": "Lemon Squeezy",
+            "category": "payments",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.per transaction.unit_price_usd = 0.05 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.per transaction (ecommerce).unit_price_usd = 0.05 does not appear in the page text"
+          },
+          {
+            "name": "MongoDB Atlas",
+            "category": "databases",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.Atlas Data Lake - Virginia, US (us-east-1) - Data Storage per GB per Month.unit_price_usd = 0.048 does not appear in the page text; usage_rates.Atlas Data Lake - Oregon, US (us-west-2) - Data Storage per GB per Month.unit_price_usd = 0.048 does not appear in the page text; usage_rates.Atlas Data Lake - Ireland (eu-west-1) - Data Storage per GB per Month.unit_price_usd = 0.048 does not appear in the page text; usage_rates.Atlas Data Lake - London, England (eu-west-2) - Data Storage per GB per Month.unit_price_usd = 0.0501 does not appear in the page text; usage_rates.Atlas Data Lake - Frankfurt, Germany (eu-central-1) - Data Storage per GB per Month.unit_price_usd = 0.0511 does not appear in the page text; usage_rates.Atlas Data Lake - Mumbai, India (ap-south-1) - Data Storage per GB per Month.unit_price_usd = 0.0522 does not appear in the page text; usage_rates.Atlas Data Lake - Singapore (ap-southeast-1) - Data Storage per GB per Month.unit_price_usd = 0.0522 does not appear in the page text; usage_rates.Atlas Data Lake - Sydney, Australia (ap-southeast-2) - Data Storage per GB per Month.unit_price_usd = 0.0522 does not appear in the page text, attempt 2 failed: ungrounded: tiers.Dedicated (M20).monthly_price_usd = 144 does not appear in the page text; tiers.Dedicated (M30).monthly_price_usd = 388.8 does not appear in the page text; usage_rates.Atlas Data Lake Storage per GB per month (Virginia, Oregon, Ireland).unit_price_usd = 0.048 does not appear in the page text; usage_rates.Atlas Data Lake Storage per GB per month (London).unit_price_usd = 0.0501 does not appear in the page text; usage_rates.Atlas Data Lake Storage per GB per month (Frankfurt).unit_price_usd = 0.0511 does not appear in the page text; usage_rates.Atlas Data Lake Storage per GB per month (Mumbai, Singapore).unit_price_usd = 0.0522 does not appear in the page text; usage_rates.Atlas Data Lake Storage per GB per month (Sydney).unit_price_usd = 0.0522 does not appear in the page text"
+          },
+          {
+            "name": "Prisma",
+            "category": "data-tooling",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.Prisma Accelerate operations (Starter plan, per 1,000).unit_price_usd = 0.018 does not appear in the page text; usage_rates.Prisma Accelerate operations (Business plan, per 1,000).unit_price_usd = 0.006 does not appear in the page text; usage_rates.Prisma Accelerate cache tag invalidations (Business plan, per 1,000).unit_price_usd = 0.006 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.Prisma Accelerate operations (Starter).unit_price_usd = 0.018 does not appear in the page text; usage_rates.Prisma Accelerate operations (Business).unit_price_usd = 0.006 does not appear in the page text; usage_rates.Prisma Accelerate cache tag invalidations (Business).unit_price_usd = 0.006 does not appear in the page text"
+          },
+          {
+            "name": "Railway",
+            "category": "hosting",
+            "reason": "attempt 1 failed: ungrounded: tiers.Free Trial.monthly_price_usd = 0 does not appear in the page text; usage_rates.Volumes.unit_price_usd = 6e-8 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.Volumes.unit_price_usd = 6e-8 does not appear in the page text; tiers.Free Trial.is_free = true but monthly_price_usd = null (free tiers must price at 0)"
+          },
+          {
+            "name": "Stripe",
+            "category": "payments",
+            "reason": "attempt 1 extracted 0 priced tiers, attempt 2 failed: ungrounded: usage_rates.Manually entered card transaction.unit_price_usd = 0.005 does not appear in the page text; usage_rates.International card transaction.unit_price_usd = 0.015 does not appear in the page text; usage_rates.Currency conversion fee.unit_price_usd = 0.01 does not appear in the page text; usage_rates.Klarna transaction.unit_price_usd = 0.0599 does not appear in the page text; usage_rates.ACH Direct Debit transaction.unit_price_usd = 0.008 does not appear in the page text; usage_rates.Stablecoin transaction.unit_price_usd = 0.015 does not appear in the page text; usage_rates.Stablecoin promotional rate.unit_price_usd = 0.008 does not appear in the page text; usage_rates.Payment optimization for custom pricing.unit_price_usd = 0.002 does not appear in the page text; usage_rates.Currency conversion fee minimum.unit_price_usd = 0.02 does not appear in the page text; usage_rates.Instant Payouts.unit_price_usd = 0.015 does not appear in the page text; usage_rates.Currency conversion in balance.unit_price_usd = 0.005 does not appear in the page text; usage_rates.Rate locking.unit_price_usd = 0.0007 does not appear in the page text; usage_rates.In-person international card transaction.unit_price_usd = 0.015 does not appear in the page text; usage_rates.Platform revenue share fee.unit_price_usd = 0.0025 does not appear in the page text; usage_rates.Debit card payout percentage.unit_price_usd = 0.0075 does not appear in the page text; usage_rates.Cross-border payout fee percentage.unit_price_usd = 0.0025 does not appear in the page text; usage_rates.FX fee percentage.unit_price_usd = 0.005 does not appear in the page text; usage_rates.Cross-border transaction.unit_price_usd = 0.01 does not appear in the page text; usage_rates.Billing volume fee.unit_price_usd = 0.007 does not appear in the page text; usage_rates.Invoice generation.unit_price_usd = 0.004 does not appear in the page text; usage_rates.Managed Payments transaction.unit_price_usd = 0.035 does not appear in the page text; usage_rates.Invoicing per paid invoice.unit_price_usd = 0.004 does not appear in the page text"
+          },
+          {
+            "name": "Stytch",
+            "category": "auth",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.Monthly Active Users (beyond 10,000 included).unit_price_usd = 0.02 does not appear in the page text; usage_rates.Device fingerprints (beyond 10,000 included).unit_price_usd = 0.005 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.Additional monthly active users.unit_price_usd = 0.02 does not appear in the page text; usage_rates.Device fingerprints.unit_price_usd = 0.005 does not appear in the page text"
+          },
+          {
+            "name": "Weaviate",
+            "category": "vector-stores",
+            "reason": "attempt 1 failed: ungrounded: usage_rates.SNOWFLAKE ARCTIC-EMBED-M-V2.0.unit_price_usd = 0.04 does not appear in the page text, attempt 2 failed: ungrounded: usage_rates.SNOWFLAKE ARCTIC-EMBED-M-V2.0.unit_price_usd = 0.04 does not appear in the page text"
+          },
+          {
+            "name": "Xata",
+            "category": "databases",
+            "reason": "attempt 1 failed: ungrounded: tiers.Open Source.monthly_price_usd = 0 does not appear in the page text, attempt 2 failed: ungrounded: tiers.Open Source.is_free = true but monthly_price_usd = null (free tiers must price at 0)"
+          }
+        ]
+      },
+      {
+        "kind": "Attempts did not reproduce a plausible tier count",
+        "note": "Both attempts completed, but disagreed on the tier count, or agreed on a count too low to admit.",
+        "count": 11,
+        "companies": [
+          {
+            "name": "Algolia",
+            "category": "search",
+            "reason": "attempt 1 extracted 1 priced tier, attempt 2 extracted 1 priced tier"
+          },
+          {
+            "name": "Better Stack",
+            "category": "observability",
+            "reason": "attempt 1 extracted 3 priced tiers, attempt 2 extracted 12 priced tiers"
+          },
+          {
+            "name": "Bunny",
+            "category": "edge-and-cdn",
+            "reason": "attempt 1 extracted 0 priced tiers, attempt 2 extracted 0 priced tiers"
+          },
+          {
+            "name": "Datadog",
+            "category": "observability",
+            "reason": "attempt 1 extracted 27 priced tiers, attempt 2 extracted 26 priced tiers"
+          },
+          {
+            "name": "LaunchDarkly",
+            "category": "feature-flags",
+            "reason": "attempt 1 extracted 1 priced tier, attempt 2 extracted 1 priced tier"
+          },
+          {
+            "name": "Meilisearch",
+            "category": "search",
+            "reason": "attempt 1 extracted 4 priced tiers, attempt 2 extracted 4 priced tiers (low confidence)"
+          },
+          {
+            "name": "Neon",
+            "category": "databases",
+            "reason": "attempt 1 extracted 1 priced tier, attempt 2 extracted 1 priced tier"
+          },
+          {
+            "name": "Paddle",
+            "category": "payments",
+            "reason": "attempt 1 extracted 0 priced tiers, attempt 2 extracted 0 priced tiers"
+          },
+          {
+            "name": "PostHog",
+            "category": "observability",
+            "reason": "attempt 1 extracted 2 priced tiers, attempt 2 extracted 1 priced tier"
+          },
+          {
+            "name": "Typesense",
+            "category": "search",
+            "reason": "attempt 1 extracted 0 priced tiers (low confidence), attempt 2 extracted 0 priced tiers (low confidence)"
+          },
+          {
+            "name": "WorkOS",
+            "category": "auth",
+            "reason": "attempt 1 extracted 19 priced tiers, attempt 2 extracted 7 priced tiers"
+          }
+        ]
+      }
+    ],
+    "failed_companies": [
+      {
+        "name": "Loops",
+        "category": "email",
+        "reason": "fewer than 2 price matches (found 0)"
+      },
+      {
+        "name": "Qdrant",
+        "category": "vector-stores",
+        "reason": "fewer than 2 price matches (found 0)"
+      },
+      {
+        "name": "SendGrid",
+        "category": "email",
+        "reason": "fewer than 2 price matches (found 0)"
+      }
+    ]
   }
 }

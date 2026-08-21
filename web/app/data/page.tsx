@@ -1,6 +1,14 @@
 import type { Metadata } from 'next';
 import { Stamp } from '@/components/Stamp';
-import { loadDatasetMeta } from '@/lib/data';
+import { loadCompetitor, loadDatasetMeta, loadMechanics } from '@/lib/data';
+
+/** Verified by hand on 2026-08-18 (spec 11.1) — predates `candidates` (M3.5)
+ * and so is not itself a screening result; kept as a fixed list rather than
+ * derived. */
+const ORIGINAL_SIX = ['Linear', 'Notion', 'Figma', 'Supabase', 'Sentry', 'Postman'];
+
+const tierPrice = (t: { is_free: boolean; monthly_price_usd: number | null }): string =>
+  t.is_free ? '$0' : t.monthly_price_usd === null ? 'contact' : `$${t.monthly_price_usd}`;
 
 export const metadata: Metadata = {
   title: 'The dataset — Bellwether',
@@ -39,6 +47,18 @@ const CITATION_BIBTEX = `@misc{bellwether,
 
 export default function DataPage() {
   const meta = loadDatasetMeta();
+  const { screening } = loadMechanics();
+  const vercel = screening ? loadCompetitor('vercel') : null;
+
+  // One flat, name-sorted list for the exclusions table — every rejected
+  // company tagged with the kind that excluded it, plus the pre-filter
+  // failures tagged with their own (single, fixed) kind.
+  const excluded = screening
+    ? [
+        ...screening.rejected_by_kind.flatMap(k => k.companies.map(c => ({ ...c, kind: k.kind }))),
+        ...screening.failed_companies.map(c => ({ ...c, kind: 'No price signal found in the raw page' })),
+      ].sort((a, b) => a.name.localeCompare(b.name))
+    : [];
 
   return (
     <main>
@@ -151,17 +171,117 @@ export default function DataPage() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-medium text-ink">Boundary</h2>
         <p className="mt-2 max-w-2xl text-ink-secondary">
-          Six developer-infrastructure companies, verified as server-rendering their prices in raw
-          HTML: <span className="text-ink">Linear, Notion, Figma, Supabase, Sentry, and
-          Postman</span>.
+          Six developer-infrastructure companies were verified by hand as server-rendering their
+          prices in raw HTML: <span className="text-ink">{ORIGINAL_SIX.join(', ')}</span>.
         </p>
-        <p className="mt-3 max-w-2xl text-ink-secondary">
-          Screened out: <span className="text-ink">Vercel</span> and{' '}
-          <span className="text-ink">Jira/Atlassian</span> — both hydrate their pricing
-          client-side, so no price appears in the HTML a plain fetch receives. Naming the
-          exclusions is what makes the inclusions credible; extracting them would need a headless
-          browser, which this project deliberately does not run.
-        </p>
+
+        {screening ? (
+          <>
+            <p className="mt-6 font-display text-xl text-ink">
+              Screened {screening.total_screened} companies; {screening.admitted} publish
+              comparable plan pricing.
+            </p>
+            <p className="mt-3 max-w-2xl text-ink-secondary">
+              A further {screening.total_screened} developer-infrastructure companies were
+              screened programmatically (<span className="font-mono">bellwether qualify</span>):
+              each candidate&apos;s pricing page was fetched, scored for a plausible
+              price-and-tier signal, then run through two independent live extractions.{' '}
+              {screening.admitted} admitted — both extractions agreeing on a plausible tier
+              count ({screening.pass_rate_pct}% of the pool) — bringing the watch list to{' '}
+              {ORIGINAL_SIX.length + screening.admitted} sources. Naming the exclusions is what
+              makes the inclusions credible.
+            </p>
+
+            <h3 className="mt-8 font-display text-lg font-medium text-ink">Admitted, by category</h3>
+            <dl className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {screening.admitted_by_category.map(g => (
+                <div key={g.category} className="rounded-lg border border-rule bg-surface-raised p-4">
+                  <dt className="font-mono text-sm font-medium text-ink">
+                    {g.category} <span className="text-ink-muted">({g.count})</span>
+                  </dt>
+                  <dd className="mt-1 text-sm text-ink-secondary">{g.companies.join(', ')}</dd>
+                </div>
+              ))}
+            </dl>
+
+            {vercel !== null && vercel.current_tiers.length > 0 && (
+              <p className="mt-8 max-w-2xl text-ink-secondary">
+                <span className="text-ink">Vercel now qualifies.</span> This project&apos;s own
+                spec named Vercel the canonical qualification failure: a client-rendered shell
+                with no price in the raw HTML. The screen tests that claim rather than assuming
+                it, and on {' '}<Stamp iso={vercel.first_observed_at} />{' '} it no longer held —
+                Vercel&apos;s page is server-rendered and extracts as{' '}
+                <span className="text-ink">
+                  {vercel.current_tiers.map((t, i) => (
+                    <span key={t.name}>
+                      {i > 0 ? ' / ' : ''}
+                      {t.name} {tierPrice(t)}
+                    </span>
+                  ))}
+                </span>
+                . That is why it is in the watch list, not an exception to the boundary.
+              </p>
+            )}
+
+            <p className="mt-3 max-w-2xl text-ink-secondary">
+              <span className="text-ink">Datadog, Cloudflare, and Fastly publish server-rendered
+              pricing</span> — the screen found real prices in their raw HTML, same as every
+              admitted source. Each is excluded because it prices per product or per unit of
+              usage rather than per plan, so neither extraction attempt reproduced a plan table
+              comparable to the rest of the watch list. They are excluded for comparability, not
+              because they publish nothing.
+            </p>
+
+            <h3 className="mt-8 font-display text-lg font-medium text-ink">
+              Excluded ({screening.rejected + screening.failed})
+            </h3>
+            <p className="mt-2 max-w-2xl text-ink-secondary">
+              {screening.rejected} reached extraction but did not qualify:{' '}
+              {screening.rejected_by_kind
+                .filter(k => k.count > 0)
+                .map(k => `${k.kind.toLowerCase()} (${k.count})`)
+                .join('; ')}
+              . {screening.failed} more never reached extraction — the pre-filter found
+              essentially no price signal on the page at all.
+            </p>
+
+            <div className="mt-6 overflow-x-auto">
+              <table className="w-full border-collapse text-left">
+                <caption className="sr-only">
+                  Every screened-out company, its category, and why it was excluded
+                </caption>
+                <thead>
+                  <tr className="border-b border-rule-strong">
+                    <th scope="col" className="py-3 pr-4 text-sm font-medium text-ink-secondary">Company</th>
+                    <th scope="col" className="py-3 pr-4 text-sm font-medium text-ink-secondary">Category</th>
+                    <th scope="col" className="py-3 text-sm font-medium text-ink-secondary">Why excluded</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {excluded.map(row => (
+                    <tr key={row.name} className="border-b border-rule align-top">
+                      <th scope="row" className="py-3 pr-4 font-medium text-ink whitespace-nowrap">
+                        {row.name}
+                      </th>
+                      <td className="py-3 pr-4 text-sm text-ink-secondary whitespace-nowrap">{row.category}</td>
+                      <td className="py-3 text-sm text-ink-secondary">
+                        <details>
+                          <summary className="cursor-pointer text-ink">{row.kind}</summary>
+                          <p className="mt-1">{row.reason}</p>
+                        </details>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        ) : (
+          <p className="mt-3 max-w-2xl text-ink-secondary">
+            Screening results have not been published yet — run{' '}
+            <span className="font-mono">bellwether qualify --all</span> and export.
+          </p>
+        )}
       </section>
 
       <section className="mt-12 border-t border-rule pt-8">

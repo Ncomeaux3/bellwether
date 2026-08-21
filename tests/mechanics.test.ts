@@ -65,6 +65,22 @@ function insertExtraction(normalizedHash: string, costMicros: number, opts: {
   );
 }
 
+let candidateSeq = 0;
+function insertCandidate(row: {
+  name: string; category: string; verdict: string; reason: string;
+}) {
+  candidateSeq += 1;
+  db.prepare(`
+    INSERT INTO candidates
+      (url, name, category, verdict, reason, price_matches, tier_headings, screened_at)
+    VALUES (@url, @name, @category, @verdict, @reason, 0, 0, @screenedAt)
+  `).run({
+    url: `https://candidate-${candidateSeq}.test/pricing`,
+    name: row.name, category: row.category, verdict: row.verdict, reason: row.reason,
+    screenedAt: '2026-08-20T00:00:00.000Z',
+  });
+}
+
 let changeSeq = 0;
 function insertConfirmedChange(materiality = 100) {
   changeSeq += 1;
@@ -245,5 +261,80 @@ describe('buildMechanics — cost', () => {
     const m = buildMechanics(db, NOW);
     expect(m.cost.per_confirmed_change_micros).toBeUndefined();
     expect('per_confirmed_change_micros' in m.cost).toBe(false);
+  });
+});
+
+describe('buildMechanics — screening (M3.5 task 4)', () => {
+  it('omits the screening block rather than rendering zeros when candidates is empty', () => {
+    const m = buildMechanics(db, NOW);
+    expect(m.screening).toBeUndefined();
+    expect('screening' in m).toBe(false);
+  });
+
+  it('totals every verdict, computes the pass rate, and groups admitted/rejected companies', () => {
+    insertCandidate({ name: 'Alpha', category: 'hosting', verdict: 'admit', reason: 'both attempts agreed on 3 priced tiers' });
+    insertCandidate({ name: 'Beta', category: 'databases', verdict: 'admit', reason: 'both attempts agreed on 2 priced tiers' });
+
+    // "attempts did not reproduce a plausible tier count" — both attempts
+    // completed but disagreed (or agreed too low to admit).
+    insertCandidate({ name: 'Gamma', category: 'observability', verdict: 'reject', reason: 'attempt 1 extracted 3 priced tiers, attempt 2 extracted 12 priced tiers' });
+
+    // "extraction failed grounding or schema" — at least one attempt threw.
+    insertCandidate({ name: 'Delta', category: 'edge-and-cdn', verdict: 'reject', reason: 'attempt 1 failed: ungrounded: usage_rates.CPU.unit_price_usd = 0.00002 does not appear in the page text, attempt 2 failed: ungrounded: same' });
+
+    // "prices per product or unit, not per plan" — the fixed MAX_ADMIT_TIERS
+    // reason string (src/workflow/qualify.ts).
+    insertCandidate({ name: 'Epsilon', category: 'observability', verdict: 'reject', reason: 'prices per product or unit rather than per plan (27 priced entries)' });
+
+    insertCandidate({ name: 'Zeta', category: 'email', verdict: 'fail', reason: 'fewer than 2 price matches (found 0)' });
+    insertCandidate({ name: 'Eta', category: 'search', verdict: 'error', reason: 'HTTP 503' });
+
+    const m = buildMechanics(db, NOW);
+    const s = m.screening!;
+
+    expect(s.total_screened).toBe(7);
+    expect(s.admitted).toBe(2);
+    expect(s.rejected).toBe(3);
+    expect(s.failed).toBe(1);
+    expect(s.errored).toBe(1);
+    expect(s.pass_rate_pct).toBeCloseTo((2 / 7) * 100, 1);
+
+    expect(s.admitted_by_category).toEqual([
+      { category: 'databases', count: 1, companies: ['Beta'] },
+      { category: 'hosting', count: 1, companies: ['Alpha'] },
+    ]);
+
+    // The three kinds are always present, in a fixed order — a bucket with
+    // no matches in this run is a genuine queried zero, not omitted.
+    expect(s.rejected_by_kind.map(k => k.kind)).toEqual([
+      'Prices per product or unit, not per plan',
+      'Extraction failed grounding or schema',
+      'Attempts did not reproduce a plausible tier count',
+    ]);
+    const byKind = Object.fromEntries(s.rejected_by_kind.map(k => [k.kind, k]));
+    expect(byKind['Prices per product or unit, not per plan']!.count).toBe(1);
+    expect(byKind['Prices per product or unit, not per plan']!.companies.map(c => c.name)).toEqual(['Epsilon']);
+    expect(byKind['Extraction failed grounding or schema']!.count).toBe(1);
+    expect(byKind['Extraction failed grounding or schema']!.companies.map(c => c.name)).toEqual(['Delta']);
+    expect(byKind['Attempts did not reproduce a plausible tier count']!.count).toBe(1);
+    expect(byKind['Attempts did not reproduce a plausible tier count']!.companies.map(c => c.name)).toEqual(['Gamma']);
+
+    // The three kinds partition every rejected row exactly once.
+    expect(s.rejected_by_kind.reduce((sum, k) => sum + k.count, 0)).toBe(s.rejected);
+
+    expect(s.failed_companies.map(c => c.name)).toEqual(['Zeta']);
+  });
+
+  it('keeps a genuine zero rejection bucket rather than dropping it', () => {
+    insertCandidate({ name: 'Alpha', category: 'hosting', verdict: 'admit', reason: 'both attempts agreed on 2 priced tiers' });
+    insertCandidate({ name: 'Gamma', category: 'observability', verdict: 'reject', reason: 'attempt 1 extracted 1 priced tier, attempt 2 extracted 1 priced tier' });
+
+    const m = buildMechanics(db, NOW);
+    const s = m.screening!;
+
+    const byKind = Object.fromEntries(s.rejected_by_kind.map(k => [k.kind, k]));
+    expect(byKind['Prices per product or unit, not per plan']!.count).toBe(0);
+    expect(byKind['Prices per product or unit, not per plan']!.companies).toEqual([]);
+    expect(byKind['Extraction failed grounding or schema']!.count).toBe(0);
   });
 });

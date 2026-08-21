@@ -67,12 +67,52 @@ export interface Cost {
   per_confirmed_change_micros?: number;
 }
 
+export interface ScreeningCandidate {
+  name: string;
+  category: string;
+  reason: string;
+}
+
+export interface ScreeningCategoryGroup {
+  category: string;
+  count: number;
+  companies: string[];
+}
+
+export interface ScreeningRejectionKind {
+  kind: string;
+  note: string;
+  count: number;
+  companies: ScreeningCandidate[];
+}
+
+/**
+ * Spec 11.2/14.5: the screening pool (`candidates`, M3.5) that produced the
+ * watch list is itself publishable — a boundary named is a boundary the
+ * reader can check. Distinct from `filter`/`coverage`/`cost` above: those
+ * describe the 27 admitted sources' ongoing operation, this describes the
+ * 51-company pool that was screened to find them.
+ */
+export interface Screening {
+  total_screened: number;
+  admitted: number;
+  rejected: number;
+  failed: number;
+  errored: number;
+  pass_rate_pct: number;
+  admitted_by_category: ScreeningCategoryGroup[];
+  rejected_by_kind: ScreeningRejectionKind[];
+  failed_companies: ScreeningCandidate[];
+}
+
 export interface MechanicsPayload {
   generated_at: string;
   filter: FilterFunnel;
   coverage: Coverage;
   health: Health;
   cost: Cost;
+  /** Omitted (never rendered with zeros) when `candidates` is empty — R4. */
+  screening?: Screening;
 }
 
 /**
@@ -281,5 +321,86 @@ export function buildMechanics(db: DB, now: Date): MechanicsPayload {
       : {}),
   };
 
-  return { generated_at: generatedAt, filter, coverage, health, cost };
+  // ---- Screening (M3.5 task 4) -------------------------------------------
+  // The 51-company screening pool that produced the 27-source watch list —
+  // separate from `sources`/`competitors` above, which cover only the
+  // admitted set. Omitted entirely, not rendered with zeros, when the pool
+  // is empty (R4): a page that has never run `qualify` has nothing to say
+  // about a boundary yet, and 0/0 is not a screening result.
+  const verdictCounts = db.prepare(
+    'SELECT verdict, COUNT(*) AS n FROM candidates GROUP BY verdict'
+  ).all() as { verdict: string; n: number }[];
+  const totalScreened = verdictCounts.reduce((sum, r) => sum + r.n, 0);
+
+  let screening: Screening | undefined;
+  if (totalScreened > 0) {
+    const countOf = (v: string) => verdictCounts.find(r => r.verdict === v)?.n ?? 0;
+    const admitted = countOf('admit');
+    const rejected = countOf('reject');
+    const failed = countOf('fail');
+    const errored = countOf('error');
+
+    const admittedRows = db.prepare(
+      "SELECT name, category FROM candidates WHERE verdict = 'admit' ORDER BY category, name"
+    ).all() as { name: string; category: string }[];
+    const categoryOrder: string[] = [];
+    const byCategory = new Map<string, string[]>();
+    for (const row of admittedRows) {
+      if (!byCategory.has(row.category)) { byCategory.set(row.category, []); categoryOrder.push(row.category); }
+      byCategory.get(row.category)!.push(row.name);
+    }
+    const admittedByCategory: ScreeningCategoryGroup[] = categoryOrder.map(category => ({
+      category, count: byCategory.get(category)!.length, companies: byCategory.get(category)!,
+    }));
+
+    // Two kinds of rejection are actually recorded by qualify.ts's --verify
+    // (src/workflow/qualify.ts): the two extraction attempts didn't
+    // reproduce a plausible tier count, or at least one attempt failed
+    // grounding or schema validation outright. A third kind — a fixed
+    // reason string for two attempts exactly agreeing above
+    // MAX_ADMIT_TIERS (a per-product/unit price list, not a plan table) —
+    // is included even though it has not fired on this pool: both attempts
+    // must agree exactly on a count above 8, and the closest case here
+    // (Datadog: 27 vs 26 tiers) didn't. 0 is a real queried count, not a
+    // placeholder, so the bucket stays rather than being hand-removed.
+    const REJECTION_KINDS: { kind: string; note: string; where: string }[] = [
+      {
+        kind: 'Prices per product or unit, not per plan',
+        note: 'Two attempts agreed, but on a count above a plausible plan table — a usage or per-product price list, not tiers.',
+        where: "reason LIKE 'prices per product or unit rather than per plan%'",
+      },
+      {
+        kind: 'Extraction failed grounding or schema',
+        note: 'At least one attempt returned a price the page text did not contain, or output that failed schema validation.',
+        where: "reason LIKE '%failed:%'",
+      },
+      {
+        kind: 'Attempts did not reproduce a plausible tier count',
+        note: 'Both attempts completed, but disagreed on the tier count, or agreed on a count too low to admit.',
+        where: "reason LIKE 'attempt 1 extracted%attempt 2 extracted%' AND reason NOT LIKE '%failed:%'",
+      },
+    ];
+
+    const rejectedByKind: ScreeningRejectionKind[] = REJECTION_KINDS.map(({ kind, note, where }) => {
+      const companies = db.prepare(
+        `SELECT name, category, reason FROM candidates WHERE verdict = 'reject' AND (${where}) ORDER BY name`
+      ).all() as ScreeningCandidate[];
+      return { kind, note, count: companies.length, companies };
+    });
+
+    const failedCompanies = db.prepare(
+      "SELECT name, category, reason FROM candidates WHERE verdict = 'fail' ORDER BY name"
+    ).all() as ScreeningCandidate[];
+
+    screening = {
+      total_screened: totalScreened,
+      admitted, rejected, failed, errored,
+      pass_rate_pct: Math.round((admitted / totalScreened) * 1000) / 10,
+      admitted_by_category: admittedByCategory,
+      rejected_by_kind: rejectedByKind,
+      failed_companies: failedCompanies,
+    };
+  }
+
+  return { generated_at: generatedAt, filter, coverage, health, cost, ...(screening ? { screening } : {}) };
 }

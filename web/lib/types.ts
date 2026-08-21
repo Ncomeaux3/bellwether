@@ -181,6 +181,37 @@ export interface MechanicsCost {
   per_confirmed_change_micros?: number;
 }
 
+export interface ScreeningCandidate {
+  name: string;
+  category: string;
+  reason: string;
+}
+
+export interface ScreeningCategoryGroup {
+  category: string;
+  count: number;
+  companies: string[];
+}
+
+export interface ScreeningRejectionKind {
+  kind: string;
+  note: string;
+  count: number;
+  companies: ScreeningCandidate[];
+}
+
+export interface Screening {
+  total_screened: number;
+  admitted: number;
+  rejected: number;
+  failed: number;
+  errored: number;
+  pass_rate_pct: number;
+  admitted_by_category: ScreeningCategoryGroup[];
+  rejected_by_kind: ScreeningRejectionKind[];
+  failed_companies: ScreeningCandidate[];
+}
+
 /** Shape of public/data/mechanics.json — see src/workflow/mechanics.ts. */
 export interface Mechanics {
   generated_at: string;
@@ -188,6 +219,7 @@ export interface Mechanics {
   coverage: MechanicsCoverage;
   health: MechanicsHealth;
   cost: MechanicsCost;
+  screening?: Screening;
 }
 
 /** Shape of public/data/competitors/<slug>.json — see src/workflow/export.ts. */

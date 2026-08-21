@@ -22,7 +22,7 @@ const PIPELINE: { step: string; body: string }[] = [
 ];
 
 export default function HowItWorksPage() {
-  const { generated_at, filter, coverage, health, cost } = loadMechanics();
+  const { generated_at, filter, coverage, health, cost, screening } = loadMechanics();
 
   return (
     <main>
@@ -130,6 +130,18 @@ export default function HowItWorksPage() {
             </>
           )}
         </p>
+
+        {screening && (
+          <p className="mt-4 max-w-2xl text-sm text-ink-secondary">
+            A separate, one-time screen widened the pool this filter draws from: screened{' '}
+            {screening.total_screened} companies, {screening.admitted} publish comparable plan
+            pricing. See the{' '}
+            <a href="/data/" className="text-ink underline decoration-rule-strong underline-offset-4 hover:text-ink-secondary">
+              dataset page
+            </a>{' '}
+            for the full boundary, admitted by category, and every exclusion with its reason.
+          </p>
+        )}
       </section>
 
       <section className="mt-12">
