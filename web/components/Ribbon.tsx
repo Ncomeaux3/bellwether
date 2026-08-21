@@ -27,8 +27,17 @@ const DIRECTION_COLORS = {
 type Direction = keyof typeof DIRECTION_COLORS;
 
 const money = (n: number) => (n === 0 ? '$0' : `$${n.toLocaleString('en-US')}`);
-const month = (iso: string) =>
+export const month = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+// Distinct observation moments, not points — a competitor observed once but
+// priced across four tiers has four points and no line. Shared with the
+// board grid (page.tsx) so its history-less guard matches this component's
+// own guard below exactly, rather than a second copy drifting from it.
+export function observationMoments(competitor: TimelineCompetitor): number {
+  const points = competitor.series.flatMap(s => s.segments.flat());
+  return new Set(points.map(p => p.observed_at)).size;
+}
 
 // The exporter (src/workflow/export.ts) ships TimelineMarker as
 // { observed_at, label } — a formatted string, not raw before/after numbers.
@@ -104,7 +113,7 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
   // priced across four tiers has four points and no line — every x collapses
   // onto one coordinate and the chart is a meaningless column of dots. A line
   // needs two moments in time, and saying so is more useful than an empty box.
-  const moments = new Set(points.map(p => p.observed_at)).size;
+  const moments = observationMoments(competitor);
   if (moments < 2) {
     if (scale !== 'hero') return null;
     // Spec 14.3: specific and directional, not "no data" — name what is
@@ -147,13 +156,21 @@ export function Ribbon({ competitor, scale }: { competitor: TimelineCompetitor; 
       <svg viewBox={`0 0 ${SPARK.width} ${SPARK.height}`} className="h-auto w-full" aria-hidden="true">
         {competitor.series.map(s =>
           s.segments.map((segment, j) => (
-            <polyline
-              key={`${s.tier}-${j}`}
-              points={stepPoints(segment).map(p => `${x(p.observed_at)},${y(p.price)}`).join(' ')}
-              fill="none" stroke={TIER_COLORS[s.tier_class]}
-              strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"
-              vectorEffect="non-scaling-stroke"
-            />
+            <g key={`${s.tier}-${j}`}>
+              <polyline
+                points={stepPoints(segment).map(p => `${x(p.observed_at)},${y(p.price)}`).join(' ')}
+                fill="none" stroke={TIER_COLORS[s.tier_class]}
+                strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              {/* A one-point segment (a gap on both sides) has no line to
+                  draw — stepPoints returns it unchanged and a lone polyline
+                  coordinate paints nothing. A dot keeps that moment visible
+                  instead of the tier silently vanishing from the spark. */}
+              {segment.length === 1 && (
+                <circle cx={x(segment[0]!.observed_at)} cy={y(segment[0]!.price)} r="1.5" fill={TIER_COLORS[s.tier_class]} />
+              )}
+            </g>
           )),
         )}
       </svg>
