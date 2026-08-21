@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "statsig",
   "name": "Statsig",
   "homepage": "https://statsig.com",
@@ -38,9 +38,7 @@
         "100,000 session replays per month",
         "Advanced experimentation",
         "Advanced product analytics",
-        "Unlimited analytics retention",
-        "Change reviews & approvals",
-        "API controls"
+        "Unlimited analytics retention"
       ]
     },
     {
@@ -63,15 +61,15 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:49:23.798Z",
-  "last_observed_at": "2026-08-20T17:49:23.798Z",
+  "first_observed_at": "2026-08-21T12:05:56.671Z",
+  "last_observed_at": "2026-08-21T12:05:56.671Z",
   "series": [
     {
       "tier": "Developer",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:23.798Z",
+            "observed_at": "2026-08-21T12:05:56.671Z",
             "price": 0
           }
         ]
@@ -83,7 +81,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:23.798Z",
+            "observed_at": "2026-08-21T12:05:56.671Z",
             "price": 150
           }
         ]

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "notion",
   "name": "Notion",
   "homepage": "https://www.notion.com",
@@ -79,7 +79,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T07:54:17.000Z",
-  "last_observed_at": "2026-08-20T17:45:25.568Z",
+  "last_observed_at": "2026-08-21T07:00:27.481Z",
   "series": [
     {
       "tier": "Business",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "redis-cloud",
   "name": "Redis Cloud",
   "homepage": "https://redis.io",
@@ -22,7 +22,7 @@
     },
     {
       "name": "Essentials",
-      "monthly_price_usd": 0.007,
+      "monthly_price_usd": 5,
       "annual_price_usd": null,
       "billing_unit": "usage",
       "included_seats": null,
@@ -31,13 +31,13 @@
       "headline_features": [
         "250 MB-100 GB RAM & SSD, single DB",
         "SAML SSO, RBAC, encryption in transit, encryption at rest",
-        "Up to 99.99% uptime, basic support",
-        "Shared deployment"
+        "Up to 99.99% uptime, basic support only",
+        "Redis Flex at 10% RAM for lowest cost"
       ]
     },
     {
       "name": "Pro",
-      "monthly_price_usd": 0.014,
+      "monthly_price_usd": 200,
       "annual_price_usd": null,
       "billing_unit": "usage",
       "included_seats": null,
@@ -49,18 +49,31 @@
         "Everything in Essentials, plus active-active (multi-region), private connectivity",
         "Up to 99.999% uptime"
       ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Multi-cloud & hybrid cloud / on-prem deployment",
+        "Available with an annual plan"
+      ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:48:13.359Z",
-  "last_observed_at": "2026-08-20T17:48:13.359Z",
+  "first_observed_at": "2026-08-21T12:04:49.100Z",
+  "last_observed_at": "2026-08-21T12:04:49.100Z",
   "series": [
     {
       "tier": "Essentials",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:13.359Z",
-            "price": 0.007
+            "observed_at": "2026-08-21T12:04:49.100Z",
+            "price": 5
           }
         ]
       ],
@@ -71,7 +84,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:13.359Z",
+            "observed_at": "2026-08-21T12:04:49.100Z",
             "price": 0
           }
         ]
@@ -83,8 +96,8 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:13.359Z",
-            "price": 0.014
+            "observed_at": "2026-08-21T12:04:49.100Z",
+            "price": 200
           }
         ]
       ],
@@ -94,7 +107,7 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 3,
+    "live": 4,
     "wayback": 0,
     "mixed": 0
   }

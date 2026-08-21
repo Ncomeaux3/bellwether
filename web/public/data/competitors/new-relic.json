@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "new-relic",
   "name": "New Relic",
   "homepage": "https://newrelic.com",
@@ -8,7 +8,7 @@
     {
       "name": "Free",
       "monthly_price_usd": 0,
-      "annual_price_usd": 0,
+      "annual_price_usd": null,
       "billing_unit": "flat",
       "included_seats": 1,
       "is_free": true,
@@ -32,9 +32,10 @@
       "is_enterprise": false,
       "headline_features": [
         "Limited to 5 full platform users",
-        "Ticketed support",
+        "Ticketed support availability",
         "2 business days support response SLA",
-        "SAML single sign-on"
+        "SAML single sign-on",
+        "$0.40/GB data ingest beyond 100 GB free"
       ]
     },
     {
@@ -49,7 +50,8 @@
         "Unlimited full platform users",
         "2-hour critical initial support response SLA",
         "Data Plus eligibility",
-        "Optional full consumption pricing with no user licenses"
+        "Optional: Full consumption pricing with no user licenses",
+        "$0.40/GB or $0.60/GB data ingest options"
       ]
     },
     {
@@ -61,22 +63,23 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "FedRAMP Moderate and HIPAA eligibility",
+        "Everything in Pro plus:",
+        "FedRAMP Moderate and HIPAA eligibility with Data Plus",
         "Priority ticket routing",
         "1-hour critical initial support response SLA",
-        "Optional full consumption pricing with no user licenses"
+        "Optional: Full consumption pricing with no user licenses"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:50:33.497Z",
-  "last_observed_at": "2026-08-20T17:50:33.497Z",
+  "first_observed_at": "2026-08-21T12:07:08.616Z",
+  "last_observed_at": "2026-08-21T12:07:08.616Z",
   "series": [
     {
       "tier": "Free",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:33.497Z",
+            "observed_at": "2026-08-21T12:07:08.616Z",
             "price": 0
           }
         ]
@@ -88,7 +91,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:33.497Z",
+            "observed_at": "2026-08-21T12:07:08.616Z",
             "price": 349
           }
         ]
@@ -100,7 +103,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:33.497Z",
+            "observed_at": "2026-08-21T12:07:08.616Z",
             "price": 10
           }
         ]

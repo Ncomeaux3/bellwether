@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "clerk",
   "name": "Clerk",
   "homepage": "https://clerk.com",
@@ -20,13 +20,12 @@
         "Up to 5 user impersonations",
         "APIs and prebuilt UIs for sign-up, sign-in, and user profile",
         "Custom domain",
-        "Application Logs",
-        "Machine Authentication"
+        "Application Logs"
       ]
     },
     {
       "name": "Pro",
-      "monthly_price_usd": 20,
+      "monthly_price_usd": 25,
       "annual_price_usd": 20,
       "billing_unit": "flat",
       "included_seats": null,
@@ -45,7 +44,7 @@
     },
     {
       "name": "Business",
-      "monthly_price_usd": 250,
+      "monthly_price_usd": 300,
       "annual_price_usd": 250,
       "billing_unit": "flat",
       "included_seats": 10,
@@ -72,23 +71,22 @@
         "99.99% Uptime SLA",
         "Enterprise SSO for workspace",
         "Premium support SLA + dedicated slack channel",
-        "Custom Application Logs retention",
+        "Application Logs Custom retention",
         "Log sink destinations",
-        "HIPAA compliance available with BAA",
-        "Onboarding & migration support"
+        "HIPAA compliance available with BAA"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:46:39.206Z",
-  "last_observed_at": "2026-08-20T17:46:39.206Z",
+  "first_observed_at": "2026-08-21T12:03:14.109Z",
+  "last_observed_at": "2026-08-21T12:03:14.109Z",
   "series": [
     {
       "tier": "Business",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:46:39.206Z",
-            "price": 250
+            "observed_at": "2026-08-21T12:03:14.109Z",
+            "price": 300
           }
         ]
       ],
@@ -99,7 +97,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:46:39.206Z",
+            "observed_at": "2026-08-21T12:03:14.109Z",
             "price": 0
           }
         ]
@@ -111,8 +109,8 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:46:39.206Z",
-            "price": 20
+            "observed_at": "2026-08-21T12:03:14.109Z",
+            "price": 25
           }
         ]
       ],

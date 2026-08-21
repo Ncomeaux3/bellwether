@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "netlify",
   "name": "Netlify",
   "homepage": "https://www.netlify.com",
@@ -21,7 +21,7 @@
         "Build with Agent Runners",
         "Add Custom domains with SSL",
         "Functions & AI models",
-        "Global CDN"
+        "Store structured data with Netlify Database"
       ]
     },
     {
@@ -33,7 +33,7 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Everything in Free, plus:",
+        "Everything in Free, plus",
         "Smart secret detection",
         "1-day observability",
         "Priority email support",
@@ -49,45 +49,44 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Ship faster as a team",
-        "Everything in Personal, plus:",
+        "Everything in Personal, plus",
         "Private organization repos",
         "Shared env variables",
         "3+ concurrent builds",
         "30-day analytics & metrics",
         "Unlimited members",
-        "3,000 to 20,000 credits/month"
+        "Choose monthly credit tier from 3,000 to 20,000 credits"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Scale with confidence",
-        "Everything in Pro, plus:",
+        "Everything in Pro, plus",
         "99.99% SLA",
         "Enterprise network tier",
         "High-performance builds",
         "SSO & SCIM",
         "Log drains",
+        "Organization management",
         "24/7 dedicated support"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:49:47.740Z",
-  "last_observed_at": "2026-08-20T17:49:47.740Z",
+  "first_observed_at": "2026-08-21T12:06:20.056Z",
+  "last_observed_at": "2026-08-21T12:06:20.056Z",
   "series": [
     {
       "tier": "Free",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:47.740Z",
+            "observed_at": "2026-08-21T12:06:20.056Z",
             "price": 0
           }
         ]
@@ -99,7 +98,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:47.740Z",
+            "observed_at": "2026-08-21T12:06:20.056Z",
             "price": 9
           }
         ]
@@ -111,7 +110,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:47.740Z",
+            "observed_at": "2026-08-21T12:06:20.056Z",
             "price": 20
           }
         ]

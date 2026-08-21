@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "honeycomb",
   "name": "Honeycomb",
   "homepage": "https://www.honeycomb.io",
@@ -16,9 +16,10 @@
       "headline_features": [
         "Event Volume: Up to 20M per month",
         "Metrics Data Points: Up to 100M per month",
-        "Distributed Tracing",
         "2 Triggers",
-        "Canvas AI Copilot"
+        "Distributed Tracing",
+        "BubbleUp",
+        "OpenTelemetry Support"
       ]
     },
     {
@@ -32,17 +33,17 @@
       "headline_features": [
         "Event Volume: Up to 750M per month",
         "Metrics Data Points: Up to 3.75B per month",
-        "All features from the Free Plan",
         "100 Triggers",
         "2 Service Level Objectives (SLOs)",
-        "Single-Sign On (SSO)"
+        "Single-Sign On (SSO)",
+        "Honeycomb Support"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
@@ -52,19 +53,19 @@
         "Starts with 300 Triggers",
         "Starts with 100 SLOs",
         "Service Map",
-        "Enterprise-Grade Support + Onboarding"
+        "Enterprise Support"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:50:21.498Z",
-  "last_observed_at": "2026-08-20T17:50:21.498Z",
+  "first_observed_at": "2026-08-21T12:06:56.888Z",
+  "last_observed_at": "2026-08-21T12:06:56.888Z",
   "series": [
     {
       "tier": "Free",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:21.498Z",
+            "observed_at": "2026-08-21T12:06:56.888Z",
             "price": 0
           }
         ]
@@ -76,7 +77,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:21.498Z",
+            "observed_at": "2026-08-21T12:06:56.888Z",
             "price": 150
           }
         ]

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "pinecone",
   "name": "Pinecone",
   "homepage": "https://www.pinecone.io",
@@ -36,7 +36,7 @@
         "Choose your cloud and region",
         "Multiple projects and users",
         "Prometheus and Datadog monitoring",
-        "Includes Free support"
+        "Free support included"
       ]
     },
     {
@@ -89,15 +89,15 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:50:44.865Z",
-  "last_observed_at": "2026-08-20T17:50:44.865Z",
+  "first_observed_at": "2026-08-21T12:07:19.148Z",
+  "last_observed_at": "2026-08-21T12:07:19.148Z",
   "series": [
     {
       "tier": "Builder",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:44.865Z",
+            "observed_at": "2026-08-21T12:07:19.148Z",
             "price": 20
           }
         ]
@@ -109,7 +109,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:44.865Z",
+            "observed_at": "2026-08-21T12:07:19.148Z",
             "price": 500
           }
         ]
@@ -121,7 +121,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:44.865Z",
+            "observed_at": "2026-08-21T12:07:19.148Z",
             "price": 50
           }
         ]
@@ -133,7 +133,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:44.865Z",
+            "observed_at": "2026-08-21T12:07:19.148Z",
             "price": 0
           }
         ]

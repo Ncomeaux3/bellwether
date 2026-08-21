@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "fly-io",
   "name": "Fly.io",
   "homepage": "https://fly.io",
@@ -14,8 +14,7 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Micro VMs",
-        "Persistent storage"
+        "Micro VMs and persistent storage"
       ]
     },
     {
@@ -34,12 +33,12 @@
       "name": "Pay up Front and Save",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "usage",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "40% off with machine reservation"
+        "40% off by making a machine reservation"
       ]
     },
     {
@@ -57,7 +56,7 @@
       ]
     },
     {
-      "name": "Compliance Made Easy",
+      "name": "Compliance",
       "monthly_price_usd": 99,
       "annual_price_usd": null,
       "billing_unit": "flat",
@@ -66,20 +65,19 @@
       "is_enterprise": false,
       "headline_features": [
         "HIPAA-compliant workloads",
-        "BAAs",
-        "SOC2"
+        "BAAs to SOC2s"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:49:35.045Z",
-  "last_observed_at": "2026-08-20T17:49:35.045Z",
+  "first_observed_at": "2026-08-21T12:06:09.099Z",
+  "last_observed_at": "2026-08-21T12:06:09.099Z",
   "series": [
     {
-      "tier": "Compliance Made Easy",
+      "tier": "Compliance",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:35.045Z",
+            "observed_at": "2026-08-21T12:06:09.099Z",
             "price": 99
           }
         ]
@@ -91,7 +89,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:35.045Z",
+            "observed_at": "2026-08-21T12:06:09.099Z",
             "price": 29
           }
         ]

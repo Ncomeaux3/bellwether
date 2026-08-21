@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "upstash",
   "name": "Upstash",
   "homepage": "https://upstash.com",
@@ -29,7 +29,6 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "$0.20 per 100K commands",
         "100 GB data size",
         "Unlimited monthly bandwidth",
         "Unlimited monthly commands",
@@ -48,8 +47,7 @@
         "250 MB data size",
         "50 GB monthly bandwidth",
         "Unlimited monthly commands",
-        "$5 per read region",
-        "For consistent loads with predictable costs"
+        "$5 per read region"
       ]
     },
     {
@@ -151,25 +149,22 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Custom pricing",
         "Everything in Prod Pack",
         "100K+ commands per second",
         "Unlimited bandwidth and database count",
-        "Professional support with SLA",
-        "Dedicated resources for isolation",
-        "HIPAA Compliance"
+        "Professional support with SLA"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:48:49.332Z",
-  "last_observed_at": "2026-08-20T17:48:49.332Z",
+  "first_observed_at": "2026-08-21T12:05:22.115Z",
+  "last_observed_at": "2026-08-21T12:05:22.115Z",
   "series": [
     {
       "tier": "Fixed 100GB",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 800
           }
         ]
@@ -181,7 +176,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 200
           }
         ]
@@ -193,7 +188,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 20
           }
         ]
@@ -205,7 +200,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 10
           }
         ]
@@ -217,7 +212,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 1500
           }
         ]
@@ -229,7 +224,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 400
           }
         ]
@@ -241,7 +236,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 100
           }
         ]
@@ -253,7 +248,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:49.332Z",
+            "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 0
           }
         ]

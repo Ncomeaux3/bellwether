@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "depot",
   "name": "Depot",
   "homepage": "https://depot.dev",
@@ -43,7 +43,7 @@
       "name": "Business",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
@@ -59,15 +59,15 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:47:14.029Z",
-  "last_observed_at": "2026-08-20T17:47:14.029Z",
+  "first_observed_at": "2026-08-21T12:03:49.035Z",
+  "last_observed_at": "2026-08-21T12:03:49.035Z",
   "series": [
     {
       "tier": "Developer",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:47:14.029Z",
+            "observed_at": "2026-08-21T12:03:49.035Z",
             "price": 20
           }
         ]
@@ -79,7 +79,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:47:14.029Z",
+            "observed_at": "2026-08-21T12:03:49.035Z",
             "price": 200
           }
         ]

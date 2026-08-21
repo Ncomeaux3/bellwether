@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "figma",
   "name": "Figma",
   "homepage": "https://www.figma.com",
@@ -72,7 +72,7 @@
     }
   ],
   "first_observed_at": "2026-04-09T02:32:27.000Z",
-  "last_observed_at": "2026-08-20T17:45:37.247Z",
+  "last_observed_at": "2026-08-21T12:02:13.402Z",
   "series": [
     {
       "tier": "Enterprise",

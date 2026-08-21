@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "buildkite",
   "name": "Buildkite",
   "homepage": "https://buildkite.com",
@@ -35,9 +35,8 @@
         "Up to 250 concurrent agents",
         "4,000 Linux vCPU minutes per month",
         "1M test executions per month",
-        "Dynamic pipelines",
         "Priority email support",
-        "GitHub Enterprise support",
+        "Signed pipelines",
         "Single sign on"
       ]
     },
@@ -50,24 +49,24 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
+        "Unlimited active users",
         "Custom usage and rate limits",
         "Full access to Buildkite's testing platform",
         "99.95% platform uptime commitment",
         "SCIM, custom SAML & ADFS",
-        "Private log and artifact storage",
         "Enterprise support with SLA credits"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:47:01.940Z",
-  "last_observed_at": "2026-08-20T17:47:01.940Z",
+  "first_observed_at": "2026-08-21T12:03:36.618Z",
+  "last_observed_at": "2026-08-21T12:03:36.618Z",
   "series": [
     {
       "tier": "Free Plan",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:47:01.940Z",
+            "observed_at": "2026-08-21T12:03:36.618Z",
             "price": 0
           }
         ]
@@ -79,7 +78,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:47:01.940Z",
+            "observed_at": "2026-08-21T12:03:36.618Z",
             "price": 30
           }
         ]

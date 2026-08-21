@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "auth0",
   "name": "Auth0",
   "homepage": "https://auth0.com",
@@ -34,13 +34,13 @@
       "is_enterprise": false,
       "headline_features": [
         "Up to 500 monthly active users",
+        "Everything in Free, plus...",
         "Higher Auth, API limits, and Feature limits",
         "Pro Multi-Factor Authentication",
         "Role-based Access Control Per Organization",
         "10 Organizations",
         "Stream Auth0 Audit Logs to Datadog, Splunk, AWS, Azure, etc.",
-        "Separate Production & Development Environments",
-        "Standard Support"
+        "Separate Production & Development Environments"
       ]
     },
     {
@@ -53,44 +53,40 @@
       "is_enterprise": false,
       "headline_features": [
         "Up to 500 monthly active users",
+        "Everything in Essentials, plus...",
         "Use your existing User Database for Logins",
         "Enterprise Multi-Factor Authentication",
         "Enhanced Attack Protection",
-        "M2M Tokens",
-        "Custom Database Connections",
-        "Cross APP SSO",
-        "Pro Forms"
+        "M2M Tokens"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
+        "Everything in Professional plus...",
         "Custom User & SSO Tiers",
         "99.99% SLA",
         "Enterprise Rate Limits",
         "Enterprise Administration & Support",
-        "Advanced Security Features",
-        "Private Deployment",
-        "Home Realm Discovery",
-        "Long Lived Sessions"
+        "Advanced Security Features"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:46:26.024Z",
-  "last_observed_at": "2026-08-20T17:46:26.024Z",
+  "first_observed_at": "2026-08-21T12:03:00.974Z",
+  "last_observed_at": "2026-08-21T12:03:00.974Z",
   "series": [
     {
       "tier": "Essentials",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:46:26.024Z",
+            "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 35
           }
         ]
@@ -102,7 +98,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:46:26.024Z",
+            "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 0
           }
         ]
@@ -114,7 +110,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:46:26.024Z",
+            "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 240
           }
         ]

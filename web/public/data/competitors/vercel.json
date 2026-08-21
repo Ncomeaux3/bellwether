@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "vercel",
   "name": "Vercel",
   "homepage": "https://vercel.com",
@@ -16,50 +16,50 @@
       "headline_features": [
         "1M Edge Requests/month included",
         "100 GB/month data transfer included",
-        "Zero-config CDN cache",
-        "Unlimited deployments"
+        "1 GB Blob Storage/month included",
+        "5K Image Optimization transforms/month included"
       ]
     },
     {
       "name": "Pro",
       "monthly_price_usd": 20,
       "annual_price_usd": null,
-      "billing_unit": "per_seat",
-      "included_seats": 1,
+      "billing_unit": "flat",
+      "included_seats": null,
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
         "10M Edge Requests/month included",
         "1TB/month data transfer included",
-        "Advanced security features",
-        "Team collaboration tools"
+        "$0.15/GB for additional data transfer",
+        "Advanced security features"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Custom Edge Requests",
-        "Custom data transfer",
-        "Advanced DDoS protection",
-        "SAML SSO and Directory Sync"
+        "Custom Edge Requests pricing",
+        "Custom data transfer pricing",
+        "Up to 1,000 Firewall rules",
+        "Advanced DDoS mitigation"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:50:08.832Z",
-  "last_observed_at": "2026-08-20T17:50:08.832Z",
+  "first_observed_at": "2026-08-21T12:06:44.926Z",
+  "last_observed_at": "2026-08-21T12:06:44.926Z",
   "series": [
     {
       "tier": "Hobby",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:08.832Z",
+            "observed_at": "2026-08-21T12:06:44.926Z",
             "price": 0
           }
         ]
@@ -71,7 +71,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:50:08.832Z",
+            "observed_at": "2026-08-21T12:06:44.926Z",
             "price": 20
           }
         ]

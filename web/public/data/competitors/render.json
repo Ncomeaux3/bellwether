@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "render",
   "name": "Render",
   "homepage": "https://render.com",
@@ -19,9 +19,7 @@
         "Single-service previews",
         "Global regions & CDN",
         "Custom domains",
-        "Firewall & DDoS mitigation",
-        "Database PITR",
-        "Chat support"
+        "Firewall & DDoS mitigation"
       ]
     },
     {
@@ -78,15 +76,15 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:49:58.536Z",
-  "last_observed_at": "2026-08-20T17:49:58.536Z",
+  "first_observed_at": "2026-08-21T12:06:32.338Z",
+  "last_observed_at": "2026-08-21T12:06:32.338Z",
   "series": [
     {
       "tier": "Hobby",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:58.536Z",
+            "observed_at": "2026-08-21T12:06:32.338Z",
             "price": 0
           }
         ]
@@ -98,7 +96,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:58.536Z",
+            "observed_at": "2026-08-21T12:06:32.338Z",
             "price": 25
           }
         ]
@@ -110,7 +108,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:49:58.536Z",
+            "observed_at": "2026-08-21T12:06:32.338Z",
             "price": 499
           }
         ]

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "supabase",
   "name": "Supabase",
   "homepage": "https://supabase.com",
@@ -17,9 +17,7 @@
         "Unlimited API requests",
         "50,000 monthly active users",
         "500 MB database size",
-        "Shared CPU • 500 MB RAM",
         "5 GB egress",
-        "5 GB cached egress",
         "1 GB file storage",
         "Community support"
       ]
@@ -28,19 +26,18 @@
       "name": "Pro",
       "monthly_price_usd": 25,
       "annual_price_usd": null,
-      "billing_unit": "usage",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything in the Free Plan, plus:",
         "100,000 monthly active users",
         "8 GB disk size per project",
         "250 GB egress",
-        "250 GB cached egress",
         "100 GB file storage",
         "Email support",
-        "Daily backups stored for 7 days",
-        "7-day log retention"
+        "Daily backups stored for 7 days"
       ]
     },
     {
@@ -52,14 +49,12 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything in the Pro Plan, plus:",
         "SOC2 & ISO 27001",
         "Project-scoped and read-only access",
         "HIPAA available as paid add-on",
         "SSO for Supabase Dashboard",
-        "Priority email support & SLAs",
-        "Daily backups stored for 14 days",
-        "28-day log retention",
-        "Everything in the Pro Plan"
+        "Priority email support & SLAs"
       ]
     },
     {
@@ -76,14 +71,12 @@
         "BYO Cloud supported",
         "24×7×365 premium enterprise support",
         "Private Slack channel",
-        "Custom Security Questionnaires",
-        "Custom pricing",
-        "Custom features"
+        "Custom Security Questionnaires"
       ]
     }
   ],
   "first_observed_at": "2025-02-19T03:41:25.000Z",
-  "last_observed_at": "2026-08-20T17:45:49.164Z",
+  "last_observed_at": "2026-08-21T12:02:23.949Z",
   "series": [
     {
       "tier": "Free",
@@ -157,6 +150,10 @@
           },
           {
             "observed_at": "2026-08-18T15:01:28.444Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-21T12:02:23.949Z",
             "price": 0
           }
         ]
@@ -236,6 +233,10 @@
           {
             "observed_at": "2026-08-18T15:01:28.444Z",
             "price": 25
+          },
+          {
+            "observed_at": "2026-08-21T12:02:23.949Z",
+            "price": 25
           }
         ]
       ],
@@ -314,6 +315,10 @@
           {
             "observed_at": "2026-08-18T15:01:28.444Z",
             "price": 599
+          },
+          {
+            "observed_at": "2026-08-21T12:02:23.949Z",
+            "price": 599
           }
         ]
       ],
@@ -340,7 +345,7 @@
     }
   ],
   "provenance": {
-    "live": 1,
+    "live": 2,
     "wayback": 1,
     "mixed": 3
   }

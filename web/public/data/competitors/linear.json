@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "linear",
   "name": "Linear",
   "homepage": "https://linear.app",
@@ -30,7 +30,7 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "All Free features",
+        "All Free features +",
         "5 teams",
         "Unlimited issues",
         "Unlimited file uploads",
@@ -46,7 +46,7 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "All Basic features",
+        "All Basic features +",
         "Unlimited teams",
         "Private teams and guests",
         "Triage Intelligence",
@@ -65,7 +65,7 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "All Business features",
+        "All Business features +",
         "Invoice/PO billing",
         "SAML and SCIM",
         "Granular admin controls",
@@ -77,7 +77,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T07:53:31.000Z",
-  "last_observed_at": "2026-08-20T17:45:14.325Z",
+  "last_observed_at": "2026-08-21T07:00:14.584Z",
   "series": [
     {
       "tier": "Basic",
@@ -136,7 +136,7 @@
             "price": 10
           },
           {
-            "observed_at": "2026-08-20T17:45:14.325Z",
+            "observed_at": "2026-08-19T23:28:17.074Z",
             "price": 10
           }
         ]
@@ -200,7 +200,7 @@
             "price": 16
           },
           {
-            "observed_at": "2026-08-20T17:45:14.325Z",
+            "observed_at": "2026-08-19T23:28:17.074Z",
             "price": 16
           }
         ]
@@ -264,7 +264,7 @@
             "price": 0
           },
           {
-            "observed_at": "2026-08-20T17:45:14.325Z",
+            "observed_at": "2026-08-19T23:28:17.074Z",
             "price": 0
           }
         ]

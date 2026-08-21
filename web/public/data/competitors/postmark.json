@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "postmark",
   "name": "Postmark",
   "homepage": "https://postmarkapp.com",
@@ -10,16 +10,13 @@
       "monthly_price_usd": 0,
       "annual_price_usd": null,
       "billing_unit": "flat",
-      "included_seats": 6,
+      "included_seats": null,
       "is_free": true,
       "is_enterprise": false,
       "headline_features": [
         "100 emails/month",
-        "No overages allowed",
-        "REST API",
-        "SMTP",
-        "Sandbox Mode",
-        "Event Webhooks"
+        "Test your integration",
+        "No overages allowed"
       ]
     },
     {
@@ -27,7 +24,7 @@
       "monthly_price_usd": 15,
       "annual_price_usd": null,
       "billing_unit": "flat",
-      "included_seats": 4,
+      "included_seats": null,
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
@@ -36,7 +33,8 @@
         "Industry-leading deliverability rates & speed",
         "45-day data retention",
         "5 Custom sending domains",
-        "Unlimited emails/day"
+        "Unlimited emails/day",
+        "Detailed analytics and insights"
       ]
     },
     {
@@ -44,16 +42,18 @@
       "monthly_price_usd": 16.5,
       "annual_price_usd": null,
       "billing_unit": "flat",
-      "included_seats": 6,
+      "included_seats": null,
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
         "Starting at 10,000 emails/month",
         "Extra emails @ $1.30 / 1,000",
+        "Industry-leading deliverability rates & speed",
         "Customizable data retention up to 365 days",
         "10 Custom sending domains",
-        "Inbound email processing",
-        "Unlimited emails/day"
+        "Unlimited emails/day",
+        "Detailed analytics and insights",
+        "Inbound email processing"
       ]
     },
     {
@@ -67,10 +67,11 @@
       "headline_features": [
         "Starting at 10,000 emails/month",
         "Extra emails @ $1.20 / 1,000",
-        "Unlimited Custom sending domains",
+        "Industry-leading deliverability rates & speed",
         "Customizable data retention up to 365 days",
-        "Inbound email processing",
-        "Unlimited emails/day"
+        "Unlimited Custom sending domains",
+        "Unlimited emails/day",
+        "Detailed analytics and insights"
       ]
     },
     {
@@ -82,21 +83,20 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Custom pricing options",
-        "For agencies and larger teams",
-        "Support for high volume senders"
+        "Custom pricing",
+        "For agencies and larger teams sending over 10 million emails/month"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:48:59.554Z",
-  "last_observed_at": "2026-08-20T17:48:59.554Z",
+  "first_observed_at": "2026-08-21T12:05:34.900Z",
+  "last_observed_at": "2026-08-21T12:05:34.900Z",
   "series": [
     {
       "tier": "Basic",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:59.554Z",
+            "observed_at": "2026-08-21T12:05:34.900Z",
             "price": 15
           }
         ]
@@ -108,7 +108,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:59.554Z",
+            "observed_at": "2026-08-21T12:05:34.900Z",
             "price": 0
           }
         ]
@@ -120,7 +120,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:59.554Z",
+            "observed_at": "2026-08-21T12:05:34.900Z",
             "price": 18
           }
         ]
@@ -132,7 +132,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:59.554Z",
+            "observed_at": "2026-08-21T12:05:34.900Z",
             "price": 16.5
           }
         ]

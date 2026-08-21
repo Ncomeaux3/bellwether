@@ -1,6 +1,541 @@
 {
-  "generated_at": "2026-08-21T07:00:30.142Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "competitors": [
+    {
+      "slug": "auth0",
+      "name": "Auth0",
+      "homepage": "https://auth0.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://auth0.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:03:00.974Z",
+          "last_ok_at": "2026-08-21T12:03:00.974Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 25,000 monthly active users",
+                  "1 Custom Domain",
+                  "Secure Agentic AI workflows",
+                  "Passwordless Authentication",
+                  "Unlimited Social Connections",
+                  "5 Organizations",
+                  "Brand Customization",
+                  "Basic Attack Protection"
+                ]
+              },
+              {
+                "name": "Essentials",
+                "monthly_price_usd": 35,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 500 monthly active users",
+                  "Everything in Free, plus...",
+                  "Higher Auth, API limits, and Feature limits",
+                  "Pro Multi-Factor Authentication",
+                  "Role-based Access Control Per Organization",
+                  "10 Organizations",
+                  "Stream Auth0 Audit Logs to Datadog, Splunk, AWS, Azure, etc.",
+                  "Separate Production & Development Environments"
+                ]
+              },
+              {
+                "name": "Professional",
+                "monthly_price_usd": 240,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 500 monthly active users",
+                  "Everything in Essentials, plus...",
+                  "Use your existing User Database for Logins",
+                  "Enterprise Multi-Factor Authentication",
+                  "Enhanced Attack Protection",
+                  "M2M Tokens"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Everything in Professional plus...",
+                  "Custom User & SSO Tiers",
+                  "99.99% SLA",
+                  "Enterprise Rate Limits",
+                  "Enterprise Administration & Support",
+                  "Advanced Security Features"
+                ]
+              }
+            ],
+            "usage_rates": [],
+            "notes": "Free tier requires credit card verification for custom domains. Paid plans allow custom number of users from 1,000 up to 100,000 or more. Startup program provides 100K monthly external active users free for one year. Social Impact discounts available for nonprofits.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "buildkite",
+      "name": "Buildkite",
+      "homepage": "https://buildkite.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://buildkite.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:03:36.618Z",
+          "last_ok_at": "2026-08-21T12:03:36.618Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free Plan",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": 5,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 5 users",
+                  "Up to 10 concurrent jobs",
+                  "Up to 2,000 Linux vCPU minutes per month",
+                  "Up to 250k test executions per month",
+                  "Dynamic pipelines",
+                  "Community support"
+                ]
+              },
+              {
+                "name": "Pro Plan",
+                "monthly_price_usd": 30,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": 50,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 50 users",
+                  "Up to 250 concurrent agents",
+                  "4,000 Linux vCPU minutes per month",
+                  "1M test executions per month",
+                  "Priority email support",
+                  "Signed pipelines",
+                  "Single sign on"
+                ]
+              },
+              {
+                "name": "Enterprise Plan",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Unlimited active users",
+                  "Custom usage and rate limits",
+                  "Full access to Buildkite's testing platform",
+                  "99.95% platform uptime commitment",
+                  "SCIM, custom SAML & ADFS",
+                  "Enterprise support with SLA credits"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Linux vCPU minutes",
+                "unit_price_usd": 0.004
+              },
+              {
+                "metric": "Mac vCPU minutes",
+                "unit_price_usd": 0.02
+              },
+              {
+                "metric": "Test executions (Pro Plan)",
+                "unit_price_usd": 0.000015
+              },
+              {
+                "metric": "Self-hosted agents (Pro Plan)",
+                "unit_price_usd": 3.5
+              }
+            ],
+            "notes": "Free plan includes 30-day all-access trial with full platform access. Pro plan charged at $30 per active user per month. Linux hosted agents billed per vCPU minute with effective rates varying by shape size ($0.008-$0.032/minute for Small to Large). Mac hosted agents billed per vCPU minute ($0.12-$0.24/minute for M4 Medium to Large). Pro plan includes 10 self-hosted agents, additional agents at $3.50/agent/month. Pro plan includes 1M test executions monthly, additional executions at $15 per million.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "clerk",
+      "name": "Clerk",
+      "homepage": "https://clerk.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://clerk.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:03:14.109Z",
+          "last_ok_at": "2026-08-21T12:03:14.109Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Hobby",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": 3,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 3 dashboard seats",
+                  "Unlimited applications",
+                  "50,000 MRU limit per app",
+                  "Up to 5 user impersonations",
+                  "APIs and prebuilt UIs for sign-up, sign-in, and user profile",
+                  "Custom domain",
+                  "Application Logs"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 25,
+                "annual_price_usd": 20,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "50,000 MRU included per app",
+                  "1 Enterprise connection included",
+                  "Remove Clerk branding",
+                  "Multi-factor authentication (MFA)",
+                  "Satellite domains",
+                  "Custom session lifetime",
+                  "Application Logs 7 day retention",
+                  "SMS Authentication available"
+                ]
+              },
+              {
+                "name": "Business",
+                "monthly_price_usd": 300,
+                "annual_price_usd": 250,
+                "billing_unit": "flat",
+                "included_seats": 10,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "10 dashboard seats included",
+                  "SOC2 Report",
+                  "Enhanced dashboard roles",
+                  "Priority support",
+                  "Application Logs 30 day retention"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Annual committed use discounts",
+                  "99.99% Uptime SLA",
+                  "Enterprise SSO for workspace",
+                  "Premium support SLA + dedicated slack channel",
+                  "Application Logs Custom retention",
+                  "Log sink destinations",
+                  "HIPAA compliance available with BAA"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Additional MRUs (50,001-100,000)",
+                "unit_price_usd": 0.02
+              },
+              {
+                "metric": "Additional MRUs (100,001-1,000,000)",
+                "unit_price_usd": 0.018
+              },
+              {
+                "metric": "Additional MRUs (1,000,001-10,000,000)",
+                "unit_price_usd": 0.015
+              },
+              {
+                "metric": "Additional MRUs (10,000,001+)",
+                "unit_price_usd": 0.012
+              },
+              {
+                "metric": "Enterprise connections (2-15)",
+                "unit_price_usd": 75
+              },
+              {
+                "metric": "Enterprise connections (16-100)",
+                "unit_price_usd": 60
+              },
+              {
+                "metric": "Enterprise connections (101-500)",
+                "unit_price_usd": 30
+              },
+              {
+                "metric": "Enterprise connections (500+)",
+                "unit_price_usd": 15
+              },
+              {
+                "metric": "Dashboard seats (Business+)",
+                "unit_price_usd": 20
+              },
+              {
+                "metric": "Satellite domains",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "SMS per SMS",
+                "unit_price_usd": 0.01
+              },
+              {
+                "metric": "API Key creations (1,001+)",
+                "unit_price_usd": 0.001
+              },
+              {
+                "metric": "API Key verifications (100,001+)",
+                "unit_price_usd": 0.00001
+              },
+              {
+                "metric": "M2M Token creations (2,501+)",
+                "unit_price_usd": 0.001
+              },
+              {
+                "metric": "M2M Token verifications (100,001+)",
+                "unit_price_usd": 0.00001
+              },
+              {
+                "metric": "B2B Authentication add-on",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "B2B Authentication add-on (annual)",
+                "unit_price_usd": 85
+              },
+              {
+                "metric": "Additional MROs (101-1,000)",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Additional MROs (1,001-10,000)",
+                "unit_price_usd": 0.9
+              },
+              {
+                "metric": "Additional MROs (10,001-100,000)",
+                "unit_price_usd": 0.75
+              },
+              {
+                "metric": "Additional MROs (100,001+)",
+                "unit_price_usd": 0.6
+              },
+              {
+                "metric": "Administration add-on",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "Administration add-on (annual)",
+                "unit_price_usd": 85
+              },
+              {
+                "metric": "Billing volume",
+                "unit_price_usd": 0.007
+              }
+            ],
+            "notes": "Hobby tier includes up to 50,000 MRUs per app and up to 5 user impersonations. Pro and Business tiers include 50,000 MRUs per app with overage pricing. Enterprise requires annual billing. B2B Authentication add-on includes 100 MRO per app included, with overage pricing starting at $1/mo each. Administration add-on includes unlimited user impersonations. SMS authentication available at market rates for international. Billing service charges Stripe fees (2.9% + $0.30) plus Clerk's 0.7% of billing volume. One-month grace period provided when exceeding free tier limits.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "depot",
+      "name": "Depot",
+      "homepage": "https://depot.dev",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://depot.dev/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:03:49.035Z",
+          "last_ok_at": "2026-08-21T12:03:49.035Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Developer",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "1 user",
+                  "Community support",
+                  "Unlimited concurrency",
+                  "Docker builds",
+                  "Depot CI",
+                  "GitHub Actions builds",
+                  "macOS M2 Runners",
+                  "Depot Registry"
+                ]
+              },
+              {
+                "name": "Startup",
+                "monthly_price_usd": 200,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited users",
+                  "Everything in developer, plus:",
+                  "Email support",
+                  "User RBAC"
+                ]
+              },
+              {
+                "name": "Business",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Ability to deploy in your AWS account",
+                  "Dedicated infrastructure",
+                  "GPU enabled builds",
+                  "Static outbound IPs",
+                  "Network firewall rules",
+                  "AWS PrivateLink",
+                  "SSO with SAML, SCIM",
+                  "Advanced compliance controls"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Depot CI",
+                "unit_price_usd": 0.00005
+              },
+              {
+                "metric": "GitHub Actions jobs",
+                "unit_price_usd": 0.004
+              },
+              {
+                "metric": "Docker builds",
+                "unit_price_usd": 0.04
+              },
+              {
+                "metric": "Cache storage",
+                "unit_price_usd": 0.2
+              },
+              {
+                "metric": "Agent sandboxes",
+                "unit_price_usd": 0.01
+              },
+              {
+                "metric": "Registry storage",
+                "unit_price_usd": 0.2
+              },
+              {
+                "metric": "Test results",
+                "unit_price_usd": 0.000001
+              },
+              {
+                "metric": "Depot CI - 4x16 sandbox",
+                "unit_price_usd": 0.0002
+              },
+              {
+                "metric": "Depot CI - 8x32 sandbox",
+                "unit_price_usd": 0.0004
+              },
+              {
+                "metric": "Depot CI - 16x64 sandbox",
+                "unit_price_usd": 0.0008
+              },
+              {
+                "metric": "Depot CI - 32x128 sandbox",
+                "unit_price_usd": 0.0016
+              },
+              {
+                "metric": "Depot CI - 64x256 sandbox",
+                "unit_price_usd": 0.0032
+              },
+              {
+                "metric": "GitHub Actions - 4x16 runner",
+                "unit_price_usd": 0.008
+              },
+              {
+                "metric": "GitHub Actions - 8x32 runner",
+                "unit_price_usd": 0.016
+              },
+              {
+                "metric": "GitHub Actions - 16x64 runner",
+                "unit_price_usd": 0.032
+              },
+              {
+                "metric": "GitHub Actions - 32x128 runner",
+                "unit_price_usd": 0.064
+              },
+              {
+                "metric": "GitHub Actions - 64x256 runner",
+                "unit_price_usd": 0.128
+              },
+              {
+                "metric": "Docker builds - Large",
+                "unit_price_usd": 0.08
+              },
+              {
+                "metric": "Docker builds - Extra large",
+                "unit_price_usd": 0.16
+              }
+            ],
+            "notes": "Developer plan includes 500 Docker build minutes, 2,000 Depot CI minutes, 2,000 GitHub Actions minutes, 25 GB cache and registry storage, and 1,000,000 passing test results per month. Startup plan includes 5,000 Docker build minutes, 20,000 Depot CI minutes, 20,000 GitHub Actions minutes, 250 GB cache and registry storage, and 1,000,000 passing test results per month. Business plan pricing available upon request and includes custom allowances. Registry storage transfer is free on Standard CDN; Fast CDN charges $0.10 per GB. Failed, errored, and skipped tests are free.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
     {
       "slug": "figma",
       "name": "Figma",
@@ -10,9 +545,9 @@
           "kind": "pricing",
           "url": "https://www.figma.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-20T07:00:14.017Z",
-          "last_ok_at": "2026-08-20T07:00:14.017Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-08-21T12:02:13.402Z",
+          "last_ok_at": "2026-08-21T12:02:13.402Z",
+          "distinct_states": 22,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -86,6 +621,496 @@
             "usage_rates": [],
             "notes": "Professional and Organization tiers are billed annually. Enterprise requires contacting sales. Multiple seat types available (Full, Dev, Collab) with different pricing per tier.",
             "extraction_confidence": "medium"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "fly-io",
+      "name": "Fly.io",
+      "homepage": "https://fly.io",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://fly.io/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:06:09.099Z",
+          "last_ok_at": "2026-08-21T12:06:09.099Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Pay-as-You-Go",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Micro VMs and persistent storage"
+                ]
+              },
+              {
+                "name": "Serious Support",
+                "monthly_price_usd": 29,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Access to dedicated team of engineers"
+                ]
+              },
+              {
+                "name": "Pay up Front and Save",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "40% off by making a machine reservation"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom resource configurations",
+                  "SLA requirements",
+                  "Emergency support"
+                ]
+              },
+              {
+                "name": "Compliance",
+                "monthly_price_usd": 99,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "HIPAA-compliant workloads",
+                  "BAAs to SOC2s"
+                ]
+              }
+            ],
+            "usage_rates": [],
+            "notes": "Pay-as-you-go pricing details not specified on page. Machine reservations offer 40% discount. Free tier includes: FlyCTL CLI with unlimited users per organization, unlimited organizations, aggregated billing, private networking, SSO authentication, ACLs and scoped tokens. Accidental deployment charges waived for paid support customers.",
+            "extraction_confidence": "medium"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "github",
+      "name": "GitHub",
+      "homepage": "https://github.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://github.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:04:01.599Z",
+          "last_ok_at": "2026-08-21T12:04:01.599Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited public/private repositories",
+                  "Dependabot security and version updates",
+                  "2,000 CI/CD minutes/month",
+                  "500MB of Packages storage",
+                  "Issues & Projects",
+                  "Community support"
+                ]
+              },
+              {
+                "name": "Team",
+                "monthly_price_usd": 4,
+                "annual_price_usd": 4,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Access to GitHub Codespaces",
+                  "Repository rules",
+                  "Multiple reviewers in pull requests",
+                  "Draft pull requests",
+                  "Code owners",
+                  "3,000 CI/CD minutes/month"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": 21,
+                "annual_price_usd": 21,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Data residency",
+                  "Enterprise Managed Users",
+                  "User provisioning through SCIM",
+                  "Enterprise Account",
+                  "Environment protection rules",
+                  "50,000 CI/CD minutes/month"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "GitHub Codespaces compute",
+                "unit_price_usd": 0.18
+              },
+              {
+                "metric": "GitHub Codespaces storage per GB per month",
+                "unit_price_usd": 0.07
+              },
+              {
+                "metric": "GitHub sandbox",
+                "unit_price_usd": 0
+              },
+              {
+                "metric": "Git Large File Storage per month",
+                "unit_price_usd": 5
+              }
+            ],
+            "notes": "Team and Enterprise tiers show a promotional rate for the first 12 months. GitHub Codespaces has usage-based pricing on top of tier pricing. Free tier is permanently free. Enterprise is recommended and requires contacting sales.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "gitlab",
+      "name": "GitLab",
+      "homepage": "https://about.gitlab.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://about.gitlab.com/pricing/",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:04:12.654Z",
+          "last_ok_at": "2026-08-21T12:04:12.654Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": 5,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Source Code Management & CI/CD",
+                  "5 licensed users",
+                  "400 compute minutes per month",
+                  "10 GiB storage"
+                ]
+              },
+              {
+                "name": "Premium",
+                "monthly_price_usd": 29,
+                "annual_price_usd": 29,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Everything from Free, plus:",
+                  "Unlimited licensed users",
+                  "10,000 compute minutes per month",
+                  "Advanced CI/CD",
+                  "Team Project Management",
+                  "SLA Management",
+                  "Priority Support"
+                ]
+              },
+              {
+                "name": "Ultimate",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Everything from Premium, plus:",
+                  "Application Security Testing",
+                  "Software Supply Chain Security",
+                  "Vulnerability Management",
+                  "Strategic Portfolio Management",
+                  "Value Stream Management",
+                  "Compliance and Governance",
+                  "50,000 compute minutes per month"
+                ]
+              },
+              {
+                "name": "GitLab Dedicated",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Includes everything from Ultimate, plus:",
+                  "Fully managed by GitLab",
+                  "Data residency in region of your choice",
+                  "Full data and source code isolation"
+                ]
+              },
+              {
+                "name": "GitLab Dedicated for Government",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Includes everything from Ultimate and Dedicated, plus:",
+                  "Hosted on a FedRAMP compliant infrastructure",
+                  "Meets FedRAMP Moderate baseline security controls",
+                  "GovRAMP authorized for state and local government"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "GitLab Credits",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Compute Minutes",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Storage (per 10GiB)",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "Enterprise Agile Planning Seats",
+                "unit_price_usd": 15
+              }
+            ],
+            "notes": "Premium is billed annually at $29/user/month. Free tier limited to 5 licensed users in private top-level groups on GitLab.com. Ultimate and Dedicated tiers require custom pricing. GitLab Flex available for volume commitments with volume discounts. Included GitLab Credits: Premium includes $12/user/month, Ultimate includes $24/user/month (for limited time). Storage and compute minutes add-on pricing available.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "hasura",
+      "name": "Hasura",
+      "homepage": "https://hasura.io",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://hasura.io/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:04:25.562Z",
+          "last_ok_at": "2026-08-21T12:04:25.562Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "DDN Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited models, at any scale",
+                  "1 supergraph developer",
+                  "Observability: 15-minute retention",
+                  "GraphQL API with filtering, pagination, sorting, aggregations",
+                  "No limit on API requests/month",
+                  "No limit on concurrent API users"
+                ]
+              },
+              {
+                "name": "DDN Base",
+                "monthly_price_usd": 5,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited supergraph developers",
+                  "Observability: 30-day retention",
+                  "Model and field usage metrics (30-day retention)",
+                  "Schema registry and diff",
+                  "Dedicated VPC",
+                  "SSO and audit logs"
+                ]
+              },
+              {
+                "name": "DDN Advanced",
+                "monthly_price_usd": 30,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Federated collaboration",
+                  "Multi-team, multi-repo CI/CD",
+                  "Team-based access controls",
+                  "Unlimited supergraph developers",
+                  "30-day retention on traces and metrics",
+                  "Advanced security features"
+                ]
+              },
+              {
+                "name": "Private DDN",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Advanced security and compliance requirements",
+                  "Dedicated infrastructure hosting",
+                  "Available with Base and Advanced plans",
+                  "Custom deployment options",
+                  "Business support included"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Active model/month",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "Active model/month",
+                "unit_price_usd": 30
+              },
+              {
+                "metric": "vCPU-hour (optional connector hosting)",
+                "unit_price_usd": 0.075
+              },
+              {
+                "metric": "GiB-hour (optional connector hosting)",
+                "unit_price_usd": 0.0075
+              }
+            ],
+            "notes": "Pricing is per active model (any model or command in metadata accessed more than 1000 times/month). DDN Free tier includes 1 supergraph developer. DDN Base and Advanced include unlimited developers. Optional hosting for third-party and code connectors costs $0.075/vCPU-hour and $0.0075/GiB-hour across all plans. Private DDN requires contacting sales.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "honeycomb",
+      "name": "Honeycomb",
+      "homepage": "https://www.honeycomb.io",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://www.honeycomb.io/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:06:56.888Z",
+          "last_ok_at": "2026-08-21T12:06:56.888Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Event Volume: Up to 20M per month",
+                  "Metrics Data Points: Up to 100M per month",
+                  "2 Triggers",
+                  "Distributed Tracing",
+                  "BubbleUp",
+                  "OpenTelemetry Support"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 150,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Event Volume: Up to 750M per month",
+                  "Metrics Data Points: Up to 3.75B per month",
+                  "100 Triggers",
+                  "2 Service Level Objectives (SLOs)",
+                  "Single-Sign On (SSO)",
+                  "Honeycomb Support"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom plans to fit your needs",
+                  "All features from the Pro Plan",
+                  "Starts with 300 Triggers",
+                  "Starts with 100 SLOs",
+                  "Service Map",
+                  "Enterprise Support"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Ingested Events per GB",
+                "unit_price_usd": 0.1
+              }
+            ],
+            "notes": "Pro plan starts at $150/month for 50M events. Enterprise plans start with a base allowance of 10 billion events per year with volume discounts available. Monthly or Annual subscription option available for Pro plan.",
+            "extraction_confidence": "high"
           }
         }
       ]
@@ -180,6 +1205,229 @@
             "usage_rates": [],
             "notes": "Basic and Business tiers show per user/month pricing with annual billing. Enterprise tier shows 'Contact sales' with custom annual billing only.",
             "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "netlify",
+      "name": "Netlify",
+      "homepage": "https://www.netlify.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://www.netlify.com/pricing/",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:06:20.056Z",
+          "last_ok_at": "2026-08-21T12:06:20.056Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Build and deploy free forever",
+                  "Deploy any framework",
+                  "Private by default until you publish",
+                  "Unlimited deploy previews",
+                  "Build with Agent Runners",
+                  "Add Custom domains with SSL",
+                  "Functions & AI models",
+                  "Store structured data with Netlify Database"
+                ]
+              },
+              {
+                "name": "Personal",
+                "monthly_price_usd": 9,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Everything in Free, plus",
+                  "Smart secret detection",
+                  "1-day observability",
+                  "Priority email support",
+                  "1,000 credits / month"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Everything in Personal, plus",
+                  "Private organization repos",
+                  "Shared env variables",
+                  "3+ concurrent builds",
+                  "30-day analytics & metrics",
+                  "Unlimited members",
+                  "Choose monthly credit tier from 3,000 to 20,000 credits"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Everything in Pro, plus",
+                  "99.99% SLA",
+                  "Enterprise network tier",
+                  "High-performance builds",
+                  "SSO & SCIM",
+                  "Log drains",
+                  "Organization management",
+                  "24/7 dedicated support"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Production deploys",
+                "unit_price_usd": 15
+              },
+              {
+                "metric": "Compute",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Bandwidth",
+                "unit_price_usd": 20
+              },
+              {
+                "metric": "Web requests",
+                "unit_price_usd": 2
+              }
+            ],
+            "notes": "Usage rates are in credits. Production deploys: 15 credits each. Compute: 10 credits per GB-hour. Bandwidth: 20 credits per GB. Web requests: 2 credits per 10k requests. AI inference costs vary based on AI model used. Personal plan includes 1,000 credits/month. Pro plan includes 3,000 to 20,000 credits/month depending on tier chosen. Free plan has 300 credit limit/month. Additional credits available: $5 for 500 credits or $10 for 1,500 credits with auto recharge enabled (disabled by default).",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "new-relic",
+      "name": "New Relic",
+      "homepage": "https://newrelic.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://newrelic.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:07:08.616Z",
+          "last_ok_at": "2026-08-21T12:07:08.616Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100 GB data ingest/month",
+                  "Unlimited basic users",
+                  "One free full platform user",
+                  "Access to 50+ capabilities",
+                  "Automatic logs obfuscation",
+                  "No credit card required"
+                ]
+              },
+              {
+                "name": "Standard",
+                "monthly_price_usd": 10,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": 1,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Limited to 5 full platform users",
+                  "Ticketed support availability",
+                  "2 business days support response SLA",
+                  "SAML single sign-on",
+                  "$0.40/GB data ingest beyond 100 GB free"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 349,
+                "annual_price_usd": null,
+                "billing_unit": "per_seat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited full platform users",
+                  "2-hour critical initial support response SLA",
+                  "Data Plus eligibility",
+                  "Optional: Full consumption pricing with no user licenses",
+                  "$0.40/GB or $0.60/GB data ingest options"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Everything in Pro plus:",
+                  "FedRAMP Moderate and HIPAA eligibility with Data Plus",
+                  "Priority ticket routing",
+                  "1-hour critical initial support response SLA",
+                  "Optional: Full consumption pricing with no user licenses"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Data ingest (Original option)",
+                "unit_price_usd": 0.4
+              },
+              {
+                "metric": "Data ingest (Data Plus option)",
+                "unit_price_usd": 0.6
+              },
+              {
+                "metric": "EU data center storage",
+                "unit_price_usd": 0.05
+              },
+              {
+                "metric": "Additional synthetic checks",
+                "unit_price_usd": 0.005
+              },
+              {
+                "metric": "Core user per user",
+                "unit_price_usd": 49
+              }
+            ],
+            "notes": "Free tier includes 100 GB/month data ingest and unlimited basic users. Standard edition first full platform user is $10/month, additional users up to 5 are $99/month. Pro pricing shows $349/user for annual commitments and $418.80/user for monthly pay-as-you-go. Enterprise pricing requires contact sales. Data Plus is an optional upgrade available for Pro and Enterprise. Advanced Compute pricing available with feature control. Page indicates compute-based pricing model also available but CCU pricing not specified on page.",
+            "extraction_confidence": "medium"
           }
         }
       ]
@@ -294,6 +1542,291 @@
       ]
     },
     {
+      "slug": "pinecone",
+      "name": "Pinecone",
+      "homepage": "https://www.pinecone.io",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://www.pinecone.io/pricing/",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:07:19.148Z",
+          "last_ok_at": "2026-08-21T12:07:19.148Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Starter",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Pinecone Database On-Demand",
+                  "Pinecone Inference",
+                  "Pinecone Assistant",
+                  "Dense, Sparse, and Full-Text Indexes",
+                  "Console Metrics",
+                  "Community Support via Discord"
+                ]
+              },
+              {
+                "name": "Builder",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Everything in Starter",
+                  "Increased usage limits",
+                  "Choose your cloud and region",
+                  "Multiple projects and users",
+                  "Prometheus and Datadog monitoring",
+                  "Free support included"
+                ]
+              },
+              {
+                "name": "Standard",
+                "monthly_price_usd": 50,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Pay-as-you-go for Database On-Demand, Inference, and Assistant Usage",
+                  "Dedicated Read Nodes (DRN)",
+                  "Import from object storage",
+                  "Backup and Restore",
+                  "RBAC",
+                  "SSO (SAML 2.0)"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": 500,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "99.95% Uptime SLA",
+                  "Bring Your Own Cloud (BYOC)",
+                  "Private Endpoints",
+                  "Customer Managed Encryption Keys",
+                  "Audit Logs",
+                  "Service Accounts"
+                ]
+              },
+              {
+                "name": "Bring your own cloud",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Pinecone in your cloud account",
+                  "Zero-access operations – no SSH, VPN, or inbound access required",
+                  "Outbound-only operations with an auditable trail",
+                  "Pro support included"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Storage",
+                "unit_price_usd": 0.33
+              },
+              {
+                "metric": "Write Units (per million)",
+                "unit_price_usd": 4
+              },
+              {
+                "metric": "Read Units (per million)",
+                "unit_price_usd": 16
+              },
+              {
+                "metric": "Egress",
+                "unit_price_usd": 0.1
+              },
+              {
+                "metric": "Import from object storage",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "Backups",
+                "unit_price_usd": 0.1
+              },
+              {
+                "metric": "Restore from backup",
+                "unit_price_usd": 0.15
+              },
+              {
+                "metric": "Assistant Storage",
+                "unit_price_usd": 3
+              },
+              {
+                "metric": "Assistant Input Tokens (per million)",
+                "unit_price_usd": 8
+              },
+              {
+                "metric": "Assistant Output Tokens (per million)",
+                "unit_price_usd": 15
+              },
+              {
+                "metric": "Assistant Context Processed Tokens (per million)",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "Assistant Evaluation Processed Tokens (per million)",
+                "unit_price_usd": 8
+              },
+              {
+                "metric": "Assistant Evaluation Output Tokens (per million)",
+                "unit_price_usd": 15
+              },
+              {
+                "metric": "Ingestion Units",
+                "unit_price_usd": 0.0005
+              },
+              {
+                "metric": "Inference - Embedding llama-text-embed-v2 (per M tokens)",
+                "unit_price_usd": 0.16
+              },
+              {
+                "metric": "Inference - Embedding multilingual-e5-large (per M tokens)",
+                "unit_price_usd": 0.08
+              },
+              {
+                "metric": "Inference - Embedding pinecone-sparse-english-v0 (per M tokens)",
+                "unit_price_usd": 0.08
+              },
+              {
+                "metric": "Inference - Reranking (per 1k requests)",
+                "unit_price_usd": 2
+              }
+            ],
+            "notes": "Standard and Enterprise tiers have $50/month and $500/month minimum usage respectively. Write and Read unit prices vary by cloud and region. Ingestion units have higher price for multi-modal ($0.001). HIPAA add-on costs $190/mo for Standard tier. 3-week trial for Standard tier includes $300 credits.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "planetscale",
+      "name": "PlanetScale",
+      "homepage": "https://planetscale.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://planetscale.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:04:36.440Z",
+          "last_ok_at": "2026-08-21T12:04:36.440Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Base Plan - PlanetScale PostgreSQL Single Node",
+                "monthly_price_usd": 5,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Development and low-traffic production workloads",
+                  "Single node deployment",
+                  "Pay as you go pricing",
+                  "Upsize and downsize instances as needed"
+                ]
+              },
+              {
+                "name": "Base Plan - PlanetScale PostgreSQL High Availability",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "1 primary + 2 replicas across 3 availability zones",
+                  "99.99% SLA",
+                  "High-availability clusters deployed across 3 availability zones"
+                ]
+              },
+              {
+                "name": "Base Plan - PlanetScale PostgreSQL Metal",
+                "monthly_price_usd": 50,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "High-performance local NVMe storage",
+                  "Ultra-fast NVMe drives and unlimited IOPS",
+                  "High-availability Metal clusters",
+                  "Starting at $50/month"
+                ]
+              },
+              {
+                "name": "Base Plan - Vitess MySQL",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "MySQL-compatible with horizontal sharding for massive scale",
+                  "Pricing based on cluster size, VTGate configuration, and storage",
+                  "Network-attached storage or PlanetScale Metal",
+                  "Metal also available"
+                ]
+              },
+              {
+                "name": "Enterprise Plan",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Database expertise from core Vitess maintainers",
+                  "Hands-on migration assistance with no downtime",
+                  "Private shared Slack channel support",
+                  "Enhanced response times and architecture consultation",
+                  "Multi-tenant, single-tenant, or bring your own cloud deployment",
+                  "Custom pricing and flexible requirements"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Egress bandwidth beyond 100 GB",
+                "unit_price_usd": 0.06
+              }
+            ],
+            "notes": "PlanetScale Managed allows deployment in your own AWS or GCP account with infrastructure costs billed by cloud provider plus a percentage fee to PlanetScale. Pricing is resource-based for instance and VTGate sizes, storage amounts, and add-ons. First 10 GB of storage is free for network-attached storage databases.",
+            "extraction_confidence": "medium"
+          }
+        }
+      ]
+    },
+    {
       "slug": "postman",
       "name": "Postman",
       "homepage": "https://www.postman.com",
@@ -302,8 +1835,8 @@
           "kind": "pricing",
           "url": "https://www.postman.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-20T07:00:48.495Z",
-          "last_ok_at": "2026-08-20T07:00:48.495Z",
+          "last_checked_at": "2026-08-21T12:02:48.662Z",
+          "last_ok_at": "2026-08-21T12:02:48.662Z",
           "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
@@ -415,6 +1948,660 @@
       ]
     },
     {
+      "slug": "postmark",
+      "name": "Postmark",
+      "homepage": "https://postmarkapp.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://postmarkapp.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:05:34.900Z",
+          "last_ok_at": "2026-08-21T12:05:34.900Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100 emails/month",
+                  "Test your integration",
+                  "No overages allowed"
+                ]
+              },
+              {
+                "name": "Basic",
+                "monthly_price_usd": 15,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Starting at 10,000 emails/month",
+                  "Extra emails @ $1.80 / 1,000",
+                  "Industry-leading deliverability rates & speed",
+                  "45-day data retention",
+                  "5 Custom sending domains",
+                  "Unlimited emails/day",
+                  "Detailed analytics and insights"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 16.5,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Starting at 10,000 emails/month",
+                  "Extra emails @ $1.30 / 1,000",
+                  "Industry-leading deliverability rates & speed",
+                  "Customizable data retention up to 365 days",
+                  "10 Custom sending domains",
+                  "Unlimited emails/day",
+                  "Detailed analytics and insights",
+                  "Inbound email processing"
+                ]
+              },
+              {
+                "name": "Platform",
+                "monthly_price_usd": 18,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Starting at 10,000 emails/month",
+                  "Extra emails @ $1.20 / 1,000",
+                  "Industry-leading deliverability rates & speed",
+                  "Customizable data retention up to 365 days",
+                  "Unlimited Custom sending domains",
+                  "Unlimited emails/day",
+                  "Detailed analytics and insights"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom pricing",
+                  "For agencies and larger teams sending over 10 million emails/month"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Extra emails",
+                "unit_price_usd": 1.8
+              },
+              {
+                "metric": "Extra emails",
+                "unit_price_usd": 1.3
+              },
+              {
+                "metric": "Extra emails",
+                "unit_price_usd": 1.2
+              },
+              {
+                "metric": "Dedicated IPs",
+                "unit_price_usd": 50
+              },
+              {
+                "metric": "Custom activity retention",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "DMARC monitoring per domain",
+                "unit_price_usd": 14
+              }
+            ],
+            "notes": "Basic tier allows 10,000 emails/month included; Pro and Platform tiers also start at 10,000 emails/month. Overage pricing varies by tier. Dedicated IPs available to customers sending 300,000+ emails/month on Pro plans or higher. Optional add-ons available for custom retention and DMARC monitoring.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "redis-cloud",
+      "name": "Redis Cloud",
+      "homepage": "https://redis.io",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://redis.io/pricing/",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:04:49.100Z",
+          "last_ok_at": "2026-08-21T12:04:49.100Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": 0,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Up to 30 MB",
+                  "Shared cloud deployment",
+                  "30 MB single DB",
+                  "Best-effort SLA, community support"
+                ]
+              },
+              {
+                "name": "Essentials",
+                "monthly_price_usd": 5,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "250 MB-100 GB RAM & SSD, single DB",
+                  "SAML SSO, RBAC, encryption in transit, encryption at rest",
+                  "Up to 99.99% uptime, basic support only",
+                  "Redis Flex at 10% RAM for lowest cost"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 200,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Dedicated cloud deployment",
+                  "Unlimited RAM, multiple DBs",
+                  "Everything in Essentials, plus active-active (multi-region), private connectivity",
+                  "Up to 99.999% uptime"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Multi-cloud & hybrid cloud / on-prem deployment",
+                  "Available with an annual plan"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Essentials hourly rate",
+                "unit_price_usd": 0.007
+              },
+              {
+                "metric": "Pro hourly rate",
+                "unit_price_usd": 0.014
+              }
+            ],
+            "notes": "Essentials tier shows 'From $0.007/hour' with a total of $5/month minimum. Pro tier shows 'From $0.014/hour' with a minimum $200/month. Pro tier offers first $200 free. Pricing is on-demand usage-based. Enterprise pricing requires contacting sales.",
+            "extraction_confidence": "medium"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "render",
+      "name": "Render",
+      "homepage": "https://render.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://render.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:06:32.338Z",
+          "last_ok_at": "2026-08-21T12:06:32.338Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Hobby",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": 1,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Deploy up to 25 services",
+                  "5 GB of bandwidth included",
+                  "Single-service previews",
+                  "Global regions & CDN",
+                  "Custom domains",
+                  "Firewall & DDoS mitigation"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 25,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited seats & services",
+                  "25 GB bandwidth included",
+                  "Full-stack previews",
+                  "Horizontal autoscaling",
+                  "Isolated environments",
+                  "OIDC authentication",
+                  "AWS Private Links",
+                  "Workspace audit logs"
+                ]
+              },
+              {
+                "name": "Scale",
+                "monthly_price_usd": 499,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Multiple workspaces",
+                  "1 TB of bandwidth included",
+                  "Extended metrics retention",
+                  "Inbound IP rules",
+                  "HIPAA-compliant workspaces",
+                  "SAML SSO & SCIM",
+                  "Advanced RBAC roles",
+                  "Organization audit logs"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Contractual uptime SLAs",
+                  "Technical account manager",
+                  "Support Slack channel",
+                  "Support response SLAs"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Persistent disk storage",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "PostgreSQL expandable storage",
+                "unit_price_usd": 0.3
+              },
+              {
+                "metric": "Bandwidth overage",
+                "unit_price_usd": 0.15
+              },
+              {
+                "metric": "Custom domain",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "Dedicated IP set",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "AWS private links",
+                "unit_price_usd": 30
+              },
+              {
+                "metric": "Private link outbound bandwidth",
+                "unit_price_usd": 0.03
+              },
+              {
+                "metric": "Build pipeline minutes overage",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "Cron Jobs",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Workflows",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Static Sites",
+                "unit_price_usd": 0
+              },
+              {
+                "metric": "Services",
+                "unit_price_usd": 0
+              },
+              {
+                "metric": "Render PostgreSQL Basic-256mb",
+                "unit_price_usd": 6
+              },
+              {
+                "metric": "Render PostgreSQL Basic-1gb",
+                "unit_price_usd": 19
+              },
+              {
+                "metric": "Render PostgreSQL Basic-4gb",
+                "unit_price_usd": 75
+              },
+              {
+                "metric": "Render PostgreSQL Pro-4gb",
+                "unit_price_usd": 55
+              },
+              {
+                "metric": "Render PostgreSQL Pro-8gb",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "Render PostgreSQL Pro-16gb",
+                "unit_price_usd": 200
+              },
+              {
+                "metric": "Render PostgreSQL Pro-32gb",
+                "unit_price_usd": 400
+              },
+              {
+                "metric": "Render PostgreSQL Pro-64gb",
+                "unit_price_usd": 800
+              },
+              {
+                "metric": "Render PostgreSQL Pro-128gb",
+                "unit_price_usd": 1700
+              },
+              {
+                "metric": "Render PostgreSQL Pro-192gb",
+                "unit_price_usd": 2500
+              },
+              {
+                "metric": "Render PostgreSQL Pro-256gb",
+                "unit_price_usd": 3000
+              },
+              {
+                "metric": "Render PostgreSQL Pro-384gb",
+                "unit_price_usd": 4600
+              },
+              {
+                "metric": "Render PostgreSQL Pro-512gb",
+                "unit_price_usd": 6200
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-16gb",
+                "unit_price_usd": 160
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-32gb",
+                "unit_price_usd": 350
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-64gb",
+                "unit_price_usd": 750
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-128gb",
+                "unit_price_usd": 1500
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-256gb",
+                "unit_price_usd": 2500
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-384gb",
+                "unit_price_usd": 4500
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-512gb",
+                "unit_price_usd": 6000
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-768gb",
+                "unit_price_usd": 9000
+              },
+              {
+                "metric": "Render PostgreSQL Accelerated-1024gb",
+                "unit_price_usd": 11000
+              },
+              {
+                "metric": "Render Key Value Free",
+                "unit_price_usd": 0
+              },
+              {
+                "metric": "Render Key Value Starter",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Render Key Value Standard",
+                "unit_price_usd": 32
+              },
+              {
+                "metric": "Render Key Value Pro",
+                "unit_price_usd": 135
+              },
+              {
+                "metric": "Render Key Value Pro Plus",
+                "unit_price_usd": 250
+              },
+              {
+                "metric": "Render Key Value Pro Max",
+                "unit_price_usd": 550
+              },
+              {
+                "metric": "Render Key Value Pro Ultra",
+                "unit_price_usd": 1100
+              },
+              {
+                "metric": "Web Services Free",
+                "unit_price_usd": 0
+              },
+              {
+                "metric": "Web Services Starter",
+                "unit_price_usd": 7
+              },
+              {
+                "metric": "Web Services Standard",
+                "unit_price_usd": 25
+              },
+              {
+                "metric": "Web Services Pro",
+                "unit_price_usd": 85
+              },
+              {
+                "metric": "Web Services Pro Plus",
+                "unit_price_usd": 175
+              },
+              {
+                "metric": "Web Services Pro Max",
+                "unit_price_usd": 225
+              },
+              {
+                "metric": "Web Services Pro Ultra",
+                "unit_price_usd": 450
+              },
+              {
+                "metric": "Cron Jobs Starter",
+                "unit_price_usd": 0.00016
+              },
+              {
+                "metric": "Cron Jobs Standard",
+                "unit_price_usd": 0.00058
+              },
+              {
+                "metric": "Cron Jobs Pro",
+                "unit_price_usd": 0.00197
+              },
+              {
+                "metric": "Cron Jobs Pro Plus",
+                "unit_price_usd": 0.00405
+              },
+              {
+                "metric": "Workflows Flex",
+                "unit_price_usd": 0.2
+              },
+              {
+                "metric": "Workflows Flex GB hour",
+                "unit_price_usd": 0.05
+              },
+              {
+                "metric": "Workflows Starter",
+                "unit_price_usd": 0.05
+              },
+              {
+                "metric": "Workflows Standard",
+                "unit_price_usd": 0.2
+              },
+              {
+                "metric": "Workflows Pro",
+                "unit_price_usd": 0.4
+              },
+              {
+                "metric": "Workflows Pro Plus",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Workflows Pro Max",
+                "unit_price_usd": 2
+              }
+            ],
+            "notes": "Workspace plans include compute (priced separately). Hobby plan includes 1 seat; Pro and Scale plans include unlimited seats. Pro plan charges only if workspace has activity. Scale plan always charges. Concurrent task runs for Hobby: 20 task runs; Pro: 50 task runs, then $10/mo per 50; Scale and Enterprise: 100 task runs, then $10/mo per 50. Enterprise plan pricing requires contacting sales.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "resend",
+      "name": "Resend",
+      "homepage": "https://resend.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://resend.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:05:46.321Z",
+          "last_ok_at": "2026-08-21T12:05:46.321Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "3,000 emails / mo",
+                  "RESTful API",
+                  "SMTP relay",
+                  "Custom domains",
+                  "Automatic suppression list",
+                  "Webhook endpoints"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "50,000 emails / mo",
+                  "Extra emails: $0.90 / 1,000",
+                  "Sending & receiving",
+                  "Ticket support",
+                  "10 domains",
+                  "100 AI credits / mo"
+                ]
+              },
+              {
+                "name": "Scale",
+                "monthly_price_usd": 90,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100,000 emails / mo",
+                  "Extra emails: $0.90 / 1,000",
+                  "Sending & receiving",
+                  "Slack & ticket support",
+                  "1,000 domains",
+                  "500 AI credits / mo"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom plan based on specific needs",
+                  "Sending & receiving",
+                  "Priority support",
+                  "Flexible automation runs",
+                  "Flexible data retention",
+                  "Flexible domains"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Extra emails per 1,000",
+                "unit_price_usd": 0.9
+              },
+              {
+                "metric": "Automation runs",
+                "unit_price_usd": 0.0015
+              }
+            ],
+            "notes": "Add-ons available: Domains ($20/mo) adds 100 additional domains on Pro and Scale plans; Dedicated IPs ($30/mo) available on Scale and higher. Free tier includes 10,000 automation runs and 30-day data retention. Pay-as-you-go overage available for paid subscriptions.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
       "slug": "sentry",
       "name": "Sentry",
       "homepage": "https://sentry.io",
@@ -423,9 +2610,9 @@
           "kind": "pricing",
           "url": "https://sentry.io/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-20T07:00:36.816Z",
-          "last_ok_at": "2026-08-20T07:00:36.816Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-08-21T12:02:36.284Z",
+          "last_ok_at": "2026-08-21T12:02:36.284Z",
+          "distinct_states": 22,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -547,6 +2734,90 @@
       ]
     },
     {
+      "slug": "statsig",
+      "name": "Statsig",
+      "homepage": "https://statsig.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://statsig.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:05:56.671Z",
+          "last_ok_at": "2026-08-21T12:05:56.671Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Developer",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "2M events per month",
+                  "Unlimited flag & config checks",
+                  "50,000 session replays per month",
+                  "A/B tests & experimentation",
+                  "Feature flags & config management",
+                  "Product and web analytics",
+                  "1-year analytics retention",
+                  "Session replays"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 150,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "5M events included, then $0.05 per 1K events",
+                  "Unlimited flag & config checks",
+                  "100,000 session replays per month",
+                  "Advanced experimentation",
+                  "Advanced product analytics",
+                  "Unlimited analytics retention"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom Event or Experiment based contracts",
+                  "Large volume discounts",
+                  "Warehouse native deployment",
+                  "Warehouse native deployment",
+                  "Outgoing data integrations",
+                  "Data warehouse imports",
+                  "SSO, role-based access controls, & teams",
+                  "Priority support"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "events per 1K beyond 5M included per month",
+                "unit_price_usd": 0.05
+              }
+            ],
+            "notes": "Pro tier includes 5M metered events per month at $150/month baseline, with $0.05 per 1K events overage. Developer tier is free with 2M events per month. Enterprise tier offers custom pricing with volume discounts. Charges are billed monthly at the start of each billing period, with overages from current month included in next month's bill.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
       "slug": "supabase",
       "name": "Supabase",
       "homepage": "https://supabase.com",
@@ -555,9 +2826,9 @@
           "kind": "pricing",
           "url": "https://supabase.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-20T07:00:24.435Z",
-          "last_ok_at": "2026-08-20T07:00:24.435Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-08-21T12:02:23.949Z",
+          "last_ok_at": "2026-08-21T12:02:23.949Z",
+          "distinct_states": 22,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -574,9 +2845,7 @@
                   "Unlimited API requests",
                   "50,000 monthly active users",
                   "500 MB database size",
-                  "Shared CPU • 500 MB RAM",
                   "5 GB egress",
-                  "5 GB cached egress",
                   "1 GB file storage",
                   "Community support"
                 ]
@@ -585,19 +2854,18 @@
                 "name": "Pro",
                 "monthly_price_usd": 25,
                 "annual_price_usd": null,
-                "billing_unit": "usage",
+                "billing_unit": "flat",
                 "included_seats": null,
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
+                  "Everything in the Free Plan, plus:",
                   "100,000 monthly active users",
                   "8 GB disk size per project",
                   "250 GB egress",
-                  "250 GB cached egress",
                   "100 GB file storage",
                   "Email support",
-                  "Daily backups stored for 7 days",
-                  "7-day log retention"
+                  "Daily backups stored for 7 days"
                 ]
               },
               {
@@ -609,14 +2877,12 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
+                  "Everything in the Pro Plan, plus:",
                   "SOC2 & ISO 27001",
                   "Project-scoped and read-only access",
                   "HIPAA available as paid add-on",
                   "SSO for Supabase Dashboard",
-                  "Priority email support & SLAs",
-                  "Daily backups stored for 14 days",
-                  "28-day log retention",
-                  "Everything in the Pro Plan"
+                  "Priority email support & SLAs"
                 ]
               },
               {
@@ -633,63 +2899,755 @@
                   "BYO Cloud supported",
                   "24×7×365 premium enterprise support",
                   "Private Slack channel",
-                  "Custom Security Questionnaires",
-                  "Custom pricing",
-                  "Custom features"
+                  "Custom Security Questionnaires"
                 ]
               }
             ],
             "usage_rates": [
               {
-                "metric": "monthly active users (MAU) over 100,000",
+                "metric": "Monthly Active Users (MAU) overage",
                 "unit_price_usd": 0.00325
               },
               {
-                "metric": "database storage (GB) over 8 GB",
+                "metric": "Database storage per GB overage",
                 "unit_price_usd": 0.125
               },
               {
-                "metric": "egress (GB) over 250 GB",
+                "metric": "Egress per GB overage",
                 "unit_price_usd": 0.09
               },
               {
-                "metric": "cached egress (GB) over 250 GB",
+                "metric": "Cached egress per GB overage",
                 "unit_price_usd": 0.03
               },
               {
-                "metric": "file storage (GB) over 100 GB",
+                "metric": "File storage per GB overage",
                 "unit_price_usd": 0.0213
               },
               {
-                "metric": "log drain per project per month",
+                "metric": "Log drain per drain per month",
                 "unit_price_usd": 60
               },
               {
-                "metric": "general purpose disk storage (GB) over 8 GB",
+                "metric": "Micro compute instance",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Small compute instance",
+                "unit_price_usd": 15
+              },
+              {
+                "metric": "Medium compute instance",
+                "unit_price_usd": 60
+              },
+              {
+                "metric": "Large compute instance",
+                "unit_price_usd": 110
+              },
+              {
+                "metric": "XL compute instance",
+                "unit_price_usd": 210
+              },
+              {
+                "metric": "2XL compute instance",
+                "unit_price_usd": 410
+              },
+              {
+                "metric": "4XL compute instance",
+                "unit_price_usd": 960
+              },
+              {
+                "metric": "8XL compute instance",
+                "unit_price_usd": 1870
+              },
+              {
+                "metric": "12XL compute instance",
+                "unit_price_usd": 2800
+              },
+              {
+                "metric": "16XL compute instance",
+                "unit_price_usd": 3730
+              },
+              {
+                "metric": "Advanced Multi-Factor Auth - Phone per project",
+                "unit_price_usd": 75
+              },
+              {
+                "metric": "Advanced Multi-Factor Auth - Phone per additional project",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "SSO overage per MAU",
+                "unit_price_usd": 0.015
+              },
+              {
+                "metric": "Branching per branch per hour",
+                "unit_price_usd": 0.01344
+              },
+              {
+                "metric": "Pipelines per pipeline per hour",
+                "unit_price_usd": 0.053
+              },
+              {
+                "metric": "Pipelines per GB processed ongoing replication",
+                "unit_price_usd": 3
+              },
+              {
+                "metric": "Pipelines per GB processed initial sync",
+                "unit_price_usd": 0.6
+              },
+              {
+                "metric": "General Purpose disk per GB overage",
                 "unit_price_usd": 0.125
               },
               {
-                "metric": "general purpose IOPS over 3,000",
+                "metric": "General Purpose IOPS per IOPS overage",
                 "unit_price_usd": 0.024
               },
               {
-                "metric": "general purpose throughput (MB/s) over 125",
+                "metric": "General Purpose throughput per MB/s overage",
                 "unit_price_usd": 0.095
               },
               {
-                "metric": "high performance disk storage (GB)",
+                "metric": "High Performance disk per GB",
                 "unit_price_usd": 0.195
               },
               {
-                "metric": "high performance IOPS",
+                "metric": "High Performance IOPS per IOPS",
                 "unit_price_usd": 0.119
               },
               {
-                "metric": "compute instance (Micro)",
+                "metric": "Custom Domain per domain per month",
                 "unit_price_usd": 10
+              },
+              {
+                "metric": "Point in Time Recovery per month per 7 days retention",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "Image Transformations per 1000 origin images overage",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "Realtime concurrent connections per 1000 overage",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Realtime messages per Million overage",
+                "unit_price_usd": 2.5
+              },
+              {
+                "metric": "Edge Functions per 1 Million invocations overage",
+                "unit_price_usd": 2
+              },
+              {
+                "metric": "Log drain per million events",
+                "unit_price_usd": 0.2
+              },
+              {
+                "metric": "Log drain per GB egress",
+                "unit_price_usd": 0.09
               }
             ],
-            "notes": "Pro Plan includes $10/month in compute credits. First project included in Pro and Team plans; additional projects from $10/mo. Free projects are paused after 1 week of inactivity. Limit of 2 active projects on Free plan. Compute instances are billed hourly and can be scaled up or down at any time. Multiple usage-based add-ons available including branching ($0.01344 per branch per hour), pipelines, point-in-time recovery ($100/month), custom domain ($10/month), and various other services. Spend cap available on Pro plan.",
+            "notes": "Pro plan includes $10/month in compute credits. Paid plans have a spend cap enabled by default on Pro. HIPAA is available as paid add-on on Pro and Team plans. Custom Domain costs $10/month per project. Point in Time Recovery starts at $100/month per 7 days retention with >28 days retention available. First project included in Pro and Team plans; additional projects from $10/mo.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "turso",
+      "name": "Turso",
+      "homepage": "https://turso.tech",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://turso.tech/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:05:01.568Z",
+          "last_ok_at": "2026-08-21T12:05:01.568Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100 Databases",
+                  "5GB Storage",
+                  "500 Million Monthly Rows Read",
+                  "10 Million Monthly Rows Written",
+                  "3GB Monthly Syncs",
+                  "1 day Point-In-Time Restore"
+                ]
+              },
+              {
+                "name": "Developer",
+                "monthly_price_usd": 4.99,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited Databases",
+                  "9GB Storage",
+                  "2.5 Billion Monthly Rows Read",
+                  "25 Million Monthly Rows Written",
+                  "10GB Monthly Syncs",
+                  "10 days Point-In-Time Restore"
+                ]
+              },
+              {
+                "name": "Scaler",
+                "monthly_price_usd": 24.92,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited Databases",
+                  "24GB Storage",
+                  "100 Billion Monthly Rows Read",
+                  "100 Million Monthly Rows Written",
+                  "24GB Monthly Syncs",
+                  "30 days Point-In-Time Restore"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 416.58,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Unlimited Databases",
+                  "50GB Storage",
+                  "250 Billion Monthly Rows Read",
+                  "250 Million Monthly Rows Written",
+                  "100GB Monthly Syncs",
+                  "90 days Point-In-Time Restore"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Storage (Developer)",
+                "unit_price_usd": 0.75
+              },
+              {
+                "metric": "Storage (Scaler)",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Storage (Pro)",
+                "unit_price_usd": 0.45
+              },
+              {
+                "metric": "Monthly Rows Read (Developer)",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Monthly Rows Read (Scaler)",
+                "unit_price_usd": 0.8
+              },
+              {
+                "metric": "Monthly Rows Read (Pro)",
+                "unit_price_usd": 0.75
+              },
+              {
+                "metric": "Monthly Rows Written (Developer)",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Monthly Rows Written (Scaler)",
+                "unit_price_usd": 0.8
+              },
+              {
+                "metric": "Monthly Rows Written (Pro)",
+                "unit_price_usd": 0.75
+              },
+              {
+                "metric": "Monthly Syncs (Developer)",
+                "unit_price_usd": 0.35
+              },
+              {
+                "metric": "Monthly Syncs (Scaler)",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "Monthly Syncs (Pro)",
+                "unit_price_usd": 0.15
+              }
+            ],
+            "notes": "Usage rates are per GB for storage and syncs, per Billion for rows read, and per Million for rows written. DPA, IP Allow Lists, AWS VPC Allow Lists, SSO, BYOK Encryption, HIPAA, and SOC2 availability vary by tier.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "upstash",
+      "name": "Upstash",
+      "homepage": "https://upstash.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://upstash.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:05:22.115Z",
+          "last_ok_at": "2026-08-21T12:05:22.115Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Free",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "256 MB data size",
+                  "10 GB monthly bandwidth",
+                  "500K monthly commands",
+                  "Perfect for prototypes and hobby projects"
+                ]
+              },
+              {
+                "name": "Pay as You Go",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "usage",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100 GB data size",
+                  "Unlimited monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "Flexible pricing for variable traffic"
+                ]
+              },
+              {
+                "name": "Fixed 250MB",
+                "monthly_price_usd": 10,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "250 MB data size",
+                  "50 GB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$5 per read region"
+                ]
+              },
+              {
+                "name": "Fixed 1GB",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "1 GB data size",
+                  "100 GB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$10 per read region"
+                ]
+              },
+              {
+                "name": "Fixed 5GB",
+                "monthly_price_usd": 100,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "5 GB data size",
+                  "500 GB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$50 per read region"
+                ]
+              },
+              {
+                "name": "Fixed 10GB",
+                "monthly_price_usd": 200,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "10 GB data size",
+                  "1 TB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$100 per read region"
+                ]
+              },
+              {
+                "name": "Fixed 50GB",
+                "monthly_price_usd": 400,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "50 GB data size",
+                  "5 TB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$200 per read region"
+                ]
+              },
+              {
+                "name": "Fixed 100GB",
+                "monthly_price_usd": 800,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "100 GB data size",
+                  "10 TB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$400 per read region"
+                ]
+              },
+              {
+                "name": "Fixed 500GB",
+                "monthly_price_usd": 1500,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "500 GB data size",
+                  "20 TB monthly bandwidth",
+                  "Unlimited monthly commands",
+                  "$750 per read region"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Everything in Prod Pack",
+                  "100K+ commands per second",
+                  "Unlimited bandwidth and database count",
+                  "Professional support with SLA"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "commands",
+                "unit_price_usd": 0.002
+              },
+              {
+                "metric": "storage per GB",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "bandwidth per GB",
+                "unit_price_usd": 0.03
+              }
+            ],
+            "notes": "Pay as You Go tier charges $0.20 per 100K commands. Storage: first 1 GB free, then $0.25 per GB. Bandwidth: free up to 200 GB/month, then $0.03/GB. Fixed plans include $5-$750 per read region costs. Enterprise pricing is custom. Prod Pack ($200/month per database) adds uptime SLA, SOC-2, encryption at rest, and multi-zone HA.",
+            "extraction_confidence": "high"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "vercel",
+      "name": "Vercel",
+      "homepage": "https://vercel.com",
+      "sources": [
+        {
+          "kind": "pricing",
+          "url": "https://vercel.com/pricing",
+          "state": "ok",
+          "last_checked_at": "2026-08-21T12:06:44.926Z",
+          "last_ok_at": "2026-08-21T12:06:44.926Z",
+          "distinct_states": 1,
+          "degraded_reason": null,
+          "current_pricing": {
+            "currency": "USD",
+            "tiers": [
+              {
+                "name": "Hobby",
+                "monthly_price_usd": 0,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": true,
+                "is_enterprise": false,
+                "headline_features": [
+                  "1M Edge Requests/month included",
+                  "100 GB/month data transfer included",
+                  "1 GB Blob Storage/month included",
+                  "5K Image Optimization transforms/month included"
+                ]
+              },
+              {
+                "name": "Pro",
+                "monthly_price_usd": 20,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "10M Edge Requests/month included",
+                  "1TB/month data transfer included",
+                  "$0.15/GB for additional data transfer",
+                  "Advanced security features"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Custom Edge Requests pricing",
+                  "Custom data transfer pricing",
+                  "Up to 1,000 Firewall rules",
+                  "Advanced DDoS mitigation"
+                ]
+              }
+            ],
+            "usage_rates": [
+              {
+                "metric": "Edge Requests",
+                "unit_price_usd": 2
+              },
+              {
+                "metric": "Fast Data Transfer",
+                "unit_price_usd": 0.15
+              },
+              {
+                "metric": "Firewall Rate Limit Requests",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Deep Analysis checks",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "ISR Reads",
+                "unit_price_usd": 0.4
+              },
+              {
+                "metric": "ISR Writes",
+                "unit_price_usd": 4
+              },
+              {
+                "metric": "Bulk Redirects",
+                "unit_price_usd": 50
+              },
+              {
+                "metric": "Blob Storage Size",
+                "unit_price_usd": 0.023
+              },
+              {
+                "metric": "Blob Simple Operations",
+                "unit_price_usd": 0.4
+              },
+              {
+                "metric": "Blob Advanced Operations",
+                "unit_price_usd": 5
+              },
+              {
+                "metric": "Blob Data Transfer",
+                "unit_price_usd": 0.05
+              },
+              {
+                "metric": "Image Optimization Transformation",
+                "unit_price_usd": 0.05
+              },
+              {
+                "metric": "Image Optimization Cache Reads",
+                "unit_price_usd": 0.4
+              },
+              {
+                "metric": "Image Optimization Cache Writes",
+                "unit_price_usd": 4
+              },
+              {
+                "metric": "Global Config Reads",
+                "unit_price_usd": 3
+              },
+              {
+                "metric": "Global Config Writes",
+                "unit_price_usd": 1
+              },
+              {
+                "metric": "Microfrontends additional project",
+                "unit_price_usd": 250
+              },
+              {
+                "metric": "Microfrontends Routing",
+                "unit_price_usd": 2
+              },
+              {
+                "metric": "Fluid Active CPU",
+                "unit_price_usd": 0.128
+              },
+              {
+                "metric": "Fluid Provisioned Memory",
+                "unit_price_usd": 0.0106
+              },
+              {
+                "metric": "Function Invocations",
+                "unit_price_usd": 0.6
+              },
+              {
+                "metric": "Service Requests",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Sandbox Active CPU",
+                "unit_price_usd": 0.128
+              },
+              {
+                "metric": "Sandbox Provisioned Memory",
+                "unit_price_usd": 0.0212
+              },
+              {
+                "metric": "Sandbox Creations",
+                "unit_price_usd": 0.6
+              },
+              {
+                "metric": "Sandbox Data Transfer",
+                "unit_price_usd": 0.15
+              },
+              {
+                "metric": "Container Registry Image Storage",
+                "unit_price_usd": 0.1
+              },
+              {
+                "metric": "Fast Origin Transfer",
+                "unit_price_usd": 0.06
+              },
+              {
+                "metric": "Workflow Events",
+                "unit_price_usd": 20
+              },
+              {
+                "metric": "Workflow Storage Writes",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Workflow Storage Retention",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "API Operations",
+                "unit_price_usd": 0.6
+              },
+              {
+                "metric": "Vercel Agent",
+                "unit_price_usd": 0.25
+              },
+              {
+                "metric": "Vercel Connect",
+                "unit_price_usd": 3
+              },
+              {
+                "metric": "Standard machines",
+                "unit_price_usd": 0.014
+              },
+              {
+                "metric": "Enhanced machines",
+                "unit_price_usd": 0.028
+              },
+              {
+                "metric": "Turbo machines",
+                "unit_price_usd": 0.105
+              },
+              {
+                "metric": "Elastic machines",
+                "unit_price_usd": 0.0035
+              },
+              {
+                "metric": "Developer seat",
+                "unit_price_usd": 20
+              },
+              {
+                "metric": "Preview Deployment Suffix",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "Flag Requests",
+                "unit_price_usd": 0.03
+              },
+              {
+                "metric": "Observability Events",
+                "unit_price_usd": 1.2
+              },
+              {
+                "metric": "Speed Insights Data Points",
+                "unit_price_usd": 0.65
+              },
+              {
+                "metric": "Web Analytics Events",
+                "unit_price_usd": 3
+              },
+              {
+                "metric": "Web Analytics Plus",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Drains Volume",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Advanced Deployment Protection",
+                "unit_price_usd": 150
+              },
+              {
+                "metric": "Static IPs",
+                "unit_price_usd": 100
+              },
+              {
+                "metric": "SAML Single Sign-On",
+                "unit_price_usd": 300
+              },
+              {
+                "metric": "HIPAA BAA",
+                "unit_price_usd": 350
+              }
+            ],
+            "notes": "Pricing page shows multiple usage-based metrics. Some features show regional pricing without specific rates listed. Hobby tier is free. Pro tier includes $20/month developer seat. Enterprise tier requires contacting sales.",
             "extraction_confidence": "high"
           }
         }

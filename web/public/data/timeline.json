@@ -1,12 +1,168 @@
 {
-  "generated_at": "2026-08-21T07:00:30.142Z",
-  "observation_count": 76,
+  "generated_at": "2026-08-21T12:10:11.481Z",
+  "observation_count": 98,
   "competitors": [
+    {
+      "slug": "auth0",
+      "name": "Auth0",
+      "first_observed_at": "2026-08-21T12:03:00.974Z",
+      "last_observed_at": "2026-08-21T12:03:00.974Z",
+      "series": [
+        {
+          "tier": "Essentials",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:00.974Z",
+                "price": 35
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:00.974Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Professional",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:00.974Z",
+                "price": 240
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "buildkite",
+      "name": "Buildkite",
+      "first_observed_at": "2026-08-21T12:03:36.618Z",
+      "last_observed_at": "2026-08-21T12:03:36.618Z",
+      "series": [
+        {
+          "tier": "Free Plan",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:36.618Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro Plan",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:36.618Z",
+                "price": 30
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "clerk",
+      "name": "Clerk",
+      "first_observed_at": "2026-08-21T12:03:14.109Z",
+      "last_observed_at": "2026-08-21T12:03:14.109Z",
+      "series": [
+        {
+          "tier": "Business",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:14.109Z",
+                "price": 300
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Hobby",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:14.109Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:14.109Z",
+                "price": 25
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "depot",
+      "name": "Depot",
+      "first_observed_at": "2026-08-21T12:03:49.035Z",
+      "last_observed_at": "2026-08-21T12:03:49.035Z",
+      "series": [
+        {
+          "tier": "Developer",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:49.035Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Startup",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:03:49.035Z",
+                "price": 200
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    },
     {
       "slug": "figma",
       "name": "Figma",
       "first_observed_at": "2026-04-09T02:32:27.000Z",
-      "last_observed_at": "2026-08-06T03:10:08.000Z",
+      "last_observed_at": "2026-08-21T12:02:13.402Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -84,10 +240,199 @@
       "markers": []
     },
     {
+      "slug": "fly-io",
+      "name": "Fly.io",
+      "first_observed_at": "2026-08-21T12:06:09.099Z",
+      "last_observed_at": "2026-08-21T12:06:09.099Z",
+      "series": [
+        {
+          "tier": "Compliance",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:09.099Z",
+                "price": 99
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Serious Support",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:09.099Z",
+                "price": 29
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "github",
+      "name": "GitHub",
+      "first_observed_at": "2026-08-21T12:04:01.599Z",
+      "last_observed_at": "2026-08-21T12:04:01.599Z",
+      "series": [
+        {
+          "tier": "Enterprise",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:01.599Z",
+                "price": 21
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:01.599Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Team",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:01.599Z",
+                "price": 4
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "gitlab",
+      "name": "GitLab",
+      "first_observed_at": "2026-08-21T12:04:12.654Z",
+      "last_observed_at": "2026-08-21T12:04:12.654Z",
+      "series": [
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:12.654Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Premium",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:12.654Z",
+                "price": 29
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "hasura",
+      "name": "Hasura",
+      "first_observed_at": "2026-08-21T12:04:25.562Z",
+      "last_observed_at": "2026-08-21T12:04:25.562Z",
+      "series": [
+        {
+          "tier": "DDN Advanced",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:25.562Z",
+                "price": 30
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "DDN Base",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:25.562Z",
+                "price": 5
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "DDN Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:25.562Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "honeycomb",
+      "name": "Honeycomb",
+      "first_observed_at": "2026-08-21T12:06:56.888Z",
+      "last_observed_at": "2026-08-21T12:06:56.888Z",
+      "series": [
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:56.888Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:56.888Z",
+                "price": 150
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
       "slug": "linear",
       "name": "Linear",
       "first_observed_at": "2025-02-19T07:53:31.000Z",
-      "last_observed_at": "2026-08-19T23:28:17.074Z",
+      "last_observed_at": "2026-08-21T07:00:14.584Z",
       "series": [
         {
           "tier": "Basic",
@@ -285,19 +630,109 @@
       "markers": [
         {
           "observed_at": "2025-11-12T01:16:11.000Z",
-          "label": "Basic 8 to 10"
+          "label": "Basic $8 → $10"
         },
         {
           "observed_at": "2025-11-12T01:16:11.000Z",
-          "label": "Business 14 to 16"
+          "label": "Business $14 → $16"
         }
       ]
+    },
+    {
+      "slug": "netlify",
+      "name": "Netlify",
+      "first_observed_at": "2026-08-21T12:06:20.056Z",
+      "last_observed_at": "2026-08-21T12:06:20.056Z",
+      "series": [
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:20.056Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Personal",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:20.056Z",
+                "price": 9
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:20.056Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "new-relic",
+      "name": "New Relic",
+      "first_observed_at": "2026-08-21T12:07:08.616Z",
+      "last_observed_at": "2026-08-21T12:07:08.616Z",
+      "series": [
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:08.616Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:08.616Z",
+                "price": 349
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Standard",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:08.616Z",
+                "price": 10
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
     },
     {
       "slug": "notion",
       "name": "Notion",
       "first_observed_at": "2025-02-19T07:54:17.000Z",
-      "last_observed_at": "2026-08-18T15:01:03.831Z",
+      "last_observed_at": "2026-08-21T07:00:27.481Z",
       "series": [
         {
           "tier": "Business",
@@ -529,7 +964,7 @@
         },
         {
           "observed_at": "2025-06-03T01:07:05.000Z",
-          "label": "Business 15 to 20"
+          "label": "Business $15 → $20"
         },
         {
           "observed_at": "2025-09-01T07:52:45.000Z",
@@ -542,10 +977,100 @@
       ]
     },
     {
+      "slug": "pinecone",
+      "name": "Pinecone",
+      "first_observed_at": "2026-08-21T12:07:19.148Z",
+      "last_observed_at": "2026-08-21T12:07:19.148Z",
+      "series": [
+        {
+          "tier": "Builder",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:19.148Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Enterprise",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:19.148Z",
+                "price": 500
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Standard",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:19.148Z",
+                "price": 50
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Starter",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:07:19.148Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "planetscale",
+      "name": "PlanetScale",
+      "first_observed_at": "2026-08-21T12:04:36.440Z",
+      "last_observed_at": "2026-08-21T12:04:36.440Z",
+      "series": [
+        {
+          "tier": "Base Plan - PlanetScale PostgreSQL Metal",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:36.440Z",
+                "price": 50
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Base Plan - PlanetScale PostgreSQL Single Node",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:36.440Z",
+                "price": 5
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
       "slug": "postman",
       "name": "Postman",
       "first_observed_at": "2025-02-23T11:47:21.000Z",
-      "last_observed_at": "2026-08-20T07:00:48.495Z",
+      "last_observed_at": "2026-08-21T12:02:48.662Z",
       "series": [
         {
           "tier": "Basic",
@@ -852,10 +1377,202 @@
       ]
     },
     {
+      "slug": "postmark",
+      "name": "Postmark",
+      "first_observed_at": "2026-08-21T12:05:34.900Z",
+      "last_observed_at": "2026-08-21T12:05:34.900Z",
+      "series": [
+        {
+          "tier": "Basic",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:34.900Z",
+                "price": 15
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:34.900Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Platform",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:34.900Z",
+                "price": 18
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:34.900Z",
+                "price": 16.5
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "redis-cloud",
+      "name": "Redis Cloud",
+      "first_observed_at": "2026-08-21T12:04:49.100Z",
+      "last_observed_at": "2026-08-21T12:04:49.100Z",
+      "series": [
+        {
+          "tier": "Essentials",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:49.100Z",
+                "price": 5
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:49.100Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:04:49.100Z",
+                "price": 200
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "render",
+      "name": "Render",
+      "first_observed_at": "2026-08-21T12:06:32.338Z",
+      "last_observed_at": "2026-08-21T12:06:32.338Z",
+      "series": [
+        {
+          "tier": "Hobby",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:32.338Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:32.338Z",
+                "price": 25
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Scale",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:32.338Z",
+                "price": 499
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "resend",
+      "name": "Resend",
+      "first_observed_at": "2026-08-21T12:05:46.321Z",
+      "last_observed_at": "2026-08-21T12:05:46.321Z",
+      "series": [
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:46.321Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:46.321Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Scale",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:46.321Z",
+                "price": 90
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        }
+      ],
+      "markers": []
+    },
+    {
       "slug": "sentry",
       "name": "Sentry",
       "first_observed_at": "2025-02-19T05:34:02.000Z",
-      "last_observed_at": "2026-08-11T15:50:53.000Z",
+      "last_observed_at": "2026-08-21T12:02:36.284Z",
       "series": [
         {
           "tier": "business",
@@ -1101,10 +1818,43 @@
       "markers": []
     },
     {
+      "slug": "statsig",
+      "name": "Statsig",
+      "first_observed_at": "2026-08-21T12:05:56.671Z",
+      "last_observed_at": "2026-08-21T12:05:56.671Z",
+      "series": [
+        {
+          "tier": "Developer",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:56.671Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:56.671Z",
+                "price": 150
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
+    },
+    {
       "slug": "supabase",
       "name": "Supabase",
       "first_observed_at": "2025-02-19T03:41:25.000Z",
-      "last_observed_at": "2026-08-18T15:01:28.444Z",
+      "last_observed_at": "2026-08-21T12:02:23.949Z",
       "series": [
         {
           "tier": "Free",
@@ -1178,6 +1928,10 @@
               },
               {
                 "observed_at": "2026-08-18T15:01:28.444Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-21T12:02:23.949Z",
                 "price": 0
               }
             ]
@@ -1257,6 +2011,10 @@
               {
                 "observed_at": "2026-08-18T15:01:28.444Z",
                 "price": 25
+              },
+              {
+                "observed_at": "2026-08-21T12:02:23.949Z",
+                "price": 25
               }
             ]
           ],
@@ -1335,6 +2093,10 @@
               {
                 "observed_at": "2026-08-18T15:01:28.444Z",
                 "price": 599
+              },
+              {
+                "observed_at": "2026-08-21T12:02:23.949Z",
+                "price": 599
               }
             ]
           ],
@@ -1347,6 +2109,201 @@
           "label": "Pro billing unit changed"
         }
       ]
+    },
+    {
+      "slug": "turso",
+      "name": "Turso",
+      "first_observed_at": "2026-08-21T12:05:01.568Z",
+      "last_observed_at": "2026-08-21T12:05:01.568Z",
+      "series": [
+        {
+          "tier": "Developer",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:01.568Z",
+                "price": 4.99
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:01.568Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:01.568Z",
+                "price": 416.58
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Scaler",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:01.568Z",
+                "price": 24.92
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "upstash",
+      "name": "Upstash",
+      "first_observed_at": "2026-08-21T12:05:22.115Z",
+      "last_observed_at": "2026-08-21T12:05:22.115Z",
+      "series": [
+        {
+          "tier": "Fixed 100GB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 800
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Fixed 10GB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 200
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Fixed 1GB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Fixed 250MB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 10
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        },
+        {
+          "tier": "Fixed 500GB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 1500
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "Fixed 50GB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 400
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Fixed 5GB",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 100
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        }
+      ],
+      "markers": []
+    },
+    {
+      "slug": "vercel",
+      "name": "Vercel",
+      "first_observed_at": "2026-08-21T12:06:44.926Z",
+      "last_observed_at": "2026-08-21T12:06:44.926Z",
+      "series": [
+        {
+          "tier": "Hobby",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:44.926Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pro",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-21T12:06:44.926Z",
+                "price": 20
+              }
+            ]
+          ],
+          "tier_class": "entry"
+        }
+      ],
+      "markers": []
     }
   ]
 }

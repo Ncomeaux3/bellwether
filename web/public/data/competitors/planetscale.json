@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "planetscale",
   "name": "PlanetScale",
   "homepage": "https://planetscale.com",
   "source_url": "https://planetscale.com/pricing",
   "current_tiers": [
     {
-      "name": "PlanetScale PostgreSQL - Single Node",
+      "name": "Base Plan - PlanetScale PostgreSQL Single Node",
       "monthly_price_usd": 5,
       "annual_price_usd": null,
       "billing_unit": "flat",
@@ -15,12 +15,13 @@
       "is_enterprise": false,
       "headline_features": [
         "Development and low-traffic production workloads",
-        "Single node",
-        "Starting at $5/month"
+        "Single node deployment",
+        "Pay as you go pricing",
+        "Upsize and downsize instances as needed"
       ]
     },
     {
-      "name": "PlanetScale PostgreSQL - High Availability",
+      "name": "Base Plan - PlanetScale PostgreSQL High Availability",
       "monthly_price_usd": null,
       "annual_price_usd": null,
       "billing_unit": "flat",
@@ -29,12 +30,12 @@
       "is_enterprise": false,
       "headline_features": [
         "1 primary + 2 replicas across 3 availability zones",
-        "High Availability",
-        "99.99% SLA"
+        "99.99% SLA",
+        "High-availability clusters deployed across 3 availability zones"
       ]
     },
     {
-      "name": "PlanetScale PostgreSQL - Metal",
+      "name": "Base Plan - PlanetScale PostgreSQL Metal",
       "monthly_price_usd": 50,
       "annual_price_usd": null,
       "billing_unit": "flat",
@@ -44,11 +45,12 @@
       "headline_features": [
         "High-performance local NVMe storage",
         "Ultra-fast NVMe drives and unlimited IOPS",
+        "High-availability Metal clusters",
         "Starting at $50/month"
       ]
     },
     {
-      "name": "Vitess - MySQL at Hyperscale",
+      "name": "Base Plan - Vitess MySQL",
       "monthly_price_usd": null,
       "annual_price_usd": null,
       "billing_unit": "usage",
@@ -58,11 +60,12 @@
       "headline_features": [
         "MySQL-compatible with horizontal sharding for massive scale",
         "Pricing based on cluster size, VTGate configuration, and storage",
+        "Network-attached storage or PlanetScale Metal",
         "Metal also available"
       ]
     },
     {
-      "name": "Enterprise",
+      "name": "Enterprise Plan",
       "monthly_price_usd": null,
       "annual_price_usd": null,
       "billing_unit": "flat",
@@ -70,26 +73,24 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Database expertise with core Vitess maintainers",
-        "Migration assistance with no downtime",
-        "Slack-based support with private shared channel",
-        "Business support included",
-        "Architecture consultation",
-        "Custom pricing",
-        "Multi-tenant or single-tenant deployment options",
-        "Additional regions across AWS or GCP"
+        "Database expertise from core Vitess maintainers",
+        "Hands-on migration assistance with no downtime",
+        "Private shared Slack channel support",
+        "Enhanced response times and architecture consultation",
+        "Multi-tenant, single-tenant, or bring your own cloud deployment",
+        "Custom pricing and flexible requirements"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:48:01.996Z",
-  "last_observed_at": "2026-08-20T17:48:01.996Z",
+  "first_observed_at": "2026-08-21T12:04:36.440Z",
+  "last_observed_at": "2026-08-21T12:04:36.440Z",
   "series": [
     {
-      "tier": "PlanetScale PostgreSQL - Metal",
+      "tier": "Base Plan - PlanetScale PostgreSQL Metal",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:01.996Z",
+            "observed_at": "2026-08-21T12:04:36.440Z",
             "price": 50
           }
         ]
@@ -97,11 +98,11 @@
       "tier_class": "enterprise"
     },
     {
-      "tier": "PlanetScale PostgreSQL - Single Node",
+      "tier": "Base Plan - PlanetScale PostgreSQL Single Node",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:48:01.996Z",
+            "observed_at": "2026-08-21T12:04:36.440Z",
             "price": 5
           }
         ]

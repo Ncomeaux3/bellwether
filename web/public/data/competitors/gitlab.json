@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-20T18:30:17.655Z",
+  "generated_at": "2026-08-21T12:10:11.481Z",
   "slug": "gitlab",
   "name": "GitLab",
   "homepage": "https://about.gitlab.com",
@@ -9,7 +9,7 @@
       "name": "Free",
       "monthly_price_usd": 0,
       "annual_price_usd": 0,
-      "billing_unit": "per_seat",
+      "billing_unit": "flat",
       "included_seats": 5,
       "is_free": true,
       "is_enterprise": false,
@@ -29,32 +29,32 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything from Free, plus:",
         "Unlimited licensed users",
         "10,000 compute minutes per month",
         "Advanced CI/CD",
         "Team Project Management",
         "SLA Management",
-        "Priority Support",
-        "Includes $12 in GitLab Credits per user per month"
+        "Priority Support"
       ]
     },
     {
       "name": "Ultimate",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "per_seat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Everything from Premium",
+        "Everything from Premium, plus:",
         "Application Security Testing",
         "Software Supply Chain Security",
         "Vulnerability Management",
         "Strategic Portfolio Management",
         "Value Stream Management",
-        "50,000 compute minutes per month",
-        "Includes $24 in GitLab Credits per user per month"
+        "Compliance and Governance",
+        "50,000 compute minutes per month"
       ]
     },
     {
@@ -66,12 +66,10 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Includes everything from Ultimate",
+        "Includes everything from Ultimate, plus:",
         "Fully managed by GitLab",
         "Data residency in region of your choice",
-        "Full data and source code isolation",
-        "Bring your own key encryption",
-        "Enterprise grade security"
+        "Full data and source code isolation"
       ]
     },
     {
@@ -83,22 +81,22 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Includes everything from Ultimate and Dedicated",
-        "Hosted on FedRAMP compliant infrastructure",
+        "Includes everything from Ultimate and Dedicated, plus:",
+        "Hosted on a FedRAMP compliant infrastructure",
         "Meets FedRAMP Moderate baseline security controls",
-        "Deployed on AWS GovCloud"
+        "GovRAMP authorized for state and local government"
       ]
     }
   ],
-  "first_observed_at": "2026-08-20T17:47:38.743Z",
-  "last_observed_at": "2026-08-20T17:47:38.743Z",
+  "first_observed_at": "2026-08-21T12:04:12.654Z",
+  "last_observed_at": "2026-08-21T12:04:12.654Z",
   "series": [
     {
       "tier": "Free",
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:47:38.743Z",
+            "observed_at": "2026-08-21T12:04:12.654Z",
             "price": 0
           }
         ]
@@ -110,7 +108,7 @@
       "segments": [
         [
           {
-            "observed_at": "2026-08-20T17:47:38.743Z",
+            "observed_at": "2026-08-21T12:04:12.654Z",
             "price": 29
           }
         ]
