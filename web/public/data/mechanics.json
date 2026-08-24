@@ -1,26 +1,26 @@
 {
-  "generated_at": "2026-08-23T07:00:08.575Z",
+  "generated_at": "2026-08-24T07:00:06.250Z",
   "filter": {
-    "total_snapshots": 598,
+    "total_snapshots": 625,
     "extractions_performed": 113,
-    "llm_calls_avoided": 475,
-    "llm_calls_avoided_pct": 79.4,
+    "llm_calls_avoided": 502,
+    "llm_calls_avoided_pct": 80.3,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
-        "eliminated": 198,
-        "remaining": 400,
+        "eliminated": 204,
+        "remaining": 421,
         "note": "Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined."
       },
       {
         "name": "Repeat page state, already extracted",
         "eliminated": 84,
-        "remaining": 316,
+        "remaining": 337,
         "note": "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call."
       },
       {
         "name": "Short-circuited before any request",
-        "eliminated": 193,
+        "eliminated": 214,
         "remaining": 123,
         "note": "Refused before a request was sent (token budget exceeded, or no extractable text), or not yet due for extraction — zero spend either way."
       },
@@ -40,9 +40,9 @@
   },
   "coverage": {
     "first_observed_at": "2025-02-19T03:41:25.000Z",
-    "last_observed_at": "2026-08-21T12:07:19.148Z",
+    "last_observed_at": "2026-08-23T07:05:47.981Z",
     "months_covered": 19,
-    "live_snapshots": 39,
+    "live_snapshots": 66,
     "backfilled_snapshots": 559
   },
   "health": {
@@ -52,7 +52,7 @@
         "kind": "pricing",
         "url": "https://auth0.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:03:00.974Z",
+        "last_ok_at": "2026-08-23T07:01:27.216Z",
         "degraded_reason": null
       },
       {
@@ -60,7 +60,7 @@
         "kind": "pricing",
         "url": "https://buildkite.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:03:36.618Z",
+        "last_ok_at": "2026-08-23T07:02:02.344Z",
         "degraded_reason": null
       },
       {
@@ -68,7 +68,7 @@
         "kind": "pricing",
         "url": "https://clerk.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:03:14.109Z",
+        "last_ok_at": "2026-08-23T07:01:40.298Z",
         "degraded_reason": null
       },
       {
@@ -76,7 +76,7 @@
         "kind": "pricing",
         "url": "https://depot.dev/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:03:49.035Z",
+        "last_ok_at": "2026-08-23T07:02:15.262Z",
         "degraded_reason": null
       },
       {
@@ -84,7 +84,7 @@
         "kind": "pricing",
         "url": "https://www.figma.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:02:13.402Z",
+        "last_ok_at": "2026-08-23T07:00:41.401Z",
         "degraded_reason": null
       },
       {
@@ -92,7 +92,7 @@
         "kind": "pricing",
         "url": "https://fly.io/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:06:09.099Z",
+        "last_ok_at": "2026-08-23T07:04:35.576Z",
         "degraded_reason": null
       },
       {
@@ -100,7 +100,7 @@
         "kind": "pricing",
         "url": "https://github.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:04:01.599Z",
+        "last_ok_at": "2026-08-23T07:02:28.092Z",
         "degraded_reason": null
       },
       {
@@ -108,7 +108,7 @@
         "kind": "pricing",
         "url": "https://about.gitlab.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:04:12.654Z",
+        "last_ok_at": "2026-08-23T07:02:38.678Z",
         "degraded_reason": null
       },
       {
@@ -116,7 +116,7 @@
         "kind": "pricing",
         "url": "https://hasura.io/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:04:25.562Z",
+        "last_ok_at": "2026-08-23T07:02:51.530Z",
         "degraded_reason": null
       },
       {
@@ -124,7 +124,7 @@
         "kind": "pricing",
         "url": "https://www.honeycomb.io/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:06:56.888Z",
+        "last_ok_at": "2026-08-23T07:05:23.611Z",
         "degraded_reason": null
       },
       {
@@ -132,7 +132,7 @@
         "kind": "pricing",
         "url": "https://linear.app/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T07:00:14.584Z",
+        "last_ok_at": "2026-08-23T07:00:17.885Z",
         "degraded_reason": null
       },
       {
@@ -140,7 +140,7 @@
         "kind": "pricing",
         "url": "https://www.netlify.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:06:20.056Z",
+        "last_ok_at": "2026-08-23T07:04:46.623Z",
         "degraded_reason": null
       },
       {
@@ -148,7 +148,7 @@
         "kind": "pricing",
         "url": "https://newrelic.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:07:08.616Z",
+        "last_ok_at": "2026-08-23T07:05:36.599Z",
         "degraded_reason": null
       },
       {
@@ -156,7 +156,7 @@
         "kind": "pricing",
         "url": "https://www.notion.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T07:00:27.481Z",
+        "last_ok_at": "2026-08-23T07:00:29.003Z",
         "degraded_reason": null
       },
       {
@@ -164,7 +164,7 @@
         "kind": "pricing",
         "url": "https://www.pinecone.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:07:19.148Z",
+        "last_ok_at": "2026-08-23T07:05:47.981Z",
         "degraded_reason": null
       },
       {
@@ -172,7 +172,7 @@
         "kind": "pricing",
         "url": "https://planetscale.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:04:36.440Z",
+        "last_ok_at": "2026-08-23T07:03:03.471Z",
         "degraded_reason": null
       },
       {
@@ -180,7 +180,7 @@
         "kind": "pricing",
         "url": "https://www.postman.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:02:48.662Z",
+        "last_ok_at": "2026-08-23T07:01:15.161Z",
         "degraded_reason": null
       },
       {
@@ -188,7 +188,7 @@
         "kind": "pricing",
         "url": "https://postmarkapp.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:05:34.900Z",
+        "last_ok_at": "2026-08-23T07:04:00.626Z",
         "degraded_reason": null
       },
       {
@@ -196,7 +196,7 @@
         "kind": "pricing",
         "url": "https://redis.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:04:49.100Z",
+        "last_ok_at": "2026-08-23T07:03:17.361Z",
         "degraded_reason": null
       },
       {
@@ -204,7 +204,7 @@
         "kind": "pricing",
         "url": "https://render.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:06:32.338Z",
+        "last_ok_at": "2026-08-23T07:04:57.807Z",
         "degraded_reason": null
       },
       {
@@ -212,7 +212,7 @@
         "kind": "pricing",
         "url": "https://resend.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:05:46.321Z",
+        "last_ok_at": "2026-08-23T07:04:12.090Z",
         "degraded_reason": null
       },
       {
@@ -220,7 +220,7 @@
         "kind": "pricing",
         "url": "https://sentry.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:02:36.284Z",
+        "last_ok_at": "2026-08-23T07:01:03.665Z",
         "degraded_reason": null
       },
       {
@@ -228,7 +228,7 @@
         "kind": "pricing",
         "url": "https://statsig.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:05:56.671Z",
+        "last_ok_at": "2026-08-23T07:04:23.266Z",
         "degraded_reason": null
       },
       {
@@ -236,7 +236,7 @@
         "kind": "pricing",
         "url": "https://supabase.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:02:23.949Z",
+        "last_ok_at": "2026-08-23T07:00:53.226Z",
         "degraded_reason": null
       },
       {
@@ -244,7 +244,7 @@
         "kind": "pricing",
         "url": "https://turso.tech/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:05:01.568Z",
+        "last_ok_at": "2026-08-23T07:03:28.355Z",
         "degraded_reason": null
       },
       {
@@ -252,7 +252,7 @@
         "kind": "pricing",
         "url": "https://upstash.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:05:22.115Z",
+        "last_ok_at": "2026-08-23T07:03:49.761Z",
         "degraded_reason": null
       },
       {
@@ -260,7 +260,7 @@
         "kind": "pricing",
         "url": "https://vercel.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-21T12:06:44.926Z",
+        "last_ok_at": "2026-08-23T07:05:10.589Z",
         "degraded_reason": null
       }
     ],
@@ -273,42 +273,42 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-08-22T07:30:03.127Z"
+        "ended_at": "2026-08-23T07:30:03.038Z"
       },
       {
         "kind": "collect",
         "state": "ok",
-        "ended_at": "2026-08-22T07:00:05.372Z"
+        "ended_at": "2026-08-24T07:00:05.731Z"
       },
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-08-23T07:00:08.560Z"
+        "ended_at": "2026-08-24T07:00:05.963Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-08-22T07:00:08.297Z"
+        "ended_at": "2026-08-23T07:05:50.949Z"
       },
       {
         "kind": "extract",
         "state": "failed",
-        "ended_at": "2026-08-23T07:00:08.355Z"
+        "ended_at": "2026-08-23T07:05:50.238Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-08-22T07:00:08.813Z"
+        "ended_at": "2026-08-23T07:00:11.708Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-08-22T07:30:17.142Z"
+        "ended_at": "2026-08-23T07:30:12.174Z"
       },
       {
         "kind": "synthesize",
-        "state": "ok",
-        "ended_at": "2026-08-23T07:00:08.575Z"
+        "state": "failed",
+        "ended_at": "2026-08-24T07:00:06.250Z"
       }
     ]
   },
