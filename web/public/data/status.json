@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-24T07:00:06.250Z",
+  "generated_at": "2026-08-25T07:00:50.303Z",
   "total_sources": 27,
   "healthy_sources": 27,
   "sources": [
@@ -195,9 +195,9 @@
   ],
   "last_run": {
     "kind": "synthesize",
-    "started_at": "2026-08-24T07:00:05.963Z",
-    "ended_at": "2026-08-24T07:00:06.250Z",
-    "state": "failed"
+    "started_at": "2026-08-25T07:00:50.286Z",
+    "ended_at": "2026-08-25T07:00:50.302Z",
+    "state": "ok"
   },
   "cost_micros_month": 304139
 }
