@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-26T07:00:06.159Z",
+  "generated_at": "2026-08-27T07:00:09.010Z",
   "filter": {
     "total_snapshots": 652,
     "extractions_performed": 113,
@@ -273,7 +273,7 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-08-25T07:30:03.105Z"
+        "ended_at": "2026-08-26T07:30:02.812Z"
       },
       {
         "kind": "collect",
@@ -283,32 +283,32 @@
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-08-26T07:00:06.142Z"
+        "ended_at": "2026-08-27T07:00:08.994Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-08-25T07:06:27.742Z"
+        "ended_at": "2026-08-26T07:00:09.237Z"
       },
       {
         "kind": "extract",
         "state": "failed",
-        "ended_at": "2026-08-25T07:06:27.018Z"
+        "ended_at": "2026-08-27T07:00:08.781Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-08-25T07:00:54.739Z"
+        "ended_at": "2026-08-26T07:00:09.476Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-08-25T07:30:13.775Z"
+        "ended_at": "2026-08-26T07:30:08.914Z"
       },
       {
         "kind": "synthesize",
         "state": "ok",
-        "ended_at": "2026-08-26T07:00:06.159Z"
+        "ended_at": "2026-08-27T07:00:09.009Z"
       }
     ]
   },
