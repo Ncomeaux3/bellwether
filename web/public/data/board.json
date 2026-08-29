@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-28T07:00:56.126Z",
+  "generated_at": "2026-08-29T07:00:09.390Z",
   "competitors": [
     {
       "slug": "auth0",
@@ -545,9 +545,9 @@
           "kind": "pricing",
           "url": "https://www.figma.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-08-27T07:00:42.525Z",
-          "last_ok_at": "2026-08-27T07:00:42.525Z",
-          "distinct_states": 26,
+          "last_checked_at": "2026-08-28T07:01:25.300Z",
+          "last_ok_at": "2026-08-28T07:01:25.300Z",
+          "distinct_states": 27,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -1124,9 +1124,9 @@
           "kind": "pricing",
           "url": "https://linear.app/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-27T07:00:18.366Z",
-          "last_ok_at": "2026-08-27T07:00:18.366Z",
-          "distinct_states": 26,
+          "last_checked_at": "2026-08-28T07:01:03.675Z",
+          "last_ok_at": "2026-08-28T07:01:03.675Z",
+          "distinct_states": 27,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -1441,9 +1441,9 @@
           "kind": "pricing",
           "url": "https://www.notion.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-08-27T07:00:31.276Z",
-          "last_ok_at": "2026-08-27T07:00:31.276Z",
-          "distinct_states": 26,
+          "last_checked_at": "2026-08-28T07:01:14.926Z",
+          "last_ok_at": "2026-08-28T07:01:14.926Z",
+          "distinct_states": 27,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",

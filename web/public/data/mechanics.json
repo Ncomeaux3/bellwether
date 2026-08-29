@@ -1,26 +1,26 @@
 {
-  "generated_at": "2026-08-28T07:00:56.126Z",
+  "generated_at": "2026-08-29T07:00:09.390Z",
   "filter": {
-    "total_snapshots": 679,
+    "total_snapshots": 682,
     "extractions_performed": 113,
-    "llm_calls_avoided": 556,
-    "llm_calls_avoided_pct": 81.9,
+    "llm_calls_avoided": 559,
+    "llm_calls_avoided_pct": 82,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
         "eliminated": 207,
-        "remaining": 472,
+        "remaining": 475,
         "note": "Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined."
       },
       {
         "name": "Repeat page state, already extracted",
         "eliminated": 84,
-        "remaining": 388,
+        "remaining": 391,
         "note": "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call."
       },
       {
         "name": "Short-circuited before any request",
-        "eliminated": 265,
+        "eliminated": 268,
         "remaining": 123,
         "note": "Refused before a request was sent (token budget exceeded, or no extractable text), or not yet due for extraction — zero spend either way."
       },
@@ -40,9 +40,9 @@
   },
   "coverage": {
     "first_observed_at": "2025-02-19T03:41:25.000Z",
-    "last_observed_at": "2026-08-27T07:06:01.502Z",
+    "last_observed_at": "2026-08-28T07:01:25.300Z",
     "months_covered": 19,
-    "live_snapshots": 120,
+    "live_snapshots": 123,
     "backfilled_snapshots": 559
   },
   "health": {
@@ -84,7 +84,7 @@
         "kind": "pricing",
         "url": "https://www.figma.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-08-27T07:00:42.525Z",
+        "last_ok_at": "2026-08-28T07:01:25.300Z",
         "degraded_reason": null
       },
       {
@@ -132,7 +132,7 @@
         "kind": "pricing",
         "url": "https://linear.app/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-27T07:00:18.366Z",
+        "last_ok_at": "2026-08-28T07:01:03.675Z",
         "degraded_reason": null
       },
       {
@@ -156,7 +156,7 @@
         "kind": "pricing",
         "url": "https://www.notion.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-08-27T07:00:31.276Z",
+        "last_ok_at": "2026-08-28T07:01:14.926Z",
         "degraded_reason": null
       },
       {
@@ -273,42 +273,42 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-08-27T07:30:03.115Z"
+        "ended_at": "2026-08-28T07:30:03.552Z"
       },
       {
         "kind": "collect",
         "state": "ok",
-        "ended_at": "2026-08-27T07:06:01.511Z"
+        "ended_at": "2026-08-28T07:01:25.318Z"
       },
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-08-28T07:00:56.110Z"
+        "ended_at": "2026-08-29T07:00:09.375Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-08-27T07:06:04.976Z"
+        "ended_at": "2026-08-28T07:01:28.763Z"
       },
       {
         "kind": "extract",
         "state": "failed",
-        "ended_at": "2026-08-28T07:00:55.907Z"
+        "ended_at": "2026-08-29T07:00:09.169Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-08-27T07:00:12.697Z"
+        "ended_at": "2026-08-28T07:00:59.764Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-08-27T07:30:10.711Z"
+        "ended_at": "2026-08-28T07:30:14.178Z"
       },
       {
         "kind": "synthesize",
         "state": "ok",
-        "ended_at": "2026-08-28T07:00:56.125Z"
+        "ended_at": "2026-08-29T07:00:09.390Z"
       }
     ]
   },
