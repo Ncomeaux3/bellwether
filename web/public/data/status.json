@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-30T07:00:08.593Z",
+  "generated_at": "2026-08-31T07:00:08.723Z",
   "total_sources": 27,
   "healthy_sources": 27,
   "sources": [
@@ -35,7 +35,7 @@
       "slug": "figma",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-28T07:01:25.300Z",
+      "last_ok_at": "2026-08-30T07:00:41.569Z",
       "degraded_reason": null
     },
     {
@@ -77,7 +77,7 @@
       "slug": "linear",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-28T07:01:03.675Z",
+      "last_ok_at": "2026-08-30T07:00:17.236Z",
       "degraded_reason": null
     },
     {
@@ -98,7 +98,7 @@
       "slug": "notion",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-28T07:01:14.926Z",
+      "last_ok_at": "2026-08-30T07:00:28.918Z",
       "degraded_reason": null
     },
     {
@@ -195,9 +195,9 @@
   ],
   "last_run": {
     "kind": "synthesize",
-    "started_at": "2026-08-30T07:00:08.577Z",
-    "ended_at": "2026-08-30T07:00:08.593Z",
-    "state": "ok"
+    "started_at": "2026-08-31T07:00:08.514Z",
+    "ended_at": "2026-08-31T07:00:08.721Z",
+    "state": "failed"
   },
   "cost_micros_month": 304139
 }
