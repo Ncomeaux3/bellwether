@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "resend",
   "name": "Resend",
   "homepage": "https://resend.com",
@@ -84,6 +84,14 @@
           {
             "observed_at": "2025-08-28T01:29:48.000Z",
             "price": 0
+          },
+          {
+            "observed_at": "2025-11-09T22:31:29.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-12-09T11:09:17.000Z",
+            "price": 0
           }
         ],
         [
@@ -102,6 +110,14 @@
           {
             "observed_at": "2025-08-28T01:29:48.000Z",
             "price": 20
+          },
+          {
+            "observed_at": "2025-11-09T22:31:29.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2025-12-09T11:09:17.000Z",
+            "price": 20
           }
         ],
         [
@@ -119,6 +135,14 @@
         [
           {
             "observed_at": "2025-08-28T01:29:48.000Z",
+            "price": 90
+          },
+          {
+            "observed_at": "2025-11-09T22:31:29.000Z",
+            "price": 90
+          },
+          {
+            "observed_at": "2025-12-09T11:09:17.000Z",
             "price": 90
           }
         ],

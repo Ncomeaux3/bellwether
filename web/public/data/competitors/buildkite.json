@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "buildkite",
   "name": "Buildkite",
   "homepage": "https://buildkite.com",
@@ -74,11 +74,37 @@
       "tier_class": "free"
     },
     {
+      "tier": "Personal",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-11-15T03:17:40.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-01-20T16:16:40.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
       "tier": "Pro",
       "segments": [
         [
           {
             "observed_at": "2025-08-29T11:09:15.000Z",
+            "price": 30
+          }
+        ],
+        [
+          {
+            "observed_at": "2025-11-15T03:17:40.000Z",
+            "price": 30
+          },
+          {
+            "observed_at": "2026-01-20T16:16:40.000Z",
             "price": 30
           }
         ]
@@ -98,11 +124,43 @@
       "tier_class": "enterprise"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2025-11-15T03:17:40.000Z",
+      "label": "Personal tier added"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Buildkite",
+      "slug": "buildkite",
+      "change_type": "tier_added",
+      "json_path": "tiers.Personal",
+      "before": null,
+      "after": {
+        "name": "Personal",
+        "monthly_price_usd": 0,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": 1,
+        "is_free": true,
+        "is_enterprise": false,
+        "headline_features": [
+          "3 concurrent jobs (hosted+self-hosted)",
+          "50k test executions/mo",
+          "1GB storage & bandwidth (combined)/mo",
+          "500 minutes/month",
+          "Community support"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2025-11-15T03:17:40.000Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
     "live": 3,
-    "wayback": 2,
+    "wayback": 3,
     "mixed": 0
   }
 }

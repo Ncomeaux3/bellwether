@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "clerk",
   "name": "Clerk",
   "homepage": "https://clerk.com",
@@ -77,7 +77,7 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:03:14.109Z",
+  "first_observed_at": "2025-09-01T12:00:47.000Z",
   "last_observed_at": "2026-08-21T12:03:14.109Z",
   "series": [
     {
@@ -91,6 +91,46 @@
         ]
       ],
       "tier_class": "enterprise"
+    },
+    {
+      "tier": "Enhanced Authentication add-on",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-09-01T12:00:47.000Z",
+            "price": 100
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Enhanced B2B SaaS add-on",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-09-01T12:00:47.000Z",
+            "price": 100
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
+    {
+      "tier": "Free",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-09-01T12:00:47.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-11-02T09:30:17.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
     },
     {
       "tier": "Hobby",
@@ -109,6 +149,16 @@
       "segments": [
         [
           {
+            "observed_at": "2025-09-01T12:00:47.000Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2025-11-02T09:30:17.000Z",
+            "price": 25
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:03:14.109Z",
             "price": 25
           }
@@ -117,11 +167,87 @@
       "tier_class": "entry"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2025-11-02T09:30:17.000Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2025-11-02T09:30:17.000Z",
+      "label": "Enhanced Authentication add-on tier removed"
+    },
+    {
+      "observed_at": "2025-11-02T09:30:17.000Z",
+      "label": "Enhanced B2B SaaS add-on tier removed"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "tier_removed",
+      "json_path": "tiers.Enhanced B2B SaaS add-on",
+      "before": {
+        "name": "Enhanced B2B SaaS add-on",
+        "monthly_price_usd": 100,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Domain restrictions / Verified domains",
+          "Automatic invitations",
+          "Custom roles and permissions",
+          "Unlimited members per organization"
+        ]
+      },
+      "after": null,
+      "materiality": 100,
+      "observed_at": "2025-11-02T09:30:17.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "tier_removed",
+      "json_path": "tiers.Enhanced Authentication add-on",
+      "before": {
+        "name": "Enhanced Authentication add-on",
+        "monthly_price_usd": 100,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Multi-factor auth (SMS, TOTP, backup codes)",
+          "Device tracking and revocation",
+          "Satellite Domains",
+          "Simultaneous sessions",
+          "Enterprise SSO (EASIE, SAML, OIDC)"
+        ]
+      },
+      "after": null,
+      "materiality": 100,
+      "observed_at": "2025-11-02T09:30:17.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "flat",
+      "after": "usage",
+      "materiality": 70,
+      "observed_at": "2025-11-02T09:30:17.000Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
-    "live": 4,
-    "wayback": 0,
-    "mixed": 0
+    "live": 3,
+    "wayback": 5,
+    "mixed": 1
   }
 }

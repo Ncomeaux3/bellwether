@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "upstash",
   "name": "Upstash",
   "homepage": "https://upstash.com",
@@ -156,9 +156,21 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:05:22.115Z",
+  "first_observed_at": "2025-09-10T08:07:45.000Z",
   "last_observed_at": "2026-08-21T12:05:22.115Z",
   "series": [
+    {
+      "tier": "Enterprise",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-10-15T18:24:16.000Z",
+            "price": 200
+          }
+        ]
+      ],
+      "tier_class": "mid"
+    },
     {
       "tier": "Fixed 100GB",
       "segments": [
@@ -205,7 +217,7 @@
           }
         ]
       ],
-      "tier_class": "entry"
+      "tier_class": "mid"
     },
     {
       "tier": "Fixed 500GB",
@@ -248,19 +260,73 @@
       "segments": [
         [
           {
+            "observed_at": "2025-09-10T08:07:45.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-10-15T18:24:16.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-12-05T14:56:43.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-01-01T09:46:51.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
             "price": 0
           }
         ]
       ],
       "tier_class": "free"
+    },
+    {
+      "tier": "Pay as you go",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-09-10T08:07:45.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Prod Pack",
+      "segments": [
+        [
+          {
+            "observed_at": "2025-09-10T08:07:45.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-10-15T18:24:16.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-12-05T14:56:43.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-01-01T09:46:51.000Z",
+            "price": 10
+          }
+        ]
+      ],
+      "tier_class": "entry"
     }
   ],
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 10,
-    "wayback": 0,
-    "mixed": 0
+    "live": 8,
+    "wayback": 5,
+    "mixed": 2
   }
 }

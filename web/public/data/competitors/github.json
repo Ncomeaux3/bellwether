@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "github",
   "name": "GitHub",
   "homepage": "https://github.com",
@@ -71,6 +71,12 @@
         ],
         [
           {
+            "observed_at": "2026-02-01T00:12:08.000Z",
+            "price": 21
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:04:01.599Z",
             "price": 21
           }
@@ -89,6 +95,12 @@
         ],
         [
           {
+            "observed_at": "2026-02-01T00:12:08.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:04:01.599Z",
             "price": 0
           }
@@ -102,6 +114,12 @@
         [
           {
             "observed_at": "2025-08-21T03:03:43.000Z",
+            "price": 4
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-02-01T00:12:08.000Z",
             "price": 4
           }
         ],

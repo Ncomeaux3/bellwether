@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "gitlab",
   "name": "GitLab",
   "homepage": "https://about.gitlab.com",
@@ -98,6 +98,14 @@
           {
             "observed_at": "2025-08-23T14:46:59.000Z",
             "price": 0
+          },
+          {
+            "observed_at": "2025-10-05T15:01:10.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-12-01T00:20:45.000Z",
+            "price": 0
           }
         ],
         [
@@ -116,6 +124,14 @@
           {
             "observed_at": "2025-08-23T14:46:59.000Z",
             "price": 29
+          },
+          {
+            "observed_at": "2025-10-05T15:01:10.000Z",
+            "price": 29
+          },
+          {
+            "observed_at": "2025-12-01T00:20:45.000Z",
+            "price": 29
           }
         ],
         [
@@ -130,8 +146,28 @@
   ],
   "markers": [
     {
+      "observed_at": "2025-12-01T00:20:45.000Z",
+      "label": "Free billing unit changed"
+    },
+    {
+      "observed_at": "2025-12-01T00:20:45.000Z",
+      "label": "Free seats changed"
+    },
+    {
+      "observed_at": "2025-12-01T00:20:45.000Z",
+      "label": "Ultimate flag changed"
+    },
+    {
       "observed_at": "2026-08-01T16:05:35.000Z",
       "label": "Free billing unit changed"
+    },
+    {
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "label": "Ultimate flag changed"
+    },
+    {
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "label": "Free seats changed"
     },
     {
       "observed_at": "2026-08-01T16:05:35.000Z",
@@ -159,6 +195,34 @@
     {
       "competitor": "GitLab",
       "slug": "gitlab",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Free.included_seats",
+      "before": null,
+      "after": 5,
+      "materiality": 50,
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "flag_changed",
+      "json_path": "tiers.Ultimate.flags",
+      "before": {
+        "is_free": false,
+        "is_enterprise": false
+      },
+      "after": {
+        "is_free": false,
+        "is_enterprise": true
+      },
+      "materiality": 60,
+      "observed_at": "2026-08-01T16:05:35.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
       "change_type": "billing_unit_changed",
       "json_path": "tiers.Free.billing_unit",
       "before": "per_seat",
@@ -166,11 +230,50 @@
       "materiality": 70,
       "observed_at": "2026-08-01T16:05:35.000Z",
       "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "flag_changed",
+      "json_path": "tiers.Ultimate.flags",
+      "before": {
+        "is_free": false,
+        "is_enterprise": true
+      },
+      "after": {
+        "is_free": false,
+        "is_enterprise": false
+      },
+      "materiality": 60,
+      "observed_at": "2025-12-01T00:20:45.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Free.included_seats",
+      "before": 5,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2025-12-01T00:20:45.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "GitLab",
+      "slug": "gitlab",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Free.billing_unit",
+      "before": "per_seat",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2025-12-01T00:20:45.000Z",
+      "annotation": null
     }
   ],
   "provenance": {
     "live": 0,
-    "wayback": 2,
+    "wayback": 7,
     "mixed": 5
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "depot",
   "name": "Depot",
   "homepage": "https://depot.dev",
@@ -59,12 +59,18 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:03:49.035Z",
+  "first_observed_at": "2025-09-10T17:00:16.000Z",
   "last_observed_at": "2026-08-21T12:03:49.035Z",
   "series": [
     {
       "tier": "Developer",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-10T17:00:16.000Z",
+            "price": 20
+          }
+        ],
         [
           {
             "observed_at": "2026-08-21T12:03:49.035Z",
@@ -79,6 +85,12 @@
       "segments": [
         [
           {
+            "observed_at": "2025-09-10T17:00:16.000Z",
+            "price": 200
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:03:49.035Z",
             "price": 200
           }
@@ -90,8 +102,8 @@
   "markers": [],
   "changes": [],
   "provenance": {
-    "live": 3,
+    "live": 0,
     "wayback": 0,
-    "mixed": 0
+    "mixed": 3
   }
 }

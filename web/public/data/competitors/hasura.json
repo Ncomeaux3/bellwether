@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "hasura",
   "name": "Hasura",
   "homepage": "https://hasura.io",
@@ -73,12 +73,18 @@
       ]
     }
   ],
-  "first_observed_at": "2026-03-17T05:03:08.000Z",
+  "first_observed_at": "2025-09-08T07:34:57.000Z",
   "last_observed_at": "2026-08-21T12:04:25.562Z",
   "series": [
     {
       "tier": "DDN Advanced",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-08T07:34:57.000Z",
+            "price": 30
+          }
+        ],
         [
           {
             "observed_at": "2026-03-17T05:03:08.000Z",
@@ -93,6 +99,12 @@
       "segments": [
         [
           {
+            "observed_at": "2025-09-08T07:34:57.000Z",
+            "price": 5
+          }
+        ],
+        [
+          {
             "observed_at": "2026-03-17T05:03:08.000Z",
             "price": 5
           }
@@ -103,6 +115,12 @@
     {
       "tier": "DDN Free",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-08T07:34:57.000Z",
+            "price": 0
+          }
+        ],
         [
           {
             "observed_at": "2026-03-17T05:03:08.000Z",

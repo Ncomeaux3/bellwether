@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "statsig",
   "name": "Statsig",
   "homepage": "https://statsig.com",
@@ -61,12 +61,24 @@
       ]
     }
   ],
-  "first_observed_at": "2026-07-22T15:24:25.000Z",
+  "first_observed_at": "2025-09-04T17:34:51.000Z",
   "last_observed_at": "2026-08-21T12:05:56.671Z",
   "series": [
     {
       "tier": "Developer",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-04T17:34:51.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-02-07T07:30:25.000Z",
+            "price": 0
+          }
+        ],
         [
           {
             "observed_at": "2026-07-22T15:24:25.000Z",
@@ -79,6 +91,18 @@
     {
       "tier": "Pro",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-04T17:34:51.000Z",
+            "price": 150
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-02-07T07:30:25.000Z",
+            "price": 150
+          }
+        ],
         [
           {
             "observed_at": "2026-07-22T15:24:25.000Z",

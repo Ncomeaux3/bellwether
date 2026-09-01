@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-31T07:00:08.723Z",
+  "generated_at": "2026-09-01T07:08:43.245Z",
   "slug": "new-relic",
   "name": "New Relic",
   "homepage": "https://newrelic.com",
@@ -71,12 +71,22 @@
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:07:08.616Z",
+  "first_observed_at": "2025-09-01T17:50:23.000Z",
   "last_observed_at": "2026-08-21T12:07:08.616Z",
   "series": [
     {
       "tier": "Free",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-01T17:50:23.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2025-10-05T10:23:00.000Z",
+            "price": 0
+          }
+        ],
         [
           {
             "observed_at": "2026-08-21T12:07:08.616Z",
@@ -91,6 +101,16 @@
       "segments": [
         [
           {
+            "observed_at": "2025-09-01T17:50:23.000Z",
+            "price": 349
+          },
+          {
+            "observed_at": "2025-10-05T10:23:00.000Z",
+            "price": 349
+          }
+        ],
+        [
+          {
             "observed_at": "2026-08-21T12:07:08.616Z",
             "price": 349
           }
@@ -101,6 +121,16 @@
     {
       "tier": "Standard",
       "segments": [
+        [
+          {
+            "observed_at": "2025-09-01T17:50:23.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2025-10-05T10:23:00.000Z",
+            "price": 10
+          }
+        ],
         [
           {
             "observed_at": "2026-08-21T12:07:08.616Z",
@@ -115,7 +145,7 @@
   "changes": [],
   "provenance": {
     "live": 4,
-    "wayback": 0,
+    "wayback": 5,
     "mixed": 0
   }
 }
