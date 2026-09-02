@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-01T07:08:43.245Z",
+  "generated_at": "2026-09-02T07:00:09.698Z",
   "total_sources": 27,
   "healthy_sources": 27,
   "sources": [
@@ -195,8 +195,8 @@
   ],
   "last_run": {
     "kind": "synthesize",
-    "started_at": "2026-09-01T07:08:43.230Z",
-    "ended_at": "2026-09-01T07:08:43.245Z",
+    "started_at": "2026-09-02T07:00:09.682Z",
+    "ended_at": "2026-09-02T07:00:09.697Z",
     "state": "ok"
   },
   "cost_micros_month": 0
