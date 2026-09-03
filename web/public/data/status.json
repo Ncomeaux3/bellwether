@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-02T07:00:09.698Z",
+  "generated_at": "2026-09-03T07:00:10.220Z",
   "total_sources": 27,
   "healthy_sources": 27,
   "sources": [
@@ -7,28 +7,28 @@
       "slug": "auth0",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:00:51.472Z",
+      "last_ok_at": "2026-09-02T07:00:50.899Z",
       "degraded_reason": null
     },
     {
       "slug": "buildkite",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:01:23.964Z",
+      "last_ok_at": "2026-09-02T07:01:25.706Z",
       "degraded_reason": null
     },
     {
       "slug": "clerk",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:01:02.015Z",
+      "last_ok_at": "2026-09-02T07:01:03.393Z",
       "degraded_reason": null
     },
     {
       "slug": "depot",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:01:35.123Z",
+      "last_ok_at": "2026-09-02T07:01:38.536Z",
       "degraded_reason": null
     },
     {
@@ -42,35 +42,35 @@
       "slug": "fly-io",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:04:10.160Z",
+      "last_ok_at": "2026-09-02T07:04:12.029Z",
       "degraded_reason": null
     },
     {
       "slug": "github",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:01:46.165Z",
+      "last_ok_at": "2026-09-02T07:01:49.735Z",
       "degraded_reason": null
     },
     {
       "slug": "gitlab",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:01:58.237Z",
+      "last_ok_at": "2026-09-02T07:02:00.527Z",
       "degraded_reason": null
     },
     {
       "slug": "hasura",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:02:11.353Z",
+      "last_ok_at": "2026-09-02T07:02:11.010Z",
       "degraded_reason": null
     },
     {
       "slug": "honeycomb",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:04:55.732Z",
+      "last_ok_at": "2026-09-02T07:05:00.106Z",
       "degraded_reason": null
     },
     {
@@ -84,14 +84,14 @@
       "slug": "netlify",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:04:20.780Z",
+      "last_ok_at": "2026-09-02T07:04:25.176Z",
       "degraded_reason": null
     },
     {
       "slug": "new-relic",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:05:06.305Z",
+      "last_ok_at": "2026-09-02T07:05:12.057Z",
       "degraded_reason": null
     },
     {
@@ -105,98 +105,98 @@
       "slug": "pinecone",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:05:16.954Z",
+      "last_ok_at": "2026-09-02T07:05:23.905Z",
       "degraded_reason": null
     },
     {
       "slug": "planetscale",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:02:22.873Z",
+      "last_ok_at": "2026-09-02T07:02:23.841Z",
       "degraded_reason": null
     },
     {
       "slug": "postman",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:00:40.905Z",
+      "last_ok_at": "2026-09-02T07:00:39.652Z",
       "degraded_reason": null
     },
     {
       "slug": "postmark",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:03:21.392Z",
+      "last_ok_at": "2026-09-02T07:03:25.160Z",
       "degraded_reason": null
     },
     {
       "slug": "redis-cloud",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:02:34.489Z",
+      "last_ok_at": "2026-09-02T07:02:37.055Z",
       "degraded_reason": null
     },
     {
       "slug": "render",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:04:32.451Z",
+      "last_ok_at": "2026-09-02T07:04:37.725Z",
       "degraded_reason": null
     },
     {
       "slug": "resend",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:03:34.658Z",
+      "last_ok_at": "2026-09-02T07:03:36.999Z",
       "degraded_reason": null
     },
     {
       "slug": "sentry",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:00:28.982Z",
+      "last_ok_at": "2026-09-02T07:00:27.898Z",
       "degraded_reason": null
     },
     {
       "slug": "statsig",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:03:46.760Z",
+      "last_ok_at": "2026-09-02T07:03:47.978Z",
       "degraded_reason": null
     },
     {
       "slug": "supabase",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:00:15.955Z",
+      "last_ok_at": "2026-09-02T07:00:16.596Z",
       "degraded_reason": null
     },
     {
       "slug": "turso",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:02:44.987Z",
+      "last_ok_at": "2026-09-02T07:02:49.593Z",
       "degraded_reason": null
     },
     {
       "slug": "upstash",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:03:10.417Z",
+      "last_ok_at": "2026-09-02T07:03:12.362Z",
       "degraded_reason": null
     },
     {
       "slug": "vercel",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-08-31T07:04:45.265Z",
+      "last_ok_at": "2026-09-02T07:04:48.968Z",
       "degraded_reason": null
     }
   ],
   "last_run": {
     "kind": "synthesize",
-    "started_at": "2026-09-02T07:00:09.682Z",
-    "ended_at": "2026-09-02T07:00:09.697Z",
+    "started_at": "2026-09-03T07:00:10.204Z",
+    "ended_at": "2026-09-03T07:00:10.219Z",
     "state": "ok"
   },
   "cost_micros_month": 0
