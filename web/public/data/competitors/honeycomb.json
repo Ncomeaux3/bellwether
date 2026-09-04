@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "honeycomb",
   "name": "Honeycomb",
   "homepage": "https://www.honeycomb.io",
@@ -33,32 +33,32 @@
       "headline_features": [
         "Event Volume: Up to 750M per month",
         "Metrics Data Points: Up to 3.75B per month",
+        "All features from the Free Plan",
         "100 Triggers",
         "2 Service Level Objectives (SLOs)",
-        "Single-Sign On (SSO)",
-        "Honeycomb Support"
+        "Single-Sign On (SSO)"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
+        "Event Volume: Variable",
+        "Metrics Data Points: Variable",
         "Custom plans to fit your needs",
         "All features from the Pro Plan",
         "Starts with 300 Triggers",
-        "Starts with 100 SLOs",
-        "Service Map",
-        "Enterprise Support"
+        "Enterprise Support for Refinery"
       ]
     }
   ],
   "first_observed_at": "2025-09-13T08:05:51.000Z",
-  "last_observed_at": "2026-08-21T12:06:56.888Z",
+  "last_observed_at": "2026-09-02T07:05:00.106Z",
   "series": [
     {
       "tier": "Free",
@@ -79,7 +79,23 @@
         ],
         [
           {
+            "observed_at": "2026-05-13T19:40:33.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-08T04:26:04.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-21T06:43:10.000Z",
+            "price": 0
+          },
+          {
             "observed_at": "2026-08-12T02:33:08.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-29T07:05:01.456Z",
             "price": 0
           }
         ]
@@ -101,7 +117,23 @@
         ],
         [
           {
+            "observed_at": "2026-05-13T19:40:33.000Z",
+            "price": 130
+          },
+          {
+            "observed_at": "2026-06-08T04:26:04.000Z",
+            "price": 130
+          },
+          {
+            "observed_at": "2026-07-21T06:43:10.000Z",
+            "price": 150
+          },
+          {
             "observed_at": "2026-08-12T02:33:08.000Z",
+            "price": 150
+          },
+          {
+            "observed_at": "2026-08-29T07:05:01.456Z",
             "price": 150
           }
         ]
@@ -155,8 +187,24 @@
       "label": "Pro 1 tier removed"
     },
     {
+      "observed_at": "2026-05-13T19:40:33.000Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-06-08T04:26:04.000Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-07-21T06:43:10.000Z",
+      "label": "Pro $130 → $150"
+    },
+    {
       "observed_at": "2026-08-12T02:33:08.000Z",
       "label": "Pro $130 → $150"
+    },
+    {
+      "observed_at": "2026-08-12T02:33:08.000Z",
+      "label": "Enterprise billing unit changed"
     },
     {
       "observed_at": "2026-08-12T02:33:08.000Z",
@@ -164,6 +212,17 @@
     }
   ],
   "changes": [
+    {
+      "competitor": "Honeycomb",
+      "slug": "honeycomb",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Enterprise.billing_unit",
+      "before": "usage",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-12T02:33:08.000Z",
+      "annotation": null
+    },
     {
       "competitor": "Honeycomb",
       "slug": "honeycomb",
@@ -189,61 +248,18 @@
     {
       "competitor": "Honeycomb",
       "slug": "honeycomb",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Pro 1.5B",
-      "before": {
-        "name": "Pro 1.5B",
-        "monthly_price_usd": 1950,
-        "annual_price_usd": 19500,
-        "billing_unit": "flat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "100 Triggers",
-          "2 Service Level Objectives (SLOs)",
-          "Single-Sign On (SSO)",
-          "Honeycomb Support",
-          "Honeycomb Metrics",
-          "1.5B events per month"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2025-11-15T03:53:39.000Z",
-      "annotation": null
-    },
-    {
-      "competitor": "Honeycomb",
-      "slug": "honeycomb",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Pro 450M",
-      "before": {
-        "name": "Pro 450M",
-        "monthly_price_usd": 585,
-        "annual_price_usd": 5850,
-        "billing_unit": "flat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "100 Triggers",
-          "2 Service Level Objectives (SLOs)",
-          "Single-Sign On (SSO)",
-          "Honeycomb Support",
-          "Honeycomb Metrics",
-          "450M events per month"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2025-11-15T03:53:39.000Z",
+      "change_type": "price_changed",
+      "json_path": "tiers.Pro.monthly_price_usd",
+      "before": 130,
+      "after": 150,
+      "materiality": 95,
+      "observed_at": "2026-07-21T06:43:10.000Z",
       "annotation": null
     }
   ],
   "provenance": {
     "live": 0,
-    "wayback": 6,
+    "wayback": 8,
     "mixed": 3
   }
 }

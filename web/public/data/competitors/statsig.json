@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "statsig",
   "name": "Statsig",
   "homepage": "https://statsig.com",
@@ -62,7 +62,7 @@
     }
   ],
   "first_observed_at": "2025-09-04T17:34:51.000Z",
-  "last_observed_at": "2026-08-21T12:05:56.671Z",
+  "last_observed_at": "2026-09-02T07:03:47.978Z",
   "series": [
     {
       "tier": "Developer",

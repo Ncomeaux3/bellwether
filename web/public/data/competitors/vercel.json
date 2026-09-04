@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "vercel",
   "name": "Vercel",
   "homepage": "https://vercel.com",
@@ -14,25 +14,33 @@
       "is_free": true,
       "is_enterprise": false,
       "headline_features": [
-        "1M Edge Requests/month included",
-        "100 GB/month data transfer included",
-        "1 GB Blob Storage/month included",
-        "5K Image Optimization transforms/month included"
+        "1M Edge Requests / month included",
+        "100 GB / month data transfer included",
+        "1 GB Blob storage / month included",
+        "5K Image Optimization transformations / month included",
+        "4 hours Vercel Functions / month included",
+        "1M Function Invocations / month included",
+        "10 GB Fast Origin Transfer / month included",
+        "500 Token Requests / month included"
       ]
     },
     {
       "name": "Pro",
       "monthly_price_usd": 20,
       "annual_price_usd": null,
-      "billing_unit": "flat",
-      "included_seats": null,
+      "billing_unit": "per_seat",
+      "included_seats": 1,
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "10M Edge Requests/month included",
-        "1TB/month data transfer included",
-        "$0.15/GB for additional data transfer",
-        "Advanced security features"
+        "10M Edge Requests / month included",
+        "1TB data transfer / month included",
+        "Up to 40 Firewall Rules",
+        "200k ISR Writes / month included",
+        "360 GB-hrs Provisioned Memory / month included",
+        "12 environments",
+        "12 Developer seats available",
+        "Unlimited Viewer seats"
       ]
     },
     {
@@ -46,20 +54,40 @@
       "headline_features": [
         "Custom Edge Requests pricing",
         "Custom data transfer pricing",
-        "Up to 1,000 Firewall rules",
-        "Advanced DDoS mitigation"
+        "Up to 1,000 Firewall Rules",
+        "Custom ISR pricing",
+        "Custom Compute pricing",
+        "Custom environments",
+        "Advanced security features",
+        "Custom compliance and support"
       ]
     }
   ],
-  "first_observed_at": "2026-08-21T12:06:44.926Z",
-  "last_observed_at": "2026-08-21T12:06:44.926Z",
+  "first_observed_at": "2026-07-03T12:03:39.000Z",
+  "last_observed_at": "2026-09-02T07:04:48.968Z",
   "series": [
     {
       "tier": "Hobby",
       "segments": [
         [
           {
+            "observed_at": "2026-07-03T12:03:39.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-04T12:46:54.000Z",
+            "price": 0
+          },
+          {
             "observed_at": "2026-08-21T12:06:44.926Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-25T07:05:51.982Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-27T07:05:25.839Z",
             "price": 0
           }
         ]
@@ -71,7 +99,23 @@
       "segments": [
         [
           {
+            "observed_at": "2026-07-03T12:03:39.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-08-04T12:46:54.000Z",
+            "price": 20
+          },
+          {
             "observed_at": "2026-08-21T12:06:44.926Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-08-25T07:05:51.982Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-08-27T07:05:25.839Z",
             "price": 20
           }
         ]
@@ -79,11 +123,73 @@
       "tier_class": "entry"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2026-08-04T12:46:54.000Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-08-04T12:46:54.000Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-08-25T07:05:51.982Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-08-25T07:05:51.982Z",
+      "label": "Pro seats changed"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Vercel",
+      "slug": "vercel",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Pro.included_seats",
+      "before": null,
+      "after": 1,
+      "materiality": 50,
+      "observed_at": "2026-08-25T07:05:51.982Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Vercel",
+      "slug": "vercel",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "flat",
+      "after": "per_seat",
+      "materiality": 70,
+      "observed_at": "2026-08-25T07:05:51.982Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Vercel",
+      "slug": "vercel",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Pro.included_seats",
+      "before": 1,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2026-08-04T12:46:54.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Vercel",
+      "slug": "vercel",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "per_seat",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-04T12:46:54.000Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
-    "live": 3,
-    "wayback": 0,
-    "mixed": 0
+    "live": 1,
+    "wayback": 1,
+    "mixed": 3
   }
 }

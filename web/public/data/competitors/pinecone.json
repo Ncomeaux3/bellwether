@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "pinecone",
   "name": "Pinecone",
   "homepage": "https://www.pinecone.io",
@@ -36,7 +36,7 @@
         "Choose your cloud and region",
         "Multiple projects and users",
         "Prometheus and Datadog monitoring",
-        "Free support included"
+        "Free support"
       ]
     },
     {
@@ -48,12 +48,12 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything in Builder",
         "Pay-as-you-go for Database On-Demand, Inference, and Assistant Usage",
         "Dedicated Read Nodes (DRN)",
         "Import from object storage",
         "Backup and Restore",
-        "RBAC",
-        "SSO (SAML 2.0)"
+        "RBAC"
       ]
     },
     {
@@ -65,12 +65,12 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
+        "Everything in Standard",
         "99.95% Uptime SLA",
         "Bring Your Own Cloud (BYOC)",
         "Private Endpoints",
         "Customer Managed Encryption Keys",
-        "Audit Logs",
-        "Service Accounts"
+        "Audit Logs"
       ]
     },
     {
@@ -83,21 +83,33 @@
       "is_enterprise": true,
       "headline_features": [
         "Pinecone in your cloud account",
-        "Zero-access operations – no SSH, VPN, or inbound access required",
-        "Outbound-only operations with an auditable trail",
+        "Zero-access operations",
+        "Outbound-only operations with auditable trail",
         "Pro support included"
       ]
     }
   ],
-  "first_observed_at": "2026-08-02T02:12:13.000Z",
-  "last_observed_at": "2026-08-21T12:07:19.148Z",
+  "first_observed_at": "2026-06-03T23:31:52.000Z",
+  "last_observed_at": "2026-09-02T07:05:23.905Z",
   "series": [
     {
       "tier": "Builder",
       "segments": [
         [
           {
+            "observed_at": "2026-06-03T23:31:52.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-07-01T22:04:21.000Z",
+            "price": 20
+          },
+          {
             "observed_at": "2026-08-02T02:12:13.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-09-02T07:05:23.905Z",
             "price": 20
           }
         ]
@@ -109,7 +121,19 @@
       "segments": [
         [
           {
+            "observed_at": "2026-06-03T23:31:52.000Z",
+            "price": 500
+          },
+          {
+            "observed_at": "2026-07-01T22:04:21.000Z",
+            "price": 500
+          },
+          {
             "observed_at": "2026-08-02T02:12:13.000Z",
+            "price": 500
+          },
+          {
+            "observed_at": "2026-09-02T07:05:23.905Z",
             "price": 500
           }
         ]
@@ -121,7 +145,19 @@
       "segments": [
         [
           {
+            "observed_at": "2026-06-03T23:31:52.000Z",
+            "price": 50
+          },
+          {
+            "observed_at": "2026-07-01T22:04:21.000Z",
+            "price": 50
+          },
+          {
             "observed_at": "2026-08-02T02:12:13.000Z",
+            "price": 50
+          },
+          {
+            "observed_at": "2026-09-02T07:05:23.905Z",
             "price": 50
           }
         ]
@@ -133,7 +169,19 @@
       "segments": [
         [
           {
+            "observed_at": "2026-06-03T23:31:52.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-01T22:04:21.000Z",
+            "price": 0
+          },
+          {
             "observed_at": "2026-08-02T02:12:13.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-09-02T07:05:23.905Z",
             "price": 0
           }
         ]

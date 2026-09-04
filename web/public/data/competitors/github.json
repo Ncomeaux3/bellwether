@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "github",
   "name": "GitHub",
   "homepage": "https://github.com",
@@ -51,14 +51,14 @@
         "Data residency",
         "Enterprise Managed Users",
         "User provisioning through SCIM",
-        "Enterprise Account",
         "Environment protection rules",
+        "Repository rules",
         "50,000 CI/CD minutes/month"
       ]
     }
   ],
   "first_observed_at": "2025-08-21T03:03:43.000Z",
-  "last_observed_at": "2026-08-21T12:04:01.599Z",
+  "last_observed_at": "2026-09-02T07:01:49.735Z",
   "series": [
     {
       "tier": "Enterprise",
@@ -77,7 +77,27 @@
         ],
         [
           {
+            "observed_at": "2026-05-01T00:11:20.000Z",
+            "price": 21
+          },
+          {
+            "observed_at": "2026-06-01T00:25:06.000Z",
+            "price": 21
+          },
+          {
+            "observed_at": "2026-07-01T01:50:27.000Z",
+            "price": 21
+          },
+          {
             "observed_at": "2026-08-21T12:04:01.599Z",
+            "price": 21
+          },
+          {
+            "observed_at": "2026-08-27T07:02:30.322Z",
+            "price": 21
+          },
+          {
+            "observed_at": "2026-09-02T07:01:49.735Z",
             "price": 21
           }
         ]
@@ -101,7 +121,27 @@
         ],
         [
           {
+            "observed_at": "2026-05-01T00:11:20.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-01T00:25:06.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-01T01:50:27.000Z",
+            "price": 0
+          },
+          {
             "observed_at": "2026-08-21T12:04:01.599Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-27T07:02:30.322Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-09-02T07:01:49.735Z",
             "price": 0
           }
         ]
@@ -125,7 +165,27 @@
         ],
         [
           {
+            "observed_at": "2026-05-01T00:11:20.000Z",
+            "price": 4
+          },
+          {
+            "observed_at": "2026-06-01T00:25:06.000Z",
+            "price": 4
+          },
+          {
+            "observed_at": "2026-07-01T01:50:27.000Z",
+            "price": 4
+          },
+          {
             "observed_at": "2026-08-21T12:04:01.599Z",
+            "price": 4
+          },
+          {
+            "observed_at": "2026-08-27T07:02:30.322Z",
+            "price": 4
+          },
+          {
+            "observed_at": "2026-09-02T07:01:49.735Z",
             "price": 4
           }
         ]

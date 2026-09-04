@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "new-relic",
   "name": "New Relic",
   "homepage": "https://newrelic.com",
@@ -72,7 +72,7 @@
     }
   ],
   "first_observed_at": "2025-09-01T17:50:23.000Z",
-  "last_observed_at": "2026-08-21T12:07:08.616Z",
+  "last_observed_at": "2026-09-02T07:05:12.057Z",
   "series": [
     {
       "tier": "Free",
@@ -90,6 +90,12 @@
         [
           {
             "observed_at": "2026-08-21T12:07:08.616Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-08-29T07:05:13.410Z",
             "price": 0
           }
         ]
@@ -114,6 +120,12 @@
             "observed_at": "2026-08-21T12:07:08.616Z",
             "price": 349
           }
+        ],
+        [
+          {
+            "observed_at": "2026-08-29T07:05:13.410Z",
+            "price": 349
+          }
         ]
       ],
       "tier_class": "enterprise"
@@ -136,15 +148,265 @@
             "observed_at": "2026-08-21T12:07:08.616Z",
             "price": 10
           }
+        ],
+        [
+          {
+            "observed_at": "2026-08-29T07:05:13.410Z",
+            "price": 10
+          }
         ]
       ],
       "tier_class": "entry"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "label": "Free tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "label": "Standard tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "label": "Pro tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "label": "Enterprise tier added"
+    },
+    {
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "label": "Free tier added"
+    },
+    {
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "label": "Standard tier added"
+    },
+    {
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "label": "Pro tier added"
+    },
+    {
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "label": "Enterprise tier added"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Enterprise",
+      "before": null,
+      "after": {
+        "name": "Enterprise",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "unknown",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": true,
+        "headline_features": [
+          "Everything in Pro plus:",
+          "FedRAMP Moderate and HIPAA eligibility with Data Plus",
+          "Priority ticket routing",
+          "1-hour critical initial support response SLA",
+          "Optional: Full consumption pricing with no user licenses"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Pro",
+      "before": null,
+      "after": {
+        "name": "Pro",
+        "monthly_price_usd": 349,
+        "annual_price_usd": null,
+        "billing_unit": "per_seat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Unlimited full platform users",
+          "2-hour critical initial support response SLA",
+          "Data Plus eligibility",
+          "Optional: Full consumption pricing with no user licenses",
+          "$0.40/GB or $0.60/GB data ingest options"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Standard",
+      "before": null,
+      "after": {
+        "name": "Standard",
+        "monthly_price_usd": 10,
+        "annual_price_usd": null,
+        "billing_unit": "per_seat",
+        "included_seats": 1,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Limited to 5 full platform users",
+          "Ticketed support availability",
+          "2 business days support response SLA",
+          "SAML single sign-on",
+          "$0.40/GB data ingest beyond 100 GB free"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Free",
+      "before": null,
+      "after": {
+        "name": "Free",
+        "monthly_price_usd": 0,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": 1,
+        "is_free": true,
+        "is_enterprise": false,
+        "headline_features": [
+          "100 GB data ingest/month",
+          "Unlimited basic users",
+          "One free full platform user",
+          "Access to 50+ capabilities",
+          "Automatic logs obfuscation",
+          "No credit card required"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-29T07:05:13.410Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Enterprise",
+      "before": null,
+      "after": {
+        "name": "Enterprise",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "unknown",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": true,
+        "headline_features": [
+          "Everything in Pro plus:",
+          "FedRAMP Moderate and HIPAA eligibility with Data Plus",
+          "Priority ticket routing",
+          "1-hour critical initial support response SLA",
+          "Optional: Full consumption pricing with no user licenses"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Pro",
+      "before": null,
+      "after": {
+        "name": "Pro",
+        "monthly_price_usd": 349,
+        "annual_price_usd": null,
+        "billing_unit": "per_seat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Unlimited full platform users",
+          "2-hour critical initial support response SLA",
+          "Data Plus eligibility",
+          "Optional: Full consumption pricing with no user licenses",
+          "$0.40/GB or $0.60/GB data ingest options"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Standard",
+      "before": null,
+      "after": {
+        "name": "Standard",
+        "monthly_price_usd": 10,
+        "annual_price_usd": null,
+        "billing_unit": "per_seat",
+        "included_seats": 1,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "Limited to 5 full platform users",
+          "Ticketed support availability",
+          "2 business days support response SLA",
+          "SAML single sign-on",
+          "$0.40/GB data ingest beyond 100 GB free"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "annotation": null
+    },
+    {
+      "competitor": "New Relic",
+      "slug": "new-relic",
+      "change_type": "tier_added",
+      "json_path": "tiers.Free",
+      "before": null,
+      "after": {
+        "name": "Free",
+        "monthly_price_usd": 0,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": 1,
+        "is_free": true,
+        "is_enterprise": false,
+        "headline_features": [
+          "100 GB data ingest/month",
+          "Unlimited basic users",
+          "One free full platform user",
+          "Access to 50+ capabilities",
+          "Automatic logs obfuscation",
+          "No credit card required"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:07:08.616Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
-    "live": 4,
+    "live": 8,
     "wayback": 5,
     "mixed": 0
   }

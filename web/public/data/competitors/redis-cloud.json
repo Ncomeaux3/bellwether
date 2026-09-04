@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "redis-cloud",
   "name": "Redis Cloud",
   "homepage": "https://redis.io",
@@ -29,10 +29,10 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Shared deployment",
         "250 MB-100 GB RAM & SSD, single DB",
         "SAML SSO, RBAC, encryption in transit, encryption at rest",
-        "Up to 99.99% uptime, basic support only",
-        "Redis Flex at 10% RAM for lowest cost"
+        "Up to 99.99% uptime, basic support only"
       ]
     },
     {
@@ -46,26 +46,13 @@
       "headline_features": [
         "Dedicated cloud deployment",
         "Unlimited RAM, multiple DBs",
-        "Everything in Essentials, plus active-active (multi-region), private connectivity",
+        "Everything in Essentials, plus active-active (multi-region), auto-tiering, private connectivity",
         "Up to 99.999% uptime"
-      ]
-    },
-    {
-      "name": "Enterprise",
-      "monthly_price_usd": null,
-      "annual_price_usd": null,
-      "billing_unit": "unknown",
-      "included_seats": null,
-      "is_free": false,
-      "is_enterprise": true,
-      "headline_features": [
-        "Multi-cloud & hybrid cloud / on-prem deployment",
-        "Available with an annual plan"
       ]
     }
   ],
   "first_observed_at": "2025-09-02T17:16:37.000Z",
-  "last_observed_at": "2026-08-21T12:04:49.100Z",
+  "last_observed_at": "2026-09-02T07:02:37.055Z",
   "series": [
     {
       "tier": "Essentials",
@@ -82,11 +69,35 @@
           {
             "observed_at": "2026-01-10T04:00:16.000Z",
             "price": 5
+          },
+          {
+            "observed_at": "2026-03-01T10:37:55.000Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-04-02T03:45:27.000Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-05-05T14:39:20.000Z",
+            "price": 5
           }
         ],
         [
           {
             "observed_at": "2026-08-13T18:11:24.000Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-08-23T07:03:17.361Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-08-25T07:03:51.430Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-08-31T07:02:34.489Z",
             "price": 5
           }
         ]
@@ -128,11 +139,35 @@
           {
             "observed_at": "2026-01-10T04:00:16.000Z",
             "price": 0
+          },
+          {
+            "observed_at": "2026-03-01T10:37:55.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-02T03:45:27.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-05T14:39:20.000Z",
+            "price": 0
           }
         ],
         [
           {
             "observed_at": "2026-08-13T18:11:24.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-23T07:03:17.361Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-25T07:03:51.430Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-31T07:02:34.489Z",
             "price": 0
           }
         ]
@@ -154,11 +189,35 @@
           {
             "observed_at": "2026-01-10T04:00:16.000Z",
             "price": 200
+          },
+          {
+            "observed_at": "2026-03-01T10:37:55.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-04-02T03:45:27.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-05-05T14:39:20.000Z",
+            "price": 200
           }
         ],
         [
           {
             "observed_at": "2026-08-13T18:11:24.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-08-23T07:03:17.361Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-08-25T07:03:51.430Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-08-31T07:02:34.489Z",
             "price": 200
           }
         ]
@@ -172,6 +231,22 @@
       "label": "Pro billing unit changed"
     },
     {
+      "observed_at": "2026-03-01T10:37:55.000Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-03-01T10:37:55.000Z",
+      "label": "Flex tier removed"
+    },
+    {
+      "observed_at": "2026-03-01T10:37:55.000Z",
+      "label": "Enterprise tier added"
+    },
+    {
+      "observed_at": "2026-04-02T03:45:27.000Z",
+      "label": "Enterprise tier removed"
+    },
+    {
       "observed_at": "2026-08-13T18:11:24.000Z",
       "label": "Pro billing unit changed"
     },
@@ -182,9 +257,117 @@
     {
       "observed_at": "2026-08-13T18:11:24.000Z",
       "label": "Enterprise tier added"
+    },
+    {
+      "observed_at": "2026-08-13T18:11:24.000Z",
+      "label": "Enterprise tier added"
+    },
+    {
+      "observed_at": "2026-08-13T18:11:24.000Z",
+      "label": "Enterprise tier added"
+    },
+    {
+      "observed_at": "2026-08-25T07:03:51.430Z",
+      "label": "Enterprise tier added"
+    },
+    {
+      "observed_at": "2026-08-31T07:02:34.489Z",
+      "label": "Enterprise tier removed"
     }
   ],
   "changes": [
+    {
+      "competitor": "Redis Cloud",
+      "slug": "redis-cloud",
+      "change_type": "tier_removed",
+      "json_path": "tiers.Enterprise",
+      "before": {
+        "name": "Enterprise",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "unknown",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": true,
+        "headline_features": [
+          "Multi-cloud & hybrid cloud / on-prem deployment",
+          "Available with an annual plan"
+        ]
+      },
+      "after": null,
+      "materiality": 100,
+      "observed_at": "2026-08-31T07:02:34.489Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Redis Cloud",
+      "slug": "redis-cloud",
+      "change_type": "tier_added",
+      "json_path": "tiers.Enterprise",
+      "before": null,
+      "after": {
+        "name": "Enterprise",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "unknown",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": true,
+        "headline_features": [
+          "Multi-cloud & hybrid cloud / on-prem deployment",
+          "Available with an annual plan"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-25T07:03:51.430Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Redis Cloud",
+      "slug": "redis-cloud",
+      "change_type": "tier_added",
+      "json_path": "tiers.Enterprise",
+      "before": null,
+      "after": {
+        "name": "Enterprise",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "unknown",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": true,
+        "headline_features": [
+          "Multi-cloud & hybrid cloud / on-prem deployment",
+          "Available with an annual plan"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-13T18:11:24.000Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Redis Cloud",
+      "slug": "redis-cloud",
+      "change_type": "tier_added",
+      "json_path": "tiers.Enterprise",
+      "before": null,
+      "after": {
+        "name": "Enterprise",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "unknown",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": true,
+        "headline_features": [
+          "Multi-cloud & hybrid cloud / on-prem deployment",
+          "Available with an annual plan"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-13T18:11:24.000Z",
+      "annotation": null
+    },
     {
       "competitor": "Redis Cloud",
       "slug": "redis-cloud",
@@ -243,22 +426,11 @@
       "materiality": 70,
       "observed_at": "2026-08-13T18:11:24.000Z",
       "annotation": null
-    },
-    {
-      "competitor": "Redis Cloud",
-      "slug": "redis-cloud",
-      "change_type": "billing_unit_changed",
-      "json_path": "tiers.Pro.billing_unit",
-      "before": "usage",
-      "after": "flat",
-      "materiality": 70,
-      "observed_at": "2026-01-10T04:00:16.000Z",
-      "annotation": null
     }
   ],
   "provenance": {
-    "live": 0,
-    "wayback": 3,
+    "live": 1,
+    "wayback": 4,
     "mixed": 4
   }
 }

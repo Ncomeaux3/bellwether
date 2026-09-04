@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "notion",
   "name": "Notion",
   "homepage": "https://www.notion.com",
@@ -79,7 +79,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T07:54:17.000Z",
-  "last_observed_at": "2026-08-21T07:00:27.481Z",
+  "last_observed_at": "2026-09-03T07:00:30.388Z",
   "series": [
     {
       "tier": "Business",
@@ -334,90 +334,7 @@
       "label": "Notion AI tier removed"
     }
   ],
-  "changes": [
-    {
-      "competitor": "Notion",
-      "slug": "notion",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Notion AI",
-      "before": {
-        "name": "Notion AI",
-        "monthly_price_usd": 10,
-        "annual_price_usd": 8,
-        "billing_unit": "per_seat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "Limit the AI's search to your trusted sources",
-          "Generate and edit text in any doc",
-          "Autofill databases with summaries & insights",
-          "Chat about anything using GPT-4 & Claude",
-          "Automatically organize your inbox and draft emails"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2025-08-23T14:52:36.000Z",
-      "annotation": null
-    },
-    {
-      "competitor": "Notion",
-      "slug": "notion",
-      "change_type": "billing_unit_changed",
-      "json_path": "tiers.Free.billing_unit",
-      "before": "flat",
-      "after": "per_seat",
-      "materiality": 70,
-      "observed_at": "2025-08-23T14:52:36.000Z",
-      "annotation": null
-    },
-    {
-      "competitor": "Notion",
-      "slug": "notion",
-      "change_type": "price_changed",
-      "json_path": "tiers.Business.monthly_price_usd",
-      "before": 15,
-      "after": 20,
-      "materiality": 100,
-      "observed_at": "2025-06-03T01:07:05.000Z",
-      "annotation": {
-        "implication": "Notion's Business tier rose from $15 to $20/mo per seat, a 33% increase.",
-        "so_what": "Teams on Business pay $5 more per seat monthly; a 20-seat team now costs $1,200/yr more.",
-        "confidence": "high"
-      }
-    },
-    {
-      "competitor": "Notion",
-      "slug": "notion",
-      "change_type": "tier_added",
-      "json_path": "tiers.Notion AI",
-      "before": null,
-      "after": {
-        "name": "Notion AI",
-        "monthly_price_usd": 10,
-        "annual_price_usd": 8,
-        "billing_unit": "per_seat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "Limit the AI's search to your trusted sources",
-          "Generate and edit text in any doc",
-          "Autofill databases with summaries & insights",
-          "Chat about anything using GPT-4 & Claude",
-          "Automatically organize your inbox and draft emails"
-        ]
-      },
-      "materiality": 100,
-      "observed_at": "2025-05-04T06:15:55.000Z",
-      "annotation": {
-        "implication": "Notion introduced a standalone 'Notion AI' add-on tier at $10/mo ($8/mo billed annually), per seat.",
-        "so_what": "Buyers could add AI features without upgrading their base plan, but at extra per-seat cost.",
-        "confidence": "high"
-      }
-    }
-  ],
+  "changes": [],
   "provenance": {
     "live": 0,
     "wayback": 4,

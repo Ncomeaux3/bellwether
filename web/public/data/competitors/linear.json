@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "linear",
   "name": "Linear",
   "homepage": "https://linear.app",
@@ -77,7 +77,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T07:53:31.000Z",
-  "last_observed_at": "2026-08-21T07:00:14.584Z",
+  "last_observed_at": "2026-09-03T07:00:18.058Z",
   "series": [
     {
       "tier": "Basic",
@@ -282,38 +282,7 @@
       "label": "Business $14 → $16"
     }
   ],
-  "changes": [
-    {
-      "competitor": "Linear",
-      "slug": "linear",
-      "change_type": "price_changed",
-      "json_path": "tiers.Business.monthly_price_usd",
-      "before": 14,
-      "after": 16,
-      "materiality": 94,
-      "observed_at": "2025-11-12T01:16:11.000Z",
-      "annotation": {
-        "implication": "Linear's Business tier rose from $14 to $16/mo, a 14% increase, same day as the Basic hike.",
-        "so_what": "Linear raised prices across two tiers simultaneously, suggesting a company-wide pricing update rather than a single-tier adjustment.",
-        "confidence": "high"
-      }
-    },
-    {
-      "competitor": "Linear",
-      "slug": "linear",
-      "change_type": "price_changed",
-      "json_path": "tiers.Basic.monthly_price_usd",
-      "before": 8,
-      "after": 10,
-      "materiality": 100,
-      "observed_at": "2025-11-12T01:16:11.000Z",
-      "annotation": {
-        "implication": "Linear's Basic tier rose from $8 to $10/mo, a 25% increase.",
-        "so_what": "Entry-level Linear customers pay $24/yr more per seat.",
-        "confidence": "high"
-      }
-    }
-  ],
+  "changes": [],
   "provenance": {
     "live": 0,
     "wayback": 2,

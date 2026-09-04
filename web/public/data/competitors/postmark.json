@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "postmark",
   "name": "Postmark",
   "homepage": "https://postmarkapp.com",
@@ -89,7 +89,7 @@
     }
   ],
   "first_observed_at": "2026-02-07T08:34:05.000Z",
-  "last_observed_at": "2026-08-21T12:05:34.900Z",
+  "last_observed_at": "2026-09-02T07:03:25.160Z",
   "series": [
     {
       "tier": "Basic",
@@ -98,9 +98,11 @@
           {
             "observed_at": "2026-02-07T08:34:05.000Z",
             "price": 15
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-04-14T00:36:20.000Z",
+            "price": 15
+          },
           {
             "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 15
@@ -116,9 +118,11 @@
           {
             "observed_at": "2026-02-07T08:34:05.000Z",
             "price": 0
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-04-14T00:36:20.000Z",
+            "price": 0
+          },
           {
             "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 0
@@ -134,9 +138,11 @@
           {
             "observed_at": "2026-02-07T08:34:05.000Z",
             "price": 18
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-04-14T00:36:20.000Z",
+            "price": 18
+          },
           {
             "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 18
@@ -152,9 +158,11 @@
           {
             "observed_at": "2026-02-07T08:34:05.000Z",
             "price": 16.5
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-04-14T00:36:20.000Z",
+            "price": 16.5
+          },
           {
             "observed_at": "2026-05-18T10:14:43.000Z",
             "price": 16.5
@@ -164,11 +172,20 @@
       "tier_class": "mid"
     }
   ],
-  "markers": [],
+  "markers": [
+    {
+      "observed_at": "2026-04-14T00:36:20.000Z",
+      "label": "Enterprise tier removed"
+    },
+    {
+      "observed_at": "2026-05-18T10:14:43.000Z",
+      "label": "Enterprise tier added"
+    }
+  ],
   "changes": [],
   "provenance": {
     "live": 0,
-    "wayback": 0,
+    "wayback": 1,
     "mixed": 5
   }
 }

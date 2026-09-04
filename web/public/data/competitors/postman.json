@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "postman",
   "name": "Postman",
   "homepage": "https://www.postman.com",
@@ -19,7 +19,8 @@
         "Specs & mock servers",
         "Native Git",
         "Collection Runner & Performance Testing runs",
-        "Manual Flows Solo"
+        "Manual Flows",
+        "Solo"
       ]
     },
     {
@@ -75,7 +76,7 @@
     }
   ],
   "first_observed_at": "2025-02-23T11:47:21.000Z",
-  "last_observed_at": "2026-08-21T12:02:48.662Z",
+  "last_observed_at": "2026-09-02T07:00:39.652Z",
   "series": [
     {
       "tier": "Basic",
@@ -174,6 +175,10 @@
           {
             "observed_at": "2026-08-20T07:00:48.495Z",
             "price": 49
+          },
+          {
+            "observed_at": "2026-08-29T07:00:44.244Z",
+            "price": 49
           }
         ]
       ],
@@ -239,6 +244,10 @@
           },
           {
             "observed_at": "2026-08-20T07:00:48.495Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-29T07:00:44.244Z",
             "price": 0
           }
         ]
@@ -312,6 +321,10 @@
           {
             "observed_at": "2026-08-20T07:00:48.495Z",
             "price": 9
+          },
+          {
+            "observed_at": "2026-08-29T07:00:44.244Z",
+            "price": 9
           }
         ]
       ],
@@ -348,6 +361,10 @@
           {
             "observed_at": "2026-08-20T07:00:48.495Z",
             "price": 19
+          },
+          {
+            "observed_at": "2026-08-29T07:00:44.244Z",
+            "price": 19
           }
         ]
       ],
@@ -380,161 +397,7 @@
       "label": "Team tier added"
     }
   ],
-  "changes": [
-    {
-      "competitor": "Postman",
-      "slug": "postman",
-      "change_type": "tier_added",
-      "json_path": "tiers.Team",
-      "before": null,
-      "after": {
-        "name": "Team",
-        "monthly_price_usd": 19,
-        "annual_price_usd": null,
-        "billing_unit": "per_seat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "Everything in Solo",
-          "400 AI credits / user / month",
-          "Team collaboration",
-          "Unlimited workspace & collection viewers",
-          "Basic role-based access control (RBAC)",
-          "SDK generation"
-        ]
-      },
-      "materiality": 100,
-      "observed_at": "2026-04-02T03:21:26.000Z",
-      "annotation": {
-        "implication": "Postman added a Team tier at $19/mo per seat, matching the removed Basic tier's price.",
-        "so_what": "Likely the direct successor to Basic, keeping entry per-seat pricing flat while restructuring tier names and features.",
-        "confidence": "medium"
-      }
-    },
-    {
-      "competitor": "Postman",
-      "slug": "postman",
-      "change_type": "tier_added",
-      "json_path": "tiers.Solo",
-      "before": null,
-      "after": {
-        "name": "Solo",
-        "monthly_price_usd": 9,
-        "annual_price_usd": null,
-        "billing_unit": "flat",
-        "included_seats": 1,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "Everything in Free",
-          "400 AI credits / month",
-          "Data-driven testing with exports",
-          "Unlimited private NPM packages & library",
-          "Custom-branded documentation",
-          "Unlimited custom domains"
-        ]
-      },
-      "materiality": 100,
-      "observed_at": "2026-04-02T03:21:26.000Z",
-      "annotation": {
-        "implication": "Postman added a new Solo tier at $9/mo flat for 1 seat.",
-        "so_what": "Provides a cheaper single-user paid option below the old Basic price point.",
-        "confidence": "high"
-      }
-    },
-    {
-      "competitor": "Postman",
-      "slug": "postman",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Professional",
-      "before": {
-        "name": "Professional",
-        "monthly_price_usd": 39,
-        "annual_price_usd": 29,
-        "billing_unit": "per_seat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "Internal workspaces (private)",
-          "Single & Multi-Partner Workspaces",
-          "Basic role-based access control",
-          "Spec Hub: 10 private APIs, unlimited public APIs",
-          "25 Packages",
-          "90 days collection recovery"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2026-04-02T03:21:26.000Z",
-      "annotation": {
-        "implication": "Postman removed its $39/mo Professional tier with no like-for-like replacement announced.",
-        "so_what": "Customers needing Professional-level features must now jump to Team at $19/mo (fewer features) or negotiate enterprise pricing, a potential feature/price gap.",
-        "confidence": "medium"
-      }
-    },
-    {
-      "competitor": "Postman",
-      "slug": "postman",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Basic",
-      "before": {
-        "name": "Basic",
-        "monthly_price_usd": 19,
-        "annual_price_usd": 14,
-        "billing_unit": "per_seat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "No user seat limits",
-          "30 day collection recovery",
-          "10,000 Mock Server requests per team, per month",
-          "Spec Hub: 3 private APIs, unlimited public APIs",
-          "10,000 Monitor requests per team, per month"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2026-04-02T03:21:26.000Z",
-      "annotation": {
-        "implication": "Postman removed its $19/mo Basic tier.",
-        "so_what": "Existing Basic customers must move to a different plan; the identically priced Team tier ([11]) appears to be the direct replacement.",
-        "confidence": "medium"
-      }
-    },
-    {
-      "competitor": "Postman",
-      "slug": "postman",
-      "change_type": "seats_changed",
-      "json_path": "tiers.Free.included_seats",
-      "before": 3,
-      "after": 1,
-      "materiality": 50,
-      "observed_at": "2026-04-02T03:21:26.000Z",
-      "annotation": {
-        "implication": "Postman's Free tier seat cap was cut further from 3 to 1.",
-        "so_what": "Free tier is now effectively single-user only, a second tightening within roughly eight months (see also [2]).",
-        "confidence": "high"
-      }
-    },
-    {
-      "competitor": "Postman",
-      "slug": "postman",
-      "change_type": "seats_changed",
-      "json_path": "tiers.Free.included_seats",
-      "before": null,
-      "after": 3,
-      "materiality": 50,
-      "observed_at": "2025-08-16T02:16:20.000Z",
-      "annotation": {
-        "implication": "Postman's Free tier gained an explicit seat cap of 3, where none was specified before.",
-        "so_what": "Small teams relying on unlimited free seats now hit a hard limit and may need to upgrade.",
-        "confidence": "medium"
-      }
-    }
-  ],
+  "changes": [],
   "provenance": {
     "live": 0,
     "wayback": 11,

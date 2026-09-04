@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
-  "observation_count": 151,
+  "generated_at": "2026-09-04T07:15:38.362Z",
+  "observation_count": 233,
   "competitors": [
     {
       "slug": "auth0",
       "name": "Auth0",
       "first_observed_at": "2026-01-07T07:29:47.000Z",
-      "last_observed_at": "2026-08-21T12:03:00.974Z",
+      "last_observed_at": "2026-09-02T07:00:50.899Z",
       "series": [
         {
           "tier": "Essentials",
@@ -19,9 +19,23 @@
               {
                 "observed_at": "2026-02-03T09:50:57.000Z",
                 "price": 35
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-03-06T09:38:18.000Z",
+                "price": 35
+              },
+              {
+                "observed_at": "2026-05-05T10:07:17.000Z",
+                "price": 35
+              },
+              {
+                "observed_at": "2026-06-01T00:05:47.000Z",
+                "price": 35
+              },
+              {
+                "observed_at": "2026-07-01T14:29:57.000Z",
+                "price": 35
+              },
               {
                 "observed_at": "2026-08-21T12:03:00.974Z",
                 "price": 35
@@ -41,9 +55,23 @@
               {
                 "observed_at": "2026-02-03T09:50:57.000Z",
                 "price": 0
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-03-06T09:38:18.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-05T10:07:17.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-01T00:05:47.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-01T14:29:57.000Z",
+                "price": 0
+              },
               {
                 "observed_at": "2026-08-21T12:03:00.974Z",
                 "price": 0
@@ -63,9 +91,23 @@
               {
                 "observed_at": "2026-02-03T09:50:57.000Z",
                 "price": 240
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-03-06T09:38:18.000Z",
+                "price": 240
+              },
+              {
+                "observed_at": "2026-05-05T10:07:17.000Z",
+                "price": 240
+              },
+              {
+                "observed_at": "2026-06-01T00:05:47.000Z",
+                "price": 240
+              },
+              {
+                "observed_at": "2026-07-01T14:29:57.000Z",
+                "price": 240
+              },
               {
                 "observed_at": "2026-08-21T12:03:00.974Z",
                 "price": 240
@@ -81,12 +123,40 @@
       "slug": "buildkite",
       "name": "Buildkite",
       "first_observed_at": "2025-08-29T11:09:15.000Z",
-      "last_observed_at": "2026-08-21T12:03:36.618Z",
+      "last_observed_at": "2026-09-04T07:01:31.484Z",
       "series": [
+        {
+          "tier": "All Access Trial",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-05-12T12:06:40.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Free",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-09-02T07:01:25.706Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
         {
           "tier": "Free Plan",
           "segments": [
             [
+              {
+                "observed_at": "2026-08-19T00:12:36.000Z",
+                "price": 0
+              },
               {
                 "observed_at": "2026-08-21T12:03:36.618Z",
                 "price": 0
@@ -105,6 +175,12 @@
               },
               {
                 "observed_at": "2026-01-20T16:16:40.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-05-12T12:06:40.000Z",
                 "price": 0
               }
             ]
@@ -129,6 +205,18 @@
                 "observed_at": "2026-01-20T16:16:40.000Z",
                 "price": 30
               }
+            ],
+            [
+              {
+                "observed_at": "2026-05-12T12:06:40.000Z",
+                "price": 30
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-09-02T07:01:25.706Z",
+                "price": 30
+              }
             ]
           ],
           "tier_class": "entry"
@@ -137,6 +225,10 @@
           "tier": "Pro Plan",
           "segments": [
             [
+              {
+                "observed_at": "2026-08-19T00:12:36.000Z",
+                "price": 30
+              },
               {
                 "observed_at": "2026-08-21T12:03:36.618Z",
                 "price": 30
@@ -150,6 +242,38 @@
         {
           "observed_at": "2025-11-15T03:17:40.000Z",
           "label": "Personal tier added"
+        },
+        {
+          "observed_at": "2026-05-12T12:06:40.000Z",
+          "label": "All Access Trial tier added"
+        },
+        {
+          "observed_at": "2026-08-19T00:12:36.000Z",
+          "label": "Pro Plan seats changed"
+        },
+        {
+          "observed_at": "2026-08-19T00:12:36.000Z",
+          "label": "Free Plan seats changed"
+        },
+        {
+          "observed_at": "2026-08-19T00:12:36.000Z",
+          "label": "Personal tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:36.618Z",
+          "label": "Pro Plan seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:36.618Z",
+          "label": "Free Plan tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:36.618Z",
+          "label": "Pro Plan seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:36.618Z",
+          "label": "Free Plan seats changed"
         }
       ]
     },
@@ -157,14 +281,46 @@
       "slug": "clerk",
       "name": "Clerk",
       "first_observed_at": "2025-09-01T12:00:47.000Z",
-      "last_observed_at": "2026-08-21T12:03:14.109Z",
+      "last_observed_at": "2026-09-02T07:01:03.393Z",
       "series": [
         {
           "tier": "Business",
           "segments": [
             [
               {
+                "observed_at": "2026-02-09T09:14:48.000Z",
+                "price": 250
+              },
+              {
+                "observed_at": "2026-03-02T14:21:32.000Z",
+                "price": 250
+              },
+              {
+                "observed_at": "2026-04-18T19:16:04.000Z",
+                "price": 250
+              },
+              {
+                "observed_at": "2026-05-21T05:18:00.000Z",
+                "price": 250
+              },
+              {
+                "observed_at": "2026-06-18T00:36:31.000Z",
+                "price": 250
+              },
+              {
+                "observed_at": "2026-07-03T07:39:12.000Z",
+                "price": 250
+              },
+              {
+                "observed_at": "2026-08-09T17:09:08.000Z",
+                "price": 250
+              },
+              {
                 "observed_at": "2026-08-21T12:03:14.109Z",
+                "price": 300
+              },
+              {
+                "observed_at": "2026-08-27T07:01:44.054Z",
                 "price": 300
               }
             ]
@@ -216,7 +372,39 @@
           "segments": [
             [
               {
+                "observed_at": "2026-02-09T09:14:48.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-03-02T14:21:32.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-18T19:16:04.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-21T05:18:00.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-18T00:36:31.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-03T07:39:12.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-09T17:09:08.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-21T12:03:14.109Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-27T07:01:44.054Z",
                 "price": 0
               }
             ]
@@ -238,7 +426,39 @@
             ],
             [
               {
+                "observed_at": "2026-02-09T09:14:48.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-03-02T14:21:32.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-04-18T19:16:04.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-05-21T05:18:00.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-06-18T00:36:31.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-07-03T07:39:12.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-09T17:09:08.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2026-08-21T12:03:14.109Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-27T07:01:44.054Z",
                 "price": 25
               }
             ]
@@ -258,6 +478,82 @@
         {
           "observed_at": "2025-11-02T09:30:17.000Z",
           "label": "Enhanced B2B SaaS add-on tier removed"
+        },
+        {
+          "observed_at": "2026-02-09T09:14:48.000Z",
+          "label": "Pro $25 → $20"
+        },
+        {
+          "observed_at": "2026-02-09T09:14:48.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-02-09T09:14:48.000Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-02-09T09:14:48.000Z",
+          "label": "Business tier added"
+        },
+        {
+          "observed_at": "2026-03-02T14:21:32.000Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-04-18T19:16:04.000Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-08-09T17:09:08.000Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Enhanced Authentication add-on tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Enhanced B2B SaaS add-on tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Business tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Business tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Pro $20 → $25"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Business $250 → $300"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Pro $20 → $25"
+        },
+        {
+          "observed_at": "2026-08-21T12:03:14.109Z",
+          "label": "Business $250 → $300"
         }
       ]
     },
@@ -265,7 +561,7 @@
       "slug": "depot",
       "name": "Depot",
       "first_observed_at": "2025-09-10T17:00:16.000Z",
-      "last_observed_at": "2026-08-21T12:03:49.035Z",
+      "last_observed_at": "2026-09-02T07:01:38.536Z",
       "series": [
         {
           "tier": "Developer",
@@ -278,7 +574,31 @@
             ],
             [
               {
+                "observed_at": "2026-03-12T08:02:41.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-04-17T06:24:01.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-06-22T13:14:28.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-07-17T09:53:47.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-08T01:43:32.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2026-08-21T12:03:49.035Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-09-02T07:01:38.536Z",
                 "price": 20
               }
             ]
@@ -296,7 +616,31 @@
             ],
             [
               {
+                "observed_at": "2026-03-12T08:02:41.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-04-17T06:24:01.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-06-22T13:14:28.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-07-17T09:53:47.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-08-08T01:43:32.000Z",
+                "price": 200
+              },
+              {
                 "observed_at": "2026-08-21T12:03:49.035Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-09-02T07:01:38.536Z",
                 "price": 200
               }
             ]
@@ -310,7 +654,7 @@
       "slug": "figma",
       "name": "Figma",
       "first_observed_at": "2025-08-23T16:00:35.000Z",
-      "last_observed_at": "2026-08-21T12:02:13.402Z",
+      "last_observed_at": "2026-09-03T07:00:42.706Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -324,6 +668,10 @@
             [
               {
                 "observed_at": "2026-08-06T03:10:08.000Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-09-03T07:00:42.706Z",
                 "price": 90
               }
             ]
@@ -343,6 +691,10 @@
               {
                 "observed_at": "2026-08-06T03:10:08.000Z",
                 "price": 55
+              },
+              {
+                "observed_at": "2026-09-03T07:00:42.706Z",
+                "price": 55
               }
             ]
           ],
@@ -360,6 +712,10 @@
             [
               {
                 "observed_at": "2026-08-06T03:10:08.000Z",
+                "price": 16
+              },
+              {
+                "observed_at": "2026-09-03T07:00:42.706Z",
                 "price": 16
               }
             ]
@@ -385,6 +741,10 @@
               {
                 "observed_at": "2026-08-06T03:10:08.000Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-09-03T07:00:42.706Z",
+                "price": 0
               }
             ]
           ],
@@ -397,7 +757,7 @@
       "slug": "fly-io",
       "name": "Fly.io",
       "first_observed_at": "2025-08-28T15:30:44.000Z",
-      "last_observed_at": "2026-08-21T12:06:09.099Z",
+      "last_observed_at": "2026-09-02T07:04:12.029Z",
       "series": [
         {
           "tier": "Compliance",
@@ -457,7 +817,7 @@
       "slug": "github",
       "name": "GitHub",
       "first_observed_at": "2025-08-21T03:03:43.000Z",
-      "last_observed_at": "2026-08-21T12:04:01.599Z",
+      "last_observed_at": "2026-09-02T07:01:49.735Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -476,7 +836,27 @@
             ],
             [
               {
+                "observed_at": "2026-05-01T00:11:20.000Z",
+                "price": 21
+              },
+              {
+                "observed_at": "2026-06-01T00:25:06.000Z",
+                "price": 21
+              },
+              {
+                "observed_at": "2026-07-01T01:50:27.000Z",
+                "price": 21
+              },
+              {
                 "observed_at": "2026-08-21T12:04:01.599Z",
+                "price": 21
+              },
+              {
+                "observed_at": "2026-08-27T07:02:30.322Z",
+                "price": 21
+              },
+              {
+                "observed_at": "2026-09-02T07:01:49.735Z",
                 "price": 21
               }
             ]
@@ -500,7 +880,27 @@
             ],
             [
               {
+                "observed_at": "2026-05-01T00:11:20.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-01T00:25:06.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-01T01:50:27.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-21T12:04:01.599Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-27T07:02:30.322Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-09-02T07:01:49.735Z",
                 "price": 0
               }
             ]
@@ -524,7 +924,27 @@
             ],
             [
               {
+                "observed_at": "2026-05-01T00:11:20.000Z",
+                "price": 4
+              },
+              {
+                "observed_at": "2026-06-01T00:25:06.000Z",
+                "price": 4
+              },
+              {
+                "observed_at": "2026-07-01T01:50:27.000Z",
+                "price": 4
+              },
+              {
                 "observed_at": "2026-08-21T12:04:01.599Z",
+                "price": 4
+              },
+              {
+                "observed_at": "2026-08-27T07:02:30.322Z",
+                "price": 4
+              },
+              {
+                "observed_at": "2026-09-02T07:01:49.735Z",
                 "price": 4
               }
             ]
@@ -538,7 +958,7 @@
       "slug": "gitlab",
       "name": "GitLab",
       "first_observed_at": "2025-08-23T14:46:59.000Z",
-      "last_observed_at": "2026-08-21T12:04:12.654Z",
+      "last_observed_at": "2026-09-02T07:02:00.527Z",
       "series": [
         {
           "tier": "Free",
@@ -555,11 +975,31 @@
               {
                 "observed_at": "2025-12-01T00:20:45.000Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-02-07T23:25:38.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-03-02T14:41:03.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-02T18:11:07.000Z",
+                "price": 0
               }
             ],
             [
               {
+                "observed_at": "2026-07-01T12:04:13.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-01T16:05:35.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-23T07:02:38.678Z",
                 "price": 0
               }
             ]
@@ -581,11 +1021,31 @@
               {
                 "observed_at": "2025-12-01T00:20:45.000Z",
                 "price": 29
+              },
+              {
+                "observed_at": "2026-02-07T23:25:38.000Z",
+                "price": 29
+              },
+              {
+                "observed_at": "2026-03-02T14:41:03.000Z",
+                "price": 29
+              },
+              {
+                "observed_at": "2026-04-02T18:11:07.000Z",
+                "price": 29
               }
             ],
             [
               {
+                "observed_at": "2026-07-01T12:04:13.000Z",
+                "price": 29
+              },
+              {
                 "observed_at": "2026-08-01T16:05:35.000Z",
+                "price": 29
+              },
+              {
+                "observed_at": "2026-08-23T07:02:38.678Z",
                 "price": 29
               }
             ]
@@ -607,6 +1067,38 @@
           "label": "Ultimate flag changed"
         },
         {
+          "observed_at": "2026-02-07T23:25:38.000Z",
+          "label": "Free billing unit changed"
+        },
+        {
+          "observed_at": "2026-02-07T23:25:38.000Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-02-07T23:25:38.000Z",
+          "label": "Ultimate flag changed"
+        },
+        {
+          "observed_at": "2026-02-07T23:25:38.000Z",
+          "label": "GitLab Dedicated tier removed"
+        },
+        {
+          "observed_at": "2026-02-07T23:25:38.000Z",
+          "label": "GitLab Dedicated for Government tier removed"
+        },
+        {
+          "observed_at": "2026-03-02T14:41:03.000Z",
+          "label": "Free billing unit changed"
+        },
+        {
+          "observed_at": "2026-04-02T18:11:07.000Z",
+          "label": "Ultimate billing unit changed"
+        },
+        {
+          "observed_at": "2026-07-01T12:04:13.000Z",
+          "label": "Ultimate billing unit changed"
+        },
+        {
           "observed_at": "2026-08-01T16:05:35.000Z",
           "label": "Free billing unit changed"
         },
@@ -621,6 +1113,34 @@
         {
           "observed_at": "2026-08-01T16:05:35.000Z",
           "label": "Ultimate flag changed"
+        },
+        {
+          "observed_at": "2026-08-01T16:05:35.000Z",
+          "label": "GitLab Dedicated tier added"
+        },
+        {
+          "observed_at": "2026-08-01T16:05:35.000Z",
+          "label": "GitLab Dedicated for Government tier added"
+        },
+        {
+          "observed_at": "2026-08-01T16:05:35.000Z",
+          "label": "GitLab Dedicated tier added"
+        },
+        {
+          "observed_at": "2026-08-01T16:05:35.000Z",
+          "label": "GitLab Dedicated for Government tier added"
+        },
+        {
+          "observed_at": "2026-08-23T07:02:38.678Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-08-23T07:02:38.678Z",
+          "label": "GitLab Dedicated tier removed"
+        },
+        {
+          "observed_at": "2026-08-23T07:02:38.678Z",
+          "label": "GitLab Dedicated for Government tier removed"
         }
       ]
     },
@@ -628,7 +1148,7 @@
       "slug": "hasura",
       "name": "Hasura",
       "first_observed_at": "2025-09-08T07:34:57.000Z",
-      "last_observed_at": "2026-08-21T12:04:25.562Z",
+      "last_observed_at": "2026-09-04T07:02:16.444Z",
       "series": [
         {
           "tier": "DDN Advanced",
@@ -691,7 +1211,7 @@
       "slug": "honeycomb",
       "name": "Honeycomb",
       "first_observed_at": "2025-09-13T08:05:51.000Z",
-      "last_observed_at": "2026-08-21T12:06:56.888Z",
+      "last_observed_at": "2026-09-02T07:05:00.106Z",
       "series": [
         {
           "tier": "Free",
@@ -712,7 +1232,23 @@
             ],
             [
               {
+                "observed_at": "2026-05-13T19:40:33.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-08T04:26:04.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-21T06:43:10.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-12T02:33:08.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-29T07:05:01.456Z",
                 "price": 0
               }
             ]
@@ -734,7 +1270,23 @@
             ],
             [
               {
+                "observed_at": "2026-05-13T19:40:33.000Z",
+                "price": 130
+              },
+              {
+                "observed_at": "2026-06-08T04:26:04.000Z",
+                "price": 130
+              },
+              {
+                "observed_at": "2026-07-21T06:43:10.000Z",
+                "price": 150
+              },
+              {
                 "observed_at": "2026-08-12T02:33:08.000Z",
+                "price": 150
+              },
+              {
+                "observed_at": "2026-08-29T07:05:01.456Z",
                 "price": 150
               }
             ]
@@ -788,8 +1340,24 @@
           "label": "Pro 1 tier removed"
         },
         {
+          "observed_at": "2026-05-13T19:40:33.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-06-08T04:26:04.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-07-21T06:43:10.000Z",
+          "label": "Pro $130 → $150"
+        },
+        {
           "observed_at": "2026-08-12T02:33:08.000Z",
           "label": "Pro $130 → $150"
+        },
+        {
+          "observed_at": "2026-08-12T02:33:08.000Z",
+          "label": "Enterprise billing unit changed"
         },
         {
           "observed_at": "2026-08-12T02:33:08.000Z",
@@ -801,7 +1369,7 @@
       "slug": "linear",
       "name": "Linear",
       "first_observed_at": "2025-02-19T07:53:31.000Z",
-      "last_observed_at": "2026-08-21T07:00:14.584Z",
+      "last_observed_at": "2026-09-03T07:00:18.058Z",
       "series": [
         {
           "tier": "Basic",
@@ -1011,7 +1579,7 @@
       "slug": "netlify",
       "name": "Netlify",
       "first_observed_at": "2025-08-26T21:29:12.000Z",
-      "last_observed_at": "2026-08-21T12:06:20.056Z",
+      "last_observed_at": "2026-09-02T07:04:25.176Z",
       "series": [
         {
           "tier": "Free",
@@ -1039,6 +1607,18 @@
               },
               {
                 "observed_at": "2026-02-02T22:34:40.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-03-04T01:03:30.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-04T12:17:39.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-03T23:15:04.000Z",
                 "price": 0
               }
             ],
@@ -1090,6 +1670,18 @@
               {
                 "observed_at": "2026-02-02T22:34:40.000Z",
                 "price": 9
+              },
+              {
+                "observed_at": "2026-03-04T01:03:30.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-04-04T12:17:39.000Z",
+                "price": 9
+              },
+              {
+                "observed_at": "2026-05-03T23:15:04.000Z",
+                "price": 9
               }
             ],
             [
@@ -1132,6 +1724,18 @@
               {
                 "observed_at": "2026-02-02T22:34:40.000Z",
                 "price": 20
+              },
+              {
+                "observed_at": "2026-03-04T01:03:30.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-04-04T12:17:39.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-05-03T23:15:04.000Z",
+                "price": 20
               }
             ],
             [
@@ -1156,6 +1760,14 @@
         {
           "observed_at": "2025-11-01T06:52:39.000Z",
           "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-05-03T23:15:04.000Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-05-03T23:15:04.000Z",
+          "label": "Pro billing unit changed"
         },
         {
           "observed_at": "2026-08-04T12:47:39.000Z",
@@ -1184,6 +1796,22 @@
         {
           "observed_at": "2026-08-04T12:47:39.000Z",
           "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Free seats changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Personal seats changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:47:39.000Z",
+          "label": "Personal seats changed"
         }
       ]
     },
@@ -1191,7 +1819,7 @@
       "slug": "new-relic",
       "name": "New Relic",
       "first_observed_at": "2025-09-01T17:50:23.000Z",
-      "last_observed_at": "2026-08-21T12:07:08.616Z",
+      "last_observed_at": "2026-09-02T07:05:12.057Z",
       "series": [
         {
           "tier": "Free",
@@ -1209,6 +1837,12 @@
             [
               {
                 "observed_at": "2026-08-21T12:07:08.616Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-08-29T07:05:13.410Z",
                 "price": 0
               }
             ]
@@ -1233,6 +1867,12 @@
                 "observed_at": "2026-08-21T12:07:08.616Z",
                 "price": 349
               }
+            ],
+            [
+              {
+                "observed_at": "2026-08-29T07:05:13.410Z",
+                "price": 349
+              }
             ]
           ],
           "tier_class": "enterprise"
@@ -1255,18 +1895,57 @@
                 "observed_at": "2026-08-21T12:07:08.616Z",
                 "price": 10
               }
+            ],
+            [
+              {
+                "observed_at": "2026-08-29T07:05:13.410Z",
+                "price": 10
+              }
             ]
           ],
           "tier_class": "entry"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-08-21T12:07:08.616Z",
+          "label": "Free tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:07:08.616Z",
+          "label": "Standard tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:07:08.616Z",
+          "label": "Pro tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:07:08.616Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-29T07:05:13.410Z",
+          "label": "Free tier added"
+        },
+        {
+          "observed_at": "2026-08-29T07:05:13.410Z",
+          "label": "Standard tier added"
+        },
+        {
+          "observed_at": "2026-08-29T07:05:13.410Z",
+          "label": "Pro tier added"
+        },
+        {
+          "observed_at": "2026-08-29T07:05:13.410Z",
+          "label": "Enterprise tier added"
+        }
+      ]
     },
     {
       "slug": "notion",
       "name": "Notion",
       "first_observed_at": "2025-02-19T07:54:17.000Z",
-      "last_observed_at": "2026-08-21T07:00:27.481Z",
+      "last_observed_at": "2026-09-03T07:00:30.388Z",
       "series": [
         {
           "tier": "Business",
@@ -1525,15 +2204,27 @@
     {
       "slug": "pinecone",
       "name": "Pinecone",
-      "first_observed_at": "2026-08-02T02:12:13.000Z",
-      "last_observed_at": "2026-08-21T12:07:19.148Z",
+      "first_observed_at": "2026-06-03T23:31:52.000Z",
+      "last_observed_at": "2026-09-02T07:05:23.905Z",
       "series": [
         {
           "tier": "Builder",
           "segments": [
             [
               {
+                "observed_at": "2026-06-03T23:31:52.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-07-01T22:04:21.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2026-08-02T02:12:13.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-09-02T07:05:23.905Z",
                 "price": 20
               }
             ]
@@ -1545,7 +2236,19 @@
           "segments": [
             [
               {
+                "observed_at": "2026-06-03T23:31:52.000Z",
+                "price": 500
+              },
+              {
+                "observed_at": "2026-07-01T22:04:21.000Z",
+                "price": 500
+              },
+              {
                 "observed_at": "2026-08-02T02:12:13.000Z",
+                "price": 500
+              },
+              {
+                "observed_at": "2026-09-02T07:05:23.905Z",
                 "price": 500
               }
             ]
@@ -1557,7 +2260,19 @@
           "segments": [
             [
               {
+                "observed_at": "2026-06-03T23:31:52.000Z",
+                "price": 50
+              },
+              {
+                "observed_at": "2026-07-01T22:04:21.000Z",
+                "price": 50
+              },
+              {
                 "observed_at": "2026-08-02T02:12:13.000Z",
+                "price": 50
+              },
+              {
+                "observed_at": "2026-09-02T07:05:23.905Z",
                 "price": 50
               }
             ]
@@ -1569,7 +2284,19 @@
           "segments": [
             [
               {
+                "observed_at": "2026-06-03T23:31:52.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-01T22:04:21.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-02T02:12:13.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-09-02T07:05:23.905Z",
                 "price": 0
               }
             ]
@@ -1583,7 +2310,7 @@
       "slug": "planetscale",
       "name": "PlanetScale",
       "first_observed_at": "2025-09-06T21:41:53.000Z",
-      "last_observed_at": "2026-08-21T12:04:36.440Z",
+      "last_observed_at": "2026-09-02T07:02:23.841Z",
       "series": [
         {
           "tier": "Base - PlanetScale PostgreSQL Metal",
@@ -1619,7 +2346,7 @@
               }
             ]
           ],
-          "tier_class": "enterprise"
+          "tier_class": "mid"
         },
         {
           "tier": "Base Plan - PlanetScale PostgreSQL Single Node",
@@ -1627,6 +2354,82 @@
             [
               {
                 "observed_at": "2026-08-09T05:57:07.000Z",
+                "price": 5
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "PlanetScale Metal",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-23T07:03:03.471Z",
+                "price": 50
+              }
+            ]
+          ],
+          "tier_class": "enterprise"
+        },
+        {
+          "tier": "PlanetScale Postgres Single Node",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-08-23T07:03:03.471Z",
+                "price": 5
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "PlanetScale PostgreSQL - High Availability",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-05-16T14:08:15.000Z",
+                "price": 15
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "PlanetScale PostgreSQL - Metal",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-04-02T16:35:29.000Z",
+                "price": 50
+              },
+              {
+                "observed_at": "2026-05-16T14:08:15.000Z",
+                "price": 50
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "PlanetScale PostgreSQL - Single node",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-04-02T16:35:29.000Z",
+                "price": 5
+              }
+            ]
+          ],
+          "tier_class": "mid"
+        },
+        {
+          "tier": "PlanetScale PostgreSQL - Single Node",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-05-16T14:08:15.000Z",
                 "price": 5
               }
             ]
@@ -1688,8 +2491,28 @@
           "label": "Base - Vitess tier added"
         },
         {
+          "observed_at": "2026-04-02T16:35:29.000Z",
+          "label": "PlanetScale PostgreSQL - High Availability billing unit changed"
+        },
+        {
           "observed_at": "2026-08-09T05:57:07.000Z",
           "label": "Base Plan - PlanetScale PostgreSQL High Availability billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-09T05:57:07.000Z",
+          "label": "PlanetScale PostgreSQL - Metal tier removed"
+        },
+        {
+          "observed_at": "2026-08-09T05:57:07.000Z",
+          "label": "PlanetScale PostgreSQL - High Availability tier removed"
+        },
+        {
+          "observed_at": "2026-08-09T05:57:07.000Z",
+          "label": "Base Plan - PlanetScale PostgreSQL High Availability tier added"
+        },
+        {
+          "observed_at": "2026-08-09T05:57:07.000Z",
+          "label": "Base Plan - PlanetScale PostgreSQL Metal tier added"
         }
       ]
     },
@@ -1697,7 +2520,7 @@
       "slug": "postman",
       "name": "Postman",
       "first_observed_at": "2025-02-23T11:47:21.000Z",
-      "last_observed_at": "2026-08-21T12:02:48.662Z",
+      "last_observed_at": "2026-09-02T07:00:39.652Z",
       "series": [
         {
           "tier": "Basic",
@@ -1796,6 +2619,10 @@
               {
                 "observed_at": "2026-08-20T07:00:48.495Z",
                 "price": 49
+              },
+              {
+                "observed_at": "2026-08-29T07:00:44.244Z",
+                "price": 49
               }
             ]
           ],
@@ -1861,6 +2688,10 @@
               },
               {
                 "observed_at": "2026-08-20T07:00:48.495Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-29T07:00:44.244Z",
                 "price": 0
               }
             ]
@@ -1934,6 +2765,10 @@
               {
                 "observed_at": "2026-08-20T07:00:48.495Z",
                 "price": 9
+              },
+              {
+                "observed_at": "2026-08-29T07:00:44.244Z",
+                "price": 9
               }
             ]
           ],
@@ -1969,6 +2804,10 @@
               },
               {
                 "observed_at": "2026-08-20T07:00:48.495Z",
+                "price": 19
+              },
+              {
+                "observed_at": "2026-08-29T07:00:44.244Z",
                 "price": 19
               }
             ]
@@ -2007,7 +2846,7 @@
       "slug": "postmark",
       "name": "Postmark",
       "first_observed_at": "2026-02-07T08:34:05.000Z",
-      "last_observed_at": "2026-08-21T12:05:34.900Z",
+      "last_observed_at": "2026-09-02T07:03:25.160Z",
       "series": [
         {
           "tier": "Basic",
@@ -2016,9 +2855,11 @@
               {
                 "observed_at": "2026-02-07T08:34:05.000Z",
                 "price": 15
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-04-14T00:36:20.000Z",
+                "price": 15
+              },
               {
                 "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 15
@@ -2034,9 +2875,11 @@
               {
                 "observed_at": "2026-02-07T08:34:05.000Z",
                 "price": 0
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-04-14T00:36:20.000Z",
+                "price": 0
+              },
               {
                 "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 0
@@ -2052,9 +2895,11 @@
               {
                 "observed_at": "2026-02-07T08:34:05.000Z",
                 "price": 18
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-04-14T00:36:20.000Z",
+                "price": 18
+              },
               {
                 "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 18
@@ -2070,9 +2915,11 @@
               {
                 "observed_at": "2026-02-07T08:34:05.000Z",
                 "price": 16.5
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-04-14T00:36:20.000Z",
+                "price": 16.5
+              },
               {
                 "observed_at": "2026-05-18T10:14:43.000Z",
                 "price": 16.5
@@ -2082,13 +2929,22 @@
           "tier_class": "mid"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-04-14T00:36:20.000Z",
+          "label": "Enterprise tier removed"
+        },
+        {
+          "observed_at": "2026-05-18T10:14:43.000Z",
+          "label": "Enterprise tier added"
+        }
+      ]
     },
     {
       "slug": "redis-cloud",
       "name": "Redis Cloud",
       "first_observed_at": "2025-09-02T17:16:37.000Z",
-      "last_observed_at": "2026-08-21T12:04:49.100Z",
+      "last_observed_at": "2026-09-02T07:02:37.055Z",
       "series": [
         {
           "tier": "Essentials",
@@ -2105,11 +2961,35 @@
               {
                 "observed_at": "2026-01-10T04:00:16.000Z",
                 "price": 5
+              },
+              {
+                "observed_at": "2026-03-01T10:37:55.000Z",
+                "price": 5
+              },
+              {
+                "observed_at": "2026-04-02T03:45:27.000Z",
+                "price": 5
+              },
+              {
+                "observed_at": "2026-05-05T14:39:20.000Z",
+                "price": 5
               }
             ],
             [
               {
                 "observed_at": "2026-08-13T18:11:24.000Z",
+                "price": 5
+              },
+              {
+                "observed_at": "2026-08-23T07:03:17.361Z",
+                "price": 5
+              },
+              {
+                "observed_at": "2026-08-25T07:03:51.430Z",
+                "price": 5
+              },
+              {
+                "observed_at": "2026-08-31T07:02:34.489Z",
                 "price": 5
               }
             ]
@@ -2151,11 +3031,35 @@
               {
                 "observed_at": "2026-01-10T04:00:16.000Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-03-01T10:37:55.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-02T03:45:27.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-05T14:39:20.000Z",
+                "price": 0
               }
             ],
             [
               {
                 "observed_at": "2026-08-13T18:11:24.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-23T07:03:17.361Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-25T07:03:51.430Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-31T07:02:34.489Z",
                 "price": 0
               }
             ]
@@ -2177,11 +3081,35 @@
               {
                 "observed_at": "2026-01-10T04:00:16.000Z",
                 "price": 200
+              },
+              {
+                "observed_at": "2026-03-01T10:37:55.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-04-02T03:45:27.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-05-05T14:39:20.000Z",
+                "price": 200
               }
             ],
             [
               {
                 "observed_at": "2026-08-13T18:11:24.000Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-08-23T07:03:17.361Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-08-25T07:03:51.430Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-08-31T07:02:34.489Z",
                 "price": 200
               }
             ]
@@ -2195,6 +3123,22 @@
           "label": "Pro billing unit changed"
         },
         {
+          "observed_at": "2026-03-01T10:37:55.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-03-01T10:37:55.000Z",
+          "label": "Flex tier removed"
+        },
+        {
+          "observed_at": "2026-03-01T10:37:55.000Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-04-02T03:45:27.000Z",
+          "label": "Enterprise tier removed"
+        },
+        {
           "observed_at": "2026-08-13T18:11:24.000Z",
           "label": "Pro billing unit changed"
         },
@@ -2205,6 +3149,22 @@
         {
           "observed_at": "2026-08-13T18:11:24.000Z",
           "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-13T18:11:24.000Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-13T18:11:24.000Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-25T07:03:51.430Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-31T07:02:34.489Z",
+          "label": "Enterprise tier removed"
         }
       ]
     },
@@ -2212,7 +3172,7 @@
       "slug": "render",
       "name": "Render",
       "first_observed_at": "2025-08-26T13:34:23.000Z",
-      "last_observed_at": "2026-08-21T12:06:32.338Z",
+      "last_observed_at": "2026-09-02T07:04:37.725Z",
       "series": [
         {
           "tier": "Cron Jobs",
@@ -2231,7 +3191,23 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-02T08:20:30.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-01T13:35:25.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-21T12:06:32.338Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-23T07:04:57.807Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-29T07:04:38.381Z",
                 "price": 0
               }
             ]
@@ -2243,7 +3219,23 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-02T08:20:30.000Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-01T13:35:25.000Z",
+                "price": 25
+              },
+              {
                 "observed_at": "2026-08-21T12:06:32.338Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-23T07:04:57.807Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-29T07:04:38.381Z",
                 "price": 25
               }
             ]
@@ -3267,7 +4259,23 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-02T08:20:30.000Z",
+                "price": 499
+              },
+              {
+                "observed_at": "2026-08-01T13:35:25.000Z",
+                "price": 499
+              },
+              {
                 "observed_at": "2026-08-21T12:06:32.338Z",
+                "price": 499
+              },
+              {
+                "observed_at": "2026-08-23T07:04:57.807Z",
+                "price": 499
+              },
+              {
+                "observed_at": "2026-08-29T07:04:38.381Z",
                 "price": 499
               }
             ]
@@ -3609,6 +4617,570 @@
         {
           "observed_at": "2026-01-04T15:19:02.000Z",
           "label": "Web Services Starter tier added"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Hobby seats changed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Free tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Starter tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Standard tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Pro tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Pro Max tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Pro Ultra tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Web Services Custom tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Free tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Basic-256mb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Basic-1gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Basic-4gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-4gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-8gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-16gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-32gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-64gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-128gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-192gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-256gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-384gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Pro-512gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-16gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-32gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-64gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-128gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-256gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-384gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-512gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-768gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Postgres Accelerated-1024gb tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Free tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Starter tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Standard tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Pro tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Pro Max tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Pro Ultra tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Render Key Value Custom tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Cron Jobs Starter tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Cron Jobs Standard tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Cron Jobs Pro tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Cron Jobs Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Cron Jobs Custom tier removed"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Pro tier added"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Scale tier added"
+        },
+        {
+          "observed_at": "2026-07-02T08:20:30.000Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Hobby seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Free tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Starter tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Standard tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro Max tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro Ultra tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Custom tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Free tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Basic-256mb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Basic-1gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Basic-4gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-4gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-8gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-16gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-32gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-64gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-128gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-192gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-256gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-384gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-512gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-16gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-32gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-64gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-128gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-256gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-384gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-512gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-768gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-1024gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Free tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Starter tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Standard tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Pro tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Custom tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Cron Jobs tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Pro tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Scale tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Enterprise tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Hobby seats changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Free tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Starter tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Standard tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro Max tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Pro Ultra tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Web Services Custom tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Free tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Basic-256mb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Basic-1gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Basic-4gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-4gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-8gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-16gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-32gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-64gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-128gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-192gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-256gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-384gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Pro-512gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-16gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-32gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-64gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-128gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-256gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-384gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-512gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-768gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Postgres Accelerated-1024gb tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Free tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Starter tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Standard tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Pro tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Pro Max tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Pro Ultra tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Render Key Value Custom tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Cron Jobs Starter tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Cron Jobs Standard tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Cron Jobs Pro tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Cron Jobs Pro Plus tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Cron Jobs Custom tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Pro tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Scale tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:06:32.338Z",
+          "label": "Enterprise tier added"
         }
       ]
     },
@@ -3616,7 +5188,7 @@
       "slug": "resend",
       "name": "Resend",
       "first_observed_at": "2025-08-28T01:29:48.000Z",
-      "last_observed_at": "2026-08-21T12:05:46.321Z",
+      "last_observed_at": "2026-09-02T07:03:36.999Z",
       "series": [
         {
           "tier": "Free",
@@ -3637,7 +5209,31 @@
             ],
             [
               {
+                "observed_at": "2026-04-02T06:22:13.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-02T10:40:49.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-01T14:29:58.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-01T11:27:46.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-21T12:05:46.321Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-27T07:04:17.366Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-09-02T07:03:36.999Z",
                 "price": 0
               }
             ]
@@ -3663,7 +5259,31 @@
             ],
             [
               {
+                "observed_at": "2026-04-02T06:22:13.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-05-02T10:40:49.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-07-01T14:29:58.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-01T11:27:46.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2026-08-21T12:05:46.321Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-27T07:04:17.366Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-09-02T07:03:36.999Z",
                 "price": 20
               }
             ]
@@ -3689,7 +5309,31 @@
             ],
             [
               {
+                "observed_at": "2026-04-02T06:22:13.000Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-05-02T10:40:49.000Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-07-01T14:29:58.000Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-08-01T11:27:46.000Z",
+                "price": 90
+              },
+              {
                 "observed_at": "2026-08-21T12:05:46.321Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-08-27T07:04:17.366Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-09-02T07:03:36.999Z",
                 "price": 90
               }
             ]
@@ -3703,7 +5347,7 @@
       "slug": "sentry",
       "name": "Sentry",
       "first_observed_at": "2025-02-19T05:34:02.000Z",
-      "last_observed_at": "2026-08-21T12:02:36.284Z",
+      "last_observed_at": "2026-09-02T07:00:27.898Z",
       "series": [
         {
           "tier": "business",
@@ -3779,6 +5423,10 @@
               },
               {
                 "observed_at": "2026-08-11T15:50:53.000Z",
+                "price": 80
+              },
+              {
+                "observed_at": "2026-08-27T07:01:08.175Z",
                 "price": 80
               }
             ]
@@ -3860,6 +5508,10 @@
               {
                 "observed_at": "2026-08-11T15:50:53.000Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-08-27T07:01:08.175Z",
+                "price": 0
               }
             ]
           ],
@@ -3940,6 +5592,10 @@
               {
                 "observed_at": "2026-08-11T15:50:53.000Z",
                 "price": 26
+              },
+              {
+                "observed_at": "2026-08-27T07:01:08.175Z",
+                "price": 26
               }
             ]
           ],
@@ -3952,7 +5608,7 @@
       "slug": "statsig",
       "name": "Statsig",
       "first_observed_at": "2025-09-04T17:34:51.000Z",
-      "last_observed_at": "2026-08-21T12:05:56.671Z",
+      "last_observed_at": "2026-09-02T07:03:47.978Z",
       "series": [
         {
           "tier": "Developer",
@@ -4009,7 +5665,7 @@
       "slug": "supabase",
       "name": "Supabase",
       "first_observed_at": "2025-02-19T03:41:25.000Z",
-      "last_observed_at": "2026-08-21T12:02:23.949Z",
+      "last_observed_at": "2026-09-02T07:00:16.596Z",
       "series": [
         {
           "tier": "Free",
@@ -4090,6 +5746,18 @@
               {
                 "observed_at": "2026-08-21T12:02:23.949Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-08-25T07:01:32.856Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-27T07:00:54.810Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-29T07:00:19.297Z",
+                "price": 0
               }
             ]
           ],
@@ -4173,6 +5841,18 @@
               },
               {
                 "observed_at": "2026-08-21T12:02:23.949Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-25T07:01:32.856Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-27T07:00:54.810Z",
+                "price": 25
+              },
+              {
+                "observed_at": "2026-08-29T07:00:19.297Z",
                 "price": 25
               }
             ]
@@ -4258,6 +5938,18 @@
               {
                 "observed_at": "2026-08-21T12:02:23.949Z",
                 "price": 599
+              },
+              {
+                "observed_at": "2026-08-25T07:01:32.856Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-08-27T07:00:54.810Z",
+                "price": 599
+              },
+              {
+                "observed_at": "2026-08-29T07:00:19.297Z",
+                "price": 599
               }
             ]
           ],
@@ -4268,6 +5960,10 @@
         {
           "observed_at": "2026-08-18T15:01:28.444Z",
           "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-21T12:02:23.949Z",
+          "label": "Pro billing unit changed"
         }
       ]
     },
@@ -4275,7 +5971,7 @@
       "slug": "turso",
       "name": "Turso",
       "first_observed_at": "2025-08-22T07:43:32.000Z",
-      "last_observed_at": "2026-08-21T12:05:01.568Z",
+      "last_observed_at": "2026-09-02T07:02:49.593Z",
       "series": [
         {
           "tier": "Developer",
@@ -4291,6 +5987,18 @@
               }
             ],
             [
+              {
+                "observed_at": "2026-03-06T21:19:59.000Z",
+                "price": 4.99
+              },
+              {
+                "observed_at": "2026-05-09T20:36:08.000Z",
+                "price": 4.99
+              },
+              {
+                "observed_at": "2026-06-03T00:55:49.000Z",
+                "price": 4.99
+              },
               {
                 "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 4.99
@@ -4314,6 +6022,18 @@
             ],
             [
               {
+                "observed_at": "2026-03-06T21:19:59.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-09T20:36:08.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-03T00:55:49.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 0
               }
@@ -4335,6 +6055,18 @@
               }
             ],
             [
+              {
+                "observed_at": "2026-03-06T21:19:59.000Z",
+                "price": 416.58
+              },
+              {
+                "observed_at": "2026-05-09T20:36:08.000Z",
+                "price": 416.58
+              },
+              {
+                "observed_at": "2026-06-03T00:55:49.000Z",
+                "price": 416.58
+              },
               {
                 "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 416.58
@@ -4358,6 +6090,18 @@
             ],
             [
               {
+                "observed_at": "2026-03-06T21:19:59.000Z",
+                "price": 24.92
+              },
+              {
+                "observed_at": "2026-05-09T20:36:08.000Z",
+                "price": 24.92
+              },
+              {
+                "observed_at": "2026-06-03T00:55:49.000Z",
+                "price": 24.92
+              },
+              {
                 "observed_at": "2026-07-20T00:59:22.000Z",
                 "price": 24.92
               }
@@ -4372,7 +6116,7 @@
       "slug": "upstash",
       "name": "Upstash",
       "first_observed_at": "2025-09-10T08:07:45.000Z",
-      "last_observed_at": "2026-08-21T12:05:22.115Z",
+      "last_observed_at": "2026-09-02T07:03:12.362Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -4391,7 +6135,15 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 800
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 800
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 800
               }
             ]
@@ -4403,7 +6155,15 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 200
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 200
               }
             ]
@@ -4415,7 +6175,15 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 20
               }
             ]
@@ -4427,19 +6195,39 @@
           "segments": [
             [
               {
+                "observed_at": "2026-06-03T07:15:46.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 10
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 10
               }
             ]
           ],
-          "tier_class": "mid"
+          "tier_class": "entry"
         },
         {
           "tier": "Fixed 500GB",
           "segments": [
             [
               {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 1500
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 1500
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 1500
               }
             ]
@@ -4451,7 +6239,15 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 400
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 400
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 400
               }
             ]
@@ -4463,7 +6259,15 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 100
+              },
+              {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 100
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 100
               }
             ]
@@ -4489,11 +6293,33 @@
               {
                 "observed_at": "2026-01-01T09:46:51.000Z",
                 "price": 0
-              }
-            ],
-            [
+              },
+              {
+                "observed_at": "2026-03-09T08:56:14.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-06T02:17:55.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-05-14T16:33:14.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-03T07:15:46.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-07-05T15:12:39.000Z",
+                "price": 0
+              },
               {
                 "observed_at": "2026-08-21T12:05:22.115Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-09-02T07:03:12.362Z",
                 "price": 0
               }
             ]
@@ -4506,6 +6332,32 @@
             [
               {
                 "observed_at": "2025-09-10T08:07:45.000Z",
+                "price": 0
+              }
+            ],
+            [
+              {
+                "observed_at": "2026-03-09T08:56:14.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-04-06T02:17:55.000Z",
+                "price": 0
+              }
+            ]
+          ],
+          "tier_class": "free"
+        },
+        {
+          "tier": "Pay as You Go",
+          "segments": [
+            [
+              {
+                "observed_at": "2026-05-14T16:33:14.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-06-03T07:15:46.000Z",
                 "price": 0
               }
             ]
@@ -4531,26 +6383,143 @@
               {
                 "observed_at": "2026-01-01T09:46:51.000Z",
                 "price": 10
+              },
+              {
+                "observed_at": "2026-03-09T08:56:14.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-04-06T02:17:55.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-05-14T16:33:14.000Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-06-03T07:15:46.000Z",
+                "price": 200
               }
             ]
           ],
-          "tier_class": "entry"
+          "tier_class": "mid"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Prod Pack $10 → $200"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 250MB tier added"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 1GB tier added"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 5GB tier added"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 10GB tier added"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 50GB tier added"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 100GB tier added"
+        },
+        {
+          "observed_at": "2026-06-03T07:15:46.000Z",
+          "label": "Fixed 500GB tier added"
+        },
+        {
+          "observed_at": "2026-07-05T15:12:39.000Z",
+          "label": "Prod Pack tier removed"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 1GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 5GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 10GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 50GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 100GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 500GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 1GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 5GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 10GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 50GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 100GB tier added"
+        },
+        {
+          "observed_at": "2026-08-21T12:05:22.115Z",
+          "label": "Fixed 500GB tier added"
+        }
+      ]
     },
     {
       "slug": "vercel",
       "name": "Vercel",
-      "first_observed_at": "2026-08-21T12:06:44.926Z",
-      "last_observed_at": "2026-08-21T12:06:44.926Z",
+      "first_observed_at": "2026-07-03T12:03:39.000Z",
+      "last_observed_at": "2026-09-02T07:04:48.968Z",
       "series": [
         {
           "tier": "Hobby",
           "segments": [
             [
               {
+                "observed_at": "2026-07-03T12:03:39.000Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-04T12:46:54.000Z",
+                "price": 0
+              },
+              {
                 "observed_at": "2026-08-21T12:06:44.926Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-25T07:05:51.982Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-08-27T07:05:25.839Z",
                 "price": 0
               }
             ]
@@ -4562,7 +6531,23 @@
           "segments": [
             [
               {
+                "observed_at": "2026-07-03T12:03:39.000Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-04T12:46:54.000Z",
+                "price": 20
+              },
+              {
                 "observed_at": "2026-08-21T12:06:44.926Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-25T07:05:51.982Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-08-27T07:05:25.839Z",
                 "price": 20
               }
             ]
@@ -4570,7 +6555,24 @@
           "tier_class": "entry"
         }
       ],
-      "markers": []
+      "markers": [
+        {
+          "observed_at": "2026-08-04T12:46:54.000Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-04T12:46:54.000Z",
+          "label": "Pro seats changed"
+        },
+        {
+          "observed_at": "2026-08-25T07:05:51.982Z",
+          "label": "Pro billing unit changed"
+        },
+        {
+          "observed_at": "2026-08-25T07:05:51.982Z",
+          "label": "Pro seats changed"
+        }
+      ]
     }
   ]
 }

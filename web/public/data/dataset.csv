@@ -1,119 +1,157 @@
 competitor,tier,first_observed_at,last_observed_at,monthly_price_usd,annual_price_usd,billing_unit,included_seats,is_free,is_enterprise,currency,provenance
-Auth0,Free,2026-01-07T07:29:47.000Z,2026-08-21T12:03:00.974Z,0,,flat,,true,false,USD,mixed
-Auth0,Essentials,2026-01-07T07:29:47.000Z,2026-08-21T12:03:00.974Z,35,,flat,,false,false,USD,mixed
-Auth0,Professional,2026-01-07T07:29:47.000Z,2026-08-21T12:03:00.974Z,240,,flat,,false,false,USD,mixed
-Auth0,Enterprise,2026-01-07T07:29:47.000Z,2026-08-21T12:03:00.974Z,,,flat,,false,true,USD,mixed
-Buildkite,Pro,2025-08-29T11:09:15.000Z,2026-03-04T03:47:32.000Z,30,,per_seat,,false,false,USD,wayback
-Buildkite,Enterprise,2025-08-29T11:09:15.000Z,2026-03-04T03:47:32.000Z,,,unknown,,false,true,USD,wayback
-Buildkite,Personal,2025-11-15T03:17:40.000Z,2026-03-04T03:47:32.000Z,0,,flat,1,true,false,USD,wayback
-Buildkite,Free Plan,2026-08-21T12:03:36.618Z,2026-08-21T12:03:36.618Z,0,,flat,5,true,false,USD,live
-Buildkite,Pro Plan,2026-08-21T12:03:36.618Z,2026-08-21T12:03:36.618Z,30,,per_seat,50,false,false,USD,live
-Buildkite,Enterprise Plan,2026-08-21T12:03:36.618Z,2026-08-21T12:03:36.618Z,,,unknown,,false,true,USD,live
+Auth0,Free,2026-01-07T07:29:47.000Z,2026-09-02T07:00:50.899Z,0,,flat,,true,false,USD,mixed
+Auth0,Essentials,2026-01-07T07:29:47.000Z,2026-09-02T07:00:50.899Z,35,,flat,,false,false,USD,mixed
+Auth0,Professional,2026-01-07T07:29:47.000Z,2026-09-02T07:00:50.899Z,240,,flat,,false,false,USD,mixed
+Auth0,Enterprise,2026-01-07T07:29:47.000Z,2026-09-02T07:00:50.899Z,,,flat,,false,true,USD,mixed
+Buildkite,Pro,2025-08-29T11:09:15.000Z,2026-06-14T15:08:46.000Z,30,,per_seat,,false,false,USD,wayback
+Buildkite,Enterprise,2025-08-29T11:09:15.000Z,2026-06-14T15:08:46.000Z,,,unknown,,false,true,USD,wayback
+Buildkite,Personal,2025-11-15T03:17:40.000Z,2026-06-14T15:08:46.000Z,0,,flat,1,true,false,USD,wayback
+Buildkite,All Access Trial,2026-05-12T12:06:40.000Z,2026-06-14T15:08:46.000Z,0,,flat,,true,false,USD,wayback
+Buildkite,Free Plan,2026-08-19T00:12:36.000Z,2026-08-31T07:01:23.964Z,0,,flat,5,true,false,USD,mixed
+Buildkite,Pro Plan,2026-08-19T00:12:36.000Z,2026-08-31T07:01:23.964Z,30,,per_seat,50,false,false,USD,mixed
+Buildkite,Enterprise Plan,2026-08-19T00:12:36.000Z,2026-08-31T07:01:23.964Z,,,unknown,,false,true,USD,mixed
+Buildkite,Free,2026-09-02T07:01:25.706Z,2026-09-04T07:01:31.484Z,0,,flat,5,true,false,USD,live
+Buildkite,Pro,2026-09-02T07:01:25.706Z,2026-09-04T07:01:31.484Z,30,,per_seat,50,false,false,USD,live
+Buildkite,Enterprise,2026-09-02T07:01:25.706Z,2026-09-04T07:01:31.484Z,,,unknown,,false,true,USD,live
 Clerk,Pro,2025-09-01T12:00:47.000Z,2025-10-13T14:20:13.000Z,25,,flat,3,false,false,USD,wayback
 Clerk,Enhanced Authentication add-on,2025-09-01T12:00:47.000Z,2025-10-13T14:20:13.000Z,100,,flat,,false,false,USD,wayback
 Clerk,Enhanced B2B SaaS add-on,2025-09-01T12:00:47.000Z,2025-10-13T14:20:13.000Z,100,,flat,,false,false,USD,wayback
 Clerk,Pro,2025-11-02T09:30:17.000Z,2026-01-11T18:21:15.000Z,25,,usage,3,false,false,USD,wayback
 Clerk,Free,2025-09-01T12:00:47.000Z,2026-01-11T18:21:15.000Z,0,,flat,3,true,false,USD,wayback
-Clerk,Pro,2026-08-21T12:03:14.109Z,2026-08-21T12:03:14.109Z,25,20,flat,,false,false,USD,live
-Clerk,Enterprise,2025-09-01T12:00:47.000Z,2026-08-21T12:03:14.109Z,,,unknown,,false,true,USD,mixed
-Clerk,Hobby,2026-08-21T12:03:14.109Z,2026-08-21T12:03:14.109Z,0,0,flat,3,true,false,USD,live
-Clerk,Business,2026-08-21T12:03:14.109Z,2026-08-21T12:03:14.109Z,300,250,flat,10,false,false,USD,live
-Depot,Developer,2025-09-10T17:00:16.000Z,2026-08-21T12:03:49.035Z,20,,flat,1,false,false,USD,mixed
-Depot,Startup,2025-09-10T17:00:16.000Z,2026-08-21T12:03:49.035Z,200,,flat,,false,false,USD,mixed
-Depot,Business,2025-09-10T17:00:16.000Z,2026-08-21T12:03:49.035Z,,,flat,,false,true,USD,mixed
+Clerk,Pro,2026-02-09T09:14:48.000Z,2026-02-09T09:14:48.000Z,20,20,flat,1,false,false,USD,wayback
+Clerk,Pro,2026-03-02T14:21:32.000Z,2026-03-02T14:21:32.000Z,20,20,flat,,false,false,USD,wayback
+Clerk,Pro,2026-04-18T19:16:04.000Z,2026-04-18T19:16:04.000Z,20,20,flat,3,false,false,USD,wayback
+Clerk,Business,2026-02-09T09:14:48.000Z,2026-04-18T19:16:04.000Z,250,250,flat,10,false,false,USD,wayback
+Clerk,Pro,2026-05-21T05:18:00.000Z,2026-05-21T05:18:00.000Z,20,,flat,3,false,false,USD,wayback
+Clerk,Business,2026-05-21T05:18:00.000Z,2026-05-21T05:18:00.000Z,250,,flat,10,false,false,USD,wayback
+Clerk,Pro,2026-06-18T00:36:31.000Z,2026-07-03T07:39:12.000Z,20,20,flat,3,false,false,USD,wayback
+Clerk,Pro,2026-08-09T17:09:08.000Z,2026-08-09T17:09:08.000Z,20,20,flat,,false,false,USD,wayback
+Clerk,Business,2026-06-18T00:36:31.000Z,2026-08-09T17:09:08.000Z,250,250,flat,10,false,false,USD,wayback
+Clerk,Pro,2026-08-21T12:03:14.109Z,2026-09-02T07:01:03.393Z,25,20,flat,,false,false,USD,live
+Clerk,Enterprise,2025-09-01T12:00:47.000Z,2026-09-02T07:01:03.393Z,,,unknown,,false,true,USD,mixed
+Clerk,Hobby,2026-02-09T09:14:48.000Z,2026-09-02T07:01:03.393Z,0,0,flat,3,true,false,USD,mixed
+Clerk,Business,2026-08-21T12:03:14.109Z,2026-09-02T07:01:03.393Z,300,250,flat,10,false,false,USD,live
+Depot,Developer,2025-09-10T17:00:16.000Z,2026-09-02T07:01:38.536Z,20,,flat,1,false,false,USD,mixed
+Depot,Startup,2025-09-10T17:00:16.000Z,2026-09-02T07:01:38.536Z,200,,flat,,false,false,USD,mixed
+Depot,Business,2025-09-10T17:00:16.000Z,2026-09-02T07:01:38.536Z,,,flat,,false,true,USD,mixed
 Figma,Professional,2025-08-23T16:00:35.000Z,2025-08-23T16:00:35.000Z,,,per_seat,,false,false,USD,wayback
 Figma,Organization,2025-08-23T16:00:35.000Z,2025-08-23T16:00:35.000Z,,,per_seat,,false,false,USD,wayback
 Figma,Enterprise,2025-08-23T16:00:35.000Z,2025-08-23T16:00:35.000Z,,,per_seat,,false,true,USD,wayback
-Figma,Starter,2025-08-23T16:00:35.000Z,2026-08-21T12:02:13.402Z,0,0,flat,,true,false,USD,mixed
-Figma,Professional,2026-04-09T02:32:27.000Z,2026-08-21T12:02:13.402Z,16,,per_seat,,false,false,USD,mixed
-Figma,Organization,2026-04-09T02:32:27.000Z,2026-08-21T12:02:13.402Z,55,,per_seat,,false,false,USD,mixed
-Figma,Enterprise,2026-04-09T02:32:27.000Z,2026-08-21T12:02:13.402Z,90,,per_seat,,false,true,USD,mixed
+Figma,Starter,2025-08-23T16:00:35.000Z,2026-09-03T07:00:42.706Z,0,0,flat,,true,false,USD,mixed
+Figma,Professional,2026-04-09T02:32:27.000Z,2026-09-03T07:00:42.706Z,16,,per_seat,,false,false,USD,mixed
+Figma,Organization,2026-04-09T02:32:27.000Z,2026-09-03T07:00:42.706Z,55,,per_seat,,false,false,USD,mixed
+Figma,Enterprise,2026-04-09T02:32:27.000Z,2026-09-03T07:00:42.706Z,90,,per_seat,,false,true,USD,mixed
 Fly.io,Compliance Made Easy,2025-08-28T15:30:44.000Z,2026-05-03T00:29:34.000Z,99,,flat,,false,false,USD,wayback
-Fly.io,Pay-as-You-Go,2025-08-28T15:30:44.000Z,2026-08-21T12:06:09.099Z,,,usage,,false,false,USD,mixed
-Fly.io,Serious Support,2025-08-28T15:30:44.000Z,2026-08-21T12:06:09.099Z,29,,flat,,false,false,USD,mixed
-Fly.io,Pay up Front and Save,2025-08-28T15:30:44.000Z,2026-08-21T12:06:09.099Z,,,unknown,,false,false,USD,mixed
-Fly.io,Enterprise,2025-08-28T15:30:44.000Z,2026-08-21T12:06:09.099Z,,,unknown,,false,true,USD,mixed
-Fly.io,Compliance,2026-06-12T14:27:07.000Z,2026-08-21T12:06:09.099Z,99,,flat,,false,false,USD,mixed
-GitHub,Free,2025-08-21T03:03:43.000Z,2026-08-21T12:04:01.599Z,0,0,flat,,true,false,USD,mixed
-GitHub,Team,2025-08-21T03:03:43.000Z,2026-08-21T12:04:01.599Z,4,4,per_seat,,false,false,USD,mixed
-GitHub,Enterprise,2025-08-21T03:03:43.000Z,2026-08-21T12:04:01.599Z,21,21,per_seat,,false,true,USD,mixed
+Fly.io,Pay-as-You-Go,2025-08-28T15:30:44.000Z,2026-09-02T07:04:12.029Z,,,usage,,false,false,USD,mixed
+Fly.io,Serious Support,2025-08-28T15:30:44.000Z,2026-09-02T07:04:12.029Z,29,,flat,,false,false,USD,mixed
+Fly.io,Pay up Front and Save,2025-08-28T15:30:44.000Z,2026-09-02T07:04:12.029Z,,,unknown,,false,false,USD,mixed
+Fly.io,Enterprise,2025-08-28T15:30:44.000Z,2026-09-02T07:04:12.029Z,,,unknown,,false,true,USD,mixed
+Fly.io,Compliance,2026-06-12T14:27:07.000Z,2026-09-02T07:04:12.029Z,99,,flat,,false,false,USD,mixed
+GitHub,Free,2025-08-21T03:03:43.000Z,2026-09-02T07:01:49.735Z,0,0,flat,,true,false,USD,mixed
+GitHub,Team,2025-08-21T03:03:43.000Z,2026-09-02T07:01:49.735Z,4,4,per_seat,,false,false,USD,mixed
+GitHub,Enterprise,2025-08-21T03:03:43.000Z,2026-09-02T07:01:49.735Z,21,21,per_seat,,false,true,USD,mixed
 GitLab,Premium,2025-08-23T14:46:59.000Z,2025-09-01T09:47:23.000Z,29,29,per_seat,,false,false,USD,wayback
 GitLab,Ultimate,2025-08-23T14:46:59.000Z,2025-09-01T09:47:23.000Z,,,per_seat,,false,false,USD,wayback
 GitLab,Free,2025-08-23T14:46:59.000Z,2025-10-05T15:01:10.000Z,0,0,per_seat,5,true,false,USD,wayback
 GitLab,Ultimate,2025-10-05T15:01:10.000Z,2025-10-05T15:01:10.000Z,,,per_seat,,false,true,USD,wayback
 GitLab,Free,2025-12-01T00:20:45.000Z,2025-12-01T00:20:45.000Z,0,0,flat,,true,false,USD,wayback
-GitLab,Premium,2025-10-05T15:01:10.000Z,2025-12-01T00:20:45.000Z,29,,per_seat,,false,false,USD,wayback
 GitLab,Ultimate,2025-12-01T00:20:45.000Z,2025-12-01T00:20:45.000Z,,,per_seat,,false,false,USD,wayback
-GitLab,Free,2026-08-01T16:05:35.000Z,2026-08-21T12:04:12.654Z,0,0,flat,5,true,false,USD,mixed
-GitLab,Premium,2026-08-01T16:05:35.000Z,2026-08-21T12:04:12.654Z,29,29,per_seat,,false,false,USD,mixed
-GitLab,Ultimate,2026-08-01T16:05:35.000Z,2026-08-21T12:04:12.654Z,,,unknown,,false,true,USD,mixed
-GitLab,GitLab Dedicated,2025-08-23T14:46:59.000Z,2026-08-21T12:04:12.654Z,,,unknown,,false,true,USD,mixed
-GitLab,GitLab Dedicated for Government,2025-08-23T14:46:59.000Z,2026-08-21T12:04:12.654Z,,,unknown,,false,true,USD,mixed
-Hasura,DDN Free,2025-09-08T07:34:57.000Z,2026-08-21T12:04:25.562Z,0,,flat,1,true,false,USD,mixed
-Hasura,DDN Base,2025-09-08T07:34:57.000Z,2026-08-21T12:04:25.562Z,5,,usage,,false,false,USD,mixed
-Hasura,DDN Advanced,2025-09-08T07:34:57.000Z,2026-08-21T12:04:25.562Z,30,,usage,,false,false,USD,mixed
-Hasura,Private DDN,2025-09-08T07:34:57.000Z,2026-08-21T12:04:25.562Z,,,unknown,,false,true,USD,mixed
+GitLab,GitLab Dedicated,2025-08-23T14:46:59.000Z,2025-12-01T00:20:45.000Z,,,unknown,,false,true,USD,wayback
+GitLab,GitLab Dedicated for Government,2025-08-23T14:46:59.000Z,2025-12-01T00:20:45.000Z,,,unknown,,false,true,USD,wayback
+GitLab,Free,2026-02-07T23:25:38.000Z,2026-02-07T23:25:38.000Z,0,0,per_seat,5,true,false,USD,wayback
+GitLab,Premium,2025-10-05T15:01:10.000Z,2026-02-07T23:25:38.000Z,29,,per_seat,,false,false,USD,wayback
+GitLab,Ultimate,2026-02-07T23:25:38.000Z,2026-03-02T14:41:03.000Z,,,per_seat,,false,true,USD,wayback
+GitLab,Ultimate,2026-04-02T18:11:07.000Z,2026-05-02T11:18:36.000Z,,,flat,,false,true,USD,wayback
+GitLab,Free,2026-03-02T14:41:03.000Z,2026-08-21T12:04:12.654Z,0,0,flat,5,true,false,USD,mixed
+GitLab,Premium,2026-03-02T14:41:03.000Z,2026-08-21T12:04:12.654Z,29,29,per_seat,,false,false,USD,mixed
+GitLab,GitLab Dedicated,2026-08-01T16:05:35.000Z,2026-08-21T12:04:12.654Z,,,unknown,,false,true,USD,mixed
+GitLab,GitLab Dedicated for Government,2026-08-01T16:05:35.000Z,2026-08-21T12:04:12.654Z,,,unknown,,false,true,USD,mixed
+GitLab,Free,2026-08-23T07:02:38.678Z,2026-09-02T07:02:00.527Z,0,0,flat,,true,false,USD,live
+GitLab,Premium,2026-08-23T07:02:38.678Z,2026-09-02T07:02:00.527Z,29,,per_seat,,false,false,USD,live
+GitLab,Ultimate,2026-07-01T12:04:13.000Z,2026-09-02T07:02:00.527Z,,,per_seat,,false,true,USD,mixed
+Hasura,DDN Free,2025-09-08T07:34:57.000Z,2026-09-04T07:02:16.444Z,0,,flat,1,true,false,USD,mixed
+Hasura,DDN Base,2025-09-08T07:34:57.000Z,2026-09-04T07:02:16.444Z,5,,usage,,false,false,USD,mixed
+Hasura,DDN Advanced,2025-09-08T07:34:57.000Z,2026-09-04T07:02:16.444Z,30,,usage,,false,false,USD,mixed
+Hasura,Private DDN,2025-09-08T07:34:57.000Z,2026-09-04T07:02:16.444Z,,,unknown,,false,true,USD,mixed
 Honeycomb,Pro 100M,2025-09-13T08:05:51.000Z,2025-09-13T08:05:51.000Z,130,1300,flat,,false,false,USD,wayback
 Honeycomb,Pro 450M,2025-09-13T08:05:51.000Z,2025-09-13T08:05:51.000Z,585,5850,flat,,false,false,USD,wayback
 Honeycomb,Pro 1.5B,2025-09-13T08:05:51.000Z,2025-09-13T08:05:51.000Z,1950,19500,flat,,false,false,USD,wayback
 Honeycomb,Enterprise,2025-09-13T08:05:51.000Z,2025-11-15T03:53:39.000Z,,,flat,,false,true,USD,wayback
 Honeycomb,Pro,2025-11-15T03:53:39.000Z,2026-04-05T22:14:24.000Z,130,,flat,,false,false,USD,wayback
-Honeycomb,Enterprise,2025-12-05T15:21:01.000Z,2026-04-05T22:14:24.000Z,,,usage,,false,true,USD,wayback
-Honeycomb,Free,2025-09-13T08:05:51.000Z,2026-08-21T12:06:56.888Z,0,0,flat,,true,false,USD,mixed
-Honeycomb,Enterprise,2026-08-12T02:33:08.000Z,2026-08-21T12:06:56.888Z,,,flat,,false,true,USD,mixed
-Honeycomb,Pro,2026-08-12T02:33:08.000Z,2026-08-21T12:06:56.888Z,150,,flat,,false,false,USD,mixed
+Honeycomb,Pro,2026-05-13T19:40:33.000Z,2026-05-13T19:40:33.000Z,130,,usage,,false,false,USD,wayback
+Honeycomb,Pro,2026-06-08T04:26:04.000Z,2026-06-08T04:26:04.000Z,130,,flat,,false,false,USD,wayback
+Honeycomb,Enterprise,2025-12-05T15:21:01.000Z,2026-07-21T06:43:10.000Z,,,usage,,false,true,USD,wayback
+Honeycomb,Free,2025-09-13T08:05:51.000Z,2026-09-02T07:05:00.106Z,0,0,flat,,true,false,USD,mixed
+Honeycomb,Enterprise,2026-08-12T02:33:08.000Z,2026-09-02T07:05:00.106Z,,,flat,,false,true,USD,mixed
+Honeycomb,Pro,2026-07-21T06:43:10.000Z,2026-09-02T07:05:00.106Z,150,,flat,,false,false,USD,mixed
 Linear,Basic,2025-02-19T07:53:31.000Z,2025-10-07T14:24:18.000Z,8,,per_seat,,false,false,USD,wayback
 Linear,Business,2025-02-19T07:53:31.000Z,2025-10-07T14:24:18.000Z,14,,per_seat,,false,false,USD,wayback
-Linear,Free,2025-02-19T07:53:31.000Z,2026-08-21T07:00:14.584Z,0,0,flat,,true,false,USD,mixed
-Linear,Basic,2025-11-12T01:16:11.000Z,2026-08-21T07:00:14.584Z,10,10,per_seat,,false,false,USD,mixed
-Linear,Business,2025-11-12T01:16:11.000Z,2026-08-21T07:00:14.584Z,16,16,per_seat,,false,false,USD,mixed
-Linear,Enterprise,2025-02-19T07:53:31.000Z,2026-08-21T07:00:14.584Z,,,unknown,,false,true,USD,mixed
+Linear,Free,2025-02-19T07:53:31.000Z,2026-09-03T07:00:18.058Z,0,0,flat,,true,false,USD,mixed
+Linear,Basic,2025-11-12T01:16:11.000Z,2026-09-03T07:00:18.058Z,10,10,per_seat,,false,false,USD,mixed
+Linear,Business,2025-11-12T01:16:11.000Z,2026-09-03T07:00:18.058Z,16,16,per_seat,,false,false,USD,mixed
+Linear,Enterprise,2025-02-19T07:53:31.000Z,2026-09-03T07:00:18.058Z,,,unknown,,false,true,USD,mixed
 Netlify,Pro,2025-08-26T21:29:12.000Z,2025-08-26T21:29:12.000Z,19,,per_seat,,false,false,USD,wayback
 Netlify,Free & Starter,2025-08-26T21:29:12.000Z,2025-08-26T21:29:12.000Z,0,,flat,1,true,false,USD,wayback
 Netlify,Pro,2025-09-06T15:02:44.000Z,2025-09-06T15:02:44.000Z,20,,per_seat,,false,false,USD,wayback
 Netlify,Pro,2025-10-04T14:59:38.000Z,2025-10-04T14:59:38.000Z,20,,per_seat,1,false,false,USD,wayback
-Netlify,Free,2025-09-06T15:02:44.000Z,2026-02-02T22:34:40.000Z,0,,flat,1,true,false,USD,wayback
-Netlify,Personal,2025-09-06T15:02:44.000Z,2026-02-02T22:34:40.000Z,9,,flat,1,false,false,USD,wayback
-Netlify,Pro,2025-11-01T06:52:39.000Z,2026-02-02T22:34:40.000Z,20,,per_seat,,false,false,USD,wayback
-Netlify,Pro,2026-08-04T12:47:39.000Z,2026-08-21T12:06:20.056Z,20,,flat,,false,false,USD,mixed
-Netlify,Enterprise,2025-08-26T21:29:12.000Z,2026-08-21T12:06:20.056Z,,,unknown,,false,true,USD,mixed
-Netlify,Free,2026-08-04T12:47:39.000Z,2026-08-21T12:06:20.056Z,0,,flat,,true,false,USD,mixed
-Netlify,Personal,2026-08-04T12:47:39.000Z,2026-08-21T12:06:20.056Z,9,,flat,,false,false,USD,mixed
+Netlify,Free,2025-09-06T15:02:44.000Z,2026-04-04T12:17:39.000Z,0,,flat,1,true,false,USD,wayback
+Netlify,Pro,2025-11-01T06:52:39.000Z,2026-04-04T12:17:39.000Z,20,,per_seat,,false,false,USD,wayback
+Netlify,Personal,2025-09-06T15:02:44.000Z,2026-06-03T16:06:39.000Z,9,,flat,1,false,false,USD,wayback
+Netlify,Pro,2026-05-03T23:15:04.000Z,2026-09-02T07:04:25.176Z,20,,flat,,false,false,USD,mixed
+Netlify,Enterprise,2025-08-26T21:29:12.000Z,2026-09-02T07:04:25.176Z,,,unknown,,false,true,USD,mixed
+Netlify,Free,2026-05-03T23:15:04.000Z,2026-09-02T07:04:25.176Z,0,,flat,,true,false,USD,mixed
+Netlify,Personal,2026-08-04T12:47:39.000Z,2026-09-02T07:04:25.176Z,9,,flat,,false,false,USD,mixed
 New Relic,Standard,2025-09-01T17:50:23.000Z,2025-09-01T17:50:23.000Z,10,,per_seat,1,false,false,USD,wayback
 New Relic,Free,2025-09-01T17:50:23.000Z,2025-10-05T10:23:00.000Z,0,0,flat,1,true,false,USD,wayback
 New Relic,Standard,2025-10-05T10:23:00.000Z,2025-10-05T10:23:00.000Z,10,,per_seat,,false,false,USD,wayback
 New Relic,Pro,2025-09-01T17:50:23.000Z,2025-10-05T10:23:00.000Z,349,,per_seat,,false,false,USD,wayback
 New Relic,Enterprise,2025-09-01T17:50:23.000Z,2025-10-05T10:23:00.000Z,,,unknown,,false,true,USD,wayback
-New Relic,Free,2026-08-21T12:07:08.616Z,2026-08-21T12:07:08.616Z,0,,flat,1,true,false,USD,live
-New Relic,Standard,2026-08-21T12:07:08.616Z,2026-08-21T12:07:08.616Z,10,,per_seat,1,false,false,USD,live
-New Relic,Pro,2026-08-21T12:07:08.616Z,2026-08-21T12:07:08.616Z,349,,per_seat,,false,false,USD,live
-New Relic,Enterprise,2026-08-21T12:07:08.616Z,2026-08-21T12:07:08.616Z,,,unknown,,false,true,USD,live
+New Relic,Free,2026-08-21T12:07:08.616Z,2026-08-23T07:05:36.599Z,0,,flat,1,true,false,USD,live
+New Relic,Standard,2026-08-21T12:07:08.616Z,2026-08-23T07:05:36.599Z,10,,per_seat,1,false,false,USD,live
+New Relic,Pro,2026-08-21T12:07:08.616Z,2026-08-23T07:05:36.599Z,349,,per_seat,,false,false,USD,live
+New Relic,Enterprise,2026-08-21T12:07:08.616Z,2026-08-23T07:05:36.599Z,,,unknown,,false,true,USD,live
+New Relic,Free,2026-08-29T07:05:13.410Z,2026-09-02T07:05:12.057Z,0,,flat,1,true,false,USD,live
+New Relic,Standard,2026-08-29T07:05:13.410Z,2026-09-02T07:05:12.057Z,10,,per_seat,1,false,false,USD,live
+New Relic,Pro,2026-08-29T07:05:13.410Z,2026-09-02T07:05:12.057Z,349,,per_seat,,false,false,USD,live
+New Relic,Enterprise,2026-08-29T07:05:13.410Z,2026-09-02T07:05:12.057Z,,,unknown,,false,true,USD,live
 Notion,Notion AI,2025-02-19T07:54:17.000Z,2025-03-02T21:53:58.000Z,10,8,per_seat,,false,false,USD,wayback
 Notion,Business,2025-02-19T07:54:17.000Z,2025-05-04T06:15:55.000Z,15,,per_seat,,false,false,USD,wayback
 Notion,Free,2025-02-19T07:54:17.000Z,2025-07-01T13:46:53.000Z,0,0,flat,,true,false,USD,wayback
 Notion,Notion AI,2025-05-04T06:15:55.000Z,2025-07-01T13:46:53.000Z,10,8,per_seat,,false,false,USD,wayback
-Notion,Free,2025-08-23T14:52:36.000Z,2026-08-21T07:00:27.481Z,0,0,per_seat,,true,false,USD,mixed
-Notion,Plus,2025-02-19T07:54:17.000Z,2026-08-21T07:00:27.481Z,10,,per_seat,,false,false,USD,mixed
-Notion,Business,2025-06-03T01:07:05.000Z,2026-08-21T07:00:27.481Z,20,,per_seat,,false,false,USD,mixed
-Notion,Enterprise,2025-02-19T07:54:17.000Z,2026-08-21T07:00:27.481Z,,,unknown,,false,true,USD,mixed
-Pinecone,Starter,2026-08-02T02:12:13.000Z,2026-08-21T12:07:19.148Z,0,,flat,,true,false,USD,mixed
-Pinecone,Builder,2026-08-02T02:12:13.000Z,2026-08-21T12:07:19.148Z,20,,flat,,false,false,USD,mixed
-Pinecone,Standard,2026-08-02T02:12:13.000Z,2026-08-21T12:07:19.148Z,50,,usage,,false,false,USD,mixed
-Pinecone,Enterprise,2026-08-02T02:12:13.000Z,2026-08-21T12:07:19.148Z,500,,usage,,false,true,USD,mixed
-Pinecone,Bring your own cloud,2026-08-02T02:12:13.000Z,2026-08-21T12:07:19.148Z,,,unknown,,false,true,USD,mixed
+Notion,Free,2025-08-23T14:52:36.000Z,2026-09-03T07:00:30.388Z,0,0,per_seat,,true,false,USD,mixed
+Notion,Plus,2025-02-19T07:54:17.000Z,2026-09-03T07:00:30.388Z,10,,per_seat,,false,false,USD,mixed
+Notion,Business,2025-06-03T01:07:05.000Z,2026-09-03T07:00:30.388Z,20,,per_seat,,false,false,USD,mixed
+Notion,Enterprise,2025-02-19T07:54:17.000Z,2026-09-03T07:00:30.388Z,,,unknown,,false,true,USD,mixed
+Pinecone,Starter,2026-06-03T23:31:52.000Z,2026-09-02T07:05:23.905Z,0,,flat,,true,false,USD,mixed
+Pinecone,Builder,2026-06-03T23:31:52.000Z,2026-09-02T07:05:23.905Z,20,,flat,,false,false,USD,mixed
+Pinecone,Standard,2026-06-03T23:31:52.000Z,2026-09-02T07:05:23.905Z,50,,usage,,false,false,USD,mixed
+Pinecone,Enterprise,2026-06-03T23:31:52.000Z,2026-09-02T07:05:23.905Z,500,,usage,,false,true,USD,mixed
+Pinecone,Bring your own cloud,2026-06-03T23:31:52.000Z,2026-09-02T07:05:23.905Z,,,unknown,,false,true,USD,mixed
 PlanetScale,Scaler Pro,2025-09-06T21:41:53.000Z,2025-09-06T21:41:53.000Z,39,,usage,,false,false,USD,wayback
 PlanetScale,Scaler Pro,2025-10-03T17:10:52.000Z,2026-01-04T14:46:10.000Z,,,usage,,false,false,USD,wayback
 PlanetScale,Single-node (non-HA) Postgres,2025-11-17T03:22:16.000Z,2026-01-04T14:46:10.000Z,5,,flat,,false,false,USD,wayback
-PlanetScale,Enterprise,2025-09-06T21:41:53.000Z,2026-03-07T11:41:12.000Z,,,unknown,,false,true,USD,wayback
 PlanetScale,Base - PlanetScale PostgreSQL Single Node,2026-02-03T03:34:37.000Z,2026-03-07T11:41:12.000Z,5,,flat,,false,false,USD,wayback
 PlanetScale,Base - PlanetScale PostgreSQL High Availability,2026-02-03T03:34:37.000Z,2026-03-07T11:41:12.000Z,,,usage,,false,false,USD,wayback
 PlanetScale,Base - PlanetScale PostgreSQL Metal,2026-02-03T03:34:37.000Z,2026-03-07T11:41:12.000Z,50,,flat,,false,false,USD,wayback
 PlanetScale,Base - Vitess,2026-02-03T03:34:37.000Z,2026-03-07T11:41:12.000Z,,,usage,,false,false,USD,wayback
+PlanetScale,PlanetScale PostgreSQL - High Availability,2026-04-02T16:35:29.000Z,2026-04-02T16:35:29.000Z,,,flat,,false,false,USD,wayback
+PlanetScale,PlanetScale PostgreSQL - Single node,2026-04-02T16:35:29.000Z,2026-04-02T16:35:29.000Z,5,,flat,,false,false,USD,wayback
+PlanetScale,PlanetScale Vitess - Base,2026-04-02T16:35:29.000Z,2026-04-02T16:35:29.000Z,,,usage,,false,false,USD,wayback
+PlanetScale,Enterprise,2025-09-06T21:41:53.000Z,2026-07-04T17:00:19.000Z,,,unknown,,false,true,USD,wayback
+PlanetScale,PlanetScale PostgreSQL - High Availability,2026-05-16T14:08:15.000Z,2026-07-04T17:00:19.000Z,15,,flat,,false,false,USD,wayback
+PlanetScale,PlanetScale PostgreSQL - Metal,2026-04-02T16:35:29.000Z,2026-07-04T17:00:19.000Z,50,,flat,,false,false,USD,wayback
+PlanetScale,PlanetScale PostgreSQL - Single Node,2026-05-16T14:08:15.000Z,2026-07-04T17:00:19.000Z,5,,flat,,false,false,USD,wayback
+PlanetScale,Vitess,2026-05-16T14:08:15.000Z,2026-07-04T17:00:19.000Z,,,usage,,false,false,USD,wayback
 PlanetScale,Base Plan - PlanetScale PostgreSQL Single Node,2026-08-09T05:57:07.000Z,2026-08-21T12:04:36.440Z,5,,flat,,false,false,USD,mixed
 PlanetScale,Base Plan - PlanetScale PostgreSQL High Availability,2026-08-09T05:57:07.000Z,2026-08-21T12:04:36.440Z,,,flat,,false,false,USD,mixed
 PlanetScale,Base Plan - PlanetScale PostgreSQL Metal,2026-08-09T05:57:07.000Z,2026-08-21T12:04:36.440Z,50,,flat,,false,false,USD,mixed
 PlanetScale,Base Plan - Vitess MySQL,2026-08-09T05:57:07.000Z,2026-08-21T12:04:36.440Z,,,usage,,false,false,USD,mixed
 PlanetScale,Enterprise Plan,2026-08-09T05:57:07.000Z,2026-08-21T12:04:36.440Z,,,flat,,false,true,USD,mixed
+PlanetScale,PlanetScale Postgres Single Node,2026-08-23T07:03:03.471Z,2026-09-02T07:02:23.841Z,5,,flat,,false,false,USD,live
+PlanetScale,PlanetScale Postgres High Availability,2026-08-23T07:03:03.471Z,2026-09-02T07:02:23.841Z,,,flat,,false,false,USD,live
+PlanetScale,PlanetScale Metal,2026-08-23T07:03:03.471Z,2026-09-02T07:02:23.841Z,50,,flat,,false,false,USD,live
+PlanetScale,Base Plan,2026-08-23T07:03:03.471Z,2026-09-02T07:02:23.841Z,,,usage,,false,false,USD,live
+PlanetScale,Enterprise,2026-08-23T07:03:03.471Z,2026-09-02T07:02:23.841Z,,,flat,,false,true,USD,live
 Postman,Free,2025-02-23T11:47:21.000Z,2025-07-01T07:56:07.000Z,0,0,flat,,true,false,USD,wayback
 Postman,Free,2025-08-16T02:16:20.000Z,2025-11-01T23:00:26.000Z,0,0,flat,3,true,false,USD,wayback
 Postman,Enterprise,2025-02-23T11:47:21.000Z,2025-11-01T23:00:26.000Z,49,49,per_seat,,false,true,USD,wayback
@@ -125,22 +163,25 @@ Postman,Enterprise,2026-04-02T03:21:26.000Z,2026-06-07T00:02:17.000Z,49,,per_sea
 Postman,Solo,2026-07-01T09:22:49.000Z,2026-07-01T09:22:49.000Z,9,9,flat,1,false,false,USD,wayback
 Postman,Team,2026-07-01T09:22:49.000Z,2026-07-01T09:22:49.000Z,19,19,per_seat,,false,false,USD,wayback
 Postman,Enterprise,2026-07-01T09:22:49.000Z,2026-07-01T09:22:49.000Z,49,49,per_seat,,false,true,USD,wayback
-Postman,Free,2026-04-02T03:21:26.000Z,2026-08-21T12:02:48.662Z,0,0,flat,1,true,false,USD,mixed
-Postman,Enterprise,2026-08-01T03:56:31.000Z,2026-08-21T12:02:48.662Z,49,,per_seat,,false,true,USD,mixed
-Postman,Solo,2026-08-01T03:56:31.000Z,2026-08-21T12:02:48.662Z,9,,flat,1,false,false,USD,mixed
-Postman,Team,2026-08-01T03:56:31.000Z,2026-08-21T12:02:48.662Z,19,,per_seat,,false,false,USD,mixed
-Postmark,Free,2026-02-07T08:34:05.000Z,2026-08-21T12:05:34.900Z,0,,flat,,true,false,USD,mixed
-Postmark,Basic,2026-02-07T08:34:05.000Z,2026-08-21T12:05:34.900Z,15,,flat,,false,false,USD,mixed
-Postmark,Pro,2026-02-07T08:34:05.000Z,2026-08-21T12:05:34.900Z,16.5,,flat,,false,false,USD,mixed
-Postmark,Platform,2026-02-07T08:34:05.000Z,2026-08-21T12:05:34.900Z,18,,flat,,false,false,USD,mixed
-Postmark,Enterprise,2026-02-07T08:34:05.000Z,2026-08-21T12:05:34.900Z,,,unknown,,false,true,USD,mixed
+Postman,Free,2026-04-02T03:21:26.000Z,2026-09-02T07:00:39.652Z,0,0,flat,1,true,false,USD,mixed
+Postman,Enterprise,2026-08-01T03:56:31.000Z,2026-09-02T07:00:39.652Z,49,,per_seat,,false,true,USD,mixed
+Postman,Solo,2026-08-01T03:56:31.000Z,2026-09-02T07:00:39.652Z,9,,flat,1,false,false,USD,mixed
+Postman,Team,2026-08-01T03:56:31.000Z,2026-09-02T07:00:39.652Z,19,,per_seat,,false,false,USD,mixed
+Postmark,Enterprise,2026-02-07T08:34:05.000Z,2026-03-06T18:32:29.000Z,,,unknown,,false,true,USD,wayback
+Postmark,Free,2026-02-07T08:34:05.000Z,2026-09-02T07:03:25.160Z,0,,flat,,true,false,USD,mixed
+Postmark,Basic,2026-02-07T08:34:05.000Z,2026-09-02T07:03:25.160Z,15,,flat,,false,false,USD,mixed
+Postmark,Pro,2026-02-07T08:34:05.000Z,2026-09-02T07:03:25.160Z,16.5,,flat,,false,false,USD,mixed
+Postmark,Platform,2026-02-07T08:34:05.000Z,2026-09-02T07:03:25.160Z,18,,flat,,false,false,USD,mixed
+Postmark,Enterprise,2026-05-18T10:14:43.000Z,2026-09-02T07:03:25.160Z,,,unknown,,false,true,USD,mixed
 Redis Cloud,Pro,2025-09-02T17:16:37.000Z,2025-12-10T09:10:45.000Z,200,,usage,,false,false,USD,wayback
 Redis Cloud,Pro,2026-01-10T04:00:16.000Z,2026-01-10T04:00:16.000Z,200,,flat,,false,false,USD,wayback
 Redis Cloud,Flex,2025-09-02T17:16:37.000Z,2026-01-10T04:00:16.000Z,5,,usage,,false,false,USD,wayback
-Redis Cloud,Free,2025-09-02T17:16:37.000Z,2026-08-21T12:04:49.100Z,0,0,flat,,true,false,USD,mixed
-Redis Cloud,Essentials,2025-09-02T17:16:37.000Z,2026-08-21T12:04:49.100Z,5,,usage,,false,false,USD,mixed
-Redis Cloud,Pro,2026-08-13T18:11:24.000Z,2026-08-21T12:04:49.100Z,200,,usage,,false,false,USD,mixed
+Redis Cloud,Enterprise,2026-03-01T10:37:55.000Z,2026-03-01T10:37:55.000Z,,,unknown,,false,true,USD,wayback
 Redis Cloud,Enterprise,2026-08-13T18:11:24.000Z,2026-08-21T12:04:49.100Z,,,unknown,,false,true,USD,mixed
+Redis Cloud,Enterprise,2026-08-25T07:03:51.430Z,2026-08-29T07:02:43.893Z,,,unknown,,false,true,USD,live
+Redis Cloud,Free,2025-09-02T17:16:37.000Z,2026-09-02T07:02:37.055Z,0,0,flat,,true,false,USD,mixed
+Redis Cloud,Essentials,2025-09-02T17:16:37.000Z,2026-09-02T07:02:37.055Z,5,,usage,,false,false,USD,mixed
+Redis Cloud,Pro,2026-03-01T10:37:55.000Z,2026-09-02T07:02:37.055Z,200,,usage,,false,false,USD,mixed
 Render,Cron Jobs,2025-08-26T13:34:23.000Z,2025-10-04T06:24:44.000Z,1,,usage,,false,false,USD,wayback
 Render,Web Services Free,2025-08-26T13:34:23.000Z,2025-11-02T13:41:48.000Z,0,,flat,,true,false,USD,wayback
 Render,Web Services Starter,2025-08-26T13:34:23.000Z,2025-11-02T13:41:48.000Z,7,,flat,,false,false,USD,wayback
@@ -276,46 +317,57 @@ Render,Cron Jobs Standard,2026-01-04T15:19:02.000Z,2026-03-01T18:19:19.000Z,,,us
 Render,Cron Jobs Pro,2026-01-04T15:19:02.000Z,2026-03-01T18:19:19.000Z,,,usage,,false,false,USD,wayback
 Render,Cron Jobs Pro Plus,2026-01-04T15:19:02.000Z,2026-03-01T18:19:19.000Z,,,usage,,false,false,USD,wayback
 Render,Cron Jobs Custom,2026-01-04T15:19:02.000Z,2026-03-01T18:19:19.000Z,,,flat,,false,true,USD,wayback
-Render,Hobby,2026-08-21T12:06:32.338Z,2026-08-21T12:06:32.338Z,0,,flat,1,true,false,USD,live
-Render,Pro,2026-08-21T12:06:32.338Z,2026-08-21T12:06:32.338Z,25,,flat,,false,false,USD,live
-Render,Scale,2026-08-21T12:06:32.338Z,2026-08-21T12:06:32.338Z,499,,flat,,false,false,USD,live
-Render,Enterprise,2026-08-21T12:06:32.338Z,2026-08-21T12:06:32.338Z,,,flat,,false,true,USD,live
-Resend,Free,2025-08-28T01:29:48.000Z,2026-08-21T12:05:46.321Z,0,,flat,,true,false,USD,mixed
-Resend,Pro,2025-08-28T01:29:48.000Z,2026-08-21T12:05:46.321Z,20,,flat,,false,false,USD,mixed
-Resend,Scale,2025-08-28T01:29:48.000Z,2026-08-21T12:05:46.321Z,90,,flat,,false,false,USD,mixed
-Resend,Enterprise,2025-08-28T01:29:48.000Z,2026-08-21T12:05:46.321Z,,,flat,,false,true,USD,mixed
-Sentry,developer,2025-02-19T05:34:02.000Z,2026-08-21T12:02:36.284Z,0,0,flat,1,true,false,USD,mixed
-Sentry,team,2025-02-19T05:34:02.000Z,2026-08-21T12:02:36.284Z,26,26,flat,,false,false,USD,mixed
-Sentry,business,2025-02-19T05:34:02.000Z,2026-08-21T12:02:36.284Z,80,80,flat,,false,false,USD,mixed
-Sentry,enterprise,2025-02-19T05:34:02.000Z,2026-08-21T12:02:36.284Z,,,flat,,false,true,USD,mixed
-Statsig,Developer,2025-09-04T17:34:51.000Z,2026-08-21T12:05:56.671Z,0,,flat,,true,false,USD,mixed
-Statsig,Pro,2025-09-04T17:34:51.000Z,2026-08-21T12:05:56.671Z,150,,usage,,false,false,USD,mixed
-Statsig,Enterprise,2025-09-04T17:34:51.000Z,2026-08-21T12:05:56.671Z,,,usage,,false,true,USD,mixed
+Render,Hobby,2026-07-02T08:20:30.000Z,2026-09-02T07:04:37.725Z,0,,flat,1,true,false,USD,mixed
+Render,Pro,2026-07-02T08:20:30.000Z,2026-09-02T07:04:37.725Z,25,,flat,,false,false,USD,mixed
+Render,Scale,2026-07-02T08:20:30.000Z,2026-09-02T07:04:37.725Z,499,,flat,,false,false,USD,mixed
+Render,Enterprise,2026-07-02T08:20:30.000Z,2026-09-02T07:04:37.725Z,,,flat,,false,true,USD,mixed
+Resend,Free,2025-08-28T01:29:48.000Z,2026-09-02T07:03:36.999Z,0,,flat,,true,false,USD,mixed
+Resend,Pro,2025-08-28T01:29:48.000Z,2026-09-02T07:03:36.999Z,20,,flat,,false,false,USD,mixed
+Resend,Scale,2025-08-28T01:29:48.000Z,2026-09-02T07:03:36.999Z,90,,flat,,false,false,USD,mixed
+Resend,Enterprise,2025-08-28T01:29:48.000Z,2026-09-02T07:03:36.999Z,,,flat,,false,true,USD,mixed
+Sentry,developer,2025-02-19T05:34:02.000Z,2026-09-02T07:00:27.898Z,0,0,flat,1,true,false,USD,mixed
+Sentry,team,2025-02-19T05:34:02.000Z,2026-09-02T07:00:27.898Z,26,26,flat,,false,false,USD,mixed
+Sentry,business,2025-02-19T05:34:02.000Z,2026-09-02T07:00:27.898Z,80,80,flat,,false,false,USD,mixed
+Sentry,enterprise,2025-02-19T05:34:02.000Z,2026-09-02T07:00:27.898Z,,,flat,,false,true,USD,mixed
+Statsig,Developer,2025-09-04T17:34:51.000Z,2026-09-02T07:03:47.978Z,0,,flat,,true,false,USD,mixed
+Statsig,Pro,2025-09-04T17:34:51.000Z,2026-09-02T07:03:47.978Z,150,,usage,,false,false,USD,mixed
+Statsig,Enterprise,2025-09-04T17:34:51.000Z,2026-09-02T07:03:47.978Z,,,usage,,false,true,USD,mixed
 Supabase,Pro,2025-02-19T03:41:25.000Z,2026-08-02T04:26:09.000Z,25,,flat,,false,false,USD,wayback
 Supabase,Pro,2026-08-18T15:01:28.444Z,2026-08-20T07:00:24.435Z,25,,usage,,false,false,USD,live
-Supabase,Free,2025-02-19T03:41:25.000Z,2026-08-21T12:02:23.949Z,0,,flat,,true,false,USD,mixed
-Supabase,Pro,2026-08-21T12:02:23.949Z,2026-08-21T12:02:23.949Z,25,,flat,,false,false,USD,live
-Supabase,Team,2025-02-19T03:41:25.000Z,2026-08-21T12:02:23.949Z,599,,flat,,false,false,USD,mixed
-Supabase,Enterprise,2025-02-19T03:41:25.000Z,2026-08-21T12:02:23.949Z,,,flat,,false,true,USD,mixed
-Turso,Free,2025-08-22T07:43:32.000Z,2026-08-21T12:05:01.568Z,0,,flat,,true,false,USD,mixed
-Turso,Developer,2025-08-22T07:43:32.000Z,2026-08-21T12:05:01.568Z,4.99,,flat,,false,false,USD,mixed
-Turso,Scaler,2025-08-22T07:43:32.000Z,2026-08-21T12:05:01.568Z,24.92,,flat,,false,false,USD,mixed
-Turso,Pro,2025-08-22T07:43:32.000Z,2026-08-21T12:05:01.568Z,416.58,,flat,,false,false,USD,mixed
+Supabase,Free,2025-02-19T03:41:25.000Z,2026-09-02T07:00:16.596Z,0,,flat,,true,false,USD,mixed
+Supabase,Pro,2026-08-21T12:02:23.949Z,2026-09-02T07:00:16.596Z,25,,flat,,false,false,USD,live
+Supabase,Team,2025-02-19T03:41:25.000Z,2026-09-02T07:00:16.596Z,599,,flat,,false,false,USD,mixed
+Supabase,Enterprise,2025-02-19T03:41:25.000Z,2026-09-02T07:00:16.596Z,,,flat,,false,true,USD,mixed
+Turso,Free,2025-08-22T07:43:32.000Z,2026-09-02T07:02:49.593Z,0,,flat,,true,false,USD,mixed
+Turso,Developer,2025-08-22T07:43:32.000Z,2026-09-02T07:02:49.593Z,4.99,,flat,,false,false,USD,mixed
+Turso,Scaler,2025-08-22T07:43:32.000Z,2026-09-02T07:02:49.593Z,24.92,,flat,,false,false,USD,mixed
+Turso,Pro,2025-08-22T07:43:32.000Z,2026-09-02T07:02:49.593Z,416.58,,flat,,false,false,USD,mixed
 Upstash,Pay as you go,2025-09-10T08:07:45.000Z,2025-09-10T08:07:45.000Z,0,,usage,,false,false,USD,wayback
 Upstash,Enterprise,2025-09-10T08:07:45.000Z,2025-09-10T08:07:45.000Z,,,flat,,false,true,USD,wayback
 Upstash,Enterprise,2025-10-15T18:24:16.000Z,2025-11-07T18:35:44.000Z,200,,flat,,false,true,USD,wayback
 Upstash,Pay as you go,2025-10-15T18:24:16.000Z,2026-02-05T07:46:07.000Z,,,usage,,false,false,USD,wayback
-Upstash,Prod Pack,2025-09-10T08:07:45.000Z,2026-02-05T07:46:07.000Z,10,,flat,,false,false,USD,wayback
-Upstash,Free,2025-09-10T08:07:45.000Z,2026-08-21T12:05:22.115Z,0,,flat,,true,false,USD,mixed
-Upstash,Enterprise,2025-12-05T14:56:43.000Z,2026-08-21T12:05:22.115Z,,,unknown,,false,true,USD,mixed
-Upstash,Pay as You Go,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,,,usage,,false,false,USD,live
-Upstash,Fixed 250MB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,10,,flat,,false,false,USD,live
-Upstash,Fixed 1GB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,20,,flat,,false,false,USD,live
-Upstash,Fixed 5GB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,100,,flat,,false,false,USD,live
-Upstash,Fixed 10GB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,200,,flat,,false,false,USD,live
-Upstash,Fixed 50GB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,400,,flat,,false,false,USD,live
-Upstash,Fixed 100GB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,800,,flat,,false,false,USD,live
-Upstash,Fixed 500GB,2026-08-21T12:05:22.115Z,2026-08-21T12:05:22.115Z,1500,,flat,,false,false,USD,live
-Vercel,Hobby,2026-08-21T12:06:44.926Z,2026-08-21T12:06:44.926Z,0,,flat,,true,false,USD,live
-Vercel,Pro,2026-08-21T12:06:44.926Z,2026-08-21T12:06:44.926Z,20,,flat,,false,false,USD,live
-Vercel,Enterprise,2026-08-21T12:06:44.926Z,2026-08-21T12:06:44.926Z,,,flat,,false,true,USD,live
+Upstash,Pay as you go,2026-03-09T08:56:14.000Z,2026-04-06T02:17:55.000Z,0,,usage,,false,false,USD,wayback
+Upstash,Prod Pack,2025-09-10T08:07:45.000Z,2026-05-14T16:33:14.000Z,10,,flat,,false,false,USD,wayback
+Upstash,Pay as You Go,2026-05-14T16:33:14.000Z,2026-06-03T07:15:46.000Z,0,,usage,,false,false,USD,wayback
+Upstash,Fixed 1GB,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,,,flat,,false,false,USD,wayback
+Upstash,Fixed 5GB,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,,,flat,,false,false,USD,wayback
+Upstash,Fixed 10GB,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,,,flat,,false,false,USD,wayback
+Upstash,Fixed 50GB,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,,,flat,,false,false,USD,wayback
+Upstash,Fixed 100GB,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,,,flat,,false,false,USD,wayback
+Upstash,Fixed 500GB,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,,,flat,,false,false,USD,wayback
+Upstash,Prod Pack,2026-06-03T07:15:46.000Z,2026-06-03T07:15:46.000Z,200,,flat,,false,false,USD,wayback
+Upstash,Free,2025-09-10T08:07:45.000Z,2026-09-02T07:03:12.362Z,0,,flat,,true,false,USD,mixed
+Upstash,Enterprise,2025-12-05T14:56:43.000Z,2026-09-02T07:03:12.362Z,,,unknown,,false,true,USD,mixed
+Upstash,Pay as You Go,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,,,usage,,false,false,USD,mixed
+Upstash,Fixed 250MB,2026-06-03T07:15:46.000Z,2026-09-02T07:03:12.362Z,10,,flat,,false,false,USD,mixed
+Upstash,Fixed 1GB,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,20,,flat,,false,false,USD,mixed
+Upstash,Fixed 5GB,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,100,,flat,,false,false,USD,mixed
+Upstash,Fixed 10GB,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,200,,flat,,false,false,USD,mixed
+Upstash,Fixed 50GB,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,400,,flat,,false,false,USD,mixed
+Upstash,Fixed 100GB,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,800,,flat,,false,false,USD,mixed
+Upstash,Fixed 500GB,2026-07-05T15:12:39.000Z,2026-09-02T07:03:12.362Z,1500,,flat,,false,false,USD,mixed
+Vercel,Pro,2026-07-03T12:03:39.000Z,2026-07-03T12:03:39.000Z,20,,per_seat,1,false,false,USD,wayback
+Vercel,Pro,2026-08-04T12:46:54.000Z,2026-08-23T07:05:10.589Z,20,,flat,,false,false,USD,mixed
+Vercel,Hobby,2026-07-03T12:03:39.000Z,2026-09-02T07:04:48.968Z,0,,flat,,true,false,USD,mixed
+Vercel,Pro,2026-08-25T07:05:51.982Z,2026-09-02T07:04:48.968Z,20,,per_seat,1,false,false,USD,live
+Vercel,Enterprise,2026-07-03T12:03:39.000Z,2026-09-02T07:04:48.968Z,,,unknown,,false,true,USD,mixed

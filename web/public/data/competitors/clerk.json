@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "clerk",
   "name": "Clerk",
   "homepage": "https://clerk.com",
@@ -17,10 +17,8 @@
         "Up to 3 dashboard seats",
         "Unlimited applications",
         "50,000 MRU limit per app",
-        "Up to 5 user impersonations",
         "APIs and prebuilt UIs for sign-up, sign-in, and user profile",
-        "Custom domain",
-        "Application Logs"
+        "Most authentication features"
       ]
     },
     {
@@ -38,8 +36,7 @@
         "Multi-factor authentication (MFA)",
         "Satellite domains",
         "Custom session lifetime",
-        "Application Logs 7 day retention",
-        "SMS Authentication available"
+        "7 day Application Logs retention"
       ]
     },
     {
@@ -51,11 +48,12 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything in Pro",
         "10 dashboard seats included",
         "SOC2 Report",
         "Enhanced dashboard roles",
         "Priority support",
-        "Application Logs 30 day retention"
+        "30 day Application and Admin Logs retention"
       ]
     },
     {
@@ -71,21 +69,52 @@
         "99.99% Uptime SLA",
         "Enterprise SSO for workspace",
         "Premium support SLA + dedicated slack channel",
-        "Application Logs Custom retention",
-        "Log sink destinations",
+        "Custom log retention",
         "HIPAA compliance available with BAA"
       ]
     }
   ],
   "first_observed_at": "2025-09-01T12:00:47.000Z",
-  "last_observed_at": "2026-08-21T12:03:14.109Z",
+  "last_observed_at": "2026-09-02T07:01:03.393Z",
   "series": [
     {
       "tier": "Business",
       "segments": [
         [
           {
+            "observed_at": "2026-02-09T09:14:48.000Z",
+            "price": 250
+          },
+          {
+            "observed_at": "2026-03-02T14:21:32.000Z",
+            "price": 250
+          },
+          {
+            "observed_at": "2026-04-18T19:16:04.000Z",
+            "price": 250
+          },
+          {
+            "observed_at": "2026-05-21T05:18:00.000Z",
+            "price": 250
+          },
+          {
+            "observed_at": "2026-06-18T00:36:31.000Z",
+            "price": 250
+          },
+          {
+            "observed_at": "2026-07-03T07:39:12.000Z",
+            "price": 250
+          },
+          {
+            "observed_at": "2026-08-09T17:09:08.000Z",
+            "price": 250
+          },
+          {
             "observed_at": "2026-08-21T12:03:14.109Z",
+            "price": 300
+          },
+          {
+            "observed_at": "2026-08-27T07:01:44.054Z",
             "price": 300
           }
         ]
@@ -137,7 +166,39 @@
       "segments": [
         [
           {
+            "observed_at": "2026-02-09T09:14:48.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-03-02T14:21:32.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-18T19:16:04.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-21T05:18:00.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-18T00:36:31.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-03T07:39:12.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-09T17:09:08.000Z",
+            "price": 0
+          },
+          {
             "observed_at": "2026-08-21T12:03:14.109Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-27T07:01:44.054Z",
             "price": 0
           }
         ]
@@ -159,7 +220,39 @@
         ],
         [
           {
+            "observed_at": "2026-02-09T09:14:48.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-03-02T14:21:32.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-04-18T19:16:04.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-05-21T05:18:00.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-06-18T00:36:31.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-07-03T07:39:12.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-08-09T17:09:08.000Z",
+            "price": 20
+          },
+          {
             "observed_at": "2026-08-21T12:03:14.109Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-08-27T07:01:44.054Z",
             "price": 25
           }
         ]
@@ -179,9 +272,214 @@
     {
       "observed_at": "2025-11-02T09:30:17.000Z",
       "label": "Enhanced B2B SaaS add-on tier removed"
+    },
+    {
+      "observed_at": "2026-02-09T09:14:48.000Z",
+      "label": "Pro $25 → $20"
+    },
+    {
+      "observed_at": "2026-02-09T09:14:48.000Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-02-09T09:14:48.000Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-02-09T09:14:48.000Z",
+      "label": "Business tier added"
+    },
+    {
+      "observed_at": "2026-03-02T14:21:32.000Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-04-18T19:16:04.000Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-08-09T17:09:08.000Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Enhanced Authentication add-on tier removed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Enhanced B2B SaaS add-on tier removed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Business tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Business tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Pro $20 → $25"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Pro seats changed"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Business $250 → $300"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Pro $20 → $25"
+    },
+    {
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "label": "Business $250 → $300"
     }
   ],
   "changes": [
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "price_changed",
+      "json_path": "tiers.Business.monthly_price_usd",
+      "before": 250,
+      "after": 300,
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "price_changed",
+      "json_path": "tiers.Pro.monthly_price_usd",
+      "before": 20,
+      "after": 25,
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "price_changed",
+      "json_path": "tiers.Business.monthly_price_usd",
+      "before": 250,
+      "after": 300,
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Pro.included_seats",
+      "before": 3,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "price_changed",
+      "json_path": "tiers.Pro.monthly_price_usd",
+      "before": 20,
+      "after": 25,
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "tier_added",
+      "json_path": "tiers.Business",
+      "before": null,
+      "after": {
+        "name": "Business",
+        "monthly_price_usd": 300,
+        "annual_price_usd": 250,
+        "billing_unit": "flat",
+        "included_seats": 10,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "10 dashboard seats included",
+          "SOC2 Report",
+          "Enhanced dashboard roles",
+          "Priority support",
+          "Application Logs 30 day retention"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Pro.included_seats",
+      "before": 3,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "usage",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "tier_added",
+      "json_path": "tiers.Business",
+      "before": null,
+      "after": {
+        "name": "Business",
+        "monthly_price_usd": 300,
+        "annual_price_usd": 250,
+        "billing_unit": "flat",
+        "included_seats": 10,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "10 dashboard seats included",
+          "SOC2 Report",
+          "Enhanced dashboard roles",
+          "Priority support",
+          "Application Logs 30 day retention"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
     {
       "competitor": "Clerk",
       "slug": "clerk",
@@ -204,7 +502,7 @@
       },
       "after": null,
       "materiality": 100,
-      "observed_at": "2025-11-02T09:30:17.000Z",
+      "observed_at": "2026-08-21T12:03:14.109Z",
       "annotation": null
     },
     {
@@ -230,24 +528,35 @@
       },
       "after": null,
       "materiality": 100,
-      "observed_at": "2025-11-02T09:30:17.000Z",
+      "observed_at": "2026-08-21T12:03:14.109Z",
       "annotation": null
     },
     {
       "competitor": "Clerk",
       "slug": "clerk",
-      "change_type": "billing_unit_changed",
-      "json_path": "tiers.Pro.billing_unit",
-      "before": "flat",
-      "after": "usage",
-      "materiality": 70,
-      "observed_at": "2025-11-02T09:30:17.000Z",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Pro.included_seats",
+      "before": 3,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2026-08-21T12:03:14.109Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Clerk",
+      "slug": "clerk",
+      "change_type": "seats_changed",
+      "json_path": "tiers.Pro.included_seats",
+      "before": 3,
+      "after": null,
+      "materiality": 50,
+      "observed_at": "2026-08-09T17:09:08.000Z",
       "annotation": null
     }
   ],
   "provenance": {
-    "live": 3,
-    "wayback": 5,
-    "mixed": 1
+    "live": 2,
+    "wayback": 14,
+    "mixed": 2
   }
 }

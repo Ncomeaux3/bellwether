@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "supabase",
   "name": "Supabase",
   "homepage": "https://supabase.com",
@@ -18,8 +18,7 @@
         "50,000 monthly active users",
         "500 MB database size",
         "5 GB egress",
-        "1 GB file storage",
-        "Community support"
+        "1 GB file storage"
       ]
     },
     {
@@ -31,13 +30,14 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Everything in the Free Plan, plus:",
         "100,000 monthly active users",
         "8 GB disk size per project",
         "250 GB egress",
+        "250 GB cached egress",
         "100 GB file storage",
+        "Daily backups (7 day retention)",
         "Email support",
-        "Daily backups stored for 7 days"
+        "$10/mo compute credits"
       ]
     },
     {
@@ -49,26 +49,27 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Everything in the Pro Plan, plus:",
         "SOC2 & ISO 27001",
         "Project-scoped and read-only access",
         "HIPAA available as paid add-on",
         "SSO for Supabase Dashboard",
-        "Priority email support & SLAs"
+        "Priority email support & SLAs",
+        "Daily backups (14 day retention)",
+        "28-day log retention"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
         "Designated Support manager",
         "Uptime SLAs",
-        "BYO Cloud supported",
+        "Supports AWS PrivateLink",
         "24×7×365 premium enterprise support",
         "Private Slack channel",
         "Custom Security Questionnaires"
@@ -76,7 +77,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T03:41:25.000Z",
-  "last_observed_at": "2026-08-21T12:02:23.949Z",
+  "last_observed_at": "2026-09-02T07:00:16.596Z",
   "series": [
     {
       "tier": "Free",
@@ -156,6 +157,18 @@
           },
           {
             "observed_at": "2026-08-21T12:02:23.949Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-25T07:01:32.856Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-27T07:00:54.810Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-08-29T07:00:19.297Z",
             "price": 0
           }
         ]
@@ -241,6 +254,18 @@
           {
             "observed_at": "2026-08-21T12:02:23.949Z",
             "price": 25
+          },
+          {
+            "observed_at": "2026-08-25T07:01:32.856Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-08-27T07:00:54.810Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-08-29T07:00:19.297Z",
+            "price": 25
           }
         ]
       ],
@@ -325,6 +350,18 @@
           {
             "observed_at": "2026-08-21T12:02:23.949Z",
             "price": 599
+          },
+          {
+            "observed_at": "2026-08-25T07:01:32.856Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-08-27T07:00:54.810Z",
+            "price": 599
+          },
+          {
+            "observed_at": "2026-08-29T07:00:19.297Z",
+            "price": 599
           }
         ]
       ],
@@ -335,9 +372,24 @@
     {
       "observed_at": "2026-08-18T15:01:28.444Z",
       "label": "Pro billing unit changed"
+    },
+    {
+      "observed_at": "2026-08-21T12:02:23.949Z",
+      "label": "Pro billing unit changed"
     }
   ],
   "changes": [
+    {
+      "competitor": "Supabase",
+      "slug": "supabase",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Pro.billing_unit",
+      "before": "usage",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-08-21T12:02:23.949Z",
+      "annotation": null
+    },
     {
       "competitor": "Supabase",
       "slug": "supabase",

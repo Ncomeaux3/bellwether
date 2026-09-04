@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "auth0",
   "name": "Auth0",
   "homepage": "https://auth0.com",
@@ -79,7 +79,7 @@
     }
   ],
   "first_observed_at": "2026-01-07T07:29:47.000Z",
-  "last_observed_at": "2026-08-21T12:03:00.974Z",
+  "last_observed_at": "2026-09-02T07:00:50.899Z",
   "series": [
     {
       "tier": "Essentials",
@@ -92,9 +92,23 @@
           {
             "observed_at": "2026-02-03T09:50:57.000Z",
             "price": 35
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-03-06T09:38:18.000Z",
+            "price": 35
+          },
+          {
+            "observed_at": "2026-05-05T10:07:17.000Z",
+            "price": 35
+          },
+          {
+            "observed_at": "2026-06-01T00:05:47.000Z",
+            "price": 35
+          },
+          {
+            "observed_at": "2026-07-01T14:29:57.000Z",
+            "price": 35
+          },
           {
             "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 35
@@ -114,9 +128,23 @@
           {
             "observed_at": "2026-02-03T09:50:57.000Z",
             "price": 0
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-03-06T09:38:18.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-05T10:07:17.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-01T00:05:47.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-01T14:29:57.000Z",
+            "price": 0
+          },
           {
             "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 0
@@ -136,9 +164,23 @@
           {
             "observed_at": "2026-02-03T09:50:57.000Z",
             "price": 240
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-03-06T09:38:18.000Z",
+            "price": 240
+          },
+          {
+            "observed_at": "2026-05-05T10:07:17.000Z",
+            "price": 240
+          },
+          {
+            "observed_at": "2026-06-01T00:05:47.000Z",
+            "price": 240
+          },
+          {
+            "observed_at": "2026-07-01T14:29:57.000Z",
+            "price": 240
+          },
           {
             "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 240

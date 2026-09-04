@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "depot",
   "name": "Depot",
   "homepage": "https://depot.dev",
@@ -20,8 +20,8 @@
         "Docker builds",
         "Depot CI",
         "GitHub Actions builds",
-        "macOS M2 Runners",
-        "Depot Registry"
+        "Depot Registry",
+        "Agent sandboxes"
       ]
     },
     {
@@ -36,14 +36,15 @@
         "Unlimited users",
         "Everything in developer, plus:",
         "Email support",
-        "User RBAC"
+        "User RBAC",
+        "macOS M2 Runners"
       ]
     },
     {
       "name": "Business",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
@@ -60,7 +61,7 @@
     }
   ],
   "first_observed_at": "2025-09-10T17:00:16.000Z",
-  "last_observed_at": "2026-08-21T12:03:49.035Z",
+  "last_observed_at": "2026-09-02T07:01:38.536Z",
   "series": [
     {
       "tier": "Developer",
@@ -73,7 +74,31 @@
         ],
         [
           {
+            "observed_at": "2026-03-12T08:02:41.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-04-17T06:24:01.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-06-22T13:14:28.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-07-17T09:53:47.000Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-08-08T01:43:32.000Z",
+            "price": 20
+          },
+          {
             "observed_at": "2026-08-21T12:03:49.035Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-09-02T07:01:38.536Z",
             "price": 20
           }
         ]
@@ -91,7 +116,31 @@
         ],
         [
           {
+            "observed_at": "2026-03-12T08:02:41.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-04-17T06:24:01.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-06-22T13:14:28.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-07-17T09:53:47.000Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-08-08T01:43:32.000Z",
+            "price": 200
+          },
+          {
             "observed_at": "2026-08-21T12:03:49.035Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-09-02T07:01:38.536Z",
             "price": 200
           }
         ]

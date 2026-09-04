@@ -1,38 +1,38 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "filter": {
-    "total_snapshots": 760,
-    "extractions_performed": 155,
-    "llm_calls_avoided": 578,
-    "llm_calls_avoided_pct": 76.1,
+    "total_snapshots": 787,
+    "extractions_performed": 232,
+    "llm_calls_avoided": 513,
+    "llm_calls_avoided_pct": 65.2,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
-        "eliminated": 220,
-        "remaining": 540,
+        "eliminated": 222,
+        "remaining": 565,
         "note": "Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined."
       },
       {
         "name": "Repeat page state, already extracted",
-        "eliminated": 135,
-        "remaining": 405,
+        "eliminated": 267,
+        "remaining": 298,
         "note": "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call."
       },
       {
         "name": "Short-circuited before any request",
-        "eliminated": 223,
-        "remaining": 182,
+        "eliminated": 24,
+        "remaining": 274,
         "note": "Refused before a request was sent (token budget exceeded, or no extractable text), or not yet due for extraction — zero spend either way."
       },
       {
         "name": "Called and succeeded",
-        "eliminated": 155,
-        "remaining": 27,
+        "eliminated": 232,
+        "remaining": 42,
         "note": "A real model call ran and its answer was recorded — the archive's actual, billed extractions."
       },
       {
         "name": "Called and rejected",
-        "eliminated": 27,
+        "eliminated": 42,
         "remaining": 0,
         "note": "A real model call ran and failed grounding or schema validation, so the state was retired. There is no cache for a failure, so every row here — even a repeat of the same state — was its own separate paid call. Spend, not savings."
       }
@@ -40,9 +40,9 @@
   },
   "coverage": {
     "first_observed_at": "2025-02-19T03:41:25.000Z",
-    "last_observed_at": "2026-09-02T07:05:23.905Z",
+    "last_observed_at": "2026-09-04T07:05:28.132Z",
     "months_covered": 20,
-    "live_snapshots": 201,
+    "live_snapshots": 228,
     "backfilled_snapshots": 559
   },
   "health": {
@@ -52,7 +52,7 @@
         "kind": "pricing",
         "url": "https://auth0.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:00:50.899Z",
+        "last_ok_at": "2026-09-04T07:00:56.783Z",
         "degraded_reason": null
       },
       {
@@ -60,7 +60,7 @@
         "kind": "pricing",
         "url": "https://buildkite.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:01:25.706Z",
+        "last_ok_at": "2026-09-04T07:01:31.484Z",
         "degraded_reason": null
       },
       {
@@ -68,7 +68,7 @@
         "kind": "pricing",
         "url": "https://clerk.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:01:03.393Z",
+        "last_ok_at": "2026-09-04T07:01:09.729Z",
         "degraded_reason": null
       },
       {
@@ -76,7 +76,7 @@
         "kind": "pricing",
         "url": "https://depot.dev/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:01:38.536Z",
+        "last_ok_at": "2026-09-04T07:01:42.263Z",
         "degraded_reason": null
       },
       {
@@ -84,7 +84,7 @@
         "kind": "pricing",
         "url": "https://www.figma.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-01T07:00:39.261Z",
+        "last_ok_at": "2026-09-03T07:00:42.706Z",
         "degraded_reason": null
       },
       {
@@ -92,7 +92,7 @@
         "kind": "pricing",
         "url": "https://fly.io/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:04:12.029Z",
+        "last_ok_at": "2026-09-04T07:04:18.329Z",
         "degraded_reason": null
       },
       {
@@ -100,7 +100,7 @@
         "kind": "pricing",
         "url": "https://github.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:01:49.735Z",
+        "last_ok_at": "2026-09-04T07:01:53.389Z",
         "degraded_reason": null
       },
       {
@@ -108,7 +108,7 @@
         "kind": "pricing",
         "url": "https://about.gitlab.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:02:00.527Z",
+        "last_ok_at": "2026-09-04T07:02:05.363Z",
         "degraded_reason": null
       },
       {
@@ -116,7 +116,7 @@
         "kind": "pricing",
         "url": "https://hasura.io/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:02:11.010Z",
+        "last_ok_at": "2026-09-04T07:02:16.444Z",
         "degraded_reason": null
       },
       {
@@ -124,7 +124,7 @@
         "kind": "pricing",
         "url": "https://www.honeycomb.io/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:05:00.106Z",
+        "last_ok_at": "2026-09-04T07:05:05.889Z",
         "degraded_reason": null
       },
       {
@@ -132,7 +132,7 @@
         "kind": "pricing",
         "url": "https://linear.app/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-01T07:00:16.446Z",
+        "last_ok_at": "2026-09-03T07:00:18.058Z",
         "degraded_reason": null
       },
       {
@@ -140,7 +140,7 @@
         "kind": "pricing",
         "url": "https://www.netlify.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:04:25.176Z",
+        "last_ok_at": "2026-09-04T07:04:31.184Z",
         "degraded_reason": null
       },
       {
@@ -148,7 +148,7 @@
         "kind": "pricing",
         "url": "https://newrelic.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:05:12.057Z",
+        "last_ok_at": "2026-09-04T07:05:17.361Z",
         "degraded_reason": null
       },
       {
@@ -156,7 +156,7 @@
         "kind": "pricing",
         "url": "https://www.notion.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-01T07:00:26.831Z",
+        "last_ok_at": "2026-09-03T07:00:30.388Z",
         "degraded_reason": null
       },
       {
@@ -164,7 +164,7 @@
         "kind": "pricing",
         "url": "https://www.pinecone.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:05:23.905Z",
+        "last_ok_at": "2026-09-04T07:05:28.132Z",
         "degraded_reason": null
       },
       {
@@ -172,7 +172,7 @@
         "kind": "pricing",
         "url": "https://planetscale.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:02:23.841Z",
+        "last_ok_at": "2026-09-04T07:02:29.747Z",
         "degraded_reason": null
       },
       {
@@ -180,7 +180,7 @@
         "kind": "pricing",
         "url": "https://www.postman.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:00:39.652Z",
+        "last_ok_at": "2026-09-04T07:00:45.417Z",
         "degraded_reason": null
       },
       {
@@ -188,7 +188,7 @@
         "kind": "pricing",
         "url": "https://postmarkapp.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:03:25.160Z",
+        "last_ok_at": "2026-09-04T07:03:29.471Z",
         "degraded_reason": null
       },
       {
@@ -196,23 +196,23 @@
         "kind": "pricing",
         "url": "https://redis.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:02:37.055Z",
+        "last_ok_at": "2026-09-04T07:02:42.534Z",
         "degraded_reason": null
       },
       {
         "slug": "render",
         "kind": "pricing",
         "url": "https://render.com/pricing",
-        "state": "ok",
-        "last_ok_at": "2026-09-02T07:04:37.725Z",
-        "degraded_reason": null
+        "state": "degraded",
+        "last_ok_at": "2026-09-04T07:04:42.641Z",
+        "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4c-32g.unit_price_usd = 0.0081 does not appear in the page text"
       },
       {
         "slug": "resend",
         "kind": "pricing",
         "url": "https://resend.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:03:36.999Z",
+        "last_ok_at": "2026-09-04T07:03:41.493Z",
         "degraded_reason": null
       },
       {
@@ -220,7 +220,7 @@
         "kind": "pricing",
         "url": "https://sentry.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:00:27.898Z",
+        "last_ok_at": "2026-09-04T07:00:33.394Z",
         "degraded_reason": null
       },
       {
@@ -228,7 +228,7 @@
         "kind": "pricing",
         "url": "https://statsig.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:03:47.978Z",
+        "last_ok_at": "2026-09-04T07:03:54.352Z",
         "degraded_reason": null
       },
       {
@@ -236,7 +236,7 @@
         "kind": "pricing",
         "url": "https://supabase.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:00:16.596Z",
+        "last_ok_at": "2026-09-04T07:00:17.893Z",
         "degraded_reason": null
       },
       {
@@ -244,7 +244,7 @@
         "kind": "pricing",
         "url": "https://turso.tech/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:02:49.593Z",
+        "last_ok_at": "2026-09-04T07:02:53.814Z",
         "degraded_reason": null
       },
       {
@@ -252,7 +252,7 @@
         "kind": "pricing",
         "url": "https://upstash.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:03:12.362Z",
+        "last_ok_at": "2026-09-04T07:03:17.807Z",
         "degraded_reason": null
       },
       {
@@ -260,7 +260,7 @@
         "kind": "pricing",
         "url": "https://vercel.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-02T07:04:48.968Z",
+        "last_ok_at": "2026-09-04T07:04:52.986Z",
         "degraded_reason": null
       }
     ],
@@ -273,50 +273,50 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-09-02T07:30:05.676Z"
+        "ended_at": "2026-09-03T07:30:03.171Z"
       },
       {
         "kind": "collect",
         "state": "ok",
-        "ended_at": "2026-09-02T07:05:23.945Z"
+        "ended_at": "2026-09-04T07:05:28.141Z"
       },
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-09-03T07:00:10.204Z"
+        "ended_at": "2026-09-04T07:15:38.346Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-09-02T07:05:28.911Z"
+        "ended_at": "2026-09-04T07:05:28.967Z"
       },
       {
         "kind": "extract",
-        "state": "failed",
-        "ended_at": "2026-09-03T07:00:09.986Z"
+        "state": "ok",
+        "ended_at": "2026-09-04T07:15:37.994Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-09-02T07:00:13.220Z"
+        "ended_at": "2026-09-03T07:00:13.673Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-09-02T07:30:15.253Z"
+        "ended_at": "2026-09-03T07:30:11.605Z"
       },
       {
         "kind": "synthesize",
         "state": "ok",
-        "ended_at": "2026-09-03T07:00:10.219Z"
+        "ended_at": "2026-09-04T07:15:38.362Z"
       }
     ]
   },
   "cost": {
-    "cumulative_micros": 1565752,
-    "month_micros": 0,
-    "backfill_micros": 1261613,
-    "per_confirmed_change_micros": 24465
+    "cumulative_micros": 2187148,
+    "month_micros": 201538,
+    "backfill_micros": 1681471,
+    "per_confirmed_change_micros": 7148
   },
   "screening": {
     "total_screened": 51,

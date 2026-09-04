@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "fly-io",
   "name": "Fly.io",
   "homepage": "https://fly.io",
@@ -70,7 +70,7 @@
     }
   ],
   "first_observed_at": "2025-08-28T15:30:44.000Z",
-  "last_observed_at": "2026-08-21T12:06:09.099Z",
+  "last_observed_at": "2026-09-02T07:04:12.029Z",
   "series": [
     {
       "tier": "Compliance",
@@ -125,55 +125,7 @@
       "label": "Compliance tier added"
     }
   ],
-  "changes": [
-    {
-      "competitor": "Fly.io",
-      "slug": "fly-io",
-      "change_type": "tier_added",
-      "json_path": "tiers.Compliance",
-      "before": null,
-      "after": {
-        "name": "Compliance",
-        "monthly_price_usd": 99,
-        "annual_price_usd": null,
-        "billing_unit": "flat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "HIPAA-compliant workloads",
-          "BAAs to SOC2s"
-        ]
-      },
-      "materiality": 100,
-      "observed_at": "2026-06-12T14:27:07.000Z",
-      "annotation": null
-    },
-    {
-      "competitor": "Fly.io",
-      "slug": "fly-io",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Compliance Made Easy",
-      "before": {
-        "name": "Compliance Made Easy",
-        "monthly_price_usd": 99,
-        "annual_price_usd": null,
-        "billing_unit": "flat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "HIPAA-compliant workloads",
-          "BAAs",
-          "SOC2"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2026-06-12T14:27:07.000Z",
-      "annotation": null
-    }
-  ],
+  "changes": [],
   "provenance": {
     "live": 0,
     "wayback": 1,

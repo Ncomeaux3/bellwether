@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T07:00:10.220Z",
+  "generated_at": "2026-09-04T07:15:38.362Z",
   "slug": "upstash",
   "name": "Upstash",
   "homepage": "https://upstash.com",
@@ -144,7 +144,7 @@
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
@@ -152,12 +152,14 @@
         "Everything in Prod Pack",
         "100K+ commands per second",
         "Unlimited bandwidth and database count",
-        "Professional support with SLA"
+        "Professional support with SLA",
+        "Dedicated resources for isolation",
+        "HIPAA Compliance"
       ]
     }
   ],
   "first_observed_at": "2025-09-10T08:07:45.000Z",
-  "last_observed_at": "2026-08-21T12:05:22.115Z",
+  "last_observed_at": "2026-09-02T07:03:12.362Z",
   "series": [
     {
       "tier": "Enterprise",
@@ -176,7 +178,15 @@
       "segments": [
         [
           {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 800
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 800
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 800
           }
         ]
@@ -188,7 +198,15 @@
       "segments": [
         [
           {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 200
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 200
           }
         ]
@@ -200,7 +218,15 @@
       "segments": [
         [
           {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 20
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 20
           }
         ]
@@ -212,19 +238,39 @@
       "segments": [
         [
           {
+            "observed_at": "2026-06-03T07:15:46.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 10
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 10
           }
         ]
       ],
-      "tier_class": "mid"
+      "tier_class": "entry"
     },
     {
       "tier": "Fixed 500GB",
       "segments": [
         [
           {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 1500
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 1500
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 1500
           }
         ]
@@ -236,7 +282,15 @@
       "segments": [
         [
           {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 400
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 400
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 400
           }
         ]
@@ -248,7 +302,15 @@
       "segments": [
         [
           {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 100
+          },
+          {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 100
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 100
           }
         ]
@@ -274,11 +336,33 @@
           {
             "observed_at": "2026-01-01T09:46:51.000Z",
             "price": 0
-          }
-        ],
-        [
+          },
+          {
+            "observed_at": "2026-03-09T08:56:14.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-06T02:17:55.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-05-14T16:33:14.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-03T07:15:46.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-07-05T15:12:39.000Z",
+            "price": 0
+          },
           {
             "observed_at": "2026-08-21T12:05:22.115Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-09-02T07:03:12.362Z",
             "price": 0
           }
         ]
@@ -291,6 +375,32 @@
         [
           {
             "observed_at": "2025-09-10T08:07:45.000Z",
+            "price": 0
+          }
+        ],
+        [
+          {
+            "observed_at": "2026-03-09T08:56:14.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-04-06T02:17:55.000Z",
+            "price": 0
+          }
+        ]
+      ],
+      "tier_class": "free"
+    },
+    {
+      "tier": "Pay as You Go",
+      "segments": [
+        [
+          {
+            "observed_at": "2026-05-14T16:33:14.000Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-06-03T07:15:46.000Z",
             "price": 0
           }
         ]
@@ -316,17 +426,448 @@
           {
             "observed_at": "2026-01-01T09:46:51.000Z",
             "price": 10
+          },
+          {
+            "observed_at": "2026-03-09T08:56:14.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-04-06T02:17:55.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-05-14T16:33:14.000Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-06-03T07:15:46.000Z",
+            "price": 200
           }
         ]
       ],
-      "tier_class": "entry"
+      "tier_class": "mid"
     }
   ],
-  "markers": [],
-  "changes": [],
+  "markers": [
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Prod Pack $10 → $200"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 250MB tier added"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 1GB tier added"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 5GB tier added"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 10GB tier added"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 50GB tier added"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 100GB tier added"
+    },
+    {
+      "observed_at": "2026-06-03T07:15:46.000Z",
+      "label": "Fixed 500GB tier added"
+    },
+    {
+      "observed_at": "2026-07-05T15:12:39.000Z",
+      "label": "Prod Pack tier removed"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 1GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 5GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 10GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 50GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 100GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 500GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 1GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 5GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 10GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 50GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 100GB tier added"
+    },
+    {
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "label": "Fixed 500GB tier added"
+    }
+  ],
+  "changes": [
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 500GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 500GB",
+        "monthly_price_usd": 1500,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "500 GB data size",
+          "20 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$750 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 100GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 100GB",
+        "monthly_price_usd": 800,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "100 GB data size",
+          "10 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$400 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 50GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 50GB",
+        "monthly_price_usd": 400,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "50 GB data size",
+          "5 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$200 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 10GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 10GB",
+        "monthly_price_usd": 200,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "10 GB data size",
+          "1 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$100 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 5GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 5GB",
+        "monthly_price_usd": 100,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "5 GB data size",
+          "500 GB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$50 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 1GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 1GB",
+        "monthly_price_usd": 20,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "1 GB data size",
+          "100 GB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$10 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 500GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 500GB",
+        "monthly_price_usd": 1500,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "500 GB data size",
+          "20 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$750 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 100GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 100GB",
+        "monthly_price_usd": 800,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "100 GB data size",
+          "10 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$400 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 50GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 50GB",
+        "monthly_price_usd": 400,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "50 GB data size",
+          "5 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$200 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 10GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 10GB",
+        "monthly_price_usd": 200,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "10 GB data size",
+          "1 TB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$100 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 5GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 5GB",
+        "monthly_price_usd": 100,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "5 GB data size",
+          "500 GB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$50 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_added",
+      "json_path": "tiers.Fixed 1GB",
+      "before": null,
+      "after": {
+        "name": "Fixed 1GB",
+        "monthly_price_usd": 20,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "1 GB data size",
+          "100 GB monthly bandwidth",
+          "Unlimited monthly commands",
+          "$10 per read region"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-08-21T12:05:22.115Z",
+      "annotation": null
+    },
+    {
+      "competitor": "Upstash",
+      "slug": "upstash",
+      "change_type": "tier_removed",
+      "json_path": "tiers.Prod Pack",
+      "before": {
+        "name": "Prod Pack",
+        "monthly_price_usd": 200,
+        "annual_price_usd": null,
+        "billing_unit": "flat",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "100K+ commands per second",
+          "Unlimited bandwidth and database count",
+          "Professional support with SLA",
+          "Dedicated resources for isolation",
+          "HIPAA Compliance",
+          "Uptime SLA",
+          "Multi-Zone HA",
+          "Encryption at Rest"
+        ]
+      },
+      "after": null,
+      "materiality": 100,
+      "observed_at": "2026-07-05T15:12:39.000Z",
+      "annotation": null
+    }
+  ],
   "provenance": {
-    "live": 8,
-    "wayback": 5,
-    "mixed": 2
+    "live": 0,
+    "wayback": 14,
+    "mixed": 10
   }
 }
