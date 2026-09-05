@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "github",
   "name": "GitHub",
   "homepage": "https://github.com",
@@ -58,7 +58,7 @@
     }
   ],
   "first_observed_at": "2025-08-21T03:03:43.000Z",
-  "last_observed_at": "2026-09-02T07:01:49.735Z",
+  "last_observed_at": "2026-09-04T07:01:53.389Z",
   "series": [
     {
       "tier": "Enterprise",

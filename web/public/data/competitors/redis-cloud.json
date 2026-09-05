@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "redis-cloud",
   "name": "Redis Cloud",
   "homepage": "https://redis.io",
@@ -29,10 +29,10 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Shared deployment",
         "250 MB-100 GB RAM & SSD, single DB",
         "SAML SSO, RBAC, encryption in transit, encryption at rest",
-        "Up to 99.99% uptime, basic support only"
+        "Up to 99.99% uptime, basic support only",
+        "Redis Flex at 10% RAM for lowest cost"
       ]
     },
     {
@@ -46,13 +46,26 @@
       "headline_features": [
         "Dedicated cloud deployment",
         "Unlimited RAM, multiple DBs",
-        "Everything in Essentials, plus active-active (multi-region), auto-tiering, private connectivity",
+        "Everything in Essentials, plus active-active (multi-region), private connectivity",
         "Up to 99.999% uptime"
+      ]
+    },
+    {
+      "name": "Enterprise",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "unknown",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": true,
+      "headline_features": [
+        "Multi-cloud & hybrid cloud / on-prem deployment",
+        "Available with an annual plan"
       ]
     }
   ],
   "first_observed_at": "2025-09-02T17:16:37.000Z",
-  "last_observed_at": "2026-09-02T07:02:37.055Z",
+  "last_observed_at": "2026-09-04T07:02:42.534Z",
   "series": [
     {
       "tier": "Essentials",
@@ -98,6 +111,10 @@
           },
           {
             "observed_at": "2026-08-31T07:02:34.489Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-09-04T07:02:42.534Z",
             "price": 5
           }
         ]
@@ -169,6 +186,10 @@
           {
             "observed_at": "2026-08-31T07:02:34.489Z",
             "price": 0
+          },
+          {
+            "observed_at": "2026-09-04T07:02:42.534Z",
+            "price": 0
           }
         ]
       ],
@@ -218,6 +239,10 @@
           },
           {
             "observed_at": "2026-08-31T07:02:34.489Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-09-04T07:02:42.534Z",
             "price": 200
           }
         ]
@@ -429,7 +454,7 @@
     }
   ],
   "provenance": {
-    "live": 1,
+    "live": 2,
     "wayback": 4,
     "mixed": 4
   }

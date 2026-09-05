@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "sentry",
   "name": "Sentry",
   "homepage": "https://sentry.io",
@@ -69,7 +69,7 @@
     }
   ],
   "first_observed_at": "2025-02-19T05:34:02.000Z",
-  "last_observed_at": "2026-09-02T07:00:27.898Z",
+  "last_observed_at": "2026-09-04T07:00:33.394Z",
   "series": [
     {
       "tier": "business",

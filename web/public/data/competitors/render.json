@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "render",
   "name": "Render",
   "homepage": "https://render.com",
@@ -79,7 +79,7 @@
     }
   ],
   "first_observed_at": "2025-08-26T13:34:23.000Z",
-  "last_observed_at": "2026-09-02T07:04:37.725Z",
+  "last_observed_at": "2026-09-04T07:04:42.641Z",
   "series": [
     {
       "tier": "Cron Jobs",

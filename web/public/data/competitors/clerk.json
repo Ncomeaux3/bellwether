@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "clerk",
   "name": "Clerk",
   "homepage": "https://clerk.com",
@@ -17,8 +17,7 @@
         "Up to 3 dashboard seats",
         "Unlimited applications",
         "50,000 MRU limit per app",
-        "APIs and prebuilt UIs for sign-up, sign-in, and user profile",
-        "Most authentication features"
+        "APIs and prebuilt UIs for sign-up, sign-in, and user profile"
       ]
     },
     {
@@ -34,7 +33,6 @@
         "1 Enterprise connection included",
         "Remove Clerk branding",
         "Multi-factor authentication (MFA)",
-        "Satellite domains",
         "Custom session lifetime",
         "7 day Application Logs retention"
       ]
@@ -48,19 +46,18 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Everything in Pro",
         "10 dashboard seats included",
         "SOC2 Report",
         "Enhanced dashboard roles",
         "Priority support",
-        "30 day Application and Admin Logs retention"
+        "30 day Application and Admin Logs"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "flat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
@@ -69,13 +66,13 @@
         "99.99% Uptime SLA",
         "Enterprise SSO for workspace",
         "Premium support SLA + dedicated slack channel",
-        "Custom log retention",
+        "Custom retention Application and Admin Logs",
         "HIPAA compliance available with BAA"
       ]
     }
   ],
   "first_observed_at": "2025-09-01T12:00:47.000Z",
-  "last_observed_at": "2026-09-02T07:01:03.393Z",
+  "last_observed_at": "2026-09-04T07:01:09.729Z",
   "series": [
     {
       "tier": "Business",
@@ -115,6 +112,10 @@
           },
           {
             "observed_at": "2026-08-27T07:01:44.054Z",
+            "price": 300
+          },
+          {
+            "observed_at": "2026-09-04T07:01:09.729Z",
             "price": 300
           }
         ]
@@ -200,6 +201,10 @@
           {
             "observed_at": "2026-08-27T07:01:44.054Z",
             "price": 0
+          },
+          {
+            "observed_at": "2026-09-04T07:01:09.729Z",
+            "price": 0
           }
         ]
       ],
@@ -253,6 +258,10 @@
           },
           {
             "observed_at": "2026-08-27T07:01:44.054Z",
+            "price": 25
+          },
+          {
+            "observed_at": "2026-09-04T07:01:09.729Z",
             "price": 25
           }
         ]

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "auth0",
   "name": "Auth0",
   "homepage": "https://auth0.com",
@@ -34,13 +34,13 @@
       "is_enterprise": false,
       "headline_features": [
         "Up to 500 monthly active users",
-        "Everything in Free, plus...",
         "Higher Auth, API limits, and Feature limits",
         "Pro Multi-Factor Authentication",
         "Role-based Access Control Per Organization",
         "10 Organizations",
         "Stream Auth0 Audit Logs to Datadog, Splunk, AWS, Azure, etc.",
-        "Separate Production & Development Environments"
+        "Separate Production & Development Environments",
+        "Standard Support"
       ]
     },
     {
@@ -53,11 +53,13 @@
       "is_enterprise": false,
       "headline_features": [
         "Up to 500 monthly active users",
-        "Everything in Essentials, plus...",
         "Use your existing User Database for Logins",
         "Enterprise Multi-Factor Authentication",
+        "Custom Token Exchange",
         "Enhanced Attack Protection",
-        "M2M Tokens"
+        "M2M Tokens",
+        "Everything in Essentials, plus...",
+        "Best for teams and projects that need added security"
       ]
     },
     {
@@ -69,17 +71,19 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Everything in Professional plus...",
         "Custom User & SSO Tiers",
         "99.99% SLA",
         "Enterprise Rate Limits",
         "Enterprise Administration & Support",
-        "Advanced Security Features"
+        "Advanced Security Features",
+        "Private Deployment",
+        "For enterprises that need to scale",
+        "Top-tier SLAs, advanced security, white-glove support"
       ]
     }
   ],
   "first_observed_at": "2026-01-07T07:29:47.000Z",
-  "last_observed_at": "2026-09-02T07:00:50.899Z",
+  "last_observed_at": "2026-09-04T07:00:56.783Z",
   "series": [
     {
       "tier": "Essentials",
@@ -111,6 +115,10 @@
           },
           {
             "observed_at": "2026-08-21T12:03:00.974Z",
+            "price": 35
+          },
+          {
+            "observed_at": "2026-09-04T07:00:56.783Z",
             "price": 35
           }
         ]
@@ -148,6 +156,10 @@
           {
             "observed_at": "2026-08-21T12:03:00.974Z",
             "price": 0
+          },
+          {
+            "observed_at": "2026-09-04T07:00:56.783Z",
+            "price": 0
           }
         ]
       ],
@@ -183,6 +195,10 @@
           },
           {
             "observed_at": "2026-08-21T12:03:00.974Z",
+            "price": 240
+          },
+          {
+            "observed_at": "2026-09-04T07:00:56.783Z",
             "price": 240
           }
         ]

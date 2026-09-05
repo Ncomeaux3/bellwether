@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "planetscale",
   "name": "PlanetScale",
   "homepage": "https://planetscale.com",
@@ -15,7 +15,8 @@
       "is_enterprise": false,
       "headline_features": [
         "Development and low-traffic production workloads",
-        "Single primary node"
+        "Single primary node",
+        "Starting at $5/month"
       ]
     },
     {
@@ -28,7 +29,8 @@
       "is_enterprise": false,
       "headline_features": [
         "1 primary + 2 replicas across 3 availability zones",
-        "99.99% SLA"
+        "99.99% SLA",
+        "High-availability clusters deployed across 3 availability zones"
       ]
     },
     {
@@ -40,13 +42,13 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Ultra-fast NVMe drives and unlimited IOPS",
         "High-performance local NVMe storage",
-        "Unlimited IOPS",
-        "Ultra-fast NVMe drives"
+        "Starting at $50/month"
       ]
     },
     {
-      "name": "Base Plan",
+      "name": "Vitess",
       "monthly_price_usd": null,
       "annual_price_usd": null,
       "billing_unit": "usage",
@@ -54,10 +56,23 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "Pay as you go pricing",
-        "Instance and VTGate sizes",
-        "Storage amount pricing",
-        "Add-ons available"
+        "MySQL-compatible with horizontal sharding",
+        "Runs on network-attached storage or PlanetScale Metal",
+        "Pricing based on cluster size, VTGate configuration, and storage"
+      ]
+    },
+    {
+      "name": "Base Plan",
+      "monthly_price_usd": null,
+      "annual_price_usd": null,
+      "billing_unit": "flat",
+      "included_seats": null,
+      "is_free": false,
+      "is_enterprise": false,
+      "headline_features": [
+        "Pay month to month",
+        "No contract or sales interaction required",
+        "Resource-based pricing with upsize and downsize options"
       ]
     },
     {
@@ -69,19 +84,17 @@
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Database expertise from core Vitess maintainers",
+        "Database expertise from Vitess maintainers",
         "Migration assistance with no downtime",
-        "Private shared Slack channel support",
-        "Multi-tenant, single-tenant, or BYOC deployment",
+        "Private shared Slack channel for fast communication",
+        "Bring your own cloud deployment option",
         "Business support included",
-        "Architecture consultation",
-        "Custom pricing",
-        "Additional regions available"
+        "Enterprise support with 15 minute P1 response time"
       ]
     }
   ],
   "first_observed_at": "2025-09-06T21:41:53.000Z",
-  "last_observed_at": "2026-09-02T07:02:23.841Z",
+  "last_observed_at": "2026-09-04T07:02:29.747Z",
   "series": [
     {
       "tier": "Base - PlanetScale PostgreSQL Metal",
@@ -138,6 +151,10 @@
           {
             "observed_at": "2026-08-23T07:03:03.471Z",
             "price": 50
+          },
+          {
+            "observed_at": "2026-09-04T07:02:29.747Z",
+            "price": 50
           }
         ]
       ],
@@ -149,6 +166,10 @@
         [
           {
             "observed_at": "2026-08-23T07:03:03.471Z",
+            "price": 5
+          },
+          {
+            "observed_at": "2026-09-04T07:02:29.747Z",
             "price": 5
           }
         ]
@@ -397,7 +418,7 @@
     }
   ],
   "provenance": {
-    "live": 5,
+    "live": 7,
     "wayback": 15,
     "mixed": 5
   }

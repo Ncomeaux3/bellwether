@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "competitors": [
     {
       "slug": "auth0",
@@ -46,13 +46,13 @@
                 "is_enterprise": false,
                 "headline_features": [
                   "Up to 500 monthly active users",
-                  "Everything in Free, plus...",
                   "Higher Auth, API limits, and Feature limits",
                   "Pro Multi-Factor Authentication",
                   "Role-based Access Control Per Organization",
                   "10 Organizations",
                   "Stream Auth0 Audit Logs to Datadog, Splunk, AWS, Azure, etc.",
-                  "Separate Production & Development Environments"
+                  "Separate Production & Development Environments",
+                  "Standard Support"
                 ]
               },
               {
@@ -65,11 +65,13 @@
                 "is_enterprise": false,
                 "headline_features": [
                   "Up to 500 monthly active users",
-                  "Everything in Essentials, plus...",
                   "Use your existing User Database for Logins",
                   "Enterprise Multi-Factor Authentication",
+                  "Custom Token Exchange",
                   "Enhanced Attack Protection",
-                  "M2M Tokens"
+                  "M2M Tokens",
+                  "Everything in Essentials, plus...",
+                  "Best for teams and projects that need added security"
                 ]
               },
               {
@@ -81,17 +83,19 @@
                 "is_free": false,
                 "is_enterprise": true,
                 "headline_features": [
-                  "Everything in Professional plus...",
                   "Custom User & SSO Tiers",
                   "99.99% SLA",
                   "Enterprise Rate Limits",
                   "Enterprise Administration & Support",
-                  "Advanced Security Features"
+                  "Advanced Security Features",
+                  "Private Deployment",
+                  "For enterprises that need to scale",
+                  "Top-tier SLAs, advanced security, white-glove support"
                 ]
               }
             ],
             "usage_rates": [],
-            "notes": "Free tier requires credit card verification for custom domains. Paid plans allow custom number of users from 1,000 up to 100,000 or more. Startup program provides 100K monthly external active users free for one year. Social Impact discounts available for nonprofits.",
+            "notes": "Page shows Monthly/Yearly toggle but only monthly prices are displayed. Annual pricing not visible on page. Free tier includes up to 25,000 monthly active users. Paid tiers show 'Custom Tiers Available' for external active users beyond stated limits. M2M Authentication included: 1,000 (Free), 1,000 (Essentials), 5,000 (Professional), 5,000 (Enterprise).",
             "extraction_confidence": "high"
           }
         }
@@ -218,8 +222,7 @@
                   "Up to 3 dashboard seats",
                   "Unlimited applications",
                   "50,000 MRU limit per app",
-                  "APIs and prebuilt UIs for sign-up, sign-in, and user profile",
-                  "Most authentication features"
+                  "APIs and prebuilt UIs for sign-up, sign-in, and user profile"
                 ]
               },
               {
@@ -235,7 +238,6 @@
                   "1 Enterprise connection included",
                   "Remove Clerk branding",
                   "Multi-factor authentication (MFA)",
-                  "Satellite domains",
                   "Custom session lifetime",
                   "7 day Application Logs retention"
                 ]
@@ -249,19 +251,18 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "Everything in Pro",
                   "10 dashboard seats included",
                   "SOC2 Report",
                   "Enhanced dashboard roles",
                   "Priority support",
-                  "30 day Application and Admin Logs retention"
+                  "30 day Application and Admin Logs"
                 ]
               },
               {
                 "name": "Enterprise",
                 "monthly_price_usd": null,
                 "annual_price_usd": null,
-                "billing_unit": "unknown",
+                "billing_unit": "flat",
                 "included_seats": null,
                 "is_free": false,
                 "is_enterprise": true,
@@ -270,110 +271,110 @@
                   "99.99% Uptime SLA",
                   "Enterprise SSO for workspace",
                   "Premium support SLA + dedicated slack channel",
-                  "Custom log retention",
+                  "Custom retention Application and Admin Logs",
                   "HIPAA compliance available with BAA"
                 ]
               }
             ],
             "usage_rates": [
               {
-                "metric": "MRU overage (50,001 - 100,000)",
+                "metric": "Monthly Retained Users (MRU) - 50,001 to 100,000",
                 "unit_price_usd": 0.02
               },
               {
-                "metric": "MRU overage (100,001 - 1,000,000)",
+                "metric": "Monthly Retained Users (MRU) - 100,001 to 1,000,000",
                 "unit_price_usd": 0.018
               },
               {
-                "metric": "MRU overage (1,000,001 - 10,000,000)",
+                "metric": "Monthly Retained Users (MRU) - 1,000,001 to 10,000,000",
                 "unit_price_usd": 0.015
               },
               {
-                "metric": "MRU overage (10,000,001+)",
+                "metric": "Monthly Retained Users (MRU) - 10,000,001+",
                 "unit_price_usd": 0.012
               },
               {
-                "metric": "Enterprise connections (2-15 per app)",
+                "metric": "Enterprise connections - 2 to 15 connections",
                 "unit_price_usd": 75
               },
               {
-                "metric": "Enterprise connections (16-100 per app)",
+                "metric": "Enterprise connections - 16 to 100 connections",
                 "unit_price_usd": 60
               },
               {
-                "metric": "Enterprise connections (101-500 per app)",
+                "metric": "Enterprise connections - 101 to 500 connections",
                 "unit_price_usd": 30
               },
               {
-                "metric": "Enterprise connections (500+ per app)",
+                "metric": "Enterprise connections - 500+ connections",
                 "unit_price_usd": 15
-              },
-              {
-                "metric": "Additional dashboard seats (Business)",
-                "unit_price_usd": 20
               },
               {
                 "metric": "Satellite domains",
                 "unit_price_usd": 10
               },
               {
-                "metric": "SMS",
+                "metric": "API Keys creations - 1,001+",
+                "unit_price_usd": 0.001
+              },
+              {
+                "metric": "API Keys verifications - 100,001+",
+                "unit_price_usd": 0.00001
+              },
+              {
+                "metric": "M2M Tokens creations - 2,501+",
+                "unit_price_usd": 0.001
+              },
+              {
+                "metric": "M2M Tokens verifications - 100,001+",
+                "unit_price_usd": 0.00001
+              },
+              {
+                "metric": "SMS codes - US and Canada",
                 "unit_price_usd": 0.01
               },
               {
-                "metric": "API Key creations overage (1001+)",
-                "unit_price_usd": 0.001
+                "metric": "Dashboard seats (Business plan) - Additional",
+                "unit_price_usd": 20
               },
               {
-                "metric": "API Key verifications overage (100001+)",
-                "unit_price_usd": 0.00001
-              },
-              {
-                "metric": "M2M Token creations overage (2501+)",
-                "unit_price_usd": 0.001
-              },
-              {
-                "metric": "M2M Token verifications overage (100001+)",
-                "unit_price_usd": 0.00001
-              },
-              {
-                "metric": "B2B Authentication add-on monthly",
+                "metric": "B2B Authentication add-on - Monthly",
                 "unit_price_usd": 100
               },
               {
-                "metric": "B2B Authentication add-on annual",
+                "metric": "B2B Authentication add-on - Annual",
                 "unit_price_usd": 85
               },
               {
-                "metric": "MRO overage (101 - 1,000)",
+                "metric": "Monthly Retained Organizations (MROs) - 101 to 1,000",
                 "unit_price_usd": 1
               },
               {
-                "metric": "MRO overage (1,001 - 10,000)",
+                "metric": "Monthly Retained Organizations (MROs) - 1,001 to 10,000",
                 "unit_price_usd": 0.9
               },
               {
-                "metric": "MRO overage (10,001 - 100,000)",
+                "metric": "Monthly Retained Organizations (MROs) - 10,001 to 100,000",
                 "unit_price_usd": 0.75
               },
               {
-                "metric": "MRO overage (100,001+)",
+                "metric": "Monthly Retained Organizations (MROs) - 100,001+",
                 "unit_price_usd": 0.6
               },
               {
-                "metric": "Administration add-on monthly",
+                "metric": "Administration add-on - Monthly",
                 "unit_price_usd": 100
               },
               {
-                "metric": "Administration add-on annual",
+                "metric": "Administration add-on - Annual",
                 "unit_price_usd": 85
               },
               {
-                "metric": "Clerk Billing",
+                "metric": "Clerk Billing - Commission",
                 "unit_price_usd": 0.007
               }
             ],
-            "notes": "Pro plan shows monthly price of $25/mo or annual price of $20/mo billed annually. Business plan shows monthly price of $300/mo or annual price of $250/mo billed annually. Enterprise is custom pricing, contact sales. MRU (Monthly Retained Users) is the billing metric - users counted as retained when they return 24+ hours after signing up. First 50,000 MRUs on Hobby tier are free. Additional users and organizations beyond free tier allowance billed monthly. One-month grace period provided when exceeding limits before upgrade required. B2B Authentication and Administration are add-ons available to all plans. Clerk Billing add-on available in all plans at 0.7% of billing volume.",
+            "notes": "All plans support unlimited applications. Hobby plan includes up to 3 dashboard seats, 50,000 MRU limit, and no credit card required. Pro plan is billed either monthly at $25/mo or annually at $20/mo. Business plan includes 10 dashboard seats and costs $300/mo or $250/mo billed annually. Enterprise plan requires contacting sales for pricing. B2B Authentication add-on costs $100/mo or $85/mo billed annually. Administration add-on costs $100/mo or $85/mo billed annually. SMS authentication available for Pro and Business plans at market rates (US/Canada $0.01 per SMS + International market rate). Billing add-on applies 0.7% of billing volume to all plans. One-month grace period given when exceeding free tier limits.",
             "extraction_confidence": "high"
           }
         }
@@ -425,16 +426,14 @@
                 "headline_features": [
                   "Unlimited users",
                   "Everything in developer, plus:",
-                  "Email support",
-                  "User RBAC",
-                  "macOS M2 Runners"
+                  "User RBAC"
                 ]
               },
               {
                 "name": "Business",
                 "monthly_price_usd": null,
                 "annual_price_usd": null,
-                "billing_unit": "flat",
+                "billing_unit": "unknown",
                 "included_seats": null,
                 "is_free": false,
                 "is_enterprise": true,
@@ -452,35 +451,35 @@
             ],
             "usage_rates": [
               {
-                "metric": "Depot CI per second per vCPU",
+                "metric": "Depot CI",
                 "unit_price_usd": 0.00005
               },
               {
-                "metric": "Cache storage per GB per month",
+                "metric": "Cache storage",
                 "unit_price_usd": 0.2
               },
               {
-                "metric": "GitHub Actions jobs per minute",
+                "metric": "GitHub Actions jobs",
                 "unit_price_usd": 0.006
               },
               {
-                "metric": "Agent sandboxes per minute",
+                "metric": "Agent sandboxes",
                 "unit_price_usd": 0.01
               },
               {
-                "metric": "Docker builds per minute",
+                "metric": "Docker builds",
                 "unit_price_usd": 0.04
               },
               {
-                "metric": "Registry storage per GB per month",
+                "metric": "Registry storage",
                 "unit_price_usd": 0.2
               },
               {
-                "metric": "Test results per passing test",
+                "metric": "Test results",
                 "unit_price_usd": 0.000001
               }
             ],
-            "notes": "Developer plan includes 500 Docker build minutes, 2,000 Depot CI minutes, 2,000 GitHub Actions minutes, 25 GB Cache and registry storage, and 1,000,000 passing test results. Startup plan includes 5,000 Docker build minutes, 20,000 Depot CI minutes, 20,000 GitHub Actions minutes, 250 GB Cache and registry storage, and 1,000,000 passing test results. Business plan pricing is custom. SSO (SAML & SCIM) is optional at $500/mo for Developer and Startup plans.",
+            "notes": "Usage rates are per second per vCPU for Depot CI, per GB per month for Cache storage and Registry storage, per minute for GitHub Actions jobs and Agent sandboxes, per minute for Docker builds, and per passing test for Test results. Depot CI minutes included with base plan can be used for any sandbox size.",
             "extraction_confidence": "high"
           }
         }
@@ -495,9 +494,9 @@
           "kind": "pricing",
           "url": "https://www.figma.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-03T07:00:42.706Z",
-          "last_ok_at": "2026-09-03T07:00:42.706Z",
-          "distinct_states": 30,
+          "last_checked_at": "2026-09-05T07:00:40.747Z",
+          "last_ok_at": "2026-09-05T07:00:40.747Z",
+          "distinct_states": 31,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -1047,9 +1046,9 @@
           "kind": "pricing",
           "url": "https://linear.app/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-03T07:00:18.058Z",
-          "last_ok_at": "2026-09-03T07:00:18.058Z",
-          "distinct_states": 30,
+          "last_checked_at": "2026-09-05T07:00:17.253Z",
+          "last_ok_at": "2026-09-05T07:00:17.253Z",
+          "distinct_states": 31,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -1364,9 +1363,9 @@
           "kind": "pricing",
           "url": "https://www.notion.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-03T07:00:30.388Z",
-          "last_ok_at": "2026-09-03T07:00:30.388Z",
-          "distinct_states": 30,
+          "last_checked_at": "2026-09-05T07:00:29.557Z",
+          "last_ok_at": "2026-09-05T07:00:29.557Z",
+          "distinct_states": 31,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -1674,7 +1673,8 @@
                 "is_enterprise": false,
                 "headline_features": [
                   "Development and low-traffic production workloads",
-                  "Single primary node"
+                  "Single primary node",
+                  "Starting at $5/month"
                 ]
               },
               {
@@ -1687,7 +1687,8 @@
                 "is_enterprise": false,
                 "headline_features": [
                   "1 primary + 2 replicas across 3 availability zones",
-                  "99.99% SLA"
+                  "99.99% SLA",
+                  "High-availability clusters deployed across 3 availability zones"
                 ]
               },
               {
@@ -1699,13 +1700,13 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
+                  "Ultra-fast NVMe drives and unlimited IOPS",
                   "High-performance local NVMe storage",
-                  "Unlimited IOPS",
-                  "Ultra-fast NVMe drives"
+                  "Starting at $50/month"
                 ]
               },
               {
-                "name": "Base Plan",
+                "name": "Vitess",
                 "monthly_price_usd": null,
                 "annual_price_usd": null,
                 "billing_unit": "usage",
@@ -1713,10 +1714,23 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "Pay as you go pricing",
-                  "Instance and VTGate sizes",
-                  "Storage amount pricing",
-                  "Add-ons available"
+                  "MySQL-compatible with horizontal sharding",
+                  "Runs on network-attached storage or PlanetScale Metal",
+                  "Pricing based on cluster size, VTGate configuration, and storage"
+                ]
+              },
+              {
+                "name": "Base Plan",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "flat",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": false,
+                "headline_features": [
+                  "Pay month to month",
+                  "No contract or sales interaction required",
+                  "Resource-based pricing with upsize and downsize options"
                 ]
               },
               {
@@ -1728,14 +1742,12 @@
                 "is_free": false,
                 "is_enterprise": true,
                 "headline_features": [
-                  "Database expertise from core Vitess maintainers",
+                  "Database expertise from Vitess maintainers",
                   "Migration assistance with no downtime",
-                  "Private shared Slack channel support",
-                  "Multi-tenant, single-tenant, or BYOC deployment",
+                  "Private shared Slack channel for fast communication",
+                  "Bring your own cloud deployment option",
                   "Business support included",
-                  "Architecture consultation",
-                  "Custom pricing",
-                  "Additional regions available"
+                  "Enterprise support with 15 minute P1 response time"
                 ]
               }
             ],
@@ -1745,8 +1757,8 @@
                 "unit_price_usd": 0.06
               }
             ],
-            "notes": "Pricing is resource-based and can be adjusted monthly. First 10 GB of storage is free for network-attached storage databases. Additional development branch hours, SSO, and upgraded support available as add-ons. PlanetScale Managed option available for Enterprise with billing through customer's own AWS/GCP account.",
-            "extraction_confidence": "high"
+            "notes": "Pricing is resource-based and determined by instance size, VTGate sizes, storage amount, and add-ons. First 10 GB storage is free for network-attached storage databases. 100 GB of egress bandwidth is included. Enterprise plan includes PlanetScale Managed option where infrastructure costs are billed by cloud provider and PlanetScale charges a percentage.",
+            "extraction_confidence": "medium"
           }
         }
       ]
@@ -2040,10 +2052,10 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "Shared deployment",
                   "250 MB-100 GB RAM & SSD, single DB",
                   "SAML SSO, RBAC, encryption in transit, encryption at rest",
-                  "Up to 99.99% uptime, basic support only"
+                  "Up to 99.99% uptime, basic support only",
+                  "Redis Flex at 10% RAM for lowest cost"
                 ]
               },
               {
@@ -2057,8 +2069,21 @@
                 "headline_features": [
                   "Dedicated cloud deployment",
                   "Unlimited RAM, multiple DBs",
-                  "Everything in Essentials, plus active-active (multi-region), auto-tiering, private connectivity",
+                  "Everything in Essentials, plus active-active (multi-region), private connectivity",
                   "Up to 99.999% uptime"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Multi-cloud & hybrid cloud / on-prem deployment",
+                  "Available with an annual plan"
                 ]
               }
             ],
@@ -2072,7 +2097,7 @@
                 "unit_price_usd": 0.014
               }
             ],
-            "notes": "Essentials stated as 'From $0.007/hour Total $5/month'. Pro has 'First $200 free' with minimum $200/month charge and 'From $0.014/hour'. Pricing is on-demand, usage-based.",
+            "notes": "Essentials tier shows 'From $0.007/hour' with a total of $5/month minimum. Pro tier shows 'From $0.014/hour' with a minimum $200/month. Pro tier offers first $200 free. Pricing is on-demand usage-based. Enterprise pricing requires contacting sales.",
             "extraction_confidence": "medium"
           }
         }
@@ -3137,14 +3162,10 @@
                 "is_free": true,
                 "is_enterprise": false,
                 "headline_features": [
-                  "1M Edge Requests / month included",
-                  "100 GB / month data transfer included",
-                  "1 GB Blob storage / month included",
-                  "5K Image Optimization transformations / month included",
-                  "4 hours Vercel Functions / month included",
-                  "1M Function Invocations / month included",
-                  "10 GB Fast Origin Transfer / month included",
-                  "500 Token Requests / month included"
+                  "1M Edge Requests/month",
+                  "100 GB Fast Data Transfer/month",
+                  "Zero-config CDN cache",
+                  "1M ISR Reads/month"
                 ]
               },
               {
@@ -3156,33 +3177,25 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "10M Edge Requests / month included",
-                  "1TB data transfer / month included",
-                  "Up to 40 Firewall Rules",
-                  "200k ISR Writes / month included",
-                  "360 GB-hrs Provisioned Memory / month included",
-                  "12 environments",
-                  "12 Developer seats available",
-                  "Unlimited Viewer seats"
+                  "10M Edge Requests/month",
+                  "1TB Fast Data Transfer/month",
+                  "Up to 40 Custom Firewall Rules",
+                  "Starting at $0.40 per 1M ISR Reads"
                 ]
               },
               {
                 "name": "Enterprise",
                 "monthly_price_usd": null,
                 "annual_price_usd": null,
-                "billing_unit": "flat",
+                "billing_unit": "unknown",
                 "included_seats": null,
                 "is_free": false,
                 "is_enterprise": true,
                 "headline_features": [
-                  "Custom Edge Requests pricing",
-                  "Custom data transfer pricing",
-                  "Up to 1,000 Firewall Rules",
-                  "Custom ISR pricing",
-                  "Custom Compute pricing",
-                  "Custom environments",
-                  "Advanced security features",
-                  "Custom compliance and support"
+                  "Custom Edge Requests",
+                  "Custom Data Transfer",
+                  "Up to 1,000 Custom Firewall Rules",
+                  "Custom pricing available"
                 ]
               }
             ],
@@ -3192,8 +3205,16 @@
                 "unit_price_usd": 2
               },
               {
-                "metric": "Data Transfer",
+                "metric": "Fast Data Transfer",
                 "unit_price_usd": 0.15
+              },
+              {
+                "metric": "Firewall Rate Limit Requests",
+                "unit_price_usd": 0.5
+              },
+              {
+                "metric": "Bot Management Deep Analysis checks",
+                "unit_price_usd": 1
               },
               {
                 "metric": "ISR Reads",
@@ -3204,43 +3225,43 @@
                 "unit_price_usd": 4
               },
               {
-                "metric": "Bulk Redirects",
+                "metric": "Bulk Redirects per 25K",
                 "unit_price_usd": 50
               },
               {
-                "metric": "Blob Storage Size",
+                "metric": "Blob Storage Size per GB",
                 "unit_price_usd": 0.023
               },
               {
-                "metric": "Blob Simple Operations",
+                "metric": "Blob Simple Operations per 1M",
                 "unit_price_usd": 0.4
               },
               {
-                "metric": "Blob Advanced Operations",
+                "metric": "Blob Advanced Operations per 1M",
                 "unit_price_usd": 5
               },
               {
-                "metric": "Blob Data Transfer",
+                "metric": "Blob Data Transfer per GB",
                 "unit_price_usd": 0.05
               },
               {
-                "metric": "Image Optimization Transformation",
+                "metric": "Image Optimization Transformation per 1K",
                 "unit_price_usd": 0.05
               },
               {
-                "metric": "Image Optimization Cache Reads",
+                "metric": "Image Optimization Cache Reads per 1M",
                 "unit_price_usd": 0.4
               },
               {
-                "metric": "Image Optimization Cache Writes",
+                "metric": "Image Optimization Cache Writes per 1M",
                 "unit_price_usd": 4
               },
               {
-                "metric": "Global Config Reads",
+                "metric": "Global Config Reads per 1M",
                 "unit_price_usd": 3
               },
               {
-                "metric": "Global Config Writes",
+                "metric": "Global Config Writes per 100",
                 "unit_price_usd": 1
               },
               {
@@ -3248,91 +3269,99 @@
                 "unit_price_usd": 250
               },
               {
-                "metric": "Microfrontends Routing",
+                "metric": "Microfrontends Routing per 1M",
                 "unit_price_usd": 2
               },
               {
-                "metric": "Fluid Active CPU",
+                "metric": "Fluid Active CPU per hour",
                 "unit_price_usd": 0.128
               },
               {
-                "metric": "Fluid Provisioned Memory",
+                "metric": "Fluid Provisioned Memory per GB-hr",
                 "unit_price_usd": 0.0106
               },
               {
-                "metric": "Function Invocations",
+                "metric": "Function Invocations per 1M",
                 "unit_price_usd": 0.6
               },
               {
-                "metric": "Service Requests",
+                "metric": "Service Requests per 1M",
                 "unit_price_usd": 0.5
               },
               {
-                "metric": "Sandbox Active CPU",
+                "metric": "Sandbox Active CPU per hour",
                 "unit_price_usd": 0.128
               },
               {
-                "metric": "Sandbox Provisioned Memory",
+                "metric": "Sandbox Provisioned Memory per GB-hr",
                 "unit_price_usd": 0.0212
               },
               {
-                "metric": "Sandbox Creations",
+                "metric": "Sandbox Creations per 1M",
                 "unit_price_usd": 0.6
               },
               {
-                "metric": "Sandbox Data Transfer",
+                "metric": "Sandbox Data Transfer per GB",
                 "unit_price_usd": 0.15
               },
               {
-                "metric": "Container Registry Image Storage",
+                "metric": "Snapshot Storage per GB-month",
+                "unit_price_usd": 0.08
+              },
+              {
+                "metric": "Container Registry Image Storage per GB-month",
                 "unit_price_usd": 0.1
               },
               {
-                "metric": "Fast Origin Transfer",
+                "metric": "Fast Origin Transfer per GB",
                 "unit_price_usd": 0.06
               },
               {
-                "metric": "Workflow Events",
+                "metric": "Workflow Events per 1M",
                 "unit_price_usd": 20
               },
               {
-                "metric": "Workflow Storage Writes",
+                "metric": "Workflow Storage Writes per GB",
                 "unit_price_usd": 0.5
               },
               {
-                "metric": "Workflow Storage Retention",
+                "metric": "Workflow Storage Retention per GB-month",
                 "unit_price_usd": 0.5
               },
               {
-                "metric": "Queue API Operations",
+                "metric": "Queue API Operations per 1M",
                 "unit_price_usd": 0.6
               },
               {
-                "metric": "Vercel Agent",
+                "metric": "Vercel Agent per million tokens",
                 "unit_price_usd": 0.25
               },
               {
-                "metric": "Token Requests",
+                "metric": "AI Token Requests per 1,000",
                 "unit_price_usd": 3
               },
               {
-                "metric": "Triggers",
+                "metric": "AI Triggers per 1,000",
                 "unit_price_usd": 0.95
               },
               {
-                "metric": "Build minutes - Standard machines",
+                "metric": "Build minutes Basic machines per minute",
+                "unit_price_usd": 0.007
+              },
+              {
+                "metric": "Build minutes Standard machines per minute",
                 "unit_price_usd": 0.014
               },
               {
-                "metric": "Build minutes - Enhanced machines",
+                "metric": "Build minutes Enhanced machines per minute",
                 "unit_price_usd": 0.028
               },
               {
-                "metric": "Build minutes - Turbo machines",
+                "metric": "Build minutes Turbo machines per minute",
                 "unit_price_usd": 0.105
               },
               {
-                "metric": "Build minutes - Elastic machines",
+                "metric": "Build minutes Elastic machines per CPU minute",
                 "unit_price_usd": 0.0035
               },
               {
@@ -3340,59 +3369,59 @@
                 "unit_price_usd": 100
               },
               {
-                "metric": "Developer seat",
+                "metric": "Developer seat per month",
                 "unit_price_usd": 20
               },
               {
-                "metric": "Flags Explorer overrides",
-                "unit_price_usd": 250
-              },
-              {
-                "metric": "Flag Requests",
+                "metric": "Flag Requests per 1K",
                 "unit_price_usd": 0.03
               },
               {
-                "metric": "Observability Events",
+                "metric": "Observability Events per 1M",
                 "unit_price_usd": 1.2
               },
               {
-                "metric": "Speed Insights Plus Events",
+                "metric": "Speed Insights Plus Events per 10K",
                 "unit_price_usd": 0.65
               },
               {
-                "metric": "Web Analytics Events",
-                "unit_price_usd": 3
-              },
-              {
-                "metric": "Web Analytics Plus",
+                "metric": "Speed Insights Plus per project per month",
                 "unit_price_usd": 10
               },
               {
-                "metric": "Drains Volume",
+                "metric": "Web Analytics Events per 100K",
+                "unit_price_usd": 3
+              },
+              {
+                "metric": "Web Analytics Plus per month",
+                "unit_price_usd": 10
+              },
+              {
+                "metric": "Drains Volume per GB",
                 "unit_price_usd": 0.5
               },
               {
-                "metric": "SAML Single Sign-On",
+                "metric": "SAML Single Sign-On per month",
                 "unit_price_usd": 300
               },
               {
-                "metric": "Advanced Deployment Protection",
+                "metric": "Advanced Deployment Protection per month",
                 "unit_price_usd": 150
               },
               {
-                "metric": "Static IPs shared pool",
+                "metric": "Static IPs (shared pool) per project per month",
                 "unit_price_usd": 100
               },
               {
-                "metric": "Secure Compute",
+                "metric": "Static IPs (shared pool) per GB",
                 "unit_price_usd": 0.15
               },
               {
-                "metric": "HIPAA BAA",
+                "metric": "HIPAA BAA per month",
                 "unit_price_usd": 350
               }
             ],
-            "notes": "Vercel uses a consumption-based model with various included allowances. Pro tier includes 1 developer seat at $20/month; additional developer seats are $20/month each. Viewer and Billing seats have different pricing. Most usage metrics start at stated per-unit prices after monthly includes are consumed. Enterprise tier requires custom pricing negotiation.",
+            "notes": "Vercel offers usage-based pricing across multiple product categories. Pro plan includes 1 developer seat at $20/month. Enterprise plan requires contact for custom pricing. Many features have included monthly allowances with overage charges. Regional pricing available for certain services.",
             "extraction_confidence": "high"
           }
         }

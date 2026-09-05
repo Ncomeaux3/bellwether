@@ -1,32 +1,32 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "filter": {
-    "total_snapshots": 787,
-    "extractions_performed": 232,
-    "llm_calls_avoided": 513,
-    "llm_calls_avoided_pct": 65.2,
+    "total_snapshots": 790,
+    "extractions_performed": 237,
+    "llm_calls_avoided": 511,
+    "llm_calls_avoided_pct": 64.7,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
         "eliminated": 222,
-        "remaining": 565,
+        "remaining": 568,
         "note": "Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined."
       },
       {
         "name": "Repeat page state, already extracted",
-        "eliminated": 267,
-        "remaining": 298,
+        "eliminated": 284,
+        "remaining": 284,
         "note": "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call."
       },
       {
         "name": "Short-circuited before any request",
-        "eliminated": 24,
-        "remaining": 274,
+        "eliminated": 5,
+        "remaining": 279,
         "note": "Refused before a request was sent (token budget exceeded, or no extractable text), or not yet due for extraction — zero spend either way."
       },
       {
         "name": "Called and succeeded",
-        "eliminated": 232,
+        "eliminated": 237,
         "remaining": 42,
         "note": "A real model call ran and its answer was recorded — the archive's actual, billed extractions."
       },
@@ -40,9 +40,9 @@
   },
   "coverage": {
     "first_observed_at": "2025-02-19T03:41:25.000Z",
-    "last_observed_at": "2026-09-04T07:05:28.132Z",
+    "last_observed_at": "2026-09-05T07:00:40.747Z",
     "months_covered": 20,
-    "live_snapshots": 228,
+    "live_snapshots": 231,
     "backfilled_snapshots": 559
   },
   "health": {
@@ -84,7 +84,7 @@
         "kind": "pricing",
         "url": "https://www.figma.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-03T07:00:42.706Z",
+        "last_ok_at": "2026-09-05T07:00:40.747Z",
         "degraded_reason": null
       },
       {
@@ -132,7 +132,7 @@
         "kind": "pricing",
         "url": "https://linear.app/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-03T07:00:18.058Z",
+        "last_ok_at": "2026-09-05T07:00:17.253Z",
         "degraded_reason": null
       },
       {
@@ -156,7 +156,7 @@
         "kind": "pricing",
         "url": "https://www.notion.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-03T07:00:30.388Z",
+        "last_ok_at": "2026-09-05T07:00:29.557Z",
         "degraded_reason": null
       },
       {
@@ -273,50 +273,50 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-09-03T07:30:03.171Z"
+        "ended_at": "2026-09-04T07:30:03.395Z"
       },
       {
         "kind": "collect",
         "state": "ok",
-        "ended_at": "2026-09-04T07:05:28.141Z"
+        "ended_at": "2026-09-05T07:00:40.775Z"
       },
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-09-04T07:15:38.346Z"
+        "ended_at": "2026-09-05T07:01:52.764Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-09-04T07:05:28.967Z"
+        "ended_at": "2026-09-05T07:00:41.825Z"
       },
       {
         "kind": "extract",
         "state": "ok",
-        "ended_at": "2026-09-04T07:15:37.994Z"
+        "ended_at": "2026-09-05T07:01:52.466Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-09-03T07:00:13.673Z"
+        "ended_at": "2026-09-04T07:15:42.836Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-09-03T07:30:11.605Z"
+        "ended_at": "2026-09-04T07:30:16.025Z"
       },
       {
         "kind": "synthesize",
         "state": "ok",
-        "ended_at": "2026-09-04T07:15:38.362Z"
+        "ended_at": "2026-09-05T07:01:52.780Z"
       }
     ]
   },
   "cost": {
-    "cumulative_micros": 2187148,
-    "month_micros": 201538,
+    "cumulative_micros": 2230847,
+    "month_micros": 245237,
     "backfill_micros": 1681471,
-    "per_confirmed_change_micros": 7148
+    "per_confirmed_change_micros": 7290
   },
   "screening": {
     "total_screened": 51,

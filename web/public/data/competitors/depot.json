@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "depot",
   "name": "Depot",
   "homepage": "https://depot.dev",
@@ -35,16 +35,14 @@
       "headline_features": [
         "Unlimited users",
         "Everything in developer, plus:",
-        "Email support",
-        "User RBAC",
-        "macOS M2 Runners"
+        "User RBAC"
       ]
     },
     {
       "name": "Business",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
@@ -61,7 +59,7 @@
     }
   ],
   "first_observed_at": "2025-09-10T17:00:16.000Z",
-  "last_observed_at": "2026-09-02T07:01:38.536Z",
+  "last_observed_at": "2026-09-04T07:01:42.263Z",
   "series": [
     {
       "tier": "Developer",
@@ -99,6 +97,10 @@
           },
           {
             "observed_at": "2026-09-02T07:01:38.536Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-09-04T07:01:42.263Z",
             "price": 20
           }
         ]
@@ -141,6 +143,10 @@
           },
           {
             "observed_at": "2026-09-02T07:01:38.536Z",
+            "price": 200
+          },
+          {
+            "observed_at": "2026-09-04T07:01:42.263Z",
             "price": 200
           }
         ]

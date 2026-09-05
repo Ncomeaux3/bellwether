@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "vercel",
   "name": "Vercel",
   "homepage": "https://vercel.com",
@@ -14,14 +14,10 @@
       "is_free": true,
       "is_enterprise": false,
       "headline_features": [
-        "1M Edge Requests / month included",
-        "100 GB / month data transfer included",
-        "1 GB Blob storage / month included",
-        "5K Image Optimization transformations / month included",
-        "4 hours Vercel Functions / month included",
-        "1M Function Invocations / month included",
-        "10 GB Fast Origin Transfer / month included",
-        "500 Token Requests / month included"
+        "1M Edge Requests/month",
+        "100 GB Fast Data Transfer/month",
+        "Zero-config CDN cache",
+        "1M ISR Reads/month"
       ]
     },
     {
@@ -33,38 +29,30 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
-        "10M Edge Requests / month included",
-        "1TB data transfer / month included",
-        "Up to 40 Firewall Rules",
-        "200k ISR Writes / month included",
-        "360 GB-hrs Provisioned Memory / month included",
-        "12 environments",
-        "12 Developer seats available",
-        "Unlimited Viewer seats"
+        "10M Edge Requests/month",
+        "1TB Fast Data Transfer/month",
+        "Up to 40 Custom Firewall Rules",
+        "Starting at $0.40 per 1M ISR Reads"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "flat",
+      "billing_unit": "unknown",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
-        "Custom Edge Requests pricing",
-        "Custom data transfer pricing",
-        "Up to 1,000 Firewall Rules",
-        "Custom ISR pricing",
-        "Custom Compute pricing",
-        "Custom environments",
-        "Advanced security features",
-        "Custom compliance and support"
+        "Custom Edge Requests",
+        "Custom Data Transfer",
+        "Up to 1,000 Custom Firewall Rules",
+        "Custom pricing available"
       ]
     }
   ],
   "first_observed_at": "2026-07-03T12:03:39.000Z",
-  "last_observed_at": "2026-09-02T07:04:48.968Z",
+  "last_observed_at": "2026-09-04T07:04:52.986Z",
   "series": [
     {
       "tier": "Hobby",
@@ -88,6 +76,10 @@
           },
           {
             "observed_at": "2026-08-27T07:05:25.839Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-09-04T07:04:52.986Z",
             "price": 0
           }
         ]
@@ -116,6 +108,10 @@
           },
           {
             "observed_at": "2026-08-27T07:05:25.839Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-09-04T07:04:52.986Z",
             "price": 20
           }
         ]

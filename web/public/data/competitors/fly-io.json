@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-04T07:15:38.362Z",
+  "generated_at": "2026-09-05T07:01:52.781Z",
   "slug": "fly-io",
   "name": "Fly.io",
   "homepage": "https://fly.io",
@@ -70,7 +70,7 @@
     }
   ],
   "first_observed_at": "2025-08-28T15:30:44.000Z",
-  "last_observed_at": "2026-09-02T07:04:12.029Z",
+  "last_observed_at": "2026-09-04T07:04:18.329Z",
   "series": [
     {
       "tier": "Compliance",
