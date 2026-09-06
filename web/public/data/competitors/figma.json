@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T07:01:52.781Z",
+  "generated_at": "2026-09-06T07:00:42.153Z",
   "slug": "figma",
   "name": "Figma",
   "homepage": "https://www.figma.com",
@@ -33,9 +33,9 @@
         "Collab seat $3/mo + 500 AI credits/mo",
         "Unlimited files and projects for a single team",
         "Advanced prototyping tools",
+        "Easier dev handoff",
         "Publish resources across teams",
-        "Team-wide design libraries",
-        "Advanced Dev Mode inspection and MCP Server"
+        "Team-wide design libraries"
       ]
     },
     {
@@ -50,7 +50,7 @@
         "Full seat $55/mo + 3,500 AI credits/mo",
         "Dev seat $25/mo + 500 AI credits/mo",
         "Collab seat $5/mo + 500 AI credits/mo",
-        "Unlimited teams",
+        "Publish resources across teams",
         "Shared libraries and fonts",
         "Centralized admin tools"
       ]
@@ -74,7 +74,7 @@
     }
   ],
   "first_observed_at": "2025-08-23T16:00:35.000Z",
-  "last_observed_at": "2026-09-03T07:00:42.706Z",
+  "last_observed_at": "2026-09-05T07:00:40.747Z",
   "series": [
     {
       "tier": "Enterprise",
@@ -92,6 +92,10 @@
           },
           {
             "observed_at": "2026-09-03T07:00:42.706Z",
+            "price": 90
+          },
+          {
+            "observed_at": "2026-09-05T07:00:40.747Z",
             "price": 90
           }
         ]
@@ -115,6 +119,10 @@
           {
             "observed_at": "2026-09-03T07:00:42.706Z",
             "price": 55
+          },
+          {
+            "observed_at": "2026-09-05T07:00:40.747Z",
+            "price": 55
           }
         ]
       ],
@@ -136,6 +144,10 @@
           },
           {
             "observed_at": "2026-09-03T07:00:42.706Z",
+            "price": 16
+          },
+          {
+            "observed_at": "2026-09-05T07:00:40.747Z",
             "price": 16
           }
         ]
@@ -164,6 +176,10 @@
           },
           {
             "observed_at": "2026-09-03T07:00:42.706Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-09-05T07:00:40.747Z",
             "price": 0
           }
         ]

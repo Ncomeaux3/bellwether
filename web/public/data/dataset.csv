@@ -37,10 +37,10 @@ Depot,Business,2025-09-10T17:00:16.000Z,2026-09-04T07:01:42.263Z,,,flat,,false,t
 Figma,Professional,2025-08-23T16:00:35.000Z,2025-08-23T16:00:35.000Z,,,per_seat,,false,false,USD,wayback
 Figma,Organization,2025-08-23T16:00:35.000Z,2025-08-23T16:00:35.000Z,,,per_seat,,false,false,USD,wayback
 Figma,Enterprise,2025-08-23T16:00:35.000Z,2025-08-23T16:00:35.000Z,,,per_seat,,false,true,USD,wayback
-Figma,Starter,2025-08-23T16:00:35.000Z,2026-09-03T07:00:42.706Z,0,0,flat,,true,false,USD,mixed
-Figma,Professional,2026-04-09T02:32:27.000Z,2026-09-03T07:00:42.706Z,16,,per_seat,,false,false,USD,mixed
-Figma,Organization,2026-04-09T02:32:27.000Z,2026-09-03T07:00:42.706Z,55,,per_seat,,false,false,USD,mixed
-Figma,Enterprise,2026-04-09T02:32:27.000Z,2026-09-03T07:00:42.706Z,90,,per_seat,,false,true,USD,mixed
+Figma,Starter,2025-08-23T16:00:35.000Z,2026-09-05T07:00:40.747Z,0,0,flat,,true,false,USD,mixed
+Figma,Professional,2026-04-09T02:32:27.000Z,2026-09-05T07:00:40.747Z,16,,per_seat,,false,false,USD,mixed
+Figma,Organization,2026-04-09T02:32:27.000Z,2026-09-05T07:00:40.747Z,55,,per_seat,,false,false,USD,mixed
+Figma,Enterprise,2026-04-09T02:32:27.000Z,2026-09-05T07:00:40.747Z,90,,per_seat,,false,true,USD,mixed
 Fly.io,Compliance Made Easy,2025-08-28T15:30:44.000Z,2026-05-03T00:29:34.000Z,99,,flat,,false,false,USD,wayback
 Fly.io,Pay-as-You-Go,2025-08-28T15:30:44.000Z,2026-09-04T07:04:18.329Z,,,usage,,false,false,USD,mixed
 Fly.io,Serious Support,2025-08-28T15:30:44.000Z,2026-09-04T07:04:18.329Z,29,,flat,,false,false,USD,mixed
@@ -86,10 +86,10 @@ Honeycomb,Enterprise,2026-08-12T02:33:08.000Z,2026-09-04T07:05:05.889Z,,,flat,,f
 Honeycomb,Pro,2026-07-21T06:43:10.000Z,2026-09-04T07:05:05.889Z,150,,flat,,false,false,USD,mixed
 Linear,Basic,2025-02-19T07:53:31.000Z,2025-10-07T14:24:18.000Z,8,,per_seat,,false,false,USD,wayback
 Linear,Business,2025-02-19T07:53:31.000Z,2025-10-07T14:24:18.000Z,14,,per_seat,,false,false,USD,wayback
-Linear,Free,2025-02-19T07:53:31.000Z,2026-09-03T07:00:18.058Z,0,0,flat,,true,false,USD,mixed
-Linear,Basic,2025-11-12T01:16:11.000Z,2026-09-03T07:00:18.058Z,10,10,per_seat,,false,false,USD,mixed
-Linear,Business,2025-11-12T01:16:11.000Z,2026-09-03T07:00:18.058Z,16,16,per_seat,,false,false,USD,mixed
-Linear,Enterprise,2025-02-19T07:53:31.000Z,2026-09-03T07:00:18.058Z,,,unknown,,false,true,USD,mixed
+Linear,Free,2025-02-19T07:53:31.000Z,2026-09-05T07:00:17.253Z,0,0,flat,,true,false,USD,mixed
+Linear,Basic,2025-11-12T01:16:11.000Z,2026-09-05T07:00:17.253Z,10,10,per_seat,,false,false,USD,mixed
+Linear,Business,2025-11-12T01:16:11.000Z,2026-09-05T07:00:17.253Z,16,16,per_seat,,false,false,USD,mixed
+Linear,Enterprise,2025-02-19T07:53:31.000Z,2026-09-05T07:00:17.253Z,,,unknown,,false,true,USD,mixed
 Netlify,Pro,2025-08-26T21:29:12.000Z,2025-08-26T21:29:12.000Z,19,,per_seat,,false,false,USD,wayback
 Netlify,Free & Starter,2025-08-26T21:29:12.000Z,2025-08-26T21:29:12.000Z,0,,flat,1,true,false,USD,wayback
 Netlify,Pro,2025-09-06T15:02:44.000Z,2025-09-06T15:02:44.000Z,20,,per_seat,,false,false,USD,wayback
@@ -118,10 +118,10 @@ Notion,Notion AI,2025-02-19T07:54:17.000Z,2025-03-02T21:53:58.000Z,10,8,per_seat
 Notion,Business,2025-02-19T07:54:17.000Z,2025-05-04T06:15:55.000Z,15,,per_seat,,false,false,USD,wayback
 Notion,Free,2025-02-19T07:54:17.000Z,2025-07-01T13:46:53.000Z,0,0,flat,,true,false,USD,wayback
 Notion,Notion AI,2025-05-04T06:15:55.000Z,2025-07-01T13:46:53.000Z,10,8,per_seat,,false,false,USD,wayback
-Notion,Free,2025-08-23T14:52:36.000Z,2026-09-03T07:00:30.388Z,0,0,per_seat,,true,false,USD,mixed
-Notion,Plus,2025-02-19T07:54:17.000Z,2026-09-03T07:00:30.388Z,10,,per_seat,,false,false,USD,mixed
-Notion,Business,2025-06-03T01:07:05.000Z,2026-09-03T07:00:30.388Z,20,,per_seat,,false,false,USD,mixed
-Notion,Enterprise,2025-02-19T07:54:17.000Z,2026-09-03T07:00:30.388Z,,,unknown,,false,true,USD,mixed
+Notion,Free,2025-08-23T14:52:36.000Z,2026-09-05T07:00:29.557Z,0,0,per_seat,,true,false,USD,mixed
+Notion,Plus,2025-02-19T07:54:17.000Z,2026-09-05T07:00:29.557Z,10,,per_seat,,false,false,USD,mixed
+Notion,Business,2025-06-03T01:07:05.000Z,2026-09-05T07:00:29.557Z,20,,per_seat,,false,false,USD,mixed
+Notion,Enterprise,2025-02-19T07:54:17.000Z,2026-09-05T07:00:29.557Z,,,unknown,,false,true,USD,mixed
 Pinecone,Starter,2026-06-03T23:31:52.000Z,2026-09-04T07:05:28.132Z,0,,flat,,true,false,USD,mixed
 Pinecone,Builder,2026-06-03T23:31:52.000Z,2026-09-04T07:05:28.132Z,20,,flat,,false,false,USD,mixed
 Pinecone,Standard,2026-06-03T23:31:52.000Z,2026-09-04T07:05:28.132Z,50,,usage,,false,false,USD,mixed

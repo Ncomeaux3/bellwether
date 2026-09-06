@@ -1,32 +1,32 @@
 {
-  "generated_at": "2026-09-05T07:01:52.781Z",
+  "generated_at": "2026-09-06T07:00:42.153Z",
   "filter": {
-    "total_snapshots": 790,
-    "extractions_performed": 237,
-    "llm_calls_avoided": 511,
-    "llm_calls_avoided_pct": 64.7,
+    "total_snapshots": 793,
+    "extractions_performed": 239,
+    "llm_calls_avoided": 512,
+    "llm_calls_avoided_pct": 64.6,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
         "eliminated": 222,
-        "remaining": 568,
+        "remaining": 571,
         "note": "Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined."
       },
       {
         "name": "Repeat page state, already extracted",
-        "eliminated": 284,
-        "remaining": 284,
+        "eliminated": 285,
+        "remaining": 286,
         "note": "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call."
       },
       {
         "name": "Short-circuited before any request",
         "eliminated": 5,
-        "remaining": 279,
+        "remaining": 281,
         "note": "Refused before a request was sent (token budget exceeded, or no extractable text), or not yet due for extraction — zero spend either way."
       },
       {
         "name": "Called and succeeded",
-        "eliminated": 237,
+        "eliminated": 239,
         "remaining": 42,
         "note": "A real model call ran and its answer was recorded — the archive's actual, billed extractions."
       },
@@ -40,9 +40,9 @@
   },
   "coverage": {
     "first_observed_at": "2025-02-19T03:41:25.000Z",
-    "last_observed_at": "2026-09-05T07:00:40.747Z",
+    "last_observed_at": "2026-09-06T07:00:39.344Z",
     "months_covered": 20,
-    "live_snapshots": 231,
+    "live_snapshots": 234,
     "backfilled_snapshots": 559
   },
   "health": {
@@ -180,7 +180,7 @@
         "kind": "pricing",
         "url": "https://www.postman.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-04T07:00:45.417Z",
+        "last_ok_at": "2026-09-06T07:00:39.344Z",
         "degraded_reason": null
       },
       {
@@ -220,7 +220,7 @@
         "kind": "pricing",
         "url": "https://sentry.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-04T07:00:33.394Z",
+        "last_ok_at": "2026-09-06T07:00:28.640Z",
         "degraded_reason": null
       },
       {
@@ -236,7 +236,7 @@
         "kind": "pricing",
         "url": "https://supabase.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-04T07:00:17.893Z",
+        "last_ok_at": "2026-09-06T07:00:16.249Z",
         "degraded_reason": null
       },
       {
@@ -273,7 +273,7 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-09-04T07:30:03.395Z"
+        "ended_at": "2026-09-05T07:30:03.311Z"
       },
       {
         "kind": "collect",
@@ -283,40 +283,40 @@
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-09-05T07:01:52.764Z"
+        "ended_at": "2026-09-06T07:00:42.137Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-09-05T07:00:41.825Z"
+        "ended_at": "2026-09-05T07:01:53.428Z"
       },
       {
         "kind": "extract",
         "state": "ok",
-        "ended_at": "2026-09-05T07:01:52.466Z"
+        "ended_at": "2026-09-06T07:00:41.834Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-09-04T07:15:42.836Z"
+        "ended_at": "2026-09-05T07:01:56.784Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-09-04T07:30:16.025Z"
+        "ended_at": "2026-09-05T07:30:12.347Z"
       },
       {
         "kind": "synthesize",
         "state": "ok",
-        "ended_at": "2026-09-05T07:01:52.780Z"
+        "ended_at": "2026-09-06T07:00:42.153Z"
       }
     ]
   },
   "cost": {
-    "cumulative_micros": 2230847,
-    "month_micros": 245237,
+    "cumulative_micros": 2243579,
+    "month_micros": 257969,
     "backfill_micros": 1681471,
-    "per_confirmed_change_micros": 7290
+    "per_confirmed_change_micros": 7332
   },
   "screening": {
     "total_screened": 51,

@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-09-05T07:01:52.781Z",
-  "observation_count": 239,
+  "generated_at": "2026-09-06T07:00:42.153Z",
+  "observation_count": 241,
   "competitors": [
     {
       "slug": "auth0",
@@ -686,7 +686,7 @@
       "slug": "figma",
       "name": "Figma",
       "first_observed_at": "2025-08-23T16:00:35.000Z",
-      "last_observed_at": "2026-09-03T07:00:42.706Z",
+      "last_observed_at": "2026-09-05T07:00:40.747Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -704,6 +704,10 @@
               },
               {
                 "observed_at": "2026-09-03T07:00:42.706Z",
+                "price": 90
+              },
+              {
+                "observed_at": "2026-09-05T07:00:40.747Z",
                 "price": 90
               }
             ]
@@ -727,6 +731,10 @@
               {
                 "observed_at": "2026-09-03T07:00:42.706Z",
                 "price": 55
+              },
+              {
+                "observed_at": "2026-09-05T07:00:40.747Z",
+                "price": 55
               }
             ]
           ],
@@ -748,6 +756,10 @@
               },
               {
                 "observed_at": "2026-09-03T07:00:42.706Z",
+                "price": 16
+              },
+              {
+                "observed_at": "2026-09-05T07:00:40.747Z",
                 "price": 16
               }
             ]
@@ -776,6 +788,10 @@
               },
               {
                 "observed_at": "2026-09-03T07:00:42.706Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-09-05T07:00:40.747Z",
                 "price": 0
               }
             ]
@@ -1401,7 +1417,7 @@
       "slug": "linear",
       "name": "Linear",
       "first_observed_at": "2025-02-19T07:53:31.000Z",
-      "last_observed_at": "2026-09-03T07:00:18.058Z",
+      "last_observed_at": "2026-09-05T07:00:17.253Z",
       "series": [
         {
           "tier": "Basic",
@@ -1977,7 +1993,7 @@
       "slug": "notion",
       "name": "Notion",
       "first_observed_at": "2025-02-19T07:54:17.000Z",
-      "last_observed_at": "2026-09-03T07:00:30.388Z",
+      "last_observed_at": "2026-09-05T07:00:29.557Z",
       "series": [
         {
           "tier": "Business",
@@ -2041,6 +2057,10 @@
             [
               {
                 "observed_at": "2026-08-18T15:01:03.831Z",
+                "price": 20
+              },
+              {
+                "observed_at": "2026-09-05T07:00:29.557Z",
                 "price": 20
               }
             ]
@@ -2109,6 +2129,10 @@
             [
               {
                 "observed_at": "2026-08-18T15:01:03.831Z",
+                "price": 0
+              },
+              {
+                "observed_at": "2026-09-05T07:00:29.557Z",
                 "price": 0
               }
             ]
@@ -2207,6 +2231,10 @@
             [
               {
                 "observed_at": "2026-08-18T15:01:03.831Z",
+                "price": 10
+              },
+              {
+                "observed_at": "2026-09-05T07:00:29.557Z",
                 "price": 10
               }
             ]

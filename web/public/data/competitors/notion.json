@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05T07:01:52.781Z",
+  "generated_at": "2026-09-06T07:00:42.153Z",
   "slug": "notion",
   "name": "Notion",
   "homepage": "https://www.notion.com",
@@ -30,13 +30,12 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything in Free",
         "Trial of Notion AI",
         "Custom forms",
         "Custom sites",
         "Unlimited charts",
-        "Unlimited collaborative blocks",
-        "Unlimited file uploads",
-        "Basic connections"
+        "Unlimited collaborative blocks"
       ]
     },
     {
@@ -48,38 +47,37 @@
       "is_free": false,
       "is_enterprise": false,
       "headline_features": [
+        "Everything in Plus",
         "Notion Agent",
         "AI Meeting Notes",
         "Enterprise Search",
         "SAML SSO",
         "Granular database permissions",
         "Verify any page",
-        "Private teamspaces",
-        "Premium connections"
+        "Private teamspaces"
       ]
     },
     {
       "name": "Enterprise",
       "monthly_price_usd": null,
       "annual_price_usd": null,
-      "billing_unit": "unknown",
+      "billing_unit": "per_seat",
       "included_seats": null,
       "is_free": false,
       "is_enterprise": true,
       "headline_features": [
+        "Everything in Business",
         "Zero data retention with LLM providers",
         "User provisioning (SCIM)",
         "Advanced security & controls",
         "Audit log",
         "Customer success manager",
-        "Security & Compliance connections (DLP, SIEM)",
-        "Domain management",
-        "Advanced connections"
+        "Security & Compliance connections"
       ]
     }
   ],
   "first_observed_at": "2025-02-19T07:54:17.000Z",
-  "last_observed_at": "2026-09-03T07:00:30.388Z",
+  "last_observed_at": "2026-09-05T07:00:29.557Z",
   "series": [
     {
       "tier": "Business",
@@ -143,6 +141,10 @@
         [
           {
             "observed_at": "2026-08-18T15:01:03.831Z",
+            "price": 20
+          },
+          {
+            "observed_at": "2026-09-05T07:00:29.557Z",
             "price": 20
           }
         ]
@@ -211,6 +213,10 @@
         [
           {
             "observed_at": "2026-08-18T15:01:03.831Z",
+            "price": 0
+          },
+          {
+            "observed_at": "2026-09-05T07:00:29.557Z",
             "price": 0
           }
         ]
@@ -309,6 +315,10 @@
         [
           {
             "observed_at": "2026-08-18T15:01:03.831Z",
+            "price": 10
+          },
+          {
+            "observed_at": "2026-09-05T07:00:29.557Z",
             "price": 10
           }
         ]
