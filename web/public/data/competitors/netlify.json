@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06T07:00:42.153Z",
+  "generated_at": "2026-09-07T07:02:43.787Z",
   "slug": "netlify",
   "name": "Netlify",
   "homepage": "https://www.netlify.com",
@@ -79,7 +79,7 @@
     }
   ],
   "first_observed_at": "2025-08-26T21:29:12.000Z",
-  "last_observed_at": "2026-09-04T07:04:31.184Z",
+  "last_observed_at": "2026-09-06T07:04:22.703Z",
   "series": [
     {
       "tier": "Free",

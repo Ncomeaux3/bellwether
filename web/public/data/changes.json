@@ -1,7 +1,42 @@
 {
-  "generated_at": "2026-09-06T07:00:42.153Z",
+  "generated_at": "2026-09-07T07:02:43.787Z",
   "threshold": 40,
   "changes": [
+    {
+      "competitor": "PlanetScale",
+      "slug": "planetscale",
+      "change_type": "tier_added",
+      "json_path": "tiers.Vitess",
+      "before": null,
+      "after": {
+        "name": "Vitess",
+        "monthly_price_usd": null,
+        "annual_price_usd": null,
+        "billing_unit": "usage",
+        "included_seats": null,
+        "is_free": false,
+        "is_enterprise": false,
+        "headline_features": [
+          "MySQL-compatible with horizontal sharding",
+          "Runs on network-attached storage or PlanetScale Metal",
+          "Pricing based on cluster size, VTGate configuration, and storage"
+        ]
+      },
+      "materiality": 100,
+      "observed_at": "2026-09-04T07:02:29.747Z",
+      "annotation": null
+    },
+    {
+      "competitor": "PlanetScale",
+      "slug": "planetscale",
+      "change_type": "billing_unit_changed",
+      "json_path": "tiers.Base Plan.billing_unit",
+      "before": "usage",
+      "after": "flat",
+      "materiality": 70,
+      "observed_at": "2026-09-04T07:02:29.747Z",
+      "annotation": null
+    },
     {
       "competitor": "Redis Cloud",
       "slug": "redis-cloud",
@@ -4233,54 +4268,6 @@
         "headline_features": [
           "32 CPU",
           "256 GB RAM",
-          "500 connections"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2026-07-02T08:20:30.000Z",
-      "annotation": null
-    },
-    {
-      "competitor": "Render",
-      "slug": "render",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Render Postgres Accelerated-128gb",
-      "before": {
-        "name": "Render Postgres Accelerated-128gb",
-        "monthly_price_usd": 1500,
-        "annual_price_usd": null,
-        "billing_unit": "flat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "16 CPU",
-          "128 GB RAM",
-          "500 connections"
-        ]
-      },
-      "after": null,
-      "materiality": 100,
-      "observed_at": "2026-07-02T08:20:30.000Z",
-      "annotation": null
-    },
-    {
-      "competitor": "Render",
-      "slug": "render",
-      "change_type": "tier_removed",
-      "json_path": "tiers.Render Postgres Accelerated-64gb",
-      "before": {
-        "name": "Render Postgres Accelerated-64gb",
-        "monthly_price_usd": 750,
-        "annual_price_usd": null,
-        "billing_unit": "flat",
-        "included_seats": null,
-        "is_free": false,
-        "is_enterprise": false,
-        "headline_features": [
-          "8 CPU",
-          "64 GB RAM",
           "500 connections"
         ]
       },

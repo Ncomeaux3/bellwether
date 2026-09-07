@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-06T07:00:42.153Z",
-  "observation_count": 241,
+  "generated_at": "2026-09-07T07:02:43.787Z",
+  "observation_count": 242,
   "competitors": [
     {
       "slug": "auth0",
       "name": "Auth0",
       "first_observed_at": "2026-01-07T07:29:47.000Z",
-      "last_observed_at": "2026-09-04T07:00:56.783Z",
+      "last_observed_at": "2026-09-06T07:00:49.671Z",
       "series": [
         {
           "tier": "Essentials",
@@ -135,7 +135,7 @@
       "slug": "buildkite",
       "name": "Buildkite",
       "first_observed_at": "2025-08-29T11:09:15.000Z",
-      "last_observed_at": "2026-09-04T07:01:31.484Z",
+      "last_observed_at": "2026-09-06T07:01:25.214Z",
       "series": [
         {
           "tier": "All Access Trial",
@@ -293,7 +293,7 @@
       "slug": "clerk",
       "name": "Clerk",
       "first_observed_at": "2025-09-01T12:00:47.000Z",
-      "last_observed_at": "2026-09-04T07:01:09.729Z",
+      "last_observed_at": "2026-09-06T07:01:02.590Z",
       "series": [
         {
           "tier": "Business",
@@ -585,7 +585,7 @@
       "slug": "depot",
       "name": "Depot",
       "first_observed_at": "2025-09-10T17:00:16.000Z",
-      "last_observed_at": "2026-09-04T07:01:42.263Z",
+      "last_observed_at": "2026-09-06T07:01:35.445Z",
       "series": [
         {
           "tier": "Developer",
@@ -805,7 +805,7 @@
       "slug": "fly-io",
       "name": "Fly.io",
       "first_observed_at": "2025-08-28T15:30:44.000Z",
-      "last_observed_at": "2026-09-04T07:04:18.329Z",
+      "last_observed_at": "2026-09-06T07:04:09.838Z",
       "series": [
         {
           "tier": "Compliance",
@@ -865,7 +865,7 @@
       "slug": "github",
       "name": "GitHub",
       "first_observed_at": "2025-08-21T03:03:43.000Z",
-      "last_observed_at": "2026-09-04T07:01:53.389Z",
+      "last_observed_at": "2026-09-06T07:01:48.061Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -1006,7 +1006,7 @@
       "slug": "gitlab",
       "name": "GitLab",
       "first_observed_at": "2025-08-23T14:46:59.000Z",
-      "last_observed_at": "2026-09-04T07:02:05.363Z",
+      "last_observed_at": "2026-09-06T07:01:58.346Z",
       "series": [
         {
           "tier": "Free",
@@ -1196,7 +1196,7 @@
       "slug": "hasura",
       "name": "Hasura",
       "first_observed_at": "2025-09-08T07:34:57.000Z",
-      "last_observed_at": "2026-09-04T07:02:16.444Z",
+      "last_observed_at": "2026-09-06T07:02:09.292Z",
       "series": [
         {
           "tier": "DDN Advanced",
@@ -1259,7 +1259,7 @@
       "slug": "honeycomb",
       "name": "Honeycomb",
       "first_observed_at": "2025-09-13T08:05:51.000Z",
-      "last_observed_at": "2026-09-04T07:05:05.889Z",
+      "last_observed_at": "2026-09-06T07:05:00.126Z",
       "series": [
         {
           "tier": "Free",
@@ -1627,7 +1627,7 @@
       "slug": "netlify",
       "name": "Netlify",
       "first_observed_at": "2025-08-26T21:29:12.000Z",
-      "last_observed_at": "2026-09-04T07:04:31.184Z",
+      "last_observed_at": "2026-09-06T07:04:22.703Z",
       "series": [
         {
           "tier": "Free",
@@ -1867,7 +1867,7 @@
       "slug": "new-relic",
       "name": "New Relic",
       "first_observed_at": "2025-09-01T17:50:23.000Z",
-      "last_observed_at": "2026-09-04T07:05:17.361Z",
+      "last_observed_at": "2026-09-06T07:05:12.764Z",
       "series": [
         {
           "tier": "Free",
@@ -2265,7 +2265,7 @@
       "slug": "pinecone",
       "name": "Pinecone",
       "first_observed_at": "2026-06-03T23:31:52.000Z",
-      "last_observed_at": "2026-09-04T07:05:28.132Z",
+      "last_observed_at": "2026-09-06T07:05:24.130Z",
       "series": [
         {
           "tier": "Builder",
@@ -2370,7 +2370,7 @@
       "slug": "planetscale",
       "name": "PlanetScale",
       "first_observed_at": "2025-09-06T21:41:53.000Z",
-      "last_observed_at": "2026-09-04T07:02:29.747Z",
+      "last_observed_at": "2026-09-06T07:02:20.756Z",
       "series": [
         {
           "tier": "Base - PlanetScale PostgreSQL Metal",
@@ -2581,6 +2581,14 @@
         {
           "observed_at": "2026-08-09T05:57:07.000Z",
           "label": "Base Plan - PlanetScale PostgreSQL Metal tier added"
+        },
+        {
+          "observed_at": "2026-09-04T07:02:29.747Z",
+          "label": "Base Plan billing unit changed"
+        },
+        {
+          "observed_at": "2026-09-04T07:02:29.747Z",
+          "label": "Vitess tier added"
         }
       ]
     },
@@ -2588,7 +2596,7 @@
       "slug": "postman",
       "name": "Postman",
       "first_observed_at": "2025-02-23T11:47:21.000Z",
-      "last_observed_at": "2026-09-04T07:00:45.417Z",
+      "last_observed_at": "2026-09-06T07:00:39.344Z",
       "series": [
         {
           "tier": "Basic",
@@ -2914,7 +2922,7 @@
       "slug": "postmark",
       "name": "Postmark",
       "first_observed_at": "2026-02-07T08:34:05.000Z",
-      "last_observed_at": "2026-09-04T07:03:29.471Z",
+      "last_observed_at": "2026-09-06T07:03:22.322Z",
       "series": [
         {
           "tier": "Basic",
@@ -3012,7 +3020,7 @@
       "slug": "redis-cloud",
       "name": "Redis Cloud",
       "first_observed_at": "2025-09-02T17:16:37.000Z",
-      "last_observed_at": "2026-09-04T07:02:42.534Z",
+      "last_observed_at": "2026-09-06T07:02:34.143Z",
       "series": [
         {
           "tier": "Essentials",
@@ -3062,6 +3070,10 @@
               },
               {
                 "observed_at": "2026-09-04T07:02:42.534Z",
+                "price": 5
+              },
+              {
+                "observed_at": "2026-09-06T07:02:34.143Z",
                 "price": 5
               }
             ]
@@ -3137,6 +3149,10 @@
               {
                 "observed_at": "2026-09-04T07:02:42.534Z",
                 "price": 0
+              },
+              {
+                "observed_at": "2026-09-06T07:02:34.143Z",
+                "price": 0
               }
             ]
           ],
@@ -3190,6 +3206,10 @@
               },
               {
                 "observed_at": "2026-09-04T07:02:42.534Z",
+                "price": 200
+              },
+              {
+                "observed_at": "2026-09-06T07:02:34.143Z",
                 "price": 200
               }
             ]
@@ -5268,7 +5288,7 @@
       "slug": "resend",
       "name": "Resend",
       "first_observed_at": "2025-08-28T01:29:48.000Z",
-      "last_observed_at": "2026-09-04T07:03:41.493Z",
+      "last_observed_at": "2026-09-06T07:03:33.888Z",
       "series": [
         {
           "tier": "Free",
@@ -5427,7 +5447,7 @@
       "slug": "sentry",
       "name": "Sentry",
       "first_observed_at": "2025-02-19T05:34:02.000Z",
-      "last_observed_at": "2026-09-04T07:00:33.394Z",
+      "last_observed_at": "2026-09-06T07:00:28.640Z",
       "series": [
         {
           "tier": "business",
@@ -5688,7 +5708,7 @@
       "slug": "statsig",
       "name": "Statsig",
       "first_observed_at": "2025-09-04T17:34:51.000Z",
-      "last_observed_at": "2026-09-04T07:03:54.352Z",
+      "last_observed_at": "2026-09-06T07:03:46.690Z",
       "series": [
         {
           "tier": "Developer",
@@ -5745,7 +5765,7 @@
       "slug": "supabase",
       "name": "Supabase",
       "first_observed_at": "2025-02-19T03:41:25.000Z",
-      "last_observed_at": "2026-09-04T07:00:17.893Z",
+      "last_observed_at": "2026-09-06T07:00:16.249Z",
       "series": [
         {
           "tier": "Free",
@@ -6051,7 +6071,7 @@
       "slug": "turso",
       "name": "Turso",
       "first_observed_at": "2025-08-22T07:43:32.000Z",
-      "last_observed_at": "2026-09-04T07:02:53.814Z",
+      "last_observed_at": "2026-09-06T07:02:46.356Z",
       "series": [
         {
           "tier": "Developer",
@@ -6196,7 +6216,7 @@
       "slug": "upstash",
       "name": "Upstash",
       "first_observed_at": "2025-09-10T08:07:45.000Z",
-      "last_observed_at": "2026-09-04T07:03:17.807Z",
+      "last_observed_at": "2026-09-06T07:03:11.173Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -6576,7 +6596,7 @@
       "slug": "vercel",
       "name": "Vercel",
       "first_observed_at": "2026-07-03T12:03:39.000Z",
-      "last_observed_at": "2026-09-04T07:04:52.986Z",
+      "last_observed_at": "2026-09-06T07:04:47.686Z",
       "series": [
         {
           "tier": "Hobby",

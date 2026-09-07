@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06T07:00:42.153Z",
+  "generated_at": "2026-09-07T07:02:43.787Z",
   "slug": "postman",
   "name": "Postman",
   "homepage": "https://www.postman.com",
@@ -76,7 +76,7 @@
     }
   ],
   "first_observed_at": "2025-02-23T11:47:21.000Z",
-  "last_observed_at": "2026-09-04T07:00:45.417Z",
+  "last_observed_at": "2026-09-06T07:00:39.344Z",
   "series": [
     {
       "tier": "Basic",

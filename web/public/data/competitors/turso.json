@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06T07:00:42.153Z",
+  "generated_at": "2026-09-07T07:02:43.787Z",
   "slug": "turso",
   "name": "Turso",
   "homepage": "https://turso.tech",
@@ -75,7 +75,7 @@
     }
   ],
   "first_observed_at": "2025-08-22T07:43:32.000Z",
-  "last_observed_at": "2026-09-04T07:02:53.814Z",
+  "last_observed_at": "2026-09-06T07:02:46.356Z",
   "series": [
     {
       "tier": "Developer",

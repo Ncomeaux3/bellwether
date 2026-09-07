@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06T07:00:42.153Z",
+  "generated_at": "2026-09-07T07:02:43.787Z",
   "slug": "postmark",
   "name": "Postmark",
   "homepage": "https://postmarkapp.com",
@@ -89,7 +89,7 @@
     }
   ],
   "first_observed_at": "2026-02-07T08:34:05.000Z",
-  "last_observed_at": "2026-09-04T07:03:29.471Z",
+  "last_observed_at": "2026-09-06T07:03:22.322Z",
   "series": [
     {
       "tier": "Basic",
