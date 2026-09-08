@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T07:02:43.787Z",
+  "generated_at": "2026-09-08T07:01:00.452Z",
   "observation_count": 242,
   "competitors": [
     {
@@ -686,7 +686,7 @@
       "slug": "figma",
       "name": "Figma",
       "first_observed_at": "2025-08-23T16:00:35.000Z",
-      "last_observed_at": "2026-09-05T07:00:40.747Z",
+      "last_observed_at": "2026-09-07T07:00:40.882Z",
       "series": [
         {
           "tier": "Enterprise",
@@ -1417,7 +1417,7 @@
       "slug": "linear",
       "name": "Linear",
       "first_observed_at": "2025-02-19T07:53:31.000Z",
-      "last_observed_at": "2026-09-05T07:00:17.253Z",
+      "last_observed_at": "2026-09-07T07:00:16.695Z",
       "series": [
         {
           "tier": "Basic",
@@ -1993,7 +1993,7 @@
       "slug": "notion",
       "name": "Notion",
       "first_observed_at": "2025-02-19T07:54:17.000Z",
-      "last_observed_at": "2026-09-05T07:00:29.557Z",
+      "last_observed_at": "2026-09-07T07:00:29.719Z",
       "series": [
         {
           "tier": "Business",

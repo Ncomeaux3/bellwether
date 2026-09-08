@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T07:02:43.787Z",
+  "generated_at": "2026-09-08T07:01:00.452Z",
   "competitors": [
     {
       "slug": "auth0",
@@ -10,8 +10,8 @@
           "kind": "pricing",
           "url": "https://auth0.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:00:49.671Z",
-          "last_ok_at": "2026-09-06T07:00:49.671Z",
+          "last_checked_at": "2026-09-08T07:00:52.676Z",
+          "last_ok_at": "2026-09-08T07:00:52.676Z",
           "distinct_states": 15,
           "degraded_reason": null,
           "current_pricing": {
@@ -1766,8 +1766,8 @@
           "kind": "pricing",
           "url": "https://www.postman.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:00:39.344Z",
-          "last_ok_at": "2026-09-06T07:00:39.344Z",
+          "last_checked_at": "2026-09-08T07:00:41.393Z",
+          "last_ok_at": "2026-09-08T07:00:41.393Z",
           "distinct_states": 29,
           "degraded_reason": null,
           "current_pricing": {
@@ -2096,7 +2096,7 @@
           "last_checked_at": "2026-09-06T07:04:35.569Z",
           "last_ok_at": "2026-09-06T07:04:35.569Z",
           "distinct_states": 22,
-          "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4 CPU 32GB.unit_price_usd = 0.0081 does not appear in the page text",
+          "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4c-32g.unit_price_usd = 0.0081 does not appear in the page text",
           "current_pricing": {
             "currency": "USD",
             "tiers": [
@@ -2343,9 +2343,9 @@
           "kind": "pricing",
           "url": "https://sentry.io/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:00:28.640Z",
-          "last_ok_at": "2026-09-06T07:00:28.640Z",
-          "distinct_states": 31,
+          "last_checked_at": "2026-09-08T07:00:28.671Z",
+          "last_ok_at": "2026-09-08T07:00:28.671Z",
+          "distinct_states": 32,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -2558,9 +2558,9 @@
           "kind": "pricing",
           "url": "https://supabase.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:00:16.249Z",
-          "last_ok_at": "2026-09-06T07:00:16.249Z",
-          "distinct_states": 31,
+          "last_checked_at": "2026-09-08T07:00:15.817Z",
+          "last_ok_at": "2026-09-08T07:00:15.817Z",
+          "distinct_states": 32,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",

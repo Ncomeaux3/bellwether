@@ -1,20 +1,20 @@
 {
-  "generated_at": "2026-09-07T07:02:43.787Z",
+  "generated_at": "2026-09-08T07:01:00.452Z",
   "filter": {
-    "total_snapshots": 817,
+    "total_snapshots": 821,
     "extractions_performed": 239,
-    "llm_calls_avoided": 536,
-    "llm_calls_avoided_pct": 65.6,
+    "llm_calls_avoided": 540,
+    "llm_calls_avoided_pct": 65.8,
     "gates": [
       {
         "name": "Repeat fetch, byte-identical",
-        "eliminated": 228,
-        "remaining": 589,
+        "eliminated": 230,
+        "remaining": 591,
         "note": "Content-addressed dedup at fetch time (collect.ts): a page identical to the last fetch is stored as a pointer, never re-examined."
       },
       {
         "name": "Repeat page state, already extracted",
-        "eliminated": 303,
+        "eliminated": 305,
         "remaining": 286,
         "note": "Normalization collapsed this onto a state with a successful extraction already on file (extract.ts's cache) — no second call."
       },
@@ -40,9 +40,9 @@
   },
   "coverage": {
     "first_observed_at": "2025-02-19T03:41:25.000Z",
-    "last_observed_at": "2026-09-07T07:00:40.882Z",
+    "last_observed_at": "2026-09-08T07:00:52.676Z",
     "months_covered": 20,
-    "live_snapshots": 258,
+    "live_snapshots": 262,
     "backfilled_snapshots": 559
   },
   "health": {
@@ -52,7 +52,7 @@
         "kind": "pricing",
         "url": "https://auth0.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-06T07:00:49.671Z",
+        "last_ok_at": "2026-09-08T07:00:52.676Z",
         "degraded_reason": null
       },
       {
@@ -180,7 +180,7 @@
         "kind": "pricing",
         "url": "https://www.postman.com/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-06T07:00:39.344Z",
+        "last_ok_at": "2026-09-08T07:00:41.393Z",
         "degraded_reason": null
       },
       {
@@ -205,7 +205,7 @@
         "url": "https://render.com/pricing",
         "state": "degraded",
         "last_ok_at": "2026-09-06T07:04:35.569Z",
-        "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4 CPU 32GB.unit_price_usd = 0.0081 does not appear in the page text"
+        "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4c-32g.unit_price_usd = 0.0081 does not appear in the page text"
       },
       {
         "slug": "resend",
@@ -220,7 +220,7 @@
         "kind": "pricing",
         "url": "https://sentry.io/pricing/",
         "state": "ok",
-        "last_ok_at": "2026-09-06T07:00:28.640Z",
+        "last_ok_at": "2026-09-08T07:00:28.671Z",
         "degraded_reason": null
       },
       {
@@ -236,7 +236,7 @@
         "kind": "pricing",
         "url": "https://supabase.com/pricing",
         "state": "ok",
-        "last_ok_at": "2026-09-06T07:00:16.249Z",
+        "last_ok_at": "2026-09-08T07:00:15.817Z",
         "degraded_reason": null
       },
       {
@@ -273,7 +273,7 @@
       {
         "kind": "backup",
         "state": "ok",
-        "ended_at": "2026-09-06T07:30:03.540Z"
+        "ended_at": "2026-09-07T07:30:03.013Z"
       },
       {
         "kind": "collect",
@@ -283,32 +283,32 @@
       {
         "kind": "detect",
         "state": "ok",
-        "ended_at": "2026-09-07T07:01:25.803Z"
+        "ended_at": "2026-09-08T07:01:00.436Z"
       },
       {
         "kind": "export",
         "state": "ok",
-        "ended_at": "2026-09-07T07:01:16.819Z"
+        "ended_at": "2026-09-07T07:02:44.501Z"
       },
       {
         "kind": "extract",
         "state": "ok",
-        "ended_at": "2026-09-07T07:01:25.495Z"
+        "ended_at": "2026-09-08T07:01:00.121Z"
       },
       {
         "kind": "publish",
         "state": "ok",
-        "ended_at": "2026-09-06T07:00:46.461Z"
+        "ended_at": "2026-09-07T07:02:47.987Z"
       },
       {
         "kind": "restic",
         "state": "ok",
-        "ended_at": "2026-09-06T07:30:10.552Z"
+        "ended_at": "2026-09-07T07:30:11.572Z"
       },
       {
         "kind": "synthesize",
-        "state": "failed",
-        "ended_at": "2026-09-07T07:02:43.785Z"
+        "state": "ok",
+        "ended_at": "2026-09-08T07:01:00.451Z"
       }
     ]
   },

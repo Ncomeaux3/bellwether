@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-07T07:02:43.787Z",
+  "generated_at": "2026-09-08T07:01:00.452Z",
   "total_sources": 27,
   "healthy_sources": 26,
   "sources": [
@@ -7,7 +7,7 @@
       "slug": "auth0",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-09-06T07:00:49.671Z",
+      "last_ok_at": "2026-09-08T07:00:52.676Z",
       "degraded_reason": null
     },
     {
@@ -119,7 +119,7 @@
       "slug": "postman",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-09-06T07:00:39.344Z",
+      "last_ok_at": "2026-09-08T07:00:41.393Z",
       "degraded_reason": null
     },
     {
@@ -141,7 +141,7 @@
       "kind": "pricing",
       "state": "degraded",
       "last_ok_at": "2026-09-06T07:04:35.569Z",
-      "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4 CPU 32GB.unit_price_usd = 0.0081 does not appear in the page text"
+      "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4c-32g.unit_price_usd = 0.0081 does not appear in the page text"
     },
     {
       "slug": "resend",
@@ -154,7 +154,7 @@
       "slug": "sentry",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-09-06T07:00:28.640Z",
+      "last_ok_at": "2026-09-08T07:00:28.671Z",
       "degraded_reason": null
     },
     {
@@ -168,7 +168,7 @@
       "slug": "supabase",
       "kind": "pricing",
       "state": "ok",
-      "last_ok_at": "2026-09-06T07:00:16.249Z",
+      "last_ok_at": "2026-09-08T07:00:15.817Z",
       "degraded_reason": null
     },
     {
@@ -195,9 +195,9 @@
   ],
   "last_run": {
     "kind": "synthesize",
-    "started_at": "2026-09-07T07:01:25.803Z",
-    "ended_at": "2026-09-07T07:02:43.785Z",
-    "state": "failed"
+    "started_at": "2026-09-08T07:01:00.436Z",
+    "ended_at": "2026-09-08T07:01:00.451Z",
+    "state": "ok"
   },
   "cost_micros_month": 312473
 }
