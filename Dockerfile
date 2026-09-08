@@ -28,6 +28,9 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
 RUN corepack prepare --activate
 COPY migrations ./migrations
 COPY src ./src
+# The pipeline kill switch (see file header) — must always exist so this
+# COPY never fails; toggle its first line and rebuild to pause/resume.
+COPY PAUSED ./PAUSED
 
 # A runtime container's node_modules is baked into the image and immutable, so
 # re-verifying it before every command is pure downside — it can only fail.

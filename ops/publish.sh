@@ -14,6 +14,17 @@ record() {  # $1 = ok|failed, $2 = detail
   docker compose exec -T bellwether pnpm bw ops record --kind publish --state "$1" --detail "$2" >/dev/null 2>&1 || true
 }
 
+# Kill switch (see PAUSED at repo root for the full contract) — checked
+# directly here, not via the container, so this still works even if the
+# container itself is stopped. Recorded as ok, not failed: a paused install
+# skipping publish is not a problem for the heartbeat watchdog to page about.
+if [ -f PAUSED ] && [ "$(head -n1 PAUSED | tr -d '[:space:]\r' | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  MSG="publish: skipping — Bellwether is paused (see PAUSED at repo root)"
+  echo "$MSG"
+  record ok "paused"
+  exit 0
+fi
+
 BRANCH="$(git symbolic-ref --short -q HEAD || true)"
 if [ "$BRANCH" != "main" ]; then
   MSG="publish: refusing — on branch '${BRANCH:-detached HEAD}', expected main"

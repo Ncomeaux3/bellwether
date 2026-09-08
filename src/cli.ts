@@ -2,7 +2,7 @@
 import { Command } from 'commander';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { openDb } from './ops/db.js';
 import { migrate } from './ops/migrate.js';
 import { VERSION } from './version.js';
@@ -13,6 +13,18 @@ function dbPath(): string {
   const p = process.env.BELLWETHER_DB ?? './data/bellwether.db';
   mkdirSync(dirname(resolve(p)), { recursive: true });
   return resolve(p);
+}
+
+// Kill switch for the automated pipeline (see PAUSED at repo root for the
+// full contract). Only `bw pipeline` (cron) and `bw start` (container
+// entrypoint) consult this — manual commands (`bw collect`, `bw doctor`,
+// etc.) always run, so a paused install can still be poked by hand.
+function pauseState(): { paused: boolean; reason: string } {
+  const p = join(ROOT, 'PAUSED');
+  if (!existsSync(p)) return { paused: false, reason: '' };
+  const lines = readFileSync(p, 'utf8').split('\n');
+  const paused = (lines[0] ?? '').trim().toLowerCase() === 'true';
+  return { paused, reason: lines.slice(1).join('\n').trim() };
 }
 
 const program = new Command();
@@ -299,6 +311,20 @@ program
   .command('start')
   .description('run the full daily pipeline once (migrate, seed, collect..export), then idle')
   .action(async () => {
+    const { paused, reason } = pauseState();
+    if (paused) {
+      console.log('Bellwether is paused (see PAUSED at repo root) — idling without running the pipeline.');
+      if (reason) console.log(reason);
+      // Same rationale as the idle promise below: a never-resolving promise
+      // keeps the event loop (and the container) alive without touching the
+      // database or network. The healthcheck will report unhealthy while
+      // paused (no recent `collect` run) — that is the pause working.
+      await new Promise<never>(() => {
+        setInterval(() => {}, 60_000);
+      });
+      return;
+    }
+
     const { seedCompetitors } = await import('./config/seed.js');
     const { COMPETITORS } = await import('./config/competitors.public.js');
     const { runPipeline } = await import('./workflow/pipeline.js');
@@ -340,6 +366,13 @@ program
   .command('pipeline')
   .description('run the daily sequence once and exit (for cron)')
   .action(async () => {
+    const { paused, reason } = pauseState();
+    if (paused) {
+      console.log('Bellwether is paused (see PAUSED at repo root) — skipping the pipeline.');
+      if (reason) console.log(reason);
+      process.exit(0);
+    }
+
     const { runPipeline } = await import('./workflow/pipeline.js');
     const { runHeartbeat } = await import('./ops/heartbeat.js');
     const db = openDb(dbPath());

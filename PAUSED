@@ -1,0 +1,25 @@
+true
+# Kill switch for the automated pipeline. Read by `bw pipeline` and `bw
+# start` (src/cli.ts) and by ops/publish.sh — only the first line matters,
+# and must be exactly `true` or `false`.
+#
+# While `true`:
+#   - `bw pipeline` (cron) and `bw start` (`docker compose up`, container
+#     entrypoint) print a message and exit immediately: no collect, extract,
+#     detect, synthesize, export, or heartbeat, and no network or database
+#     writes.
+#   - ops/publish.sh refuses to commit/push and records itself as an ok
+#     no-op, not a failure.
+#   - Backups (ops/backup.sh, `bw ops backup`, the monthly verify-backup)
+#     are NOT affected and keep running on the existing crontab.
+#   - The container healthcheck will report unhealthy (no recent `collect`
+#     run) — that's expected while paused, not a bug.
+#
+# Paused: 2026-09-08 — Nick asked to disable the project and its cron jobs
+# without removing anything, so it can be flipped back on later.
+#
+# To reactivate:
+#   1. Change the first line above to `false` and commit.
+#   2. On the homelab box: `git pull && docker compose up -d --build`
+#      (rebuilds the image with the new flag; the crontab lines need no
+#      changes — they were never touched).
