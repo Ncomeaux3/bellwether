@@ -27,6 +27,19 @@ function pauseState(): { paused: boolean; reason: string } {
   return { paused, reason: lines.slice(1).join('\n').trim() };
 }
 
+// Every automated call site that pages Nick's phone goes through this: `ops
+// record` (ops/backup.sh's failure leg) and the `ops backup`/`ops
+// verify-backup` commands' own catch blocks below — all three are
+// cron-invoked (see docs/homelab.md) and stay silent while paused, same as
+// the pipeline/publish alerts. The run itself, and its row in `runs`, is
+// unaffected — only the phone alert is suppressed. Manual commands (e.g. `bw
+// ops heartbeat` run by hand) intentionally skip this and always alert.
+async function alertUnlessPaused(text: string): Promise<void> {
+  if (pauseState().paused) return;
+  const { sendTelegram } = await import('./tools/telegram.js');
+  await sendTelegram(text);
+}
+
 const program = new Command();
 program.name('bellwether').version(VERSION);
 
@@ -480,8 +493,7 @@ ops
     db.close();
 
     if (options.state === 'failed') {
-      const { sendTelegram } = await import('./tools/telegram.js');
-      await sendTelegram(`Bellwether ${options.kind} failed: ${options.detail ?? 'no detail provided'}`);
+      await alertUnlessPaused(`Bellwether ${options.kind} failed: ${options.detail ?? 'no detail provided'}`);
     }
     console.log(`Recorded ${options.kind} ${options.state}${options.detail ? `: ${options.detail}` : ''}.`);
   });
@@ -516,7 +528,6 @@ ops
   .action(async (options: { dir?: string }) => {
     const { backupSnapshot } = await import('./ops/backup.js');
     const { acquireRun, finishRun } = await import('./ops/runs.js');
-    const { sendTelegram } = await import('./tools/telegram.js');
 
     const dbFile = dbPath();
     const dir = options.dir ? resolve(options.dir) : join(dirname(dbFile), 'backup');
@@ -535,7 +546,7 @@ ops
       const message = err instanceof Error ? err.message : String(err);
       finishRun(db, runId, false, {}, message);
       db.close();
-      await sendTelegram(`Bellwether: backup failed — ${message}`);
+      await alertUnlessPaused(`Bellwether: backup failed — ${message}`);
       throw err;
     }
   });
@@ -546,7 +557,6 @@ ops
   .option('--file <path>', 'snapshot file (default: newest bellwether-*.db in the backup dir)')
   .action(async (options: { file?: string }) => {
     const { verifyBackup } = await import('./ops/backup.js');
-    const { sendTelegram } = await import('./tools/telegram.js');
     const { existsSync, readdirSync } = await import('node:fs');
 
     const livePath = dbPath();
@@ -577,7 +587,7 @@ ops
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error(`verify-backup: FAILED — ${message}`);
-      await sendTelegram(`Bellwether: verify-backup failed — ${message}`);
+      await alertUnlessPaused(`Bellwether: verify-backup failed — ${message}`);
       process.exit(1);
     }
   });

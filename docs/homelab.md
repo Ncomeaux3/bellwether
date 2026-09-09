@@ -107,6 +107,13 @@ even while paused. If you want those stopped too, comment out their
 crontab lines by hand (`crontab -e`) — the `PAUSED` file does not reach
 them.
 
+Telegram alerts, on the other hand, are fully silenced while paused —
+including a failed backup or a failed monthly verify-backup, which
+otherwise page you directly and independently of the pipeline. The backup
+itself still runs and still writes a row to the `runs` table; it just won't
+text you if it fails. Only manual commands you run by hand (e.g. `bw ops
+heartbeat`) still alert.
+
 While paused, `docker compose ps` / the healthcheck will show `unhealthy`
 (no recent `collect` run) — that's expected, not a fault to chase.
 

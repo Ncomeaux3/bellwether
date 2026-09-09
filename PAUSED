@@ -11,12 +11,21 @@ true
 #   - ops/publish.sh refuses to commit/push and records itself as an ok
 #     no-op, not a failure.
 #   - Backups (ops/backup.sh, `bw ops backup`, the monthly verify-backup)
-#     are NOT affected and keep running on the existing crontab.
+#     are NOT affected and keep running on the existing crontab — they still
+#     write to the `runs` table, they just won't text you if one fails.
+#   - No Telegram alerts of any kind go out while paused: the daily
+#     pipeline/heartbeat alerts (suppressed because heartbeat never runs —
+#     it lives inside the paused pipeline), and also backup/restic/
+#     verify-backup failure alerts (explicitly suppressed in src/cli.ts's
+#     `alertUnlessPaused`, since those run independently of the pipeline).
+#     Manual commands (e.g. `bw ops heartbeat` run by hand) are unaffected
+#     and still alert — this only silences the automated/cron paths.
 #   - The container healthcheck will report unhealthy (no recent `collect`
 #     run) — that's expected while paused, not a bug.
 #
 # Paused: 2026-09-08 — Nick asked to disable the project and its cron jobs
-# without removing anything, so it can be flipped back on later.
+# without removing anything, so it can be flipped back on later. Extended
+# 2026-09-09 to also silence backup/verify-backup Telegram alerts.
 #
 # To reactivate:
 #   1. Change the first line above to `false` and commit.
