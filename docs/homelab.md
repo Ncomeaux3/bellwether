@@ -84,6 +84,43 @@ first collection finishes.
 Portainer will show the same container with the same health state, if you prefer
 clicking to typing.
 
+## Pausing everything
+
+The `PAUSED` file at the repo root is a kill switch for the automated
+pipeline. Set its first line to `true` and redeploy to stop `bw pipeline`
+(cron) and `bw start` (this container) cold — no collection, extraction,
+digesting, export, or publish, and no network or database activity. Nothing
+else changes: the crontab, `docker-compose.yml`, and everything else stay
+exactly as they are, so reactivating is just flipping the flag back.
+
+    nano PAUSED        # first line: true to pause, false to resume
+    git add PAUSED && git commit -m "pause bellwether" && git push
+    git pull && docker compose up -d --build
+
+`ops/publish.sh` checks the same file directly (not through the container),
+so it also refuses to commit/push while paused — and records that as an
+`ok` no-op, not a failure, so the heartbeat watchdog stays quiet.
+
+Backups are intentionally untouched: `ops/backup.sh`, `bw ops backup`, and
+the monthly `verify-backup` keep running on their existing crontab lines
+even while paused. If you want those stopped too, comment out their
+crontab lines by hand (`crontab -e`) — the `PAUSED` file does not reach
+them.
+
+Telegram alerts, on the other hand, are fully silenced while paused —
+including a failed backup or a failed monthly verify-backup, which
+otherwise page you directly and independently of the pipeline. The backup
+itself still runs and still writes a row to the `runs` table; it just won't
+text you if it fails. Only manual commands you run by hand (e.g. `bw ops
+heartbeat`) still alert.
+
+While paused, `docker compose ps` / the healthcheck will show `unhealthy`
+(no recent `collect` run) — that's expected, not a fault to chase.
+
+Manual commands (`bw collect`, `bw doctor`, `bw export`, …) ignore this flag
+entirely and run normally if you invoke them by hand; only the two
+automated entry points check it.
+
 ## Updating to a newer version
 
     cd ~/bellwether

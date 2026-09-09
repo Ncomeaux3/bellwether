@@ -1,0 +1,34 @@
+true
+# Kill switch for the automated pipeline. Read by `bw pipeline` and `bw
+# start` (src/cli.ts) and by ops/publish.sh — only the first line matters,
+# and must be exactly `true` or `false`.
+#
+# While `true`:
+#   - `bw pipeline` (cron) and `bw start` (`docker compose up`, container
+#     entrypoint) print a message and exit immediately: no collect, extract,
+#     detect, synthesize, export, or heartbeat, and no network or database
+#     writes.
+#   - ops/publish.sh refuses to commit/push and records itself as an ok
+#     no-op, not a failure.
+#   - Backups (ops/backup.sh, `bw ops backup`, the monthly verify-backup)
+#     are NOT affected and keep running on the existing crontab — they still
+#     write to the `runs` table, they just won't text you if one fails.
+#   - No Telegram alerts of any kind go out while paused: the daily
+#     pipeline/heartbeat alerts (suppressed because heartbeat never runs —
+#     it lives inside the paused pipeline), and also backup/restic/
+#     verify-backup failure alerts (explicitly suppressed in src/cli.ts's
+#     `alertUnlessPaused`, since those run independently of the pipeline).
+#     Manual commands (e.g. `bw ops heartbeat` run by hand) are unaffected
+#     and still alert — this only silences the automated/cron paths.
+#   - The container healthcheck will report unhealthy (no recent `collect`
+#     run) — that's expected while paused, not a bug.
+#
+# Paused: 2026-09-08 — Nick asked to disable the project and its cron jobs
+# without removing anything, so it can be flipped back on later. Extended
+# 2026-09-09 to also silence backup/verify-backup Telegram alerts.
+#
+# To reactivate:
+#   1. Change the first line above to `false` and commit.
+#   2. On the homelab box: `git pull && docker compose up -d --build`
+#      (rebuilds the image with the new flag; the crontab lines need no
+#      changes — they were never touched).

@@ -2,7 +2,7 @@
 import { Command } from 'commander';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { openDb } from './ops/db.js';
 import { migrate } from './ops/migrate.js';
 import { VERSION } from './version.js';
@@ -13,6 +13,31 @@ function dbPath(): string {
   const p = process.env.BELLWETHER_DB ?? './data/bellwether.db';
   mkdirSync(dirname(resolve(p)), { recursive: true });
   return resolve(p);
+}
+
+// Kill switch for the automated pipeline (see PAUSED at repo root for the
+// full contract). Only `bw pipeline` (cron) and `bw start` (container
+// entrypoint) consult this — manual commands (`bw collect`, `bw doctor`,
+// etc.) always run, so a paused install can still be poked by hand.
+function pauseState(): { paused: boolean; reason: string } {
+  const p = join(ROOT, 'PAUSED');
+  if (!existsSync(p)) return { paused: false, reason: '' };
+  const lines = readFileSync(p, 'utf8').split('\n');
+  const paused = (lines[0] ?? '').trim().toLowerCase() === 'true';
+  return { paused, reason: lines.slice(1).join('\n').trim() };
+}
+
+// Every automated call site that pages Nick's phone goes through this: `ops
+// record` (ops/backup.sh's failure leg) and the `ops backup`/`ops
+// verify-backup` commands' own catch blocks below — all three are
+// cron-invoked (see docs/homelab.md) and stay silent while paused, same as
+// the pipeline/publish alerts. The run itself, and its row in `runs`, is
+// unaffected — only the phone alert is suppressed. Manual commands (e.g. `bw
+// ops heartbeat` run by hand) intentionally skip this and always alert.
+async function alertUnlessPaused(text: string): Promise<void> {
+  if (pauseState().paused) return;
+  const { sendTelegram } = await import('./tools/telegram.js');
+  await sendTelegram(text);
 }
 
 const program = new Command();
@@ -299,6 +324,20 @@ program
   .command('start')
   .description('run the full daily pipeline once (migrate, seed, collect..export), then idle')
   .action(async () => {
+    const { paused, reason } = pauseState();
+    if (paused) {
+      console.log('Bellwether is paused (see PAUSED at repo root) — idling without running the pipeline.');
+      if (reason) console.log(reason);
+      // Same rationale as the idle promise below: a never-resolving promise
+      // keeps the event loop (and the container) alive without touching the
+      // database or network. The healthcheck will report unhealthy while
+      // paused (no recent `collect` run) — that is the pause working.
+      await new Promise<never>(() => {
+        setInterval(() => {}, 60_000);
+      });
+      return;
+    }
+
     const { seedCompetitors } = await import('./config/seed.js');
     const { COMPETITORS } = await import('./config/competitors.public.js');
     const { runPipeline } = await import('./workflow/pipeline.js');
@@ -340,6 +379,13 @@ program
   .command('pipeline')
   .description('run the daily sequence once and exit (for cron)')
   .action(async () => {
+    const { paused, reason } = pauseState();
+    if (paused) {
+      console.log('Bellwether is paused (see PAUSED at repo root) — skipping the pipeline.');
+      if (reason) console.log(reason);
+      process.exit(0);
+    }
+
     const { runPipeline } = await import('./workflow/pipeline.js');
     const { runHeartbeat } = await import('./ops/heartbeat.js');
     const db = openDb(dbPath());
@@ -447,8 +493,7 @@ ops
     db.close();
 
     if (options.state === 'failed') {
-      const { sendTelegram } = await import('./tools/telegram.js');
-      await sendTelegram(`Bellwether ${options.kind} failed: ${options.detail ?? 'no detail provided'}`);
+      await alertUnlessPaused(`Bellwether ${options.kind} failed: ${options.detail ?? 'no detail provided'}`);
     }
     console.log(`Recorded ${options.kind} ${options.state}${options.detail ? `: ${options.detail}` : ''}.`);
   });
@@ -483,7 +528,6 @@ ops
   .action(async (options: { dir?: string }) => {
     const { backupSnapshot } = await import('./ops/backup.js');
     const { acquireRun, finishRun } = await import('./ops/runs.js');
-    const { sendTelegram } = await import('./tools/telegram.js');
 
     const dbFile = dbPath();
     const dir = options.dir ? resolve(options.dir) : join(dirname(dbFile), 'backup');
@@ -502,7 +546,7 @@ ops
       const message = err instanceof Error ? err.message : String(err);
       finishRun(db, runId, false, {}, message);
       db.close();
-      await sendTelegram(`Bellwether: backup failed — ${message}`);
+      await alertUnlessPaused(`Bellwether: backup failed — ${message}`);
       throw err;
     }
   });
@@ -513,7 +557,6 @@ ops
   .option('--file <path>', 'snapshot file (default: newest bellwether-*.db in the backup dir)')
   .action(async (options: { file?: string }) => {
     const { verifyBackup } = await import('./ops/backup.js');
-    const { sendTelegram } = await import('./tools/telegram.js');
     const { existsSync, readdirSync } = await import('node:fs');
 
     const livePath = dbPath();
@@ -544,7 +587,7 @@ ops
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error(`verify-backup: FAILED — ${message}`);
-      await sendTelegram(`Bellwether: verify-backup failed — ${message}`);
+      await alertUnlessPaused(`Bellwether: verify-backup failed — ${message}`);
       process.exit(1);
     }
   });
