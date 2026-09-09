@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "slug": "depot",
   "name": "Depot",
   "homepage": "https://depot.dev",
@@ -59,7 +59,7 @@
     }
   ],
   "first_observed_at": "2025-09-10T17:00:16.000Z",
-  "last_observed_at": "2026-09-06T07:01:35.445Z",
+  "last_observed_at": "2026-09-08T07:01:41.543Z",
   "series": [
     {
       "tier": "Developer",

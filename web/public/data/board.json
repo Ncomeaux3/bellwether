@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "competitors": [
     {
       "slug": "auth0",
@@ -110,9 +110,9 @@
           "kind": "pricing",
           "url": "https://buildkite.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:01:25.214Z",
-          "last_ok_at": "2026-09-06T07:01:25.214Z",
-          "distinct_states": 17,
+          "last_checked_at": "2026-09-08T07:01:29.803Z",
+          "last_ok_at": "2026-09-08T07:01:29.803Z",
+          "distinct_states": 18,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -203,9 +203,9 @@
           "kind": "pricing",
           "url": "https://clerk.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:01:02.590Z",
-          "last_ok_at": "2026-09-06T07:01:02.590Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-09-08T07:01:05.598Z",
+          "last_ok_at": "2026-09-08T07:01:05.598Z",
+          "distinct_states": 22,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -389,9 +389,9 @@
           "kind": "pricing",
           "url": "https://depot.dev/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:01:35.445Z",
-          "last_ok_at": "2026-09-06T07:01:35.445Z",
-          "distinct_states": 17,
+          "last_checked_at": "2026-09-08T07:01:41.543Z",
+          "last_ok_at": "2026-09-08T07:01:41.543Z",
+          "distinct_states": 18,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -585,9 +585,9 @@
           "kind": "pricing",
           "url": "https://fly.io/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:04:09.838Z",
-          "last_ok_at": "2026-09-06T07:04:09.838Z",
-          "distinct_states": 22,
+          "last_checked_at": "2026-09-08T07:04:15.204Z",
+          "last_ok_at": "2026-09-08T07:04:15.204Z",
+          "distinct_states": 23,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -672,9 +672,9 @@
           "kind": "pricing",
           "url": "https://github.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:01:48.061Z",
-          "last_ok_at": "2026-09-06T07:01:48.061Z",
-          "distinct_states": 22,
+          "last_checked_at": "2026-09-08T07:01:53.923Z",
+          "last_ok_at": "2026-09-08T07:01:53.923Z",
+          "distinct_states": 23,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -760,9 +760,9 @@
           "kind": "pricing",
           "url": "https://about.gitlab.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:01:58.346Z",
-          "last_ok_at": "2026-09-06T07:01:58.346Z",
-          "distinct_states": 22,
+          "last_checked_at": "2026-09-08T07:02:06.555Z",
+          "last_ok_at": "2026-09-08T07:02:06.555Z",
+          "distinct_states": 23,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -854,8 +854,8 @@
           "kind": "pricing",
           "url": "https://hasura.io/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:02:09.292Z",
-          "last_ok_at": "2026-09-06T07:02:09.292Z",
+          "last_checked_at": "2026-09-08T07:02:17.990Z",
+          "last_ok_at": "2026-09-08T07:02:17.990Z",
           "distinct_states": 11,
           "degraded_reason": null,
           "current_pricing": {
@@ -962,8 +962,8 @@
           "kind": "pricing",
           "url": "https://www.honeycomb.io/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:05:00.126Z",
-          "last_ok_at": "2026-09-06T07:05:00.126Z",
+          "last_checked_at": "2026-09-08T07:05:02.925Z",
+          "last_ok_at": "2026-09-08T07:05:02.925Z",
           "distinct_states": 16,
           "degraded_reason": null,
           "current_pricing": {
@@ -1140,8 +1140,8 @@
           "kind": "pricing",
           "url": "https://www.netlify.com/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:04:22.703Z",
-          "last_ok_at": "2026-09-06T07:04:22.703Z",
+          "last_checked_at": "2026-09-08T07:04:27.137Z",
+          "last_ok_at": "2026-09-08T07:04:27.137Z",
           "distinct_states": 19,
           "degraded_reason": null,
           "current_pricing": {
@@ -1253,103 +1253,16 @@
           "kind": "pricing",
           "url": "https://newrelic.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:05:12.764Z",
-          "last_ok_at": "2026-09-06T07:05:12.764Z",
-          "distinct_states": 16,
+          "last_checked_at": "2026-09-08T07:05:15.910Z",
+          "last_ok_at": "2026-09-08T07:05:15.910Z",
+          "distinct_states": 17,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
-            "tiers": [
-              {
-                "name": "Free",
-                "monthly_price_usd": 0,
-                "annual_price_usd": null,
-                "billing_unit": "flat",
-                "included_seats": 1,
-                "is_free": true,
-                "is_enterprise": false,
-                "headline_features": [
-                  "100 GB data ingest/month",
-                  "Unlimited basic users",
-                  "One free full platform user",
-                  "Access to 50+ capabilities",
-                  "Automatic logs obfuscation",
-                  "No credit card required"
-                ]
-              },
-              {
-                "name": "Standard",
-                "monthly_price_usd": 10,
-                "annual_price_usd": null,
-                "billing_unit": "per_seat",
-                "included_seats": 1,
-                "is_free": false,
-                "is_enterprise": false,
-                "headline_features": [
-                  "Limited to 5 full platform users",
-                  "Ticketed support availability",
-                  "2 business days support response SLA",
-                  "SAML single sign-on",
-                  "$0.40/GB data ingest beyond 100 GB free"
-                ]
-              },
-              {
-                "name": "Pro",
-                "monthly_price_usd": 349,
-                "annual_price_usd": null,
-                "billing_unit": "per_seat",
-                "included_seats": null,
-                "is_free": false,
-                "is_enterprise": false,
-                "headline_features": [
-                  "Unlimited full platform users",
-                  "2-hour critical initial support response SLA",
-                  "Data Plus eligibility",
-                  "Optional: Full consumption pricing with no user licenses",
-                  "$0.40/GB or $0.60/GB data ingest options"
-                ]
-              },
-              {
-                "name": "Enterprise",
-                "monthly_price_usd": null,
-                "annual_price_usd": null,
-                "billing_unit": "unknown",
-                "included_seats": null,
-                "is_free": false,
-                "is_enterprise": true,
-                "headline_features": [
-                  "Everything in Pro plus:",
-                  "FedRAMP Moderate and HIPAA eligibility with Data Plus",
-                  "Priority ticket routing",
-                  "1-hour critical initial support response SLA",
-                  "Optional: Full consumption pricing with no user licenses"
-                ]
-              }
-            ],
-            "usage_rates": [
-              {
-                "metric": "Data ingest (Original option)",
-                "unit_price_usd": 0.4
-              },
-              {
-                "metric": "Data ingest (Data Plus option)",
-                "unit_price_usd": 0.6
-              },
-              {
-                "metric": "EU data center storage",
-                "unit_price_usd": 0.05
-              },
-              {
-                "metric": "Additional synthetic checks",
-                "unit_price_usd": 0.005
-              },
-              {
-                "metric": "Core user per user",
-                "unit_price_usd": 49
-              }
-            ],
-            "notes": "Free tier includes 100 GB/month data ingest and unlimited basic users. Standard edition first full platform user is $10/month, additional users up to 5 are $99/month. Pro pricing shows $349/user for annual commitments and $418.80/user for monthly pay-as-you-go. Enterprise pricing requires contact sales. Data Plus is an optional upgrade available for Pro and Enterprise. Advanced Compute pricing available with feature control. Page indicates compute-based pricing model also available but CCU pricing not specified on page.",
-            "extraction_confidence": "medium"
+            "tiers": [],
+            "usage_rates": [],
+            "notes": null,
+            "extraction_confidence": "low"
           }
         }
       ]
@@ -1466,8 +1379,8 @@
           "kind": "pricing",
           "url": "https://www.pinecone.io/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:05:24.130Z",
-          "last_ok_at": "2026-09-06T07:05:24.130Z",
+          "last_checked_at": "2026-09-08T07:05:26.402Z",
+          "last_ok_at": "2026-09-08T07:05:26.402Z",
           "distinct_states": 19,
           "degraded_reason": null,
           "current_pricing": {
@@ -1650,9 +1563,9 @@
           "kind": "pricing",
           "url": "https://planetscale.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:02:20.756Z",
-          "last_ok_at": "2026-09-06T07:02:20.756Z",
-          "distinct_states": 21,
+          "last_checked_at": "2026-09-08T07:02:28.645Z",
+          "last_ok_at": "2026-09-08T07:02:28.645Z",
+          "distinct_states": 22,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -1884,8 +1797,8 @@
           "kind": "pricing",
           "url": "https://postmarkapp.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:03:22.322Z",
-          "last_ok_at": "2026-09-06T07:03:22.322Z",
+          "last_checked_at": "2026-09-08T07:03:30.391Z",
+          "last_ok_at": "2026-09-08T07:03:30.391Z",
           "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
@@ -2015,9 +1928,9 @@
           "kind": "pricing",
           "url": "https://redis.io/pricing/",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:02:34.143Z",
-          "last_ok_at": "2026-09-06T07:02:34.143Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-09-08T07:02:41.845Z",
+          "last_ok_at": "2026-09-08T07:02:41.845Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -2046,10 +1959,10 @@
                 "is_free": false,
                 "is_enterprise": false,
                 "headline_features": [
-                  "Shared deployment",
                   "250 MB-100 GB RAM & SSD, single DB",
                   "SAML SSO, RBAC, encryption in transit, encryption at rest",
-                  "Up to 99.99% uptime, basic support only"
+                  "Up to 99.99% uptime, basic support only",
+                  "Redis Flex at 10% RAM for lowest cost"
                 ]
               },
               {
@@ -2063,8 +1976,21 @@
                 "headline_features": [
                   "Dedicated cloud deployment",
                   "Unlimited RAM, multiple DBs",
-                  "Everything in Essentials, plus active-active (multi-region), auto-tiering, private connectivity",
+                  "Everything in Essentials, plus active-active (multi-region), private connectivity",
                   "Up to 99.999% uptime"
+                ]
+              },
+              {
+                "name": "Enterprise",
+                "monthly_price_usd": null,
+                "annual_price_usd": null,
+                "billing_unit": "unknown",
+                "included_seats": null,
+                "is_free": false,
+                "is_enterprise": true,
+                "headline_features": [
+                  "Multi-cloud & hybrid cloud / on-prem deployment",
+                  "Available with an annual plan"
                 ]
               }
             ],
@@ -2078,7 +2004,7 @@
                 "unit_price_usd": 0.014
               }
             ],
-            "notes": "Essentials stated as 'From $0.007/hour Total $5/month'. Pro has 'First $200 free' with minimum $200/month charge and 'From $0.014/hour'. Pricing is on-demand, usage-based.",
+            "notes": "Essentials tier shows 'From $0.007/hour' with a total of $5/month minimum. Pro tier shows 'From $0.014/hour' with a minimum $200/month. Pro tier offers first $200 free. Pricing is on-demand usage-based. Enterprise pricing requires contacting sales.",
             "extraction_confidence": "medium"
           }
         }
@@ -2093,10 +2019,10 @@
           "kind": "pricing",
           "url": "https://render.com/pricing",
           "state": "degraded",
-          "last_checked_at": "2026-09-06T07:04:35.569Z",
-          "last_ok_at": "2026-09-06T07:04:35.569Z",
-          "distinct_states": 22,
-          "degraded_reason": "extraction ungrounded: usage_rates.Cron job - 4c-32g.unit_price_usd = 0.0081 does not appear in the page text",
+          "last_checked_at": "2026-09-08T07:04:39.460Z",
+          "last_ok_at": "2026-09-08T07:04:39.460Z",
+          "distinct_states": 23,
+          "degraded_reason": "extraction ungrounded: usage_rates.Cron Jobs - 4 CPU (4c-32g).unit_price_usd = 0.0081 does not appear in the page text",
           "current_pricing": {
             "currency": "USD",
             "tiers": [
@@ -2230,9 +2156,9 @@
           "kind": "pricing",
           "url": "https://resend.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:03:33.888Z",
-          "last_ok_at": "2026-09-06T07:03:33.888Z",
-          "distinct_states": 22,
+          "last_checked_at": "2026-09-08T07:03:42.489Z",
+          "last_ok_at": "2026-09-08T07:03:42.489Z",
+          "distinct_states": 23,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -2474,9 +2400,9 @@
           "kind": "pricing",
           "url": "https://statsig.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:03:46.690Z",
-          "last_ok_at": "2026-09-06T07:03:46.690Z",
-          "distinct_states": 20,
+          "last_checked_at": "2026-09-08T07:03:53.161Z",
+          "last_ok_at": "2026-09-08T07:03:53.161Z",
+          "distinct_states": 21,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",
@@ -2797,8 +2723,8 @@
           "kind": "pricing",
           "url": "https://turso.tech/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:02:46.356Z",
-          "last_ok_at": "2026-09-06T07:02:46.356Z",
+          "last_checked_at": "2026-09-08T07:02:53.812Z",
+          "last_ok_at": "2026-09-08T07:02:53.812Z",
           "distinct_states": 20,
           "degraded_reason": null,
           "current_pricing": {
@@ -2938,8 +2864,8 @@
           "kind": "pricing",
           "url": "https://upstash.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:03:11.173Z",
-          "last_ok_at": "2026-09-06T07:03:11.173Z",
+          "last_checked_at": "2026-09-08T07:03:17.885Z",
+          "last_ok_at": "2026-09-08T07:03:17.885Z",
           "distinct_states": 16,
           "degraded_reason": null,
           "current_pricing": {
@@ -3127,9 +3053,9 @@
           "kind": "pricing",
           "url": "https://vercel.com/pricing",
           "state": "ok",
-          "last_checked_at": "2026-09-06T07:04:47.686Z",
-          "last_ok_at": "2026-09-06T07:04:47.686Z",
-          "distinct_states": 22,
+          "last_checked_at": "2026-09-08T07:04:52.457Z",
+          "last_ok_at": "2026-09-08T07:04:52.457Z",
+          "distinct_states": 23,
           "degraded_reason": null,
           "current_pricing": {
             "currency": "USD",

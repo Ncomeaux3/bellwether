@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "slug": "honeycomb",
   "name": "Honeycomb",
   "homepage": "https://www.honeycomb.io",
@@ -58,7 +58,7 @@
     }
   ],
   "first_observed_at": "2025-09-13T08:05:51.000Z",
-  "last_observed_at": "2026-09-06T07:05:00.126Z",
+  "last_observed_at": "2026-09-08T07:05:02.925Z",
   "series": [
     {
       "tier": "Free",

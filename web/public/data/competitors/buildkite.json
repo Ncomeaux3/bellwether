@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "slug": "buildkite",
   "name": "Buildkite",
   "homepage": "https://buildkite.com",
@@ -59,7 +59,7 @@
     }
   ],
   "first_observed_at": "2025-08-29T11:09:15.000Z",
-  "last_observed_at": "2026-09-06T07:01:25.214Z",
+  "last_observed_at": "2026-09-08T07:01:29.803Z",
   "series": [
     {
       "tier": "All Access Trial",

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "slug": "gitlab",
   "name": "GitLab",
   "homepage": "https://about.gitlab.com",
@@ -60,7 +60,7 @@
     }
   ],
   "first_observed_at": "2025-08-23T14:46:59.000Z",
-  "last_observed_at": "2026-09-06T07:01:58.346Z",
+  "last_observed_at": "2026-09-08T07:02:06.555Z",
   "series": [
     {
       "tier": "Free",

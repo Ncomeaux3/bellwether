@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "slug": "clerk",
   "name": "Clerk",
   "homepage": "https://clerk.com",
@@ -72,7 +72,7 @@
     }
   ],
   "first_observed_at": "2025-09-01T12:00:47.000Z",
-  "last_observed_at": "2026-09-06T07:01:02.590Z",
+  "last_observed_at": "2026-09-08T07:01:05.598Z",
   "series": [
     {
       "tier": "Business",

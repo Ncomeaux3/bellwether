@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-08T07:01:00.452Z",
+  "generated_at": "2026-09-09T07:00:15.582Z",
   "slug": "planetscale",
   "name": "PlanetScale",
   "homepage": "https://planetscale.com",
@@ -94,7 +94,7 @@
     }
   ],
   "first_observed_at": "2025-09-06T21:41:53.000Z",
-  "last_observed_at": "2026-09-06T07:02:20.756Z",
+  "last_observed_at": "2026-09-08T07:02:28.645Z",
   "series": [
     {
       "tier": "Base - PlanetScale PostgreSQL Metal",
